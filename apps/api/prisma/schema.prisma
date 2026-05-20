@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  username      String     @unique
+  passwordHash  String
+  bio           String?
+  avatarUrl     String?
+  balanceCents  Int        @default(0)
+  createdAt     DateTime   @default(now())
+  listings      Listing[]
+  purchases     Purchase[]
+  reviews       Review[]
+}
+
+model Listing {
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  type         String     // "PROMPT" | "CLAUDE_MD" | "AGENT_MD"
+  description  String
+  body         String     // the actual prompt / md content
+  previewBody  String     // first ~300 chars shown to non-buyers
+  category     String
+  tags         String     // comma-separated
+  model        String?    // e.g. "claude-opus-4", "gpt-4o", "any"
+  priceCents   Int        @default(0)   // 0 = free
+  coverEmoji   String     @default("✨")
+  downloads    Int        @default(0)
+  authorId     String
+  author       User       @relation(fields: [authorId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  purchases    Purchase[]
+  reviews      Review[]
+}
+
+model Purchase {
+  id          String   @id @default(cuid())
+  userId      String
+  listingId   String
+  pricePaidCents Int
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  listing     Listing  @relation(fields: [listingId], references: [id])
+
+  @@unique([userId, listingId])
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int      // 1-5
+  comment     String?
+  userId      String
+  listingId   String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  listing     Listing  @relation(fields: [listingId], references: [id])
+
+  @@unique([userId, listingId])
+}
