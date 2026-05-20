@@ -5,6 +5,9 @@ build
 .env.local
 *.log
 .DS_Store
+*.tsbuildinfo
+.turbo
 apps/api/prisma/dev.db
 apps/api/prisma/dev.db-journal
 apps/web/dist
+packages/shared/dist
