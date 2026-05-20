@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useUserProfile } from '../lib/queries';
 import { getErrorMessage } from '../lib/api';
 import ListingCard from '../components/ListingCard';
-import Spinner from '../components/Spinner';
+import { SkeletonGrid } from '../components/SkeletonCard';
 import EmptyState from '../components/EmptyState';
 
 export default function ProfilePage() {
@@ -11,8 +11,9 @@ export default function ProfilePage() {
 
   if (isPending) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-16">
-        <Spinner label="Loading profile…" />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+        <div className="h-32 rounded-2xl bg-gray-200 dark:bg-zinc-800 motion-safe:animate-pulse mb-6" />
+        <SkeletonGrid count={6} />
       </div>
     );
   }
@@ -20,7 +21,9 @@ export default function ProfilePage() {
   if (error || !data) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-16 text-center">
-        <p className="text-red-600">{error ? getErrorMessage(error) : 'User not found.'}</p>
+        <p className="text-rose-600 dark:text-rose-400">
+          {error ? getErrorMessage(error) : 'User not found.'}
+        </p>
       </div>
     );
   }
@@ -39,22 +42,33 @@ export default function ProfilePage() {
   const displayName = user.username ?? username ?? '?';
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 flex items-center gap-5">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-white flex items-center justify-center text-2xl font-bold">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8 flex items-center gap-5">
+        <div
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-2xl font-bold shadow-sm"
+          aria-hidden
+        >
           {displayName[0]?.toUpperCase() ?? '?'}
         </div>
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold text-gray-900">@{displayName}</h1>
-          {user.bio && <p className="text-sm text-gray-500 mt-1">{user.bio}</p>}
-          <p className="text-xs text-gray-400 mt-2">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-100">
+            @{displayName}
+          </h1>
+          {user.bio && (
+            <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1 leading-relaxed">
+              {user.bio}
+            </p>
+          )}
+          <p className="text-xs text-gray-500 dark:text-zinc-400 mt-2">
             {listings.length} listing{listings.length === 1 ? '' : 's'}
           </p>
         </div>
       </div>
 
       <section className="mt-8">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Listings</h2>
+        <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-zinc-100 mb-4">
+          Listings
+        </h2>
         {listings.length === 0 ? (
           <EmptyState
             emoji="🪺"
@@ -62,7 +76,7 @@ export default function ProfilePage() {
             description="This user hasn't published anything."
           />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {listings.map((l) => (
               <ListingCard key={l.id} listing={l} />
             ))}

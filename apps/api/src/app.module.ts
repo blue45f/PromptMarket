@@ -24,10 +24,7 @@ import { ReviewsModule } from './reviews/reviews.module';
         },
       },
     }),
-    ThrottlerModule.forRoot([
-      { name: 'default', ttl: 60_000, limit: 60 },
-      { name: 'auth', ttl: 60_000, limit: 10 },
-    ]),
+    ThrottlerModule.forRoot([{ name: 'default', ttl: 60_000, limit: 120 }]),
     PrismaModule,
     AuthModule,
     UsersModule,

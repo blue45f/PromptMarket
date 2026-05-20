@@ -41,14 +41,18 @@ export default function StarRating({
               onClick={() => interactive && onChange?.(n)}
               className={cn(
                 'leading-none',
-                interactive ? 'cursor-pointer' : 'cursor-default',
+                interactive
+                  ? 'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded'
+                  : 'cursor-default',
               )}
               aria-label={`${n} star${n > 1 ? 's' : ''}`}
             >
               <Star
                 className={cn(
                   starSize[size],
-                  filled ? 'text-amber-400 fill-amber-400' : 'text-gray-300',
+                  filled
+                    ? 'text-amber-400 fill-amber-400'
+                    : 'text-gray-300 dark:text-zinc-600',
                 )}
               />
             </button>
@@ -56,13 +60,13 @@ export default function StarRating({
         })}
       </div>
       {showLabel && (
-        <span className="text-gray-500 text-xs">
+        <span className="text-gray-500 dark:text-zinc-400 text-xs">
           {value.toFixed(1)}
           {typeof count === 'number' && ` (${count})`}
         </span>
       )}
       {!showLabel && typeof count === 'number' && (
-        <span className="text-gray-500 text-xs">({count})</span>
+        <span className="text-gray-500 dark:text-zinc-400 text-xs">({count})</span>
       )}
     </div>
   );

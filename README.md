@@ -1,6 +1,6 @@
 # PromptMarket
 
-A marketplace for AI **prompts**, **`CLAUDE.md`**, and **`agent.md`** files — browse, buy, sell and share.
+A marketplace for **prompts**, **`CLAUDE.md`**, **`agent.md`**, **Claude Code skills**, **MCP servers**, **slash commands**, **sub-agents**, and **`.cursorrules`** — browse, buy, sell and share, with a per-LLM taxonomy and prompt-engineering-technique catalog.
 
 > Built with a 2026-grade stack: **React 19** + **NestJS 11** + **Prisma 6**, glued together by a shared **Zod**-schema package so the API contract has a single source of truth.
 
@@ -8,19 +8,27 @@ A marketplace for AI **prompts**, **`CLAUDE.md`**, and **`agent.md`** files — 
 
 ## Features
 
-- 🛍 **Marketplace grid** with cover emoji, type badge, price, ⭐ rating, download counter
-- 🔎 **Search + faceted filters** — type (Prompt / CLAUDE.md / agent.md), category, model, free/paid
-- 🧮 **Sorts**: newest / trending (downloads) / top (avg rating)
+- 🛍 **Marketplace grid** — type-gradient cover, model badges, price corner badge, ⭐ rating, download counter, lift-on-hover
+- 🌗 **Dark mode** — light / dark / system, persisted in `localStorage`, OS preference watched live
+- 🎯 **8 listing types** — Prompt · CLAUDE.md · agent.md · **Skill** · **MCP Server** · **Slash Command** · **Sub-agent** · **.cursorrules**
+- 🤖 **Per-LLM taxonomy** — every listing tagged with one or more of 21 model slugs (Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5, GPT-5 / o3, Gemini 2.5, Llama 4, Grok 3, Mistral Large 3, DeepSeek V3, plus tools: Claude Code, Cursor, Windsurf, Copilot, Cline, Aider). Filter by model **or** vendor (Anthropic / OpenAI / Google / Meta / xAI / Mistral / DeepSeek)
+- 🧠 **Prompt-engineering technique** filter — zero-shot · few-shot · **chain-of-thought** · **tree-of-thoughts** · role-prompt · self-consistency · **ReAct** · **RAG** · reflexion · plan-and-solve · meta-prompt
+- 🏷 **Metadata** — difficulty (beginner / intermediate / advanced), license (MIT / Apache-2.0 / CC-BY-4.0 / CC0 / Proprietary), semver version
+- 🔎 **Search + faceted filters** — type · category (14) · model · vendor · technique · difficulty · free/paid; sticky desktop sidebar + mobile drawer (Radix Dialog); dismissible filter chips
+- 🧮 **Sorts** — newest · trending (downloads) · top (avg rating)
 - 🔐 **Paywall preview** — first ~300 chars visible to all, full body unlocks on purchase
-- 💸 **Mock wallet** — top-up balance, buy listings, author auto-credited
-- 📝 **Listing detail** — markdown live render, **Copy** + **Download `.md`** buttons
-- ⭐ **Reviews & ratings**, restricted to verified buyers
-- 👤 **Author dashboard** — listings table with sales / earnings stats
-- 📚 **Buyer library** — re-access purchased items
-- 🪪 **JWT auth** (argon2 hashing)
-- 📑 **Auto-generated OpenAPI** docs at `/api/docs` (Swagger UI)
-- ⚡ **Rate-limited** auth endpoints (`@nestjs/throttler`)
+- 💸 **Mock wallet** — top-up balance, buy listings, author auto-credited via a Prisma `$transaction`
+- 📝 **Listing detail** — 16:9 gradient hero, Radix tabs (Overview / Reviews / Related), sticky price + author + metadata sidebar, **Copy** + **Download `.md`** with morphing check-icon feedback
+- 🪞 **Live preview** in Create form — Card + Markdown render update as you type
+- 🔁 **Related listings** — `/listings/related/:id` recommends by type + category
+- ⭐ **Reviews & ratings** — buyer-verified, 1–5 stars + comment
+- 📊 **Homepage stats strip** — `totalListings` · `totalDownloads` · `totalCreators` from `/listings/stats` (in-memory 30 s cache)
+- 👤 **Author dashboard** — listings with sales + earnings, library of purchased items, wallet
+- 🪪 **JWT auth** (**argon2id** hashing — OWASP 2026 default)
+- 📑 **Auto-generated OpenAPI** docs at `/api/docs` (Swagger UI, **nestjs-zod**-patched)
+- ⚡ **Rate-limited** auth endpoints (`@nestjs/throttler` — 10/min on login + register, 120/min everywhere else)
 - 🐳 **Docker compose** — Postgres + API + Web behind nginx, one command
+- ⚡ **Skeletons + fade-in animations + `prefers-reduced-motion` aware**
 
 ---
 
@@ -28,9 +36,9 @@ A marketplace for AI **prompts**, **`CLAUDE.md`**, and **`agent.md`** files — 
 
 | Layer | Tech |
 | --- | --- |
-| **Frontend** | Vite 6 · React 19 · TypeScript · **Tailwind v4** (Oxide engine, CSS-only config) · **TanStack Query v5** · **React Hook Form + Zod resolver** · Zustand 5 · React Router 6 · lucide-react · react-hot-toast · Radix UI primitives |
-| **Backend** | NestJS 11 · Prisma 6 (SQLite default, Postgres via Docker) · **nestjs-zod** · **argon2** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino** structured logs |
-| **Shared** | `@promptmarket/shared` — **Zod schemas** consumed by both apps; the only place DTO shapes are defined |
+| **Frontend** | Vite 6 · React **19** · TypeScript · **Tailwind v4** (Oxide engine, CSS-only `@theme` config, class-based dark mode) · **TanStack Query v5** · **React Hook Form + Zod resolver** · Zustand 5 · React Router 6 · **lucide-react v1** · react-hot-toast · **Radix UI** (Dialog / Tabs / DropdownMenu) · clsx · **tailwind-merge v3** · Inter font |
+| **Backend** | NestJS **11** · Prisma **6** (SQLite default, Postgres via Docker) · **nestjs-zod** · **argon2id** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino** (pino-http 11 / pino-pretty 13) |
+| **Shared** | `@promptmarket/shared` — **Zod** schemas + 21-model registry + technique / difficulty / license enums + view helpers; consumed identically by api + web, so DTO drift is impossible |
 | **Tooling** | npm workspaces · **Turborepo** · Docker / docker-compose · multi-stage Dockerfiles |
 
 ---
@@ -133,8 +141,10 @@ turbo.json
 | `POST` | `/api/auth/register` | rate-limited |
 | `POST` | `/api/auth/login` | rate-limited |
 | `GET`  | `/api/auth/me` | Bearer |
-| `GET`  | `/api/listings` | filters: `type`, `category`, `q`, `model`, `free`, `sort=newest\|trending\|top`, `page`, `pageSize` |
+| `GET`  | `/api/listings` | filters: `type`, `category`, `q`, **`model`**, **`vendor`**, **`technique`**, **`difficulty`**, `free`, `sort=newest\|trending\|top`, `page`, `pageSize≤48` |
 | `GET`  | `/api/listings/:slug` | optional auth (returns `body` only if free / purchased / owner) |
+| `GET`  | `/api/listings/stats` | `{ totalListings, totalDownloads, totalCreators }` — 30 s in-memory cache |
+| `GET`  | `/api/listings/related/:id?limit=4` | listings sharing type or category, self excluded |
 | `POST` | `/api/listings` | Bearer |
 | `POST` | `/api/listings/:id/purchase` | Bearer; atomic balance move |
 | `POST` | `/api/listings/:id/reviews` | Bearer; buyer-only |

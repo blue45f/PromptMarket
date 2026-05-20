@@ -25,14 +25,18 @@ model Listing {
   id           String     @id @default(cuid())
   title        String
   slug         String     @unique
-  type         String     // "PROMPT" | "CLAUDE_MD" | "AGENT_MD"
+  type         String     // ListingType enum (see packages/shared)
   description  String
-  body         String     // the actual prompt / md content
-  previewBody  String     // first ~300 chars shown to non-buyers
+  body         String
+  previewBody  String
   category     String
   tags         String     // comma-separated
-  model        String?    // e.g. "claude-opus-4", "gpt-4o", "any"
-  priceCents   Int        @default(0)   // 0 = free
+  models       String     // comma-separated compat model slugs ("claude-opus-4-7,gpt-5,...")
+  technique    String?    // PromptTechnique enum (PROMPT type only)
+  difficulty   String     @default("intermediate")  // beginner | intermediate | advanced
+  license      String     @default("MIT")
+  version      String     @default("1.0.0")
+  priceCents   Int        @default(0)
   coverEmoji   String     @default("✨")
   downloads    Int        @default(0)
   authorId     String

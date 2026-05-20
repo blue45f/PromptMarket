@@ -8,6 +8,9 @@ export type {
   ListingListResponse as ListingsListResponse,
   ListingType,
   PurchaseResponse,
+  PromptTechnique,
+  Difficulty,
+  License,
 } from '@promptmarket/shared';
 
 import type { ListingCard, ListingFull } from '@promptmarket/shared';
@@ -52,4 +55,10 @@ export interface ListingDetailResponse {
 export interface MyListingItem extends ListingCard {
   salesCount: number;
   earningsCents: number;
+}
+
+export interface StatsResponse {
+  totalListings: number;
+  totalSales: number;
+  totalUsers: number;
 }

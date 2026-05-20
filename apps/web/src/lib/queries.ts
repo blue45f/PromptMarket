@@ -13,7 +13,9 @@ import {
   mePurchasesKey,
   meListingsKey,
   meKey,
+  relatedKey,
   reviewsKey,
+  statsKey,
   userKey,
   type ListingsParams,
 } from './queryKeys';
@@ -25,6 +27,7 @@ import type {
   ListingsListResponse,
   MyListingItem,
   Review,
+  StatsResponse,
   User,
 } from './types';
 import { useAuthStore } from '../store/auth';
@@ -41,6 +44,11 @@ export function useListings(params: ListingsParams = {}) {
           category: params.category || undefined,
           sort: params.sort || undefined,
           q: params.q || undefined,
+          model: params.model || undefined,
+          vendor: params.vendor || undefined,
+          technique: params.technique || undefined,
+          difficulty: params.difficulty || undefined,
+          free: params.free || undefined,
           page: params.page,
           pageSize: params.pageSize,
         },
@@ -56,6 +64,26 @@ export function useListing(slug: string | undefined) {
       api.get<ListingDetailResponse, ListingDetailResponse>(
         `/listings/${slug}`,
       ),
+  });
+}
+
+/** Public site-wide stats — total listings, sales, users — used by the
+ *  homepage hero. Tolerates partial shapes so it never blocks the hero. */
+export function useStats() {
+  return useQuery({
+    queryKey: statsKey,
+    queryFn: () => api.get<StatsResponse, StatsResponse>('/listings/stats'),
+    staleTime: 5 * 60_000,
+  });
+}
+
+/** "You might also like" — backend returns an array of ListingCard items. */
+export function useRelated(id: string | undefined) {
+  return useQuery({
+    queryKey: id ? relatedKey(id) : ['related', '__none__'],
+    enabled: !!id,
+    queryFn: () =>
+      api.get<ListingCard[], ListingCard[]>(`/listings/related/${id}`),
   });
 }
 
@@ -160,6 +188,7 @@ export function useCreateListing() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['listings'] });
       void qc.invalidateQueries({ queryKey: meListingsKey });
+      void qc.invalidateQueries({ queryKey: statsKey });
       toast.success('Listing published!');
     },
     onError: (err) => {

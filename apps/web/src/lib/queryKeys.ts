@@ -6,6 +6,11 @@ export type ListingsParams = {
   category?: string;
   sort?: string;
   q?: string;
+  model?: string;
+  vendor?: string;
+  technique?: string;
+  difficulty?: string;
+  free?: 'true' | 'false';
   page?: number;
   pageSize?: number;
 };
@@ -14,6 +19,8 @@ export const queryKeys = {
   listings: (params?: ListingsParams) =>
     ['listings', params ?? {}] as const,
   listing: (slug: string) => ['listing', slug] as const,
+  related: (id: string) => ['related', id] as const,
+  stats: ['stats'] as const,
   me: ['me'] as const,
   mePurchases: ['me', 'purchases'] as const,
   meListings: ['me', 'listings'] as const,
@@ -24,6 +31,8 @@ export const queryKeys = {
 // Convenience aliases for sites that prefer the function-style API.
 export const listingsKey = queryKeys.listings;
 export const listingKey = queryKeys.listing;
+export const relatedKey = queryKeys.related;
+export const statsKey = queryKeys.stats;
 export const meKey = queryKeys.me;
 export const mePurchasesKey = queryKeys.mePurchases;
 export const meListingsKey = queryKeys.meListings;

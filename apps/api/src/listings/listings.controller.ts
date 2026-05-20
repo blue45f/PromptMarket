@@ -12,6 +12,7 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { ListingsService } from './listings.service';
@@ -31,6 +32,28 @@ export class ListingsController {
   @ApiOperation({ summary: 'List/search listings with filters' })
   list(@Query() query: QueryListingsDto) {
     return this.listings.list(query);
+  }
+
+  @Get('stats')
+  @ApiOperation({
+    summary: 'Marketplace stats (total listings, downloads, creators). Cached 30s.',
+  })
+  stats() {
+    return this.listings.stats();
+  }
+
+  @Get('related/:id')
+  @ApiOperation({
+    summary: 'Related listings sharing type or category, excluding self.',
+  })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  related(
+    @Param('id') id: string,
+    @Query('limit') limit?: string,
+  ) {
+    const parsed = limit ? parseInt(limit, 10) : 4;
+    const n = Number.isFinite(parsed) && parsed > 0 ? parsed : 4;
+    return this.listings.related(id, n);
   }
 
   @UseGuards(OptionalAuthGuard)

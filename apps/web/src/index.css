@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-brand-50: #eef2ff;
   --color-brand-100: #e0e7ff;
@@ -17,15 +19,49 @@
   #root {
     height: 100%;
   }
+  :root {
+    --toast-bg: #ffffff;
+    --toast-color: #18181b;
+    --toast-border: #e5e7eb;
+  }
+  html.dark {
+    color-scheme: dark;
+    --toast-bg: #18181b;
+    --toast-color: #fafafa;
+    --toast-border: #27272a;
+  }
   body {
     font-family: "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in {
+      animation: none;
+    }
   }
 }
 
 @layer components {
   .prose-md pre,
   .prose-md code {
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
   }
   .prose-md pre {
     background: #0f172a;
@@ -40,6 +76,10 @@
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
     font-size: 0.875em;
+  }
+  html.dark .prose-md code {
+    background: #1e293b;
+    color: #e2e8f0;
   }
   .prose-md pre code {
     background: transparent;
@@ -79,11 +119,18 @@
     color: #4f46e5;
     text-decoration: underline;
   }
+  html.dark .prose-md a {
+    color: #a5b4fc;
+  }
   .prose-md blockquote {
     border-left: 4px solid #e0e7ff;
     padding-left: 1rem;
     color: #4b5563;
     margin: 0.75rem 0;
+  }
+  html.dark .prose-md blockquote {
+    color: #d1d5db;
+    border-color: #4338ca;
   }
   .prose-md table {
     border-collapse: collapse;
@@ -96,8 +143,23 @@
     padding: 0.4rem 0.6rem;
     text-align: left;
   }
+  html.dark .prose-md th,
+  html.dark .prose-md td {
+    border-color: #3f3f46;
+  }
   .prose-md th {
     background: #f9fafb;
     font-weight: 600;
+  }
+  html.dark .prose-md th {
+    background: #18181b;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

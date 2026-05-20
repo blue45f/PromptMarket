@@ -11,6 +11,8 @@ export class UsersService {
       ratings.length > 0
         ? ratings.reduce((a, b) => a + b, 0) / ratings.length
         : 0;
+    const splitCsv = (csv: string | null | undefined): string[] =>
+      csv ? csv.split(',').map((t: string) => t.trim()).filter(Boolean) : [];
     return {
       id: l.id,
       slug: l.slug,
@@ -18,8 +20,12 @@ export class UsersService {
       type: l.type,
       description: l.description,
       category: l.category,
-      tags: l.tags ? l.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : [],
-      model: l.model,
+      tags: splitCsv(l.tags),
+      models: splitCsv(l.models),
+      technique: l.technique ?? null,
+      difficulty: l.difficulty,
+      license: l.license,
+      version: l.version,
       priceCents: l.priceCents,
       coverEmoji: l.coverEmoji,
       downloads: l.downloads,

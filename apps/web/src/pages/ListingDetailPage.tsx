@@ -2,16 +2,56 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateReviewSchema, type CreateReviewInput } from '@promptmarket/shared';
-import { Copy, Download, Loader2, ShoppingCart } from 'lucide-react';
+import * as Tabs from '@radix-ui/react-tabs';
+import {
+  CreateReviewSchema,
+  typeGradient,
+  type CreateReviewInput,
+  type Difficulty,
+  type License,
+  type ListingType,
+  type PromptTechnique,
+} from '@promptmarket/shared';
+import { Check, Copy, Download, Loader2, ShoppingCart } from 'lucide-react';
 import { useListing, usePurchase, useCreateReview } from '../lib/queries';
 import { getErrorMessage } from '../lib/api';
 import { formatDate, formatPrice } from '../lib/format';
 import TypeBadge from '../components/TypeBadge';
+import ModelBadge from '../components/ModelBadge';
+import TechniqueBadge from '../components/TechniqueBadge';
+import DifficultyBadge from '../components/DifficultyBadge';
+import LicenseBadge from '../components/LicenseBadge';
 import StarRating from '../components/StarRating';
 import MarkdownView from '../components/MarkdownView';
-import Spinner from '../components/Spinner';
+import SkeletonDetail from '../components/SkeletonDetail';
+import RelatedListings from '../components/RelatedListings';
 import { useAuthStore } from '../store/auth';
+import { cn } from '../lib/cn';
+
+interface ListingViewModel {
+  id: string;
+  slug: string;
+  title: string;
+  type: ListingType;
+  description: string;
+  category: string;
+  tags?: string[];
+  models?: string[];
+  technique?: PromptTechnique | null;
+  difficulty?: Difficulty;
+  license?: License;
+  version?: string;
+  priceCents: number;
+  coverEmoji?: string | null;
+  downloads?: number;
+  author: { id: string; username: string };
+  avgRating?: number;
+  reviewCount?: number;
+  createdAt: string;
+  updatedAt?: string;
+  body?: string | null;
+  previewBody?: string;
+}
 
 export default function ListingDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -25,27 +65,7 @@ export default function ListingDetailPage() {
     listing?: Record<string, unknown>;
   };
   const raw = data as AnyShape | undefined;
-  const listing = (raw?.listing ?? raw) as
-    | (Record<string, unknown> & {
-        id: string;
-        slug: string;
-        title: string;
-        type: 'PROMPT' | 'CLAUDE_MD' | 'AGENT_MD';
-        description: string;
-        category: string;
-        tags?: string[];
-        model?: string | null;
-        priceCents: number;
-        coverEmoji?: string | null;
-        downloads?: number;
-        author: { id: string; username: string };
-        avgRating?: number;
-        reviewCount?: number;
-        createdAt: string;
-        body?: string | null;
-        previewBody?: string;
-      })
-    | undefined;
+  const listing = (raw?.listing ?? raw) as ListingViewModel | undefined;
 
   const reviews = (raw?.reviews as
     | Array<{
@@ -129,18 +149,19 @@ export default function ListingDetailPage() {
   });
 
   if (isPending) {
-    return (
-      <div className="mx-auto max-w-5xl px-4 py-16">
-        <Spinner label="Loading listing…" />
-      </div>
-    );
+    return <SkeletonDetail />;
   }
 
   if (error || !listing) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-16 text-center">
-        <p className="text-red-600">{error ? getErrorMessage(error) : 'Listing not found.'}</p>
-        <Link to="/browse" className="mt-4 inline-block text-brand-700 underline">
+        <p className="text-rose-600 dark:text-rose-400">
+          {error ? getErrorMessage(error) : 'Listing not found.'}
+        </p>
+        <Link
+          to="/browse"
+          className="mt-4 inline-block text-indigo-700 dark:text-indigo-400 underline"
+        >
           Back to browse
         </Link>
       </div>
@@ -154,211 +175,423 @@ export default function ListingDetailPage() {
   const free = (listing.priceCents ?? 0) === 0;
   const buying = purchaseMut.isPending;
   const reviewSubmitting = isSubmitting || reviewMut.isPending;
+  const models = listing.models ?? [];
 
   return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="flex flex-col sm:flex-row">
-          <div className="sm:w-56 bg-gradient-to-br from-brand-50 to-white flex items-center justify-center text-7xl p-8">
-            {listing.coverEmoji || '✨'}
-          </div>
-          <div className="flex-1 p-6 sm:p-8">
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <TypeBadge type={listing.type} />
-              <span className="text-xs text-gray-500">in {listing.category}</span>
-              {listing.model && (
-                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
-                  {listing.model}
-                </span>
-              )}
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8 min-w-0 space-y-6">
+          {/* Hero cover */}
+          <div
+            className={cn(
+              'aspect-[16/9] rounded-2xl bg-gradient-to-br relative overflow-hidden flex items-center justify-center',
+              typeGradient(listing.type),
+            )}
+          >
+            <span className="text-8xl drop-shadow-lg" aria-hidden>
+              {listing.coverEmoji || '✨'}
+            </span>
+            <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
+              <TypeBadge type={listing.type} overlay />
+              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-white/80 dark:bg-zinc-900/70 backdrop-blur ring-1 ring-white/40 dark:ring-zinc-700/60 text-gray-900 dark:text-zinc-100">
+                in {listing.category}
+              </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{listing.title}</h1>
-            <p className="mt-1 text-sm text-gray-500">
+          </div>
+
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-zinc-100">
+              {listing.title}
+            </h1>
+            <p className="mt-2 text-sm text-gray-500 dark:text-zinc-400">
               by{' '}
               <Link
                 to={`/users/${listing.author.username}`}
-                className="text-brand-700 hover:underline"
+                className="text-indigo-700 dark:text-indigo-400 hover:underline font-medium"
               >
                 @{listing.author.username}
               </Link>{' '}
               · {formatDate(listing.createdAt)}
             </p>
-            <div className="mt-3 flex items-center gap-3 text-sm">
-              <StarRating value={listing.avgRating ?? 0} count={listing.reviewCount} showLabel />
-              <span className="inline-flex items-center gap-1 text-gray-500">
-                <Download className="w-3.5 h-3.5" /> {listing.downloads ?? 0} downloads
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+              <StarRating
+                value={listing.avgRating ?? 0}
+                count={listing.reviewCount}
+                showLabel
+              />
+              <span className="inline-flex items-center gap-1 text-gray-500 dark:text-zinc-400">
+                <Download className="w-3.5 h-3.5" />
+                {listing.downloads ?? 0} downloads
               </span>
             </div>
-
             {listing.tags && listing.tags.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
+              <div className="mt-4 flex flex-wrap gap-1.5">
                 {listing.tags.map((t) => (
                   <span
                     key={t}
-                    className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600"
+                    className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300"
                   >
                     #{t}
                   </span>
                 ))}
               </div>
             )}
+          </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <div className="text-2xl font-bold text-gray-900">{formatPrice(listing.priceCents)}</div>
+          <Tabs.Root defaultValue="overview" className="w-full">
+            <Tabs.List
+              aria-label="Listing sections"
+              className="flex gap-1 border-b border-gray-200 dark:border-zinc-800"
+            >
+              {(
+                [
+                  ['overview', 'Overview'],
+                  ['reviews', `Reviews (${reviews.length})`],
+                  ['related', 'Related'],
+                ] as const
+              ).map(([key, label]) => (
+                <Tabs.Trigger
+                  key={key}
+                  value={key}
+                  className={cn(
+                    'px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition',
+                    'border-transparent text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200',
+                    'data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-700',
+                    'dark:data-[state=active]:border-indigo-400 dark:data-[state=active]:text-indigo-300',
+                  )}
+                >
+                  {label}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+
+            <Tabs.Content
+              value="overview"
+              className="pt-6 focus-visible:outline-none"
+            >
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8">
+                <p className="text-base text-gray-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed">
+                  {listing.description}
+                </p>
+
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+                  <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-zinc-100">
+                    {canViewBody ? 'Content' : 'Preview'}
+                  </h2>
+                  {canViewBody && listing.body && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={handleCopy}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                      >
+                        {copied ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-500" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                        <span className={copied ? 'text-emerald-500' : ''}>
+                          {copied ? 'Copied!' : 'Copy'}
+                        </span>
+                      </button>
+                      <button
+                        onClick={handleDownload}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        Download .md
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4">
+                  {canViewBody && listing.body ? (
+                    <MarkdownView source={listing.body} />
+                  ) : (
+                    <div className="relative">
+                      <MarkdownView
+                        source={listing.previewBody || '*No preview available.*'}
+                      />
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent" />
+                      <div className="mt-6 rounded-xl border border-dashed border-indigo-200 dark:border-indigo-800 bg-indigo-50/60 dark:bg-indigo-950/30 p-6 text-center">
+                        <p className="text-sm text-indigo-900 dark:text-indigo-200 font-medium">
+                          🔒 Unlock the full content
+                        </p>
+                        <p className="mt-1 text-xs text-indigo-700 dark:text-indigo-300">
+                          {free
+                            ? 'Get this listing for free to view the full content.'
+                            : `Purchase for ${formatPrice(listing.priceCents)} to view the full content.`}
+                        </p>
+                        <button
+                          onClick={handlePurchase}
+                          disabled={buying}
+                          className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60"
+                        >
+                          {buying ? (
+                            <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                          ) : (
+                            <ShoppingCart className="w-4 h-4" />
+                          )}
+                          {buying ? 'Processing…' : free ? 'Get free' : 'Buy to unlock'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Tabs.Content>
+
+            <Tabs.Content
+              value="reviews"
+              className="pt-6 focus-visible:outline-none"
+            >
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8">
+                {isPurchased && !ownReview && (
+                  <form
+                    onSubmit={onSubmitReview}
+                    className="mb-6 rounded-xl border border-gray-200 dark:border-zinc-800 p-4 bg-gray-50/60 dark:bg-zinc-950/40"
+                  >
+                    <p className="text-sm font-medium text-gray-900 dark:text-zinc-100 mb-2">
+                      Leave a review
+                    </p>
+                    <StarRating
+                      value={rating}
+                      onChange={(v) => setValue('rating', v, { shouldDirty: true })}
+                      size="lg"
+                    />
+                    {errors.rating && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.rating.message}</p>
+                    )}
+                    <textarea
+                      {...register('comment')}
+                      placeholder="What did you think? (optional)"
+                      rows={3}
+                      className="mt-3 w-full rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    {errors.comment && (
+                      <p className="mt-1 text-xs text-rose-600">{errors.comment.message}</p>
+                    )}
+                    <div className="mt-3 flex justify-end">
+                      <button
+                        type="submit"
+                        disabled={reviewSubmitting}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60"
+                      >
+                        {reviewSubmitting && (
+                          <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                        )}
+                        {reviewSubmitting ? 'Submitting…' : 'Submit review'}
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {reviews.length === 0 ? (
+                  <p className="text-sm text-gray-500 dark:text-zinc-400">
+                    No reviews yet. Be the first!
+                  </p>
+                ) : (
+                  <ul className="space-y-4">
+                    {reviews.map((r) => {
+                      const author = r.user ?? r.author;
+                      return (
+                        <li
+                          key={r.id}
+                          className="border-b border-gray-100 dark:border-zinc-800 last:border-0 pb-4 last:pb-0"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <StarRating value={r.rating} />
+                              <span className="text-sm font-medium text-gray-900 dark:text-zinc-100">
+                                @{author?.username ?? 'anonymous'}
+                              </span>
+                            </div>
+                            <span className="text-xs text-gray-500 dark:text-zinc-400">
+                              {formatDate(r.createdAt)}
+                            </span>
+                          </div>
+                          {r.comment && (
+                            <p className="mt-2 text-sm text-gray-700 dark:text-zinc-300">
+                              {r.comment}
+                            </p>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </Tabs.Content>
+
+            <Tabs.Content
+              value="related"
+              className="pt-6 focus-visible:outline-none"
+            >
+              <RelatedListings listingId={listing.id} />
+            </Tabs.Content>
+          </Tabs.Root>
+        </div>
+
+        {/* Sticky sidebar */}
+        <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6">
+            <p className="text-xs uppercase tracking-wide font-semibold text-gray-500 dark:text-zinc-400">
+              {free ? 'Free' : 'Price'}
+            </p>
+            <p className="mt-1 text-3xl font-bold text-gray-900 dark:text-zinc-50">
+              {formatPrice(listing.priceCents)}
+            </p>
+
+            <div className="mt-5 space-y-2">
               {isOwner ? (
-                <span className="px-3 py-1.5 text-sm rounded-md bg-gray-100 text-gray-700">
+                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300">
                   You own this listing
                 </span>
               ) : isPurchased ? (
-                <span className="px-3 py-1.5 text-sm rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100">
-                  ✓ Purchased
+                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800 font-semibold">
+                  Owned ✓
                 </span>
               ) : (
                 <button
                   onClick={handlePurchase}
                   disabled={buying}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 transition disabled:opacity-60"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
                 >
                   {buying ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
                   ) : (
                     <ShoppingCart className="w-4 h-4" />
                   )}
-                  {buying ? 'Processing…' : free ? 'Get for free' : `Buy for ${formatPrice(listing.priceCents)}`}
+                  {buying
+                    ? 'Processing…'
+                    : free
+                      ? 'Get for free'
+                      : `Buy for ${formatPrice(listing.priceCents)}`}
                 </button>
+              )}
+              {(isPurchased || isOwner) && listing.body && (
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={handleCopy}
+                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                  >
+                    {copied ? (
+                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                    <span className={copied ? 'text-emerald-500' : ''}>
+                      {copied ? 'Copied!' : 'Copy'}
+                    </span>
+                  </button>
+                  <button
+                    onClick={handleDownload}
+                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    Download
+                  </button>
+                </div>
               )}
             </div>
           </div>
-        </div>
+
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-lg font-bold text-white"
+                aria-hidden
+              >
+                {listing.author.username[0]?.toUpperCase() ?? '?'}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-gray-900 dark:text-zinc-100 truncate">
+                  @{listing.author.username}
+                </p>
+                <Link
+                  to={`/users/${listing.author.username}`}
+                  className="text-xs text-indigo-700 dark:text-indigo-400 hover:underline"
+                >
+                  View profile
+                </Link>
+              </div>
+              <button
+                type="button"
+                className="text-sm font-medium px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:border-indigo-300 motion-safe:transition"
+                onClick={() => {
+                  /* follow is a no-op for now per spec */
+                }}
+              >
+                Follow
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 space-y-4 text-sm">
+            <Meta label="Type">
+              <TypeBadge type={listing.type} />
+            </Meta>
+            {models.length > 0 && (
+              <Meta label="Models">
+                <div className="flex flex-wrap gap-1">
+                  {models.map((m) => (
+                    <ModelBadge key={m} slug={m} />
+                  ))}
+                </div>
+              </Meta>
+            )}
+            {listing.type === 'PROMPT' && listing.technique && (
+              <Meta label="Technique">
+                <TechniqueBadge technique={listing.technique} />
+              </Meta>
+            )}
+            {listing.difficulty && (
+              <Meta label="Difficulty">
+                <DifficultyBadge difficulty={listing.difficulty} />
+              </Meta>
+            )}
+            {listing.license && (
+              <Meta label="License">
+                <LicenseBadge license={listing.license} />
+              </Meta>
+            )}
+            {listing.version && (
+              <Meta label="Version">
+                <span className="font-mono text-xs text-gray-700 dark:text-zinc-200">
+                  v{listing.version}
+                </span>
+              </Meta>
+            )}
+            <Meta label="Updated">
+              <span className="text-xs text-gray-600 dark:text-zinc-400">
+                {formatDate(listing.updatedAt ?? listing.createdAt)}
+              </span>
+            </Meta>
+          </div>
+        </aside>
       </div>
 
-      <section className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-        <h2 className="text-lg font-bold text-gray-900">Description</h2>
-        <p className="mt-2 text-gray-700 whitespace-pre-wrap">{listing.description}</p>
-      </section>
-
-      <section className="mt-6 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <h2 className="text-lg font-bold text-gray-900">
-            {canViewBody ? 'Content' : 'Preview'}
-          </h2>
-          {canViewBody && listing.body && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleCopy}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 text-sm hover:bg-gray-50 transition"
-              >
-                <Copy className="w-3.5 h-3.5" />
-                {copied ? 'Copied!' : 'Copy'}
-              </button>
-              <button
-                onClick={handleDownload}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 text-sm hover:bg-gray-50 transition"
-              >
-                <Download className="w-3.5 h-3.5" />
-                Download .md
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-4">
-          {canViewBody && listing.body ? (
-            <MarkdownView source={listing.body} />
-          ) : (
-            <>
-              <MarkdownView source={listing.previewBody || '*No preview available.*'} />
-              <div className="mt-6 rounded-xl border border-dashed border-brand-200 bg-brand-50/40 p-6 text-center">
-                <p className="text-sm text-brand-900 font-medium">
-                  🔒 Unlock the full content
-                </p>
-                <p className="mt-1 text-xs text-brand-700">
-                  {free ? 'Get this listing for free to view the full content.' : `Purchase for ${formatPrice(listing.priceCents)} to view the full content.`}
-                </p>
-                <button
-                  onClick={handlePurchase}
-                  disabled={buying}
-                  className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition disabled:opacity-60"
-                >
-                  {buying ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <ShoppingCart className="w-4 h-4" />
-                  )}
-                  {buying ? 'Processing…' : free ? 'Get free' : 'Buy to unlock'}
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </section>
-
-      <section className="mt-6 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">
-          Reviews{' '}
-          <span className="text-sm font-normal text-gray-500">({reviews.length})</span>
+      {/* Bottom related */}
+      <section className="mt-16">
+        <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-zinc-100 mb-1">
+          You might also like
         </h2>
-
-        {isPurchased && !ownReview && (
-          <form
-            onSubmit={onSubmitReview}
-            className="mb-6 rounded-xl border border-gray-100 p-4 bg-gray-50/50"
-          >
-            <p className="text-sm font-medium text-gray-900 mb-2">Leave a review</p>
-            <StarRating
-              value={rating}
-              onChange={(v) => setValue('rating', v, { shouldDirty: true })}
-              size="lg"
-            />
-            {errors.rating && (
-              <p className="mt-1 text-xs text-red-600">{errors.rating.message}</p>
-            )}
-            <textarea
-              {...register('comment')}
-              placeholder="What did you think? (optional)"
-              rows={3}
-              className="mt-3 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-            />
-            {errors.comment && (
-              <p className="mt-1 text-xs text-red-600">{errors.comment.message}</p>
-            )}
-            <div className="mt-3 flex justify-end">
-              <button
-                type="submit"
-                disabled={reviewSubmitting}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition disabled:opacity-60"
-              >
-                {reviewSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                {reviewSubmitting ? 'Submitting…' : 'Submit review'}
-              </button>
-            </div>
-          </form>
-        )}
-
-        {reviews.length === 0 ? (
-          <p className="text-sm text-gray-500">No reviews yet. Be the first!</p>
-        ) : (
-          <ul className="space-y-4">
-            {reviews.map((r) => {
-              const author = r.user ?? r.author;
-              return (
-                <li key={r.id} className="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <StarRating value={r.rating} />
-                      <span className="text-sm font-medium text-gray-900">
-                        @{author?.username ?? 'anonymous'}
-                      </span>
-                    </div>
-                    <span className="text-xs text-gray-500">{formatDate(r.createdAt)}</span>
-                  </div>
-                  {r.comment && <p className="mt-2 text-sm text-gray-700">{r.comment}</p>}
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        <p className="text-sm text-gray-500 dark:text-zinc-400 mb-5">
+          Hand-picked recommendations from the marketplace.
+        </p>
+        <RelatedListings listingId={listing.id} />
       </section>
+    </div>
+  );
+}
+
+function Meta({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-3">
+      <span className="text-xs uppercase tracking-wide font-semibold text-gray-500 dark:text-zinc-400 pt-0.5">
+        {label}
+      </span>
+      <div className="text-right">{children}</div>
     </div>
   );
 }

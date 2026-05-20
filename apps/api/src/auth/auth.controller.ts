@@ -16,14 +16,14 @@ import { CurrentUser, AuthUser } from './current-user.decorator';
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
-  @Throttle({ auth: { limit: 10, ttl: 60_000 } })
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
   register(@Body() dto: RegisterDto) {
     return this.auth.register(dto);
   }
 
-  @Throttle({ auth: { limit: 10, ttl: 60_000 } })
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('login')
   @ApiOperation({ summary: 'Login with email and password' })
   login(@Body() dto: LoginDto) {

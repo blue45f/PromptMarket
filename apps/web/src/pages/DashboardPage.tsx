@@ -1,21 +1,20 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import * as Tabs from '@radix-ui/react-tabs';
+import { Copy, Download, Loader2 } from 'lucide-react';
 import { getErrorMessage } from '../lib/api';
 import { useMyListings, useMyPurchases, useTopup } from '../lib/queries';
 import { useAuthStore } from '../store/auth';
 import ListingCard from '../components/ListingCard';
-import Spinner from '../components/Spinner';
+import { SkeletonGrid } from '../components/SkeletonCard';
 import EmptyState from '../components/EmptyState';
 import { formatDollars } from '../lib/format';
 import { cn } from '../lib/cn';
-
-type Tab = 'listings' | 'library' | 'wallet';
+import toast from 'react-hot-toast';
 
 const TOPUP_AMOUNTS = [10, 50, 100];
 
 export default function DashboardPage() {
-  const [tab, setTab] = useState<Tab>('listings');
   const { user } = useAuthStore();
 
   const listingsQ = useMyListings();
@@ -25,7 +24,6 @@ export default function DashboardPage() {
 
   const myListings = Array.isArray(listingsQ.data) ? listingsQ.data : [];
   const library = Array.isArray(libraryQ.data) ? libraryQ.data : [];
-  const loading = listingsQ.isPending || libraryQ.isPending;
   const error = listingsQ.error ?? libraryQ.error;
 
   async function handleTopup(dollars: number) {
@@ -46,12 +44,19 @@ export default function DashboardPage() {
   const totalSales = myListings.reduce((sum, l) => sum + (l.salesCount ?? 0), 0);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-      <p className="text-sm text-gray-500">Manage your listings, library, and wallet.</p>
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-100">
+        Dashboard
+      </h1>
+      <p className="text-sm text-gray-500 dark:text-zinc-400">
+        Manage your listings, library, and wallet.
+      </p>
 
-      <div className="mt-6 border-b border-gray-200">
-        <nav className="flex gap-1">
+      <Tabs.Root defaultValue="listings" className="mt-6">
+        <Tabs.List
+          aria-label="Dashboard sections"
+          className="flex gap-1 border-b border-gray-200 dark:border-zinc-800"
+        >
           {(
             [
               ['listings', 'My listings'],
@@ -59,143 +64,171 @@ export default function DashboardPage() {
               ['wallet', 'Wallet'],
             ] as const
           ).map(([key, label]) => (
-            <button
+            <Tabs.Trigger
               key={key}
-              onClick={() => setTab(key)}
+              value={key}
               className={cn(
-                'px-4 py-2 -mb-px text-sm font-medium border-b-2 transition',
-                tab === key
-                  ? 'border-brand-600 text-brand-700'
-                  : 'border-transparent text-gray-500 hover:text-gray-800',
+                'px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition',
+                'border-transparent text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200',
+                'data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-700',
+                'dark:data-[state=active]:border-indigo-400 dark:data-[state=active]:text-indigo-300',
               )}
             >
               {label}
-            </button>
+            </Tabs.Trigger>
           ))}
-        </nav>
-      </div>
+        </Tabs.List>
 
-      {error && (
-        <p className="mt-4 text-sm text-red-600">{getErrorMessage(error)}</p>
-      )}
-
-      <div className="mt-6">
-        {tab === 'listings' && (
-          <section>
-            {loading ? (
-              <Spinner className="py-12" label="Loading…" />
-            ) : myListings.length === 0 ? (
-              <EmptyState
-                emoji="🪺"
-                title="No listings yet"
-                description="Publish your first prompt to start earning."
-                action={
-                  <Link
-                    to="/sell"
-                    className="inline-flex items-center px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition"
-                  >
-                    Create listing
-                  </Link>
-                }
-              />
-            ) : (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                  <StatCard label="Listings" value={myListings.length.toString()} />
-                  <StatCard label="Total sales" value={totalSales.toString()} />
-                  <StatCard label="Earnings" value={formatDollars(totalEarnings)} />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {myListings.map((l) => (
-                    <div key={l.id} className="relative">
-                      <ListingCard listing={l} />
-                      <div className="mt-2 px-1 flex items-center justify-between text-xs text-gray-500">
-                        <span>
-                          {l.salesCount ?? 0} sale{(l.salesCount ?? 0) === 1 ? '' : 's'}
-                        </span>
-                        <span className="font-semibold text-emerald-700">
-                          {formatDollars(l.earningsCents ?? 0)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </section>
+        {error && (
+          <p className="mt-4 text-sm text-rose-600 dark:text-rose-400">
+            {getErrorMessage(error)}
+          </p>
         )}
 
-        {tab === 'library' && (
-          <section>
-            {loading ? (
-              <Spinner className="py-12" label="Loading…" />
-            ) : library.length === 0 ? (
-              <EmptyState
-                emoji="📚"
-                title="Your library is empty"
-                description="Purchased prompts show up here."
-                action={
-                  <Link
-                    to="/browse"
-                    className="inline-flex items-center px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition"
-                  >
-                    Browse marketplace
-                  </Link>
-                }
-              />
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {library.map((l) => (
-                  <ListingCard key={l.id} listing={l} />
+        <Tabs.Content value="listings" className="mt-6 focus-visible:outline-none">
+          {listingsQ.isPending ? (
+            <SkeletonGrid count={6} />
+          ) : myListings.length === 0 ? (
+            <EmptyState
+              emoji="🪺"
+              title="No listings yet"
+              description="Publish your first prompt to start earning."
+              action={
+                <Link
+                  to="/sell"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 motion-safe:transition"
+                >
+                  Create listing
+                </Link>
+              }
+            />
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <StatCard label="Listings" value={myListings.length.toString()} />
+                <StatCard label="Total sales" value={totalSales.toString()} />
+                <StatCard label="Earnings" value={formatDollars(totalEarnings)} />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {myListings.map((l) => (
+                  <div key={l.id} className="relative">
+                    <ListingCard listing={l} />
+                    <div className="mt-2 px-1 flex items-center justify-between text-xs text-gray-500 dark:text-zinc-400">
+                      <span>
+                        {l.salesCount ?? 0} sale{(l.salesCount ?? 0) === 1 ? '' : 's'}
+                      </span>
+                      <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                        {formatDollars(l.earningsCents ?? 0)}
+                      </span>
+                    </div>
+                  </div>
                 ))}
               </div>
-            )}
-          </section>
-        )}
+            </>
+          )}
+        </Tabs.Content>
 
-        {tab === 'wallet' && (
-          <section className="max-w-xl">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <p className="text-sm text-gray-500">Current balance</p>
-              <p className="mt-1 text-4xl font-bold text-gray-900">
-                {formatDollars(user?.balanceCents ?? 0)}
-              </p>
-
-              <div className="mt-6">
-                <p className="text-sm font-medium text-gray-700 mb-2">Top up</p>
-                <div className="flex flex-wrap gap-2">
-                  {TOPUP_AMOUNTS.map((amt) => {
-                    const isThis = pendingAmount === amt;
-                    return (
-                      <button
-                        key={amt}
-                        onClick={() => handleTopup(amt)}
-                        disabled={topupMut.isPending}
-                        className="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-brand-200 bg-brand-50 text-brand-700 text-sm font-semibold hover:bg-brand-100 transition disabled:opacity-60"
-                      >
-                        {isThis && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                        {isThis ? 'Loading…' : `+ $${amt}`}
-                      </button>
-                    );
-                  })}
+        <Tabs.Content value="library" className="mt-6 focus-visible:outline-none">
+          {libraryQ.isPending ? (
+            <SkeletonGrid count={6} />
+          ) : library.length === 0 ? (
+            <EmptyState
+              emoji="📚"
+              title="Your library is empty"
+              description="Purchased prompts show up here."
+              action={
+                <Link
+                  to="/browse"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 motion-safe:transition"
+                >
+                  Browse marketplace
+                </Link>
+              }
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {library.map((l) => (
+                <div key={l.id} className="space-y-2">
+                  <ListingCard listing={l} />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard
+                          .writeText(`/listings/${l.slug}`)
+                          .then(() => toast.success('Link copied'))
+                          .catch(() => undefined);
+                      }}
+                      className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-xs hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                    >
+                      <Copy className="w-3 h-3" />
+                      Copy link
+                    </button>
+                    <Link
+                      to={`/listings/${l.slug}`}
+                      className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-xs hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                    >
+                      <Download className="w-3 h-3" />
+                      Open
+                    </Link>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs text-gray-400">
-                  This is a demo wallet — top-ups are simulated and instant.
-                </p>
-              </div>
+              ))}
             </div>
-          </section>
-        )}
-      </div>
+          )}
+        </Tabs.Content>
+
+        <Tabs.Content value="wallet" className="mt-6 focus-visible:outline-none max-w-xl">
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6">
+            <p className="text-sm text-gray-500 dark:text-zinc-400">
+              Current balance
+            </p>
+            <p className="mt-1 text-4xl font-bold text-gray-900 dark:text-zinc-50 tracking-tight">
+              {formatDollars(user?.balanceCents ?? 0)}
+            </p>
+
+            <div className="mt-6">
+              <p className="text-sm font-medium text-gray-700 dark:text-zinc-200 mb-2">
+                Top up
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {TOPUP_AMOUNTS.map((amt) => {
+                  const isThis = pendingAmount === amt;
+                  return (
+                    <button
+                      key={amt}
+                      onClick={() => handleTopup(amt)}
+                      disabled={topupMut.isPending}
+                      className="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-sm font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 motion-safe:transition active:scale-[0.98] disabled:opacity-60"
+                    >
+                      {isThis && (
+                        <Loader2 className="w-3.5 h-3.5 motion-safe:animate-spin" />
+                      )}
+                      {isThis ? 'Loading…' : `+ $${amt}`}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-3 text-xs text-gray-500 dark:text-zinc-400">
+                This is a demo wallet — top-ups are simulated and instant.
+              </p>
+            </div>
+          </div>
+        </Tabs.Content>
+      </Tabs.Root>
     </div>
   );
 }
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-4">
-      <p className="text-xs uppercase tracking-wider text-gray-400 font-semibold">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-gray-900">{value}</p>
+    <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-4">
+      <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-zinc-400 font-semibold">
+        {label}
+      </p>
+      <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-zinc-50 tracking-tight">
+        {value}
+      </p>
     </div>
   );
 }
