@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env"],
+  "globalDependencies": ["**/.env", "tsconfig.base.json", "pnpm-lock.yaml"],
   "globalEnv": ["NODE_ENV", "DATABASE_URL", "JWT_SECRET", "PORT"],
   "tasks": {
     "build": {
@@ -22,6 +22,10 @@
     "test": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"]
+    },
+    "test:run": {
+      "dependsOn": ["^build"],
+      "outputs": []
     },
     "db:push": {
       "cache": false

@@ -1,6 +1,6 @@
 import type { ListingType } from '@promptmarket/shared';
 import { LISTING_TYPE_META } from '@promptmarket/shared';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 interface TypeBadgeProps {
   type: ListingType;

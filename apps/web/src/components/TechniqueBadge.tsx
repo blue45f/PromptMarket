@@ -1,6 +1,6 @@
 import type { PromptTechnique } from '@promptmarket/shared';
 import { TECHNIQUE_META } from '@promptmarket/shared';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 interface TechniqueBadgeProps {
   technique: PromptTechnique;

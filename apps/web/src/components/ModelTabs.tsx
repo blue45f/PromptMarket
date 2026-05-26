@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MODELS } from '@promptmarket/shared';
-import { useListings } from '../lib/queries';
+import { useListings } from '@features/marketplace/queries';
 import ListingCard from './ListingCard';
 import SkeletonCard from './SkeletonCard';
 import EmptyState from './EmptyState';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 /** The handful of families surfaced on the home page. Order matters. */
 const FAMILY_TABS: Array<{ key: string; label: string }> = [

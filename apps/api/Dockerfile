@@ -1,24 +1,23 @@
 FROM node:22-alpine AS deps
 WORKDIR /repo
-COPY package.json package-lock.json* turbo.json ./
-COPY apps/api/package.json apps/api/
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.base.json ./
 COPY packages/shared/package.json packages/shared/
-RUN npm install --include=dev --no-audit --no-fund
+COPY packages/shared/tsconfig.json packages/shared/
+COPY packages/shared/src packages/shared/src
+COPY apps/api/package.json apps/api/
+RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
-COPY packages/shared packages/shared
 COPY apps/api apps/api
-RUN npm --workspace @promptmarket/shared run build \
- && npm --workspace @promptmarket/api run db:generate \
- && npm --workspace @promptmarket/api run build
+RUN pnpm --filter @promptmarket/shared build \
+ && pnpm --filter @promptmarket/api db:generate \
+ && pnpm --filter @promptmarket/api build \
+ && pnpm --filter @promptmarket/api deploy --prod /app
 
 FROM node:22-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=build /repo/node_modules ./node_modules
-COPY --from=build /repo/apps/api/dist ./dist
-COPY --from=build /repo/apps/api/prisma ./prisma
-COPY --from=build /repo/apps/api/package.json ./package.json
-COPY --from=build /repo/packages/shared ./node_modules/@promptmarket/shared
+COPY --from=build /app ./
 EXPOSE 3000
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { CATEGORIES } from '@promptmarket/shared';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 interface CategoryChipsProps {
   active?: string;

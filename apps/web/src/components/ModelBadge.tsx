@@ -1,5 +1,5 @@
-import { modelLabel, modelVendor } from '../lib/format';
-import { cn } from '../lib/cn';
+import { modelLabel, modelVendor } from '@utils/format';
+import { cn } from '@utils/cn';
 
 interface ModelBadgeProps {
   slug: string;

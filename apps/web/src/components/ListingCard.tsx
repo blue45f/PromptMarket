@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Download } from 'lucide-react';
-import type { ListingCard as ListingCardType } from '../lib/types';
-import { formatPrice, typeGradient } from '../lib/format';
+import type { ListingCard as ListingCardType } from '@/types';
+import { formatPrice, typeGradient } from '@utils/format';
 import TypeBadge from './TypeBadge';
 import ModelBadge from './ModelBadge';
 import StarRating from './StarRating';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 interface ListingCardProps {
   listing: ListingCardType;

@@ -7,11 +7,11 @@ import {
   User as UserIcon,
   Wallet,
 } from 'lucide-react';
-import { useAuthStore } from '../store/auth';
-import SearchBar from './SearchBar';
-import ThemeToggle from './ThemeToggle';
-import { formatDollars } from '../lib/format';
-import { cn } from '../lib/cn';
+import { useAuthStore } from '@store/auth';
+import SearchBar from '@components/SearchBar';
+import ThemeToggle from '@components/ThemeToggle';
+import { formatDollars } from '@utils/format';
+import { cn } from '@utils/cn';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(

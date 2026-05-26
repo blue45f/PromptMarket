@@ -20,12 +20,12 @@ import {
   type PromptTechnique,
 } from '@promptmarket/shared';
 import { Loader2 } from 'lucide-react';
-import { useCreateListing } from '../lib/queries';
-import MarkdownView from '../components/MarkdownView';
-import ModelPicker from '../components/ModelPicker';
-import ListingCard from '../components/ListingCard';
-import { cn } from '../lib/cn';
-import type { ListingCard as ListingCardType } from '../lib/types';
+import { useCreateListing } from '@features/marketplace/queries';
+import MarkdownView from '@components/MarkdownView';
+import ModelPicker from '@components/ModelPicker';
+import ListingCard from '@components/ListingCard';
+import { cn } from '@utils/cn';
+import type { ListingCard as ListingCardType } from '@/types';
 
 const QUICK_EMOJIS = ['✨', '🤖', '🧠', '🎨', '📝', '🚀', '⚡', '🛠️', '🧩', '🔌'];
 const TYPES = ListingTypeEnum.options;

@@ -13,20 +13,20 @@ import {
   type PromptTechnique,
 } from '@promptmarket/shared';
 import { Check, Copy, Download, Loader2, ShoppingCart } from 'lucide-react';
-import { useListing, usePurchase, useCreateReview } from '../lib/queries';
-import { getErrorMessage } from '../lib/api';
-import { formatDate, formatPrice } from '../lib/format';
-import TypeBadge from '../components/TypeBadge';
-import ModelBadge from '../components/ModelBadge';
-import TechniqueBadge from '../components/TechniqueBadge';
-import DifficultyBadge from '../components/DifficultyBadge';
-import LicenseBadge from '../components/LicenseBadge';
-import StarRating from '../components/StarRating';
-import MarkdownView from '../components/MarkdownView';
-import SkeletonDetail from '../components/SkeletonDetail';
-import RelatedListings from '../components/RelatedListings';
-import { useAuthStore } from '../store/auth';
-import { cn } from '../lib/cn';
+import { useListing, usePurchase, useCreateReview } from '@features/marketplace/queries';
+import { getErrorMessage } from '@services/api';
+import { formatDate, formatPrice } from '@utils/format';
+import TypeBadge from '@components/TypeBadge';
+import ModelBadge from '@components/ModelBadge';
+import TechniqueBadge from '@components/TechniqueBadge';
+import DifficultyBadge from '@components/DifficultyBadge';
+import LicenseBadge from '@components/LicenseBadge';
+import StarRating from '@components/StarRating';
+import MarkdownView from '@components/MarkdownView';
+import SkeletonDetail from '@components/SkeletonDetail';
+import RelatedListings from '@components/RelatedListings';
+import { useAuthStore } from '@store/auth';
+import { cn } from '@utils/cn';
 
 interface ListingViewModel {
   id: string;

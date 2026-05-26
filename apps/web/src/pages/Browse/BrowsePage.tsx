@@ -12,20 +12,20 @@ import type {
   PromptTechnique,
 } from '@promptmarket/shared';
 import { ChevronDown, SlidersHorizontal, X } from 'lucide-react';
-import { useListings } from '../lib/queries';
-import { getErrorMessage } from '../lib/api';
-import { modelLabel } from '../lib/format';
-import ListingCard from '../components/ListingCard';
+import { useListings } from '@features/marketplace/queries';
+import { getErrorMessage } from '@services/api';
+import { modelLabel } from '@utils/format';
+import ListingCard from '@components/ListingCard';
 import FilterPanel, {
   countActive,
   emptyFilters,
   type FilterState,
-} from '../components/FilterPanel';
-import FilterDrawer from '../components/FilterDrawer';
-import SearchBar from '../components/SearchBar';
-import { SkeletonGrid } from '../components/SkeletonCard';
-import EmptyState from '../components/EmptyState';
-import { cn } from '../lib/cn';
+} from '@components/FilterPanel';
+import FilterDrawer from '@components/FilterDrawer';
+import SearchBar from '@components/SearchBar';
+import { SkeletonGrid } from '@components/SkeletonCard';
+import EmptyState from '@components/EmptyState';
+import { cn } from '@utils/cn';
 
 const VALID_TYPES = new Set<ListingType>(ListingTypeEnum.options);
 const VALID_SORTS = ['newest', 'trending', 'top'] as const;

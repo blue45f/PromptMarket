@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useListings } from '../lib/queries';
-import { getErrorMessage } from '../lib/api';
-import Hero from '../components/Hero';
-import CategoryChips from '../components/CategoryChips';
-import FeaturedCarousel from '../components/FeaturedCarousel';
-import ListingCard from '../components/ListingCard';
-import ModelTabs from '../components/ModelTabs';
-import { SkeletonGrid } from '../components/SkeletonCard';
-import EmptyState from '../components/EmptyState';
+import { useListings } from '@features/marketplace/queries';
+import { getErrorMessage } from '@services/api';
+import Hero from '@components/Hero';
+import CategoryChips from '@components/CategoryChips';
+import FeaturedCarousel from '@components/FeaturedCarousel';
+import ListingCard from '@components/ListingCard';
+import ModelTabs from '@components/ModelTabs';
+import { SkeletonGrid } from '@components/SkeletonCard';
+import EmptyState from '@components/EmptyState';
 
 export default function HomePage() {
   const featuredQ = useListings({ sort: 'top', pageSize: 6 });

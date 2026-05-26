@@ -9,7 +9,7 @@ import {
   type PromptTechnique,
 } from '@promptmarket/shared';
 import ModelPicker from './ModelPicker';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 export interface FilterState {
   types: ListingType[];

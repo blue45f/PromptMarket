@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { MODELS } from '@promptmarket/shared';
 import { Search, X } from 'lucide-react';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 interface ModelPickerProps {
   /** Currently selected model slugs. */

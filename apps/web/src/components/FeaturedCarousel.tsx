@@ -1,4 +1,4 @@
-import type { ListingCard as ListingCardType } from '../lib/types';
+import type { ListingCard as ListingCardType } from '@/types';
 import ListingCard from './ListingCard';
 import SkeletonCard from './SkeletonCard';
 

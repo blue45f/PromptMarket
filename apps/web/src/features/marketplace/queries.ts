@@ -6,7 +6,7 @@ import type {
   LoginInput,
   RegisterInput,
 } from '@promptmarket/shared';
-import { api, getErrorMessage } from './api';
+import { api, getErrorMessage } from '@services/api';
 import {
   listingKey,
   listingsKey,
@@ -29,8 +29,8 @@ import type {
   Review,
   StatsResponse,
   User,
-} from './types';
-import { useAuthStore } from '../store/auth';
+} from '@/types';
+import { useAuthStore } from '@store/auth';
 
 // --- Queries ---------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Search } from 'lucide-react';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 interface SearchBarProps {
   initialValue?: string;

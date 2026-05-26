@@ -1,6 +1,6 @@
-import { useStats } from '../lib/queries';
-import { formatCompact } from '../lib/format';
-import { cn } from '../lib/cn';
+import { useStats } from '@features/marketplace/queries';
+import { formatCompact } from '@utils/format';
+import { cn } from '@utils/cn';
 
 interface StatsStripProps {
   className?: string;

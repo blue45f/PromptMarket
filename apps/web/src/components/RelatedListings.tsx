@@ -1,4 +1,4 @@
-import { useRelated } from '../lib/queries';
+import { useRelated } from '@features/marketplace/queries';
 import ListingCard from './ListingCard';
 import SkeletonCard from './SkeletonCard';
 

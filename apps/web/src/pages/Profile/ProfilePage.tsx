@@ -1,9 +1,9 @@
 import { useParams } from 'react-router-dom';
-import { useUserProfile } from '../lib/queries';
-import { getErrorMessage } from '../lib/api';
-import ListingCard from '../components/ListingCard';
-import { SkeletonGrid } from '../components/SkeletonCard';
-import EmptyState from '../components/EmptyState';
+import { useUserProfile } from '@features/marketplace/queries';
+import { getErrorMessage } from '@services/api';
+import ListingCard from '@components/ListingCard';
+import { SkeletonGrid } from '@components/SkeletonCard';
+import EmptyState from '@components/EmptyState';
 
 export default function ProfilePage() {
   const { username } = useParams<{ username: string }>();
@@ -37,7 +37,7 @@ export default function ProfilePage() {
   };
   const raw = data as unknown as ProfileLike;
   const user = (raw.user ?? raw) as { username?: string; bio?: string | null };
-  const listings = (raw.listings ?? []) as import('../lib/types').ListingCard[];
+  const listings = (raw.listings ?? []) as import('@/types').ListingCard[];
 
   const displayName = user.username ?? username ?? '?';
 

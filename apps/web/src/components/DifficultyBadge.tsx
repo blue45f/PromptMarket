@@ -1,5 +1,5 @@
 import type { Difficulty } from '@promptmarket/shared';
-import { cn } from '../lib/cn';
+import { cn } from '@utils/cn';
 
 interface DifficultyBadgeProps {
   difficulty: Difficulty;

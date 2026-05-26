@@ -1,6 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
-import { useMe } from '../lib/queries';
+import { useMe } from '@features/marketplace/queries';
 
 export default function Layout() {
   // Triggers the /auth/me query when a token is present and syncs the user
