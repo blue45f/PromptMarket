@@ -4,18 +4,27 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RegisterSchema, type RegisterInput } from '@promptmarket/shared';
 import { Loader2 } from 'lucide-react';
 import { useRegister } from '@features/marketplace/queries';
+import { usePageMeta } from '@hooks/usePageMeta';
+import AuthLayout from '@components/AuthLayout';
 import { cn } from '@utils/cn';
 
 const inputClass = cn(
-  'w-full rounded-lg px-3 py-2 text-sm',
-  'border border-gray-200 dark:border-zinc-700',
-  'bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100',
-  'focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent',
+  'w-full rounded-xl px-3.5 py-2.5 text-sm',
+  'border border-line dark:border-night-line',
+  'bg-canvas dark:bg-night text-ink dark:text-bone',
+  'placeholder:text-ink-mute dark:placeholder:text-bone-mute',
+  'motion-safe:transition',
+  'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500',
 );
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const registerMut = useRegister();
+
+  usePageMeta({
+    title: '회원가입 · PromptMarket',
+    description: '몇 초면 끝나요. PromptMarket에 가입하고 카탈로그를 활용하세요.',
+  });
 
   const {
     register,
@@ -42,79 +51,110 @@ export default function RegisterPage() {
   const busy = isSubmitting || registerMut.isPending;
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16 animate-fade-in">
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-8">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-zinc-100">
-          Create account
-        </h1>
-        <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
-          Join PromptMarket in seconds.
-        </p>
-
-        <form onSubmit={onSubmit} className="mt-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              autoComplete="email"
-              {...register('email')}
-              className={inputClass}
+    <AuthLayout
+      kicker="회원가입"
+      title={
+        <>
+          몇 초면{' '}
+          <span className="relative inline-block">
+            <span className="relative z-10">시작</span>
+            <span
+              aria-hidden
+              className="absolute inset-x-0 bottom-[0.14em] h-[0.42em] bg-volt-300 dark:bg-volt-500/80 -z-0 -skew-x-6"
             />
-            {errors.email && (
-              <p className="mt-1 text-xs text-rose-600">{errors.email.message}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
-              Username
-            </label>
-            <input
-              type="text"
-              autoComplete="username"
-              {...register('username')}
-              className={inputClass}
-            />
-            {errors.username && (
-              <p className="mt-1 text-xs text-rose-600">{errors.username.message}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              autoComplete="new-password"
-              {...register('password')}
-              className={inputClass}
-            />
-            {errors.password && (
-              <p className="mt-1 text-xs text-rose-600">{errors.password.message}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={busy}
-            className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 active:scale-[0.98] motion-safe:transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900 disabled:opacity-60"
-          >
-            {busy && <Loader2 className="w-4 h-4 motion-safe:animate-spin" />}
-            {busy ? 'Creating account…' : 'Create account'}
-          </button>
-        </form>
-
-        <p className="mt-6 text-sm text-gray-500 dark:text-zinc-400 text-center">
-          Already have an account?{' '}
+          </span>
+          .
+        </>
+      }
+      highlight={
+        <>
+          빌더가 되고 싶으세요?{' '}
+          <br className="hidden sm:block" />
+          여기서부터 출발이에요.
+        </>
+      }
+      description="이메일과 사용자명만 있으면 끝. 가입 즉시 라이브러리·위시리스트·셀러 대시보드 모두 사용할 수 있어요."
+      altPrompt={
+        <>
+          이미 가입하셨나요?{' '}
           <Link
             to="/login"
-            className="text-indigo-700 dark:text-indigo-400 font-medium hover:underline"
+            className="text-ink dark:text-bone font-medium underline underline-offset-[3px] decoration-volt-400 hover:decoration-volt-500"
           >
-            Sign in
+            로그인
           </Link>
+        </>
+      }
+    >
+      <form onSubmit={onSubmit} className="space-y-5">
+        <div>
+          <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+            이메일
+          </label>
+          <input
+            type="email"
+            autoComplete="email"
+            placeholder="you@studio.dev"
+            {...register('email')}
+            className={inputClass}
+          />
+          {errors.email && (
+            <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">{errors.email.message}</p>
+          )}
+        </div>
+        <div>
+          <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+            사용자명
+          </label>
+          <input
+            type="text"
+            autoComplete="username"
+            placeholder="hjunkim"
+            {...register('username')}
+            className={inputClass}
+          />
+          {errors.username && (
+            <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">{errors.username.message}</p>
+          )}
+          <p className="mt-1 text-[0.72rem] text-ink-mute dark:text-bone-mute">
+            프로필 URL에 그대로 쓰여요: /users/<span className="font-mono">사용자명</span>
+          </p>
+        </div>
+        <div>
+          <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+            비밀번호
+          </label>
+          <input
+            type="password"
+            autoComplete="new-password"
+            placeholder="최소 8자"
+            {...register('password')}
+            className={inputClass}
+          />
+          {errors.password && (
+            <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">{errors.password.message}</p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={busy}
+          className="group relative w-full inline-flex items-center justify-center gap-2 py-3 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight overflow-hidden motion-safe:transition focus-volt disabled:opacity-60"
+        >
+          <span
+            aria-hidden
+            className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+          />
+          <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
+            {busy && <Loader2 className="w-4 h-4 motion-safe:animate-spin" />}
+            {busy ? '계정 만드는 중…' : '계정 만들기'}
+          </span>
+        </button>
+
+        <p className="text-[0.72rem] text-ink-mute dark:text-bone-mute leading-relaxed">
+          가입하면 PromptMarket의 셀러 약관 및 개인정보 처리 방침에 동의하는 것으로 간주돼요.
         </p>
-      </div>
-    </div>
+      </form>
+    </AuthLayout>
   );
 }

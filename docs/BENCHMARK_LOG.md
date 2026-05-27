@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T18:45 (UTC) — Round 9
+
+- **Benchmark**: [Linear · Vercel · Stripe 로그인](https://linear.app/login) — 폼 + 브랜드 가치 제안을 좌우로 분할한 스플릿 레이아웃. 가입 직전이 첫인상을 결정하는 페이지인데도 보통 무성의하게 두는 곳을 멋지게 다뤘다.
+- **Shipped**: 공용 `AuthLayout` 컴포넌트(좌측 폼 / 우측 ambient mesh + 가치 제안 카드). Login은 데모 계정 3종 빠른 채우기 칩(alice / bob / carol) 포함. Register는 사용자명 → 프로필 URL 힌트 문구. 두 페이지 모두 라임 슬라이드 인 호버 CTA, ⌘K 가이드, OG/Twitter 메타까지 자동 세팅.
+- **Commit**: `pending`
+- **Next ideas**: (1) Browse empty state 강화 (검색어 + 활성 필터 인사이트). (2) "구매한 라이브러리" 빈 상태 톤업.
+
 ## 2026-05-27T18:30 (UTC) — Round 8
 
 - **Benchmark**: [GitHub · Linear · Vercel 404 페이지](https://github.com/404) — 좋은 404는 사과만 하지 않는다. 사용자가 갈 만한 다음 위치 3-4개를 제안하고 검색 진입점을 노출한다.
 - **Shipped**: NotFound 페이지를 새 디자인 시스템으로 재작성. Hero 비대칭 헤드라인("이 페이지는 카탈로그에 없어요" + 라임 하이라이트), 커서 스포트라이트, ambient mesh, 그레인. 빠른 작업 4종(둘러보기/트렌딩/최신/무료) + ⌘K 팔레트 열기 버튼. RecentlyViewed 마운트로 방문자 기억까지 챙김. `usePageMeta`로 적절한 404 타이틀, `data-status="404"` 어트리뷰트로 임베더 힌트.
-- **Commit**: `pending`
+- **Commit**: [`eaef076`](https://github.com/blue45f/promptmarket/commit/eaef076)
 - **Next ideas**: (1) 로그인/회원가입 페이지 새 디자인 적용. (2) Browse 결과가 0건일 때 empty state 강화.
 
 ## 2026-05-27T18:20 (UTC) — Round 7
