@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,6 +25,8 @@ import StarRating from '@components/StarRating';
 import MarkdownView from '@components/MarkdownView';
 import SkeletonDetail from '@components/SkeletonDetail';
 import RelatedListings from '@components/RelatedListings';
+import RecentlyViewed from '@components/RecentlyViewed';
+import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
 import { useAuthStore } from '@store/auth';
 import { cn } from '@utils/cn';
 
@@ -85,6 +87,12 @@ export default function ListingDetailPage() {
   const reviewMut = useCreateReview(listing?.id, slug);
 
   const [copied, setCopied] = useState(false);
+
+  // Track this slug as recently viewed once the detail successfully loads.
+  const { track } = useRecentlyViewed();
+  useEffect(() => {
+    if (listing?.slug) track(listing.slug);
+  }, [listing?.slug, track]);
 
   const {
     register,
@@ -581,6 +589,8 @@ export default function ListingDetailPage() {
         </p>
         <RelatedListings listingId={listing.id} />
       </section>
+
+      <RecentlyViewed excludeSlug={listing.slug} className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12" />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import CategoryChips from '@components/CategoryChips';
 import FeaturedCarousel from '@components/FeaturedCarousel';
 import ListingCard from '@components/ListingCard';
 import ModelTabs from '@components/ModelTabs';
+import RecentlyViewed from '@components/RecentlyViewed';
 import { SkeletonGrid } from '@components/SkeletonCard';
 import SkeletonCard from '@components/SkeletonCard';
 import EmptyState from '@components/EmptyState';
@@ -121,6 +122,9 @@ export default function HomePage() {
           />
           <FeaturedCarousel items={recent} loading={recentQ.isPending} />
         </section>
+
+        {/* RECENTLY VIEWED — only renders when localStorage has entries */}
+        <RecentlyViewed />
 
         {/* MAKER SPOTLIGHT */}
         <MakerSpotlight items={featured} />
