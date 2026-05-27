@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T17:40 (UTC) — Round 3
+
+- **Benchmark**: [GitHub · Linear · Notion](https://github.com) — `?`로 키보드 단축키 시트를 열고, `g x`로 두 글자 네비게이션을 제공한다. 인풋/textarea 위에서는 시퀀스가 발동하지 않게 가드한다.
+- **Shipped**: `useNavShortcuts` 훅(타이머 1.2s, 입력 필드 가드) + `ShortcutsOverlay` 도움말 시트. `?` 키로 열리고 두 컬럼(전역 / 네비)으로 정리. `g h/b/d/s/l` 시퀀스로 홈/둘러보기/대시보드/판매/로그인 즉시 점프. Layout에 `useNavShortcuts()` 마운트.
+- **Commit**: `pending`
+- **Next ideas**: (1) 리스팅 상세에 "Add to Claude Code / Cursor / Windsurf" 카피 버튼 (Smithery 패턴). (2) 가격 변동 스파크라인 컴포넌트.
+
 ## 2026-05-27T17:35 (UTC) — Round 2
 
 - **Benchmark**: [Are.na · Pinterest](https://are.na) — 두 곳 모두 "다시 와서 마저 볼 만한" 횡 스크롤 레일을 1급 패턴으로 둔다. 로그인 없이도 동작하기 위해 클라이언트 스토리지를 활용한다.
 - **Shipped**: `useRecentlyViewed` 훅(localStorage 16건 캡, 슬러그 + 타임스탬프 큐) + `RecentlyViewed` 가로 레일 컴포넌트. 홈에서 Maker Spotlight 위에, 리스팅 상세에서 RelatedListings 아래에 마운트. 상세 페이지 진입 시 자동 추적, "기록 지우기" 버튼 제공. `useQueries`로 슬러그별 디테일을 캐시(staleTime 10분), 삭제된 리스팅은 조용히 드롭.
-- **Commit**: `pending`
+- **Commit**: [`2acc997`](https://github.com/blue45f/PromptMarket/commit/2acc997)
 - **Next ideas**: (1) `?` 키 단축키 오버레이(키보드 도움말). (2) 리스팅 상세에 "이런 분께" 매칭 박스(카테고리+난이도+기법 기반 자동 카피).
 
 ## 2026-05-27T17:30 (UTC) — Round 1

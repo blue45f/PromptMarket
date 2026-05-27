@@ -2,7 +2,9 @@ import { Link, Outlet } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import Navbar from './Navbar';
 import CommandPalette from '@components/CommandPalette';
+import ShortcutsOverlay from '@components/ShortcutsOverlay';
 import { useMe } from '@features/marketplace/queries';
+import { useNavShortcuts } from '@hooks/useNavShortcuts';
 import { useSpotlight } from '@hooks/useSpotlight';
 import { useReveal } from '@hooks/useReveal';
 
@@ -10,11 +12,14 @@ export default function Layout() {
   // Triggers the /auth/me query when a token is present and syncs the user
   // into the zustand store via the queryFn's side-effect.
   useMe();
+  // Two-key navigation sequences (g h, g b, g d, g s, g l)
+  useNavShortcuts();
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <CommandPalette />
+      <ShortcutsOverlay />
       <main className="flex-1">
         <Outlet />
       </main>
