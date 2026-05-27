@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T18:30 (UTC) — Round 8
+
+- **Benchmark**: [GitHub · Linear · Vercel 404 페이지](https://github.com/404) — 좋은 404는 사과만 하지 않는다. 사용자가 갈 만한 다음 위치 3-4개를 제안하고 검색 진입점을 노출한다.
+- **Shipped**: NotFound 페이지를 새 디자인 시스템으로 재작성. Hero 비대칭 헤드라인("이 페이지는 카탈로그에 없어요" + 라임 하이라이트), 커서 스포트라이트, ambient mesh, 그레인. 빠른 작업 4종(둘러보기/트렌딩/최신/무료) + ⌘K 팔레트 열기 버튼. RecentlyViewed 마운트로 방문자 기억까지 챙김. `usePageMeta`로 적절한 404 타이틀, `data-status="404"` 어트리뷰트로 임베더 힌트.
+- **Commit**: `pending`
+- **Next ideas**: (1) 로그인/회원가입 페이지 새 디자인 적용. (2) Browse 결과가 0건일 때 empty state 강화.
+
 ## 2026-05-27T18:20 (UTC) — Round 7
 
 - **Benchmark**: [Algolia · GitHub 검색 결과](https://algolia.com) — 매칭 토큰을 카드 안에 형광 배경 대신 얇은 라임 언더라인으로 표시하면 가독성을 해치지 않으면서 발견성을 높인다.
 - **Shipped**: `apps/web/src/components/Highlight.tsx` — 공백 기준으로 토큰 분할, 케이스 인센시티브 정규식 매치, 각 매치를 `<mark>`로 감싸 라임 언더라인 부여. `ListingCard`에 `highlight?: string` prop 추가. Browse 결과 그리드에서 `q`가 있을 때 모든 카드에 자동 적용. 다른 모든 호출처는 그대로 동작.
-- **Commit**: `pending`
+- **Commit**: [`cc6f231`](https://github.com/blue45f/promptmarket/commit/cc6f231)
 - **Next ideas**: (1) 404/offline 페이지 톤업. (2) 푸터 SEO sitemap.xml/robots.txt 생성 라우트.
 
 ## 2026-05-27T18:10 (UTC) — Round 6
