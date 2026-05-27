@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T18:20 (UTC) — Round 7
+
+- **Benchmark**: [Algolia · GitHub 검색 결과](https://algolia.com) — 매칭 토큰을 카드 안에 형광 배경 대신 얇은 라임 언더라인으로 표시하면 가독성을 해치지 않으면서 발견성을 높인다.
+- **Shipped**: `apps/web/src/components/Highlight.tsx` — 공백 기준으로 토큰 분할, 케이스 인센시티브 정규식 매치, 각 매치를 `<mark>`로 감싸 라임 언더라인 부여. `ListingCard`에 `highlight?: string` prop 추가. Browse 결과 그리드에서 `q`가 있을 때 모든 카드에 자동 적용. 다른 모든 호출처는 그대로 동작.
+- **Commit**: `pending`
+- **Next ideas**: (1) 404/offline 페이지 톤업. (2) 푸터 SEO sitemap.xml/robots.txt 생성 라우트.
+
 ## 2026-05-27T18:10 (UTC) — Round 6
 
 - **Benchmark**: [Vercel · Linear 공유 카드](https://vercel.com) — 두 곳 모두 OG 메타와 동적 페이지 타이틀을 1급으로 다룬다. SPA여도 클라이언트 사이드에서 document.head를 업데이트하면 슬랙/iMessage/트위터 공유 시 적절한 카드가 뜬다.
 - **Shipped**: `usePageMeta` 훅 — title, description, og:* / twitter:* / canonical을 한 번에 관리. unmount 시 이전 타이틀 복원. ListingDetail에는 리스팅 제목 + 설명 + canonical URL, Home에는 브랜드 기본값, Browse에는 검색어/카테고리/정렬을 반영한 동적 타이틀("...검색 결과" / "...카탈로그" / "트렌딩")을 자동 설정.
-- **Commit**: `pending`
+- **Commit**: [`d159970`](https://github.com/blue45f/promptmarket/commit/d159970)
 - **Next ideas**: (1) Browse 검색 결과 스니펫 하이라이트. (2) 404/offline 페이지 톤업.
 
 ## 2026-05-27T18:00 (UTC) — Round 5

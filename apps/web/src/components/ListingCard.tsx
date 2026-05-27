@@ -6,6 +6,7 @@ import { LISTING_TYPE_META } from '@promptmarket/shared';
 import { useTilt } from '@hooks/useTilt';
 import ModelBadge from './ModelBadge';
 import StarRating from './StarRating';
+import Highlight from './Highlight';
 import { cn } from '@utils/cn';
 
 interface ListingCardProps {
@@ -16,6 +17,8 @@ interface ListingCardProps {
   /** Used by the featured carousel so cards keep a consistent width when the
    *  parent is a horizontally-scrollable snap container. */
   fixedWidth?: boolean;
+  /** Search query to underline inside title/description. */
+  highlight?: string;
 }
 
 export default function ListingCard({
@@ -23,6 +26,7 @@ export default function ListingCard({
   className,
   variant = 'default',
   fixedWidth = false,
+  highlight,
 }: ListingCardProps) {
   const free = (listing.priceCents ?? 0) === 0;
   const meta = LISTING_TYPE_META[listing.type];
@@ -138,7 +142,11 @@ export default function ListingCard({
               isFeatured ? 'text-[1.45rem] lg:text-[1.7rem] line-clamp-3' : 'text-base line-clamp-2',
             )}
           >
-            {listing.title}
+            {highlight ? (
+              <Highlight text={listing.title} query={highlight} />
+            ) : (
+              listing.title
+            )}
           </h3>
           <p
             className={cn(
@@ -148,7 +156,11 @@ export default function ListingCard({
                 : 'text-[0.83rem] line-clamp-2 min-h-[2.5rem]',
             )}
           >
-            {listing.description}
+            {highlight ? (
+              <Highlight text={listing.description} query={highlight} />
+            ) : (
+              listing.description
+            )}
           </p>
 
           <div className="mt-1 flex items-center justify-between pt-3 border-t border-line/70 dark:border-night-line/70">
