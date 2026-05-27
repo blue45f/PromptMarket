@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T18:00 (UTC) — Round 5
+
+- **Benchmark**: [PromptBase 상세 페이지](https://promptbase.com) — "Best for / Use cases" 박스를 본문 위에 둬서 첫 인상을 정확하게 만든다. 카테고리/난이도/기법에서 자동 합성 가능한 정보이므로 API 변경 없이 충분히 만들 수 있다.
+- **Shipped**: `apps/web/src/components/AudienceMatch.tsx`. 리스팅 타입(8종) × 난이도(beginner/intermediate/advanced) × 기법(11개) × 모델 셋업에서 "이런 분께 좋아요" 5-6줄과 "이럴 땐 다른 걸 보세요" counter-indicator 1-2줄을 자동 생성. 상세 페이지 Overview 탭 최상단에 마운트. 라임 체크 / 회색 마이너스로 시각 대비.
+- **Commit**: `pending`
+- **Next ideas**: (1) OG meta + dynamic page title (소셜 공유). (2) 검색어 하이라이트 (Browse 검색 결과 스니펫).
+
 ## 2026-05-27T17:50 (UTC) — Round 4
 
 - **Benchmark**: [Smithery](https://smithery.ai) — MCP 디렉터리는 "Add to Claude Desktop / Cursor / Continue" 같은 클라이언트별 설치 명령을 한 카드 안에 탭으로 묶어 제공. 한 번의 복사로 즉시 사용 가능하게 만든 게 핵심.
 - **Shipped**: `apps/web/src/components/InstallPanel.tsx`. 리스팅 타입(SKILL/MCP_SERVER/CLAUDE_MD/SUBAGENT/CURSOR_RULES/SLASH_COMMAND/AGENT_MD/PROMPT)에 맞춰 Claude Code · Cursor · Windsurf · MCP 클라이언트 · cURL 탭을 자동 필터링. Radix Tabs로 전환, 명령 복사 시 라임 체크 피드백. 사이드바 CTA 아래에 마운트.
-- **Commit**: `pending`
+- **Commit**: [`85866f4`](https://github.com/blue45f/promptmarket/commit/85866f4)
 - **Next ideas**: (1) 가격 변동 스파크라인 (sales 대시보드). (2) "이런 분께 좋아요" 자동 박스 (카테고리 + 난이도 + 기법 합성).
 
 ## 2026-05-27T17:40 (UTC) — Round 3

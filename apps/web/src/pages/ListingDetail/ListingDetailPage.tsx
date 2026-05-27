@@ -27,6 +27,7 @@ import SkeletonDetail from '@components/SkeletonDetail';
 import RelatedListings from '@components/RelatedListings';
 import RecentlyViewed from '@components/RecentlyViewed';
 import InstallPanel from '@components/InstallPanel';
+import AudienceMatch from '@components/AudienceMatch';
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
 import { useAuthStore } from '@store/auth';
 import { cn } from '@utils/cn';
@@ -278,6 +279,14 @@ export default function ListingDetailPage() {
               value="overview"
               className="pt-6 focus-visible:outline-none"
             >
+              <AudienceMatch
+                type={listing.type}
+                category={listing.category}
+                difficulty={listing.difficulty}
+                technique={listing.technique ?? null}
+                models={listing.models}
+                className="mb-6"
+              />
               <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8">
                 <p className="text-base text-gray-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed">
                   {listing.description}
