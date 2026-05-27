@@ -18,6 +18,7 @@
     "dev:shared": "pnpm --filter @promptmarket/shared dev",
     "build": "turbo run build",
     "clean": "pnpm -r --if-present run clean",
+    "ci": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:run && pnpm run build",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "test": "turbo run test",
