@@ -1,6 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import Navbar from './Navbar';
+import CommandPalette from '@components/CommandPalette';
 import { useMe } from '@features/marketplace/queries';
 import { useSpotlight } from '@hooks/useSpotlight';
 import { useReveal } from '@hooks/useReveal';
@@ -13,6 +14,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      <CommandPalette />
       <main className="flex-1">
         <Outlet />
       </main>
