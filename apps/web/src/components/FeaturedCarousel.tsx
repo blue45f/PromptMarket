@@ -9,9 +9,18 @@ interface FeaturedCarouselProps {
 
 export default function FeaturedCarousel({ items, loading }: FeaturedCarouselProps) {
   return (
-    <div className="relative -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+    <div className="relative -mx-[clamp(1.25rem,4vw,3rem)] px-[clamp(1.25rem,4vw,3rem)]">
+      {/* Edge fades for momentum cue */}
       <div
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide"
+        aria-hidden
+        className="pointer-events-none absolute left-0 top-0 bottom-4 w-12 bg-gradient-to-r from-canvas dark:from-night to-transparent z-10"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-canvas dark:from-night to-transparent z-10"
+      />
+      <div
+        className="flex gap-4 lg:gap-5 overflow-x-auto snap-x snap-mandatory pb-5 scrollbar-hide"
         role="region"
         aria-label="Featured listings"
       >
@@ -19,7 +28,7 @@ export default function FeaturedCarousel({ items, loading }: FeaturedCarouselPro
           ? Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="w-[260px] sm:w-[280px] shrink-0 snap-start"
+                className="w-[280px] sm:w-[300px] shrink-0 snap-start"
               >
                 <SkeletonCard />
               </div>

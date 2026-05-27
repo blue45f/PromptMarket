@@ -11,3 +11,7 @@ apps/api/prisma/dev.db
 apps/api/prisma/dev.db-journal
 apps/web/dist
 packages/shared/dist
+
+# Local dev artifacts — screenshots from browser-driven design verification
+*.png
+.playwright-mcp/

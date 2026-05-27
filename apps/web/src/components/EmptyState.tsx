@@ -14,19 +14,27 @@ export default function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center text-center py-16 px-6 bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800">
-      <div className="text-5xl mb-3" aria-hidden>
+    <div className="relative isolate overflow-hidden rounded-3xl surface-card border-line dark:border-night-line text-center py-16 px-6">
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 opacity-50"
+        style={{
+          background:
+            'radial-gradient(at 50% 0%, oklch(0.92 0.18 122 / 0.25) 0, transparent 55%)',
+        }}
+      />
+      <div className="text-[3.5rem] mb-3 leading-none" aria-hidden>
         {emoji}
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-zinc-100 tracking-tight">
+      <h3 className="font-display text-[1.25rem] font-bold text-ink dark:text-bone tracking-tight">
         {title}
       </h3>
       {description && (
-        <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400 max-w-md leading-relaxed">
+        <p className="mt-2 text-sm text-ink-mute dark:text-bone-mute max-w-md mx-auto leading-relaxed">
           {description}
         </p>
       )}
-      {action && <div className="mt-4">{action}</div>}
+      {action && <div className="mt-5">{action}</div>}
     </div>
   );
 }
