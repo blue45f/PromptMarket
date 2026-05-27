@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T17:50 (UTC) — Round 4
+
+- **Benchmark**: [Smithery](https://smithery.ai) — MCP 디렉터리는 "Add to Claude Desktop / Cursor / Continue" 같은 클라이언트별 설치 명령을 한 카드 안에 탭으로 묶어 제공. 한 번의 복사로 즉시 사용 가능하게 만든 게 핵심.
+- **Shipped**: `apps/web/src/components/InstallPanel.tsx`. 리스팅 타입(SKILL/MCP_SERVER/CLAUDE_MD/SUBAGENT/CURSOR_RULES/SLASH_COMMAND/AGENT_MD/PROMPT)에 맞춰 Claude Code · Cursor · Windsurf · MCP 클라이언트 · cURL 탭을 자동 필터링. Radix Tabs로 전환, 명령 복사 시 라임 체크 피드백. 사이드바 CTA 아래에 마운트.
+- **Commit**: `pending`
+- **Next ideas**: (1) 가격 변동 스파크라인 (sales 대시보드). (2) "이런 분께 좋아요" 자동 박스 (카테고리 + 난이도 + 기법 합성).
+
 ## 2026-05-27T17:40 (UTC) — Round 3
 
 - **Benchmark**: [GitHub · Linear · Notion](https://github.com) — `?`로 키보드 단축키 시트를 열고, `g x`로 두 글자 네비게이션을 제공한다. 인풋/textarea 위에서는 시퀀스가 발동하지 않게 가드한다.
 - **Shipped**: `useNavShortcuts` 훅(타이머 1.2s, 입력 필드 가드) + `ShortcutsOverlay` 도움말 시트. `?` 키로 열리고 두 컬럼(전역 / 네비)으로 정리. `g h/b/d/s/l` 시퀀스로 홈/둘러보기/대시보드/판매/로그인 즉시 점프. Layout에 `useNavShortcuts()` 마운트.
-- **Commit**: `pending`
+- **Commit**: [`c8d9e1c`](https://github.com/blue45f/PromptMarket/commit/c8d9e1c)
 - **Next ideas**: (1) 리스팅 상세에 "Add to Claude Code / Cursor / Windsurf" 카피 버튼 (Smithery 패턴). (2) 가격 변동 스파크라인 컴포넌트.
 
 ## 2026-05-27T17:35 (UTC) — Round 2
