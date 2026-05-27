@@ -29,6 +29,7 @@ import RecentlyViewed from '@components/RecentlyViewed';
 import InstallPanel from '@components/InstallPanel';
 import AudienceMatch from '@components/AudienceMatch';
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
+import { usePageMeta } from '@hooks/usePageMeta';
 import { useAuthStore } from '@store/auth';
 import { cn } from '@utils/cn';
 
@@ -95,6 +96,20 @@ export default function ListingDetailPage() {
   useEffect(() => {
     if (listing?.slug) track(listing.slug);
   }, [listing?.slug, track]);
+
+  // Reflect the listing in the document title and OG/Twitter meta so links
+  // shared into Slack / iMessage / Twitter get a proper card.
+  usePageMeta({
+    title: listing
+      ? `${listing.title} · PromptMarket`
+      : 'PromptMarket',
+    description: listing?.description,
+    ogType: 'product',
+    canonical:
+      typeof window !== 'undefined' && listing?.slug
+        ? `${window.location.origin}/listings/${listing.slug}`
+        : undefined,
+  });
 
   const {
     register,

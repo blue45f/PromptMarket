@@ -5,6 +5,7 @@ import { useListings } from '@features/marketplace/queries';
 import { getErrorMessage } from '@services/api';
 import { useReveal } from '@hooks/useReveal';
 import { useSpotlight } from '@hooks/useSpotlight';
+import { usePageMeta } from '@hooks/usePageMeta';
 import { LISTING_TYPE_META } from '@promptmarket/shared';
 import { typeGradient } from '@utils/format';
 import { cn } from '@utils/cn';
@@ -27,6 +28,12 @@ export default function HomePage() {
   const trending = trendingQ.data?.items ?? [];
   const recent = recentQ.data?.items ?? [];
   const error = trendingQ.error ?? recentQ.error ?? featuredQ.error;
+
+  usePageMeta({
+    title: 'PromptMarket — 검증된 AI 프롬프트, 스킬, 에이전트',
+    description:
+      'Claude, GPT-5, Gemini로 프로덕션을 굽고 있는 빌더들의 카탈로그. 프롬프트, CLAUDE.md, Claude Code 스킬, MCP 서버, 서브에이전트, .cursorrules를 사고팝니다.',
+  });
 
   return (
     <div className="animate-fade-in">

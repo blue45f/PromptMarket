@@ -13,6 +13,7 @@ import type {
 } from '@promptmarket/shared';
 import { ChevronDown, SlidersHorizontal, X } from 'lucide-react';
 import { useListings } from '@features/marketplace/queries';
+import { usePageMeta } from '@hooks/usePageMeta';
 import { getErrorMessage } from '@services/api';
 import { modelLabel } from '@utils/format';
 import ListingCard from '@components/ListingCard';
@@ -76,6 +77,23 @@ export default function BrowsePage() {
     return s && (VALID_SORTS as readonly string[]).includes(s) ? (s as Sort) : 'newest';
   })();
   const page = Math.max(1, parseInt(params.get('page') ?? '1', 10) || 1);
+
+  // Reflect the active filters in the document title for clearer browser-tab
+  // and history-stack labels.
+  const titleSuffix = q
+    ? `"${q}" 검색 결과`
+    : filters.category
+      ? `${filters.category} 카탈로그`
+      : sort === 'trending'
+        ? '트렌딩'
+        : sort === 'top'
+          ? '인기'
+          : '카탈로그 둘러보기';
+  usePageMeta({
+    title: `${titleSuffix} · PromptMarket`,
+    description:
+      '프롬프트, 스킬, MCP 서버, 에이전트, .cursorrules — 모델·난이도·기법별로 필터링하세요.',
+  });
 
   function commit(next: FilterState, extra?: Record<string, string | number | null | undefined>) {
     const merged = new URLSearchParams();

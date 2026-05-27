@@ -49,9 +49,10 @@ export default function SearchBar({
       />
       <kbd
         aria-hidden
-        className="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center px-1.5 py-0.5 rounded-md text-[0.65rem] font-mono text-ink-mute dark:text-bone-mute border border-line/80 dark:border-night-line/80 bg-canvas-deep/60 dark:bg-night-deep/60 group-focus-within:opacity-0 motion-safe:transition"
+        title="명령 팔레트 열기"
+        className="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[0.65rem] font-mono text-ink-mute dark:text-bone-mute border border-line/80 dark:border-night-line/80 bg-canvas-deep/60 dark:bg-night-deep/60 group-focus-within:opacity-0 motion-safe:transition"
       >
-        ⌘K
+        <span>⌘</span>K
       </kbd>
     </form>
   );

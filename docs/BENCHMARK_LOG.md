@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T18:10 (UTC) — Round 6
+
+- **Benchmark**: [Vercel · Linear 공유 카드](https://vercel.com) — 두 곳 모두 OG 메타와 동적 페이지 타이틀을 1급으로 다룬다. SPA여도 클라이언트 사이드에서 document.head를 업데이트하면 슬랙/iMessage/트위터 공유 시 적절한 카드가 뜬다.
+- **Shipped**: `usePageMeta` 훅 — title, description, og:* / twitter:* / canonical을 한 번에 관리. unmount 시 이전 타이틀 복원. ListingDetail에는 리스팅 제목 + 설명 + canonical URL, Home에는 브랜드 기본값, Browse에는 검색어/카테고리/정렬을 반영한 동적 타이틀("...검색 결과" / "...카탈로그" / "트렌딩")을 자동 설정.
+- **Commit**: `pending`
+- **Next ideas**: (1) Browse 검색 결과 스니펫 하이라이트. (2) 404/offline 페이지 톤업.
+
 ## 2026-05-27T18:00 (UTC) — Round 5
 
 - **Benchmark**: [PromptBase 상세 페이지](https://promptbase.com) — "Best for / Use cases" 박스를 본문 위에 둬서 첫 인상을 정확하게 만든다. 카테고리/난이도/기법에서 자동 합성 가능한 정보이므로 API 변경 없이 충분히 만들 수 있다.
 - **Shipped**: `apps/web/src/components/AudienceMatch.tsx`. 리스팅 타입(8종) × 난이도(beginner/intermediate/advanced) × 기법(11개) × 모델 셋업에서 "이런 분께 좋아요" 5-6줄과 "이럴 땐 다른 걸 보세요" counter-indicator 1-2줄을 자동 생성. 상세 페이지 Overview 탭 최상단에 마운트. 라임 체크 / 회색 마이너스로 시각 대비.
-- **Commit**: `pending`
+- **Commit**: [`33b7881`](https://github.com/blue45f/promptmarket/commit/33b7881)
 - **Next ideas**: (1) OG meta + dynamic page title (소셜 공유). (2) 검색어 하이라이트 (Browse 검색 결과 스니펫).
 
 ## 2026-05-27T17:50 (UTC) — Round 4
