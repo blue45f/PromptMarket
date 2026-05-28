@@ -1,9 +1,13 @@
+import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { ArrowUpRight, Download } from 'lucide-react';
-import type { ListingCard as ListingCardType } from '@/types';
+import type { ListingCard as ListingCardType, ListingDetailResponse } from '@/types';
 import { formatPrice, typeGradient } from '@utils/format';
 import { LISTING_TYPE_META } from '@promptmarket/shared';
 import { useTilt } from '@hooks/useTilt';
+import { api } from '@services/api';
+import { listingKey, relatedKey } from '@features/marketplace/queryKeys';
 import ModelBadge from './ModelBadge';
 import StarRating from './StarRating';
 import Highlight from './Highlight';
@@ -35,6 +39,32 @@ export default function ListingCard({
   const visibleModels = models.slice(0, 2);
   const extraModels = Math.max(0, models.length - visibleModels.length);
   const tiltRef = useTilt<HTMLDivElement>({ max: 6, depth: 14 });
+  const qc = useQueryClient();
+
+  // On hover / focus, warm the listing detail + related caches so navigating
+  // into the card hydrates instantly. Bail if either cache already has data
+  // so we don't waste a request on revisits.
+  const prefetch = useCallback(() => {
+    const slug = listing.slug;
+    const id = listing.id;
+    if (!slug) return;
+    if (qc.getQueryData(listingKey(slug)) == null) {
+      qc.prefetchQuery({
+        queryKey: listingKey(slug),
+        queryFn: () =>
+          api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${slug}`),
+        staleTime: 60_000,
+      });
+    }
+    if (id && qc.getQueryData(relatedKey(id)) == null) {
+      qc.prefetchQuery({
+        queryKey: relatedKey(id),
+        queryFn: () =>
+          api.get<ListingCardType[], ListingCardType[]>(`/listings/related/${id}`),
+        staleTime: 5 * 60_000,
+      });
+    }
+  }, [listing.slug, listing.id, qc]);
 
   const isFeatured = variant === 'featured';
   const isWide = variant === 'wide';
@@ -51,6 +81,8 @@ export default function ListingCard({
     >
       <Link
         to={`/listings/${listing.slug}`}
+        onMouseEnter={prefetch}
+        onFocus={prefetch}
         className={cn(
           'tilt-inner group relative isolate block overflow-hidden rounded-[1.4rem] focus-volt',
           'surface-card lift-on-hover',

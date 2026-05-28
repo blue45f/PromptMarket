@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T07:45 (UTC) — Round 42
+
+- **Benchmark**: [Next.js Link prefetch · GitHub repo cards](https://nextjs.org) — 호버는 곧 "클릭하려는 의도"의 가장 흔한 시그널. 그 순간에 다음 페이지 쿼리를 미리 끌어오면 클릭 후 인지 지연이 사실상 0이 된다.
+- **Shipped**: `ListingCard`에 hover/focus 시 `queryClient.prefetchQuery`를 두 번 호출 — (1) `listingKey(slug)`로 상세 응답, (2) `relatedKey(id)`로 관련 리스팅. 캐시에 이미 데이터가 있으면 skip(`qc.getQueryData`). 60s / 5min staleTime으로 단기 캐시. 상세 페이지 진입 시 hero/사이드바/관련 탭이 동시에 즉시 렌더.
+- **Commit**: `pending`
+- **Next ideas**: (1) FilterPanel 스크롤 시 그림자 강화. (2) Footer 라이브 통계 카운트업.
+
 ## 2026-05-28T07:32 (UTC) — Round 41
 
 - **Benchmark**: [Pinterest 그리드 perf](https://pinterest.com) — 카드 그리드가 수십 개로 늘어나면 hover 시 3D 틸트가 모든 카드에 계속 계산된다. `content-visibility: auto`는 뷰포트 밖 카드를 layout/paint에서 빼주는 1-line 윈인.
