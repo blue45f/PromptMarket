@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:58 (UTC) — Round 116
+
+- **Benchmark**: 자체 — ThemeToggle은 헤더에 항상 노출되는 단일 컨트롤이라 회귀 시 사용자가 즉시 인지. dropdown(Radix portal)은 jsdom에서 검증이 까다로워 trigger 아이콘 매핑(Sun/Moon/Monitor)만 핵심 잠금.
+- **Shipped**: `apps/web/src/components/ThemeToggle.test.tsx` 4 tests — '테마 전환' aria-label trigger 존재 / mode=system 시 Monitor / mode=dark 시 Moon / mode=light 시 Sun. lucide의 svg class 패턴 매칭으로 아이콘 종류 식별. 합계 **262 tests / 46 files** (shared 11 + api 86 + web 160) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:57 (UTC) — Round 115
 
 - **Benchmark**: 자체 — ShortcutsOverlay의 "?" 토글은 입력 컨텍스트 안에서 실수로 열리면 키 입력을 가로채는 사고. 회귀하면 검색바에 "?" 못 침. 또한 modifier 조합("⌘+?" 등)에도 열리면 안 됨.
