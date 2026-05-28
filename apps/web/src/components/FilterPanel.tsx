@@ -65,6 +65,28 @@ const PRICE_LABEL: Record<'all' | 'free' | 'paid', string> = {
   paid: '유료',
 };
 
+function handleArrowGroupKey<T extends string>(
+  e: React.KeyboardEvent<HTMLDivElement>,
+  options: readonly T[],
+  setNext: (v: T) => void,
+) {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const buttons = Array.from(
+    e.currentTarget.querySelectorAll<HTMLButtonElement>('button[role="radio"]'),
+  );
+  const active = e.currentTarget.querySelector<HTMLButtonElement>(
+    'button[aria-checked="true"]',
+  );
+  const idx = active ? buttons.indexOf(active) : 0;
+  const len = buttons.length;
+  const nextIdx = e.key === 'ArrowRight' ? (idx + 1) % len : (idx - 1 + len) % len;
+  const nextButton = buttons[nextIdx];
+  if (!nextButton) return;
+  e.preventDefault();
+  setNext(options[nextIdx]);
+  nextButton.focus();
+}
+
 function SectionHeader({ children }: { children: string }) {
   return (
     <h4 className="font-mono text-[0.66rem] font-medium uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute mb-2.5 inline-flex items-center gap-2">
@@ -202,13 +224,23 @@ export default function FilterPanel({
 
       <section>
         <SectionHeader>난이도</SectionHeader>
-        <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep border border-line dark:border-night-line">
+        <div
+          role="radiogroup"
+          aria-label="난이도"
+          onKeyDown={(e) => handleArrowGroupKey(e, ['', ...DIFFICULTIES] as const, (next) =>
+            set('difficulty', next as FilterState['difficulty']),
+          )}
+          className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep border border-line dark:border-night-line"
+        >
           {(['', ...DIFFICULTIES] as const).map((d) => {
             const active = value.difficulty === d;
             return (
               <button
                 key={d || 'all'}
                 type="button"
+                role="radio"
+                aria-checked={active}
+                tabIndex={active ? 0 : -1}
                 onClick={() => set('difficulty', d as FilterState['difficulty'])}
                 className={cn(
                   'text-[0.74rem] font-medium px-1 py-1.5 rounded-lg motion-safe:transition focus-volt',
@@ -226,13 +258,21 @@ export default function FilterPanel({
 
       <section>
         <SectionHeader>가격</SectionHeader>
-        <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep border border-line dark:border-night-line">
+        <div
+          role="radiogroup"
+          aria-label="가격"
+          onKeyDown={(e) => handleArrowGroupKey(e, ['all', 'free', 'paid'] as const, (next) => set('price', next))}
+          className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep border border-line dark:border-night-line"
+        >
           {(['all', 'free', 'paid'] as const).map((p) => {
             const active = value.price === p;
             return (
               <button
                 key={p}
                 type="button"
+                role="radio"
+                aria-checked={active}
+                tabIndex={active ? 0 : -1}
                 onClick={() => set('price', p)}
                 className={cn(
                   'text-[0.74rem] font-medium px-2 py-1.5 rounded-lg motion-safe:transition focus-volt',

@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T14:22 (UTC) — Round 76
+
+- **Benchmark**: [WAI-ARIA radiogroup 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/radio/) — 토글 그룹은 tab + space만 지원하면 스크린리더 사용자가 모든 옵션을 일일이 tab해야 한다. radiogroup으로 묶고 ←/→로 안에서 이동 + 활성만 tabIndex=0이 표준.
+- **Shipped**: FilterPanel 난이도 + 가격 토글 그룹을 `role="radiogroup"` + 각 버튼 `role="radio"` + `aria-checked` + roving tabindex로 재구성. `handleArrowGroupKey` 유틸이 ←/→ 키로 옵션을 순환하면서 set + focus 동시에 처리. 마우스/터치 흐름은 그대로 유지.
+- **Commit**: `pending`
+- **Next ideas**: (1) ModelTabs 컴포넌트 단위 테스트. (2) ListingCard hover effect a11y(키보드 focus도 효과 발동).
+
 ## 2026-05-28T14:10 (UTC) — Round 75
 
 - **Benchmark**: 자체 — CategoryChips는 카탈로그 진입의 첫 분기이고 shared CATEGORIES 변경 시 가장 먼저 깨질 위치다. 단순한 렌더 테스트만으로도 회귀 보호선이 한 단계 굵어진다.
