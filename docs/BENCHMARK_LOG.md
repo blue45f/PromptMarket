@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-28T05:55 (UTC) — Round 29
+
+- **Benchmark**: [Pinterest · Are.na save](https://pinterest.com) — 즐겨찾기는 hover로 살짝 나타나야 자연스럽다. 항상 보이면 카드가 산만해지고, 누른 상태(저장됨)는 다시 강조되어야 한다.
+- **Shipped**: `useWishlist` localStorage 훅 + `WishlistButton` 컴포넌트(카드용 둥근 하트 / 인라인 풀 2가지 변형). 200개 slug 캡, CustomEvent로 같은 탭 내 다중 구독 동기화. ListingCard 표지 우하단에 호버 시만 노출되는 하트 칩을 화살표 인디케이터와 한 줄로 묶음. 활성 시 코랄 fill로 강조.
+- **Commit**: `pending`
+- **Next ideas**: (1) Dashboard에 "위시리스트" 탭 신설. (2) ListingDetail 사이드바에 인라인 wishlist 풀.
+
 ## 2026-05-27T23:05 (UTC) — Round 27
 
 - **Benchmark**: [Medium · Reader Mode · Arc Boosts](https://medium.com) — 긴 본문은 사이드바가 가까이 있으면 읽는 흐름을 뺏긴다. 사이트가 직접 제공하는 reader mode가 OS reader mode보다 더 의도된 결과를 만든다.
 - **Shipped**: ListingDetail 사이드바 가격 라벨 옆 BookOpen 아이콘 → "조용한 모드" 토글. 켜면 컨테이너 max-width를 820px로 클램프, 사이드바 숨김, 상단에 "사이드바 다시 열기" 풀 버튼(Esc 단축키 표기). 상태는 localStorage(`pm.readingMode`)에 저장돼 다음 방문에서도 유지. 전환 모션 0.5s ease로 부드럽게.
-- **Commit**: `pending`
+- **Commit**: [`8aa176d`](https://github.com/blue45f/promptmarket/commit/8aa176d)
 - **Next ideas**: (1) MarkdownView TOC 사이드바(긴 본문일 때만). (2) 셀러 리스팅 분석 페이지 (개별 슬러그 상세 통계).
 
 ## 2026-05-27T22:50 (UTC) — Round 26

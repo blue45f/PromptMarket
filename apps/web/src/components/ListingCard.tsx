@@ -7,6 +7,7 @@ import { useTilt } from '@hooks/useTilt';
 import ModelBadge from './ModelBadge';
 import StarRating from './StarRating';
 import Highlight from './Highlight';
+import WishlistButton from './WishlistButton';
 import { cn } from '@utils/cn';
 
 interface ListingCardProps {
@@ -107,18 +108,23 @@ export default function ListingCard({
             </span>
           </div>
 
-          {/* Bottom-right arrow indicator on hover */}
-          <span
-            aria-hidden
-            className={cn(
-              'absolute bottom-3.5 right-3.5 w-9 h-9 rounded-full flex items-center justify-center',
-              'bg-ink text-bone dark:bg-bone dark:text-ink',
-              'opacity-0 translate-y-2 motion-safe:transition-all motion-safe:duration-500',
-              'motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-y-0',
-            )}
-          >
-            <ArrowUpRight className="w-4 h-4" />
-          </span>
+          {/* Bottom-right wishlist + arrow stack */}
+          <div className="absolute bottom-3.5 right-3.5 flex items-center gap-2">
+            <span className="motion-safe:transition-all motion-safe:duration-500 opacity-0 motion-safe:group-hover:opacity-100">
+              <WishlistButton slug={listing.slug} />
+            </span>
+            <span
+              aria-hidden
+              className={cn(
+                'w-9 h-9 rounded-full flex items-center justify-center',
+                'bg-ink text-bone dark:bg-bone dark:text-ink',
+                'opacity-0 translate-y-2 motion-safe:transition-all motion-safe:duration-500',
+                'motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-y-0',
+              )}
+            >
+              <ArrowUpRight className="w-4 h-4" />
+            </span>
+          </div>
         </div>
 
         {/* Body */}
