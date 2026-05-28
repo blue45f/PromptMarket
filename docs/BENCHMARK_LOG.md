@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T11:05 (UTC) — Round 59
+
+- **Benchmark**: 자체 — 디자인 시스템 + 의존성 메이저 라운드 이후 기존 vitest 2개만 남아 있음. localStorage 기반 훅 두 개에 가벼운 unit test를 박아 두면 회귀가 컴포넌트 단까지 올라오기 전에 잡힘.
+- **Shipped**: `useWishlist.test.ts`(3 tests: toggle/순서/clear) + `useSavedFilters.test.ts`(4 tests: 최신 우선/디듀프/5건 캡/remove). 두 훅의 localStorage I/O와 CustomEvent fanout이 정상 동작함을 픽스. 합계 9 tests / 4 files 모두 그린. `afterEach` localStorage cleanup으로 테스트 간 격리.
+- **Commit**: `pending`
+- **Next ideas**: (1) usePageMeta 단위 테스트. (2) BrowseEmptyState `buildActiveFilterRows` 헬퍼 테스트.
+
 ## 2026-05-28T10:52 (UTC) — Round 58
 
 - **Benchmark**: [Airbnb mobile filter sheet](https://airbnb.com) — 최근 필터를 데스크톱에서만 노출하면 모바일 사용자에게는 그 기능이 없는 거나 마찬가지. 드로어 상단에 한 줄로 같은 chip을 그대로 띄움.
