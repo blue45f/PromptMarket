@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T15:10 (UTC) — Round 80
+
+- **Benchmark**: [Gumroad · Notion 발행 폼 임시저장](https://gumroad.com) — 긴 본문을 쓰다가 실수로 탭이 닫히면 흐름이 끊기고 다시 안 돌아오는 셀러가 생긴다. 임시저장이 기본값이어야 한다.
+- **Shipped**: CreateListing 폼 draft autosave — `watch()` 결과를 600ms 디바운스로 `pm.sellDraft` localStorage에 저장, 마운트 시 자동 hydrate. 저장된 draft가 복원된 경우에만 상단에 라임 카드 노출 + "새로 시작" 버튼으로 폼 reset + key 제거. 게시 성공 시 자동으로 draft 키 삭제.
+- **Commit**: `pending`
+- **Next ideas**: (1) Detail 페이지 ⌘D = 위시리스트 토글. (2) ModelTabs 단위 테스트.
+
 ## 2026-05-28T14:58 (UTC) — Round 79
 
 - **Benchmark**: 자체 — 키보드 단축키는 사용자 경험의 가장 미세한 침해/방해를 발생시키기 쉬운 영역(예: 입력 필드 위 g가 navigate 트리거되면 사용자가 한 글자를 잃음). 회귀 보호선 필수.

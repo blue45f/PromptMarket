@@ -58,32 +58,80 @@ export default function CreateListingPage() {
     description: '프롬프트, 스킬, MCP 서버, 서브에이전트, 룰 파일을 카탈로그에 게시하세요.',
   });
 
+  const DEFAULTS: FormShape = {
+    title: '',
+    type: 'PROMPT',
+    description: '',
+    body: '',
+    category: CATEGORIES[0],
+    tags: '',
+    modelsArr: ['claude-sonnet-4-6'],
+    technique: null,
+    difficulty: 'intermediate',
+    license: 'MIT',
+    version: '1.0.0',
+    coverEmoji: '✨',
+    priceDollars: '0',
+  };
+
+  // Draft is read once at mount and used as the form's defaultValues so
+  // each input hydrates with the saved value. After mount the watch()
+  // serialiser keeps localStorage in sync (debounced, see effect below).
+  const DRAFT_KEY = 'pm.sellDraft';
+  const initialDraft = (() => {
+    if (typeof window === 'undefined') return DEFAULTS;
+    try {
+      const raw = window.localStorage.getItem(DRAFT_KEY);
+      if (!raw) return DEFAULTS;
+      const parsed = JSON.parse(raw);
+      return { ...DEFAULTS, ...parsed } as FormShape;
+    } catch {
+      return DEFAULTS;
+    }
+  })();
+  const [draftHydrated] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !!window.localStorage.getItem(DRAFT_KEY);
+  });
+  const [draftDismissed, setDraftDismissed] = useState(false);
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormShape>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      title: '',
-      type: 'PROMPT',
-      description: '',
-      body: '',
-      category: CATEGORIES[0],
-      tags: '',
-      modelsArr: ['claude-sonnet-4-6'],
-      technique: null,
-      difficulty: 'intermediate',
-      license: 'MIT',
-      version: '1.0.0',
-      coverEmoji: '✨',
-      priceDollars: '0',
-    },
+    defaultValues: initialDraft,
   });
 
   const v = watch();
+
+  // Debounced autosave — write the current form snapshot to localStorage
+  // 600ms after the visitor stops typing.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const id = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(v));
+      } catch {
+        /* quota — silently drop */
+      }
+    }, 600);
+    return () => window.clearTimeout(id);
+  }, [v]);
+
+  function discardDraft() {
+    try {
+      window.localStorage.removeItem(DRAFT_KEY);
+    } catch {
+      /* ignore */
+    }
+    reset(DEFAULTS);
+    setDraftDismissed(true);
+  }
 
   // Auto-clear technique field whenever type leaves PROMPT.
   useEffect(() => {
@@ -126,6 +174,11 @@ export default function CreateListingPage() {
 
     try {
       const res = await createMut.mutateAsync(result.data);
+      try {
+        window.localStorage.removeItem(DRAFT_KEY);
+      } catch {
+        /* ignore */
+      }
       navigate(`/listings/${res.listing.slug}`);
     } catch {
       /* toast handled in hook */
@@ -195,6 +248,27 @@ export default function CreateListingPage() {
           프롬프트, 스킬, MCP 서버, 서브에이전트, 룰 파일을 카탈로그에 올리세요. 입력하는 동안 오른쪽 미리보기가 함께 갱신됩니다.
         </p>
       </header>
+
+      {draftHydrated && !draftDismissed && (
+        <div
+          role="status"
+          className="mb-7 flex flex-wrap items-center justify-between gap-3 px-4 py-3 rounded-2xl border border-volt-400/40 dark:border-volt-500/30 bg-volt-100/60 dark:bg-volt-900/30"
+        >
+          <p className="text-[0.84rem] text-ink dark:text-bone">
+            <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 mr-2">
+              임시저장 복원됨
+            </span>
+            마지막 입력으로 자동 채워졌어요. 새로 시작하려면 아래 버튼을 누르세요.
+          </p>
+          <button
+            type="button"
+            onClick={discardDraft}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition focus-volt"
+          >
+            새로 시작
+          </button>
+        </div>
+      )}
 
       <form
         onSubmit={onSubmit}
