@@ -18,6 +18,7 @@ export default function SearchBar({
 }: SearchBarProps) {
   const [value, setValue] = useState(initialValue);
   const [focused, setFocused] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(-1);
   const wrapRef = useRef<HTMLFormElement>(null);
   const history = useSearchHistory();
 
@@ -50,6 +51,29 @@ export default function SearchBar({
 
   const showHistory = focused && value.trim() === '' && history.entries.length > 0;
 
+  function handleInputKey(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (!showHistory) return;
+    const len = history.entries.length;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveIdx((i) => (i + 1) % len);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveIdx((i) => (i - 1 + len) % len);
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      e.preventDefault();
+      const picked = history.entries[activeIdx];
+      if (picked) {
+        setValue(picked);
+        commit(picked);
+      }
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setFocused(false);
+      setActiveIdx(-1);
+    }
+  }
+
   return (
     <form
       ref={wrapRef}
@@ -63,10 +87,23 @@ export default function SearchBar({
       <input
         type="text"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          setValue(e.target.value);
+          setActiveIdx(-1);
+        }}
         onFocus={() => setFocused(true)}
+        onKeyDown={handleInputKey}
         placeholder={placeholder}
         aria-label={placeholder}
+        aria-autocomplete="list"
+        aria-expanded={showHistory}
+        aria-controls={showHistory ? 'search-history-listbox' : undefined}
+        aria-activedescendant={
+          showHistory && activeIdx >= 0
+            ? `search-history-option-${activeIdx}`
+            : undefined
+        }
+        role="combobox"
         className={cn(
           'w-full pl-10 pr-3 py-2 rounded-full text-sm',
           'border border-line dark:border-night-line',
@@ -86,6 +123,7 @@ export default function SearchBar({
 
       {showHistory && (
         <div
+          id="search-history-listbox"
           role="listbox"
           aria-label="최근 검색"
           className="absolute left-0 right-0 top-full mt-2 z-30 rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night shadow-xl shadow-ink/10 dark:shadow-black/40 overflow-hidden"
@@ -104,17 +142,23 @@ export default function SearchBar({
             </button>
           </div>
           <ul className="py-1.5">
-            {history.entries.map((q) => (
-              <li key={q}>
+            {history.entries.map((q, i) => (
+              <li key={q} role="option" aria-selected={i === activeIdx} id={`search-history-option-${i}`}>
                 <button
                   type="button"
                   // mouseDown fires before blur so the option stays clickable.
                   onMouseDown={(e) => e.preventDefault()}
+                  onMouseEnter={() => setActiveIdx(i)}
                   onClick={() => {
                     setValue(q);
                     commit(q);
                   }}
-                  className="group/row w-full flex items-center justify-between gap-3 px-3.5 py-1.5 text-left text-[0.86rem] text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub motion-safe:transition"
+                  className={cn(
+                    'group/row w-full flex items-center justify-between gap-3 px-3.5 py-1.5 text-left text-[0.86rem] motion-safe:transition',
+                    i === activeIdx
+                      ? 'bg-volt-100 dark:bg-volt-900/30 text-ink dark:text-bone'
+                      : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub',
+                  )}
                 >
                   <span className="inline-flex items-center gap-2 min-w-0">
                     <Search className="w-3.5 h-3.5 text-ink-mute dark:text-bone-mute shrink-0" aria-hidden />

@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T14:45 (UTC) — Round 78
+
+- **Benchmark**: [WAI-ARIA combobox 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) — 검색 드롭다운이 마우스만 받으면 절반의 사용자에게 비활성. ↑↓로 이동, Enter로 선택, Esc로 닫는 게 표준.
+- **Shipped**: SearchBar input에 `role=combobox` + `aria-expanded` + `aria-activedescendant`, dropdown 옵션마다 `role=option` + `aria-selected`. `handleInputKey`가 ↑↓ 회전 + Enter 선택 + Esc 닫기를 처리. active row는 라임 fill로 시각 표시, hover와 키보드 둘 다 같은 상태를 갱신.
+- **Commit**: `pending`
+- **Next ideas**: (1) ModelTabs 단위 테스트. (2) Hero 헤드라인 의도적 line-break 명시.
+
 ## 2026-05-28T14:32 (UTC) — Round 77
 
 - **Benchmark**: 자체 — `j`/`k`로 카드를 포커스해도 어포던스(하트 + 화살표)가 안 뜨면 키보드 사용자에게는 사실상 비활성 상태로 보인다. hover와 focus-within이 동일한 시각 신호를 내야 한다.
