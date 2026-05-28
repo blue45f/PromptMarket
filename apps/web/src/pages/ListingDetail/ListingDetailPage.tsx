@@ -368,7 +368,6 @@ export default function ListingDetailPage() {
               {listing.title}
             </h1>
             <p className="mt-2 text-sm text-ink-mute dark:text-bone-mute">
-              by{' '}
               <Link
                 to={`/users/${listing.author.username}`}
                 className="text-volt-700 dark:text-volt-300 hover:underline font-medium"
@@ -385,18 +384,19 @@ export default function ListingDetailPage() {
               />
               <span className="inline-flex items-center gap-1 text-ink-mute dark:text-bone-mute">
                 <Download className="w-3.5 h-3.5" />
-                {listing.downloads ?? 0} downloads
+                다운로드 {listing.downloads ?? 0}회
               </span>
             </div>
             {listing.tags && listing.tags.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {listing.tags.map((t) => (
-                  <span
+                  <Link
                     key={t}
-                    className="text-xs px-2 py-0.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft"
+                    to={`/browse?q=${encodeURIComponent(t)}`}
+                    className="text-xs px-2 py-0.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft hover:bg-volt-300/40 hover:text-ink dark:hover:bg-volt-300/30 dark:hover:text-bone motion-safe:transition-colors focus-volt"
                   >
                     #{t}
-                  </span>
+                  </Link>
                 ))}
               </div>
             )}

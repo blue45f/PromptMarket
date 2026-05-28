@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:38 (UTC) — Round 98
+
+- **Benchmark**: Smithery, Awesome ChatGPT Prompts 모두 태그 chip이 클릭 가능한 드릴다운. PromptMarket은 chip이 정적 span이라 발견 흐름이 끊김. 또한 "by @user" + "N downloads"가 영어로 남아 있음.
+- **Shipped**: `apps/web/src/pages/ListingDetail/ListingDetailPage.tsx` — 태그 chip을 `<Link to=/browse?q={tag}>`로 교체, hover/focus 시 volt 강조 + focus-volt 키보드 링 포함. "by" 단어 제거(저자 링크 단독으로 충분), "{n} downloads" → "다운로드 {n}회". 합계 **86 web tests** (전체 **148**) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:35 (UTC) — Round 97
 
 - **Benchmark**: 유사 서비스(Smithery, Awesome ChatGPT Prompts) — 활동 타임스탬프는 상대 시간이 기본이고 hover 시 절대 시간을 보여주는 패턴이 흔하다. ListingDetail에서는 절대 날짜만 노출되고 있어 "신선한 콘텐츠인지" 즉시 알기 어려웠다.
