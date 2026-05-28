@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T11:30 (UTC) — Round 62
+
+- **Benchmark**: [GitHub · Stack Overflow sitelinks search box](https://schema.org/SearchAction) — 도메인이 어느 정도 인지도가 생기면 SERP에 자체 검색박스가 같이 노출될 수 있는데, 그러려면 WebSite + SearchAction JSON-LD가 반드시 필요.
+- **Shipped**: HomePage에 WebSite + SearchAction 스키마 inject. `urlTemplate: /browse?q={search_term_string}`, `query-input: required name=search_term_string`. inLanguage="ko-KR". Listing detail의 Product 스키마와 함께 Google에서 organic listing 품질이 올라가는 신호.
+- **Commit**: `pending`
+- **Next ideas**: (1) Listing detail "맨 위로" 버튼. (2) BrowseEmptyState `buildActiveFilterRows` 테스트.
+
 ## 2026-05-28T11:20 (UTC) — Round 61
 
 - **Benchmark**: [Etsy · Gumroad rich product results](https://etsy.com) — OG 메타로는 social share만 풍부해진다. Google 검색 결과에 별점/가격이 표시되려면 JSON-LD가 필요. 작은 추가지만 시간이 지날수록 organic traffic 차이가 누적.

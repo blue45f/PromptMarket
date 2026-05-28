@@ -6,6 +6,7 @@ import { getErrorMessage } from '@services/api';
 import { useReveal } from '@hooks/useReveal';
 import { useSpotlight } from '@hooks/useSpotlight';
 import { usePageMeta } from '@hooks/usePageMeta';
+import { useStructuredData } from '@hooks/useStructuredData';
 import { LISTING_TYPE_META } from '@promptmarket/shared';
 import { typeGradient } from '@utils/format';
 import { cn } from '@utils/cn';
@@ -34,6 +35,29 @@ export default function HomePage() {
     description:
       'Claude, GPT-5, Gemini로 프로덕션을 굽고 있는 빌더들의 카탈로그. 프롬프트, CLAUDE.md, Claude Code 스킬, MCP 서버, 서브에이전트, .cursorrules를 사고팝니다.',
   });
+
+  // WebSite + SearchAction so Google can render a sitelinks search box.
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  useStructuredData(
+    origin
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'PromptMarket',
+          alternateName: '프롬프트마켓',
+          url: origin,
+          inLanguage: 'ko-KR',
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: {
+              '@type': 'EntryPoint',
+              urlTemplate: `${origin}/browse?q={search_term_string}`,
+            },
+            'query-input': 'required name=search_term_string',
+          },
+        }
+      : null,
+  );
 
   return (
     <div className="animate-fade-in">
