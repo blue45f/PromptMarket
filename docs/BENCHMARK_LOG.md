@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T09:55 (UTC) — Round 54
+
+- **Benchmark**: [Notion · Linear saved view chips](https://notion.so) — 필터를 다시 조합하려면 손이 여러 번 가는데, "최근에 본 조합 다섯 개"만 있어도 흐름이 끊기지 않는다.
+- **Shipped**: `useSavedFilters` 훅 (localStorage 5건 캡) + BrowsePage 상단의 "최근 필터" chip 라인. 활성 필터 ≥2 자동 저장(URL 그대로), 칩 클릭 시 그 URL로 재방문, X 버튼으로 개별 제거. `describeFilters` 헬퍼가 카테고리/타입/기법/난이도/가격 조합을 한 줄 라벨로 합성.
+- **Commit**: `pending`
+- **Next ideas**: (1) 비교 모달 (위시리스트 2-3개 선택 → 옆에 펼침). (2) 명령 팔레트에 "내 위시리스트" 그룹 추가.
+
 ## 2026-05-28T09:38 (UTC) — Round 52
 
 - **Benchmark**: [Anthropic / Vercel / Linear PR gating](https://github.com/vercel/next.js) — 자동 코드 리뷰가 PR 게이트로 강제될 때만 의미가 있다. config 파일만 두면 무시되고, branch protection에서 contexts로 require해야 강제력이 생긴다.

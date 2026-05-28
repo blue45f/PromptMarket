@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useScrollRestore } from '@hooks/useScrollRestore';
+import { useSavedFilters } from '@hooks/useSavedFilters';
 import {
   LISTING_TYPE_META,
   ListingType as ListingTypeEnum,
@@ -45,6 +46,8 @@ export default function BrowsePage() {
   useScrollRestore();
   const [params, setParams] = useSearchParams();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate();
+  const savedFilters = useSavedFilters();
 
   const filters = useMemo<FilterState>(() => {
     const typesParam = params.getAll('type').filter((t): t is ListingType =>
@@ -158,6 +161,17 @@ export default function BrowsePage() {
   const totalPages = data?.totalPages ?? 1;
   const activeCount = countActive(filters);
 
+  // Persist non-trivial filter combinations into the recent-filters store
+  // so visitors can jump back without re-applying chip by chip.
+  useEffect(() => {
+    if (activeCount < 2) return;
+    const label = describeFilters(filters, q);
+    if (!label) return;
+    const search = params.toString();
+    if (!search) return;
+    savedFilters.save(search, label);
+  }, [activeCount, filters, q, params, savedFilters]);
+
   // ← / → keyboard pagination. Skips when a typing target is focused so the
   // arrow keys keep their default behavior inside the search input.
   useEffect(() => {
@@ -237,6 +251,43 @@ export default function BrowsePage() {
         </aside>
 
         <div className="flex-1 min-w-0">
+          {savedFilters.entries.length > 0 && (
+            <div className="mb-5 flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mr-1">
+                <span aria-hidden className="w-5 h-px bg-volt-500" />
+                최근 필터
+              </span>
+              {savedFilters.entries.map((f) => (
+                <button
+                  key={f.search}
+                  type="button"
+                  onClick={() => navigate(`/browse?${f.search}`)}
+                  className="group inline-flex items-center gap-1.5 rounded-full bg-canvas-sub/70 dark:bg-night-sub/70 border border-line dark:border-night-line px-2.5 py-1 text-[0.74rem] text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+                >
+                  {f.label}
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    aria-label="이 저장 필터 지우기"
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      ev.preventDefault();
+                      savedFilters.remove(f.search);
+                    }}
+                    onKeyDown={(ev) => {
+                      if (ev.key === 'Enter' || ev.key === ' ') {
+                        ev.preventDefault();
+                        savedFilters.remove(f.search);
+                      }
+                    }}
+                    className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral cursor-pointer"
+                  >
+                    <X className="w-3 h-3" aria-hidden />
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
           {activeCount > 0 && (
             <div className="mb-4 flex flex-wrap items-center gap-2">
               {filters.types.map((t) => (
@@ -400,6 +451,19 @@ export default function BrowsePage() {
       />
     </div>
   );
+}
+
+function describeFilters(f: FilterState, q: string): string {
+  const parts: string[] = [];
+  if (q) parts.push(`"${q}"`);
+  if (f.category) parts.push(f.category);
+  if (f.types.length === 1) parts.push(LISTING_TYPE_META[f.types[0]].label);
+  else if (f.types.length > 1) parts.push(`타입 ${f.types.length}종`);
+  if (f.technique) parts.push(TECHNIQUE_META[f.technique as PromptTechnique].label);
+  if (f.difficulty) parts.push(`${f.difficulty}`);
+  if (f.price === 'free') parts.push('무료');
+  if (f.price === 'paid') parts.push('유료');
+  return parts.slice(0, 4).join(' · ');
 }
 
 function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
