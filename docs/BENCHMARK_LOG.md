@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T10:52 (UTC) — Round 58
+
+- **Benchmark**: [Airbnb mobile filter sheet](https://airbnb.com) — 최근 필터를 데스크톱에서만 노출하면 모바일 사용자에게는 그 기능이 없는 거나 마찬가지. 드로어 상단에 한 줄로 같은 chip을 그대로 띄움.
+- **Shipped**: FilterDrawer 상단(타이틀과 필터 패널 사이)에 "최근 필터" mono kicker + 저장된 5건 chip 노출. 클릭 시 드로어를 닫고 그 URL로 navigate, X 버튼은 데스크톱 카드와 동일하게 개별 제거. 비어 있으면 섹션 자체가 숨겨져 첫 방문 모바일 UX 유지.
+- **Commit**: `pending`
+- **Next ideas**: (1) CommandPalette에도 saved filter 그룹. (2) Footer 카운트업이 0에서 다시 시작하지 않도록 cache 후 후속 hover만 트리거.
+
 ## 2026-05-28T10:40 (UTC) — Round 57
 
 - **Benchmark**: [GitHub · Vercel View Transitions](https://github.com) — 다크 토글이 hard flip이면 잠깐 눈이 적응해야 한다. View Transitions API가 있는 브라우저는 자동 cross-fade, 없는 곳도 280ms opacity sweep만 있으면 충분히 부드럽다.
