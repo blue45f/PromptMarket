@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:52 (UTC) — Round 111
+
+- **Benchmark**: 자체 — 모바일에서 FilterPanel을 감싸는 FilterDrawer는 저장된 필터 chip 흐름을 책임진다. 회귀 시 (a) chip 클릭이 drawer 닫지 못함, (b) X 버튼 클릭이 chip 자체 클릭으로 전파되어 의도치 않은 페이지 이동, (c) 잘못된 search string으로 navigate 발생. 모두 사용자 신뢰 깨짐.
+- **Shipped**: `apps/web/src/components/FilterDrawer.test.tsx` 5 tests — FilterPanel 자식 렌더 / "필터 적용" 클릭 시 onOpenChange(false) / 저장 필터 없을 때 "최근 필터" 섹션 미렌더 / chip 클릭 시 onOpenChange(false) + navigate('/browse?<search>') / X 클릭 시 localStorage에서 제거 + navigate 미호출(stopPropagation 검증). 합계 **228 tests / 41 files** (shared 11 + api 86 + web 128) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:51 (UTC) — Round 110
 
 - **Benchmark**: 자체 — 위시리스트 토글 버튼은 ListingCard 위에 떠 있는 floating 버튼이라 부모 `<Link>` 클릭으로 페이지 이동을 일으키면 사용자 의도를 거스른다. 회귀하면 사용자가 위시리스트를 누를 때마다 페이지가 점프. 또한 inline / card 변형이 모두 같은 토글 상태를 표시해야 함.
