@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:33 (UTC) — Round 96
+
+- **Benchmark**: 자체 — `formatDate`/`formatCompact`가 시스템 로케일에 의존해 KR 서버에서는 한글, 외산 SSR에서는 영문이 섞여 나갈 위험이 있었다. 또 활동 타임스탬프에 절대 날짜만 있어 "방금/3분 전" 정도의 신선도 표시 안 됨.
+- **Shipped**: `apps/web/src/utils/format.ts` — `LOCALE = 'ko-KR'`로 고정 → `formatDate`/`formatCompact` 모두 ko-KR 사용. 새 `formatRelative()` 추가: `Intl.RelativeTimeFormat`로 분/시/일 표현, 30일 초과 시 `formatDate`로 폴백, sub-minute는 `방금`. 영어 K/M 누설 어설션 추가. 합계 **148 tests / 26 files** (shared 11 + api 54 + web 83) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:30 (UTC) — Round 95
 
 - **Benchmark**: 자체 — UI 본문은 한글로 바뀌었는데 토스트 6종(Welcome / Account created / Listing published / Purchase complete / Wallet topped up / Review posted), getErrorMessage 기본 메시지, ListingDetail 404 본문, CreateListing zod refine 메시지가 영어로 남아 있었다. 토스트는 가장 빈번한 사용자 피드백 채널.

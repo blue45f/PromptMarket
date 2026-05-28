@@ -44,8 +44,41 @@ describe('formatCompact', () => {
     expect(formatCompact(input as unknown as number)).toBe(expected);
   });
 
-  it('formats large numbers compactly', () => {
-    expect(formatCompact(1234)).toMatch(/1\.2K/i);
-    expect(formatCompact(2_500_000)).toMatch(/2\.5M/i);
+  it('formats large numbers compactly in Korean notation', () => {
+    // ko-KR uses 천(thousand) and 만(10k) — the exact spelling depends on the
+    // ICU table baked into the runtime, so just assert the number stays
+    // present and the suffix isn't English.
+    const k = formatCompact(1234);
+    const m = formatCompact(2_500_000);
+    expect(k).toMatch(/1\.2/);
+    expect(k).not.toMatch(/K/i);
+    expect(m).toMatch(/250|2\.5/);
+    expect(m).not.toMatch(/M/i);
+  });
+});
+
+import { formatRelative } from './format';
+
+describe('formatRelative', () => {
+  it('returns "방금" for sub-minute deltas', () => {
+    expect(formatRelative(new Date())).toBe('방금');
+  });
+
+  it('renders a Korean relative string for hours', () => {
+    const past = new Date(Date.now() - 3 * 60 * 60 * 1000);
+    const out = formatRelative(past);
+    expect(out.length).toBeGreaterThan(0);
+    // Should not be English "3 hours ago".
+    expect(out).not.toMatch(/ago/);
+  });
+
+  it('falls back to formatDate beyond 30 days', () => {
+    const past = new Date('2024-01-01T00:00:00Z');
+    const out = formatRelative(past);
+    expect(out).toMatch(/2024/);
+  });
+
+  it('returns "" for unparseable input', () => {
+    expect(formatRelative('not-a-date')).toBe('');
   });
 });
