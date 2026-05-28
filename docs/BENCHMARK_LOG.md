@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T19:22 (UTC) — Round 12
+
+- **Benchmark**: [Are.na profile · Read.cv](https://are.na) — 메이커 페이지를 단순 "사진 + 이름"이 아니라 카탈로그의 한 챕터처럼 다룬다. 통계 칩(리스팅 수, 무료 포함 여부)이 시각 리듬을 만든다.
+- **Shipped**: ProfilePage를 새 디자인 시스템으로 재작성. 라임/잉크 회전 아바타 + 라임 인디케이터 닷, 디스플레이 스케일 사용자명, ambient mesh 히어로, 컬렉션 섹션은 cards-fluid 그리드. `usePageMeta`로 `@username · PromptMarket` 타이틀 + 바이오 디스크립션. 인디고/zinc/rose 잔재 제거.
+- **Commit**: `pending`
+- **Next ideas**: (1) Sell 발행 폼 디자인 패스. (2) CreateListing 미리보기 카드 톤업.
+
 ## 2026-05-27T19:10 (UTC) — Round 11
 
 - **Benchmark**: [Gumroad · Stripe Atlas 대시보드](https://gumroad.com) — 셀러 대시보드는 첫 인상이 "여기서 일이 굴러간다"는 인상을 줘야 한다. 통계 카드, 탭, 빈 상태가 모두 같은 시각 언어를 공유.
 - **Shipped**: Dashboard 페이지를 새 디자인 시스템으로 재작성. 인디고/zinc 잔재 제거 → OKLCH 라임/잉크/크림. 메이커 이름을 헤드라인 디스플레이로, 탭은 Pill 스타일(active는 잉크 슬라이드), 빈 상태마다 CTA + ⌘아이콘. 지갑은 ambient mesh가 있는 카드로 승격, 충전 칩은 라임 액티브. StatCard에 컬러 액센트 닷.
-- **Commit**: `pending`
+- **Commit**: [`5f88310`](https://github.com/blue45f/promptmarket/commit/5f88310)
 - **Next ideas**: (1) 셀러 페이지(`/users/:username`) 디자인 패스. (2) Sell(`/sell`) 발행 폼 톤업.
 
 ## 2026-05-27T18:55 (UTC) — Round 10
