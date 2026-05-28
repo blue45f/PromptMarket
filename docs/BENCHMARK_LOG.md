@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:54 (UTC) — Round 113
+
+- **Benchmark**: 자체 — InstallPanel은 `fits(type)` 게이트로 리스팅 타입에 맞는 설치 명령 탭만 노출. 회귀하면 MCP 서버에 Claude Code 탭이 잘못 떠 사용자가 동작 안 하는 명령을 복사해 갈 위험. 또한 cURL 폴백은 항상 떠야 함(모든 타입 대응).
+- **Shipped**: `apps/web/src/components/InstallPanel.test.tsx` 6 tests — SKILL 시 Claude Code 탭 + Windsurf 미노출 / MCP_SERVER 시 MCP JSON만, 에디터 CLI 미노출 / CURSOR_RULES 시 Cursor + Windsurf 모두 / cURL 폴백 항상 / 슬러그 활성 명령에 정확히 삽입 / "명령 복사" 버튼 클릭 시 navigator.clipboard.writeText에 명령 그대로 전달. 합계 **242 tests / 43 files** (shared 11 + api 86 + web 142) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:53 (UTC) — Round 112
 
 - **Benchmark**: 자체 — AudienceMatch는 ListingDetail 사이드바의 결정 신호 카드. 리스팅 메타데이터(type/difficulty/technique/models/category)를 받아 "이런 분께 / 이럴 땐 다른 걸" 두 섹션을 동적으로 합성. 회귀 시 잘못된 추천이 나가 구매 결정에 직접 영향.
