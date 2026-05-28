@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T09:00 (UTC) — Round 49
+
+- **Benchmark**: [Etsy seller onboarding · Gumroad publish form](https://etsy.com) — 발행 폼에 "지금 잘 팔리는 카테고리"가 보이면 셀러가 빈 추측 대신 데이터로 결정한다. 단, 강요하지 않고 보조 칩으로 두는 게 핵심.
+- **Shipped**: `TrendingCategoryHint` 컴포넌트 추가. `/listings?sort=trending&pageSize=24`에서 카테고리 빈도를 세서 top 4를 라임 mono kicker + 칩으로 노출. 클릭 시 폼의 카테고리 셀렉트가 그 값으로 동기화. 활성 칩은 잉크 fill로 강조. 데이터 없으면 자동 숨김.
+- **Commit**: `pending`
+- **Next ideas**: (1) FooterLiveStats 호버 시 카운트업 리플레이. (2) Hero CTA 로컬 시간대에 따라 다른 메시지(아침/저녁).
+
 ## 2026-05-28T08:50 (UTC) — Round 48
 
 - **Benchmark**: [Spotify · Apple Music empty libraries](https://music.apple.com) — "비어 있어요" 만 두면 사용자가 어디로 가야 할지 알 수 없다. 무료 추천으로 첫 한 줄을 채워주면 그 자리에서 첫 행동을 끌어낼 수 있다.

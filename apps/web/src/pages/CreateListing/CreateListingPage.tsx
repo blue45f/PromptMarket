@@ -20,7 +20,7 @@ import {
   type PromptTechnique,
 } from '@promptmarket/shared';
 import { Loader2 } from 'lucide-react';
-import { useCreateListing } from '@features/marketplace/queries';
+import { useCreateListing, useListings } from '@features/marketplace/queries';
 import { usePageMeta } from '@hooks/usePageMeta';
 import MarkdownView from '@components/MarkdownView';
 import ModelPicker from '@components/ModelPicker';
@@ -259,6 +259,13 @@ export default function CreateListingPage() {
                 </Field>
               </div>
 
+              <TrendingCategoryHint
+                current={v.category}
+                onPick={(c) =>
+                  setValue('category', c as typeof v.category, { shouldDirty: true })
+                }
+              />
+
               <Field
                 label="설명"
                 error={errors.description?.message as string | undefined}
@@ -489,6 +496,54 @@ function Field({
       </label>
       {children}
       {error && <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">{error}</p>}
+    </div>
+  );
+}
+
+function TrendingCategoryHint({
+  current,
+  onPick,
+}: {
+  current: string | undefined;
+  onPick: (c: string) => void;
+}) {
+  const { data } = useListings({ sort: 'trending', pageSize: 24 });
+  const items = data?.items ?? [];
+  const counts = new Map<string, number>();
+  for (const l of items) {
+    const c = l.category;
+    if (!c) continue;
+    counts.set(c, (counts.get(c) ?? 0) + 1);
+  }
+  const top = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([c]) => c);
+  if (top.length === 0) return null;
+  return (
+    <div className="-mt-2 flex flex-wrap items-center gap-1.5">
+      <span className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-volt-700 dark:text-volt-300 mr-1">
+        이번 주 인기
+      </span>
+      {top.map((c) => {
+        const active = current === c;
+        return (
+          <button
+            key={c}
+            type="button"
+            onClick={() => onPick(c)}
+            aria-pressed={active}
+            className={cn(
+              'inline-flex items-center px-2.5 py-1 rounded-full text-[0.74rem] motion-safe:transition focus-volt border',
+              active
+                ? 'bg-ink text-bone dark:bg-bone dark:text-ink border-ink dark:border-bone'
+                : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60',
+            )}
+          >
+            {c}
+          </button>
+        );
+      })}
     </div>
   );
 }
