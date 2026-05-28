@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { ListingsModule } from './listings/listings.module';
 import { PurchasesModule } from './purchases/purchases.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { SeoModule } from './seo/seo.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     ListingsModule,
     PurchasesModule,
     ReviewsModule,
+    SeoModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   LISTING_TYPE_META,
@@ -13,6 +13,7 @@ import type {
 } from '@promptmarket/shared';
 import { ChevronDown, SlidersHorizontal, X } from 'lucide-react';
 import { useListings } from '@features/marketplace/queries';
+import { usePageMeta } from '@hooks/usePageMeta';
 import { getErrorMessage } from '@services/api';
 import { modelLabel } from '@utils/format';
 import ListingCard from '@components/ListingCard';
@@ -24,7 +25,7 @@ import FilterPanel, {
 import FilterDrawer from '@components/FilterDrawer';
 import SearchBar from '@components/SearchBar';
 import { SkeletonGrid } from '@components/SkeletonCard';
-import EmptyState from '@components/EmptyState';
+import BrowseEmptyState, { buildActiveFilterRows } from '@components/BrowseEmptyState';
 import { cn } from '@utils/cn';
 
 const VALID_TYPES = new Set<ListingType>(ListingTypeEnum.options);
@@ -76,6 +77,23 @@ export default function BrowsePage() {
     return s && (VALID_SORTS as readonly string[]).includes(s) ? (s as Sort) : 'newest';
   })();
   const page = Math.max(1, parseInt(params.get('page') ?? '1', 10) || 1);
+
+  // Reflect the active filters in the document title for clearer browser-tab
+  // and history-stack labels.
+  const titleSuffix = q
+    ? `"${q}" 검색 결과`
+    : filters.category
+      ? `${filters.category} 카탈로그`
+      : sort === 'trending'
+        ? '트렌딩'
+        : sort === 'top'
+          ? '인기'
+          : '카탈로그 둘러보기';
+  usePageMeta({
+    title: `${titleSuffix} · PromptMarket`,
+    description:
+      '프롬프트, 스킬, MCP 서버, 에이전트, .cursorrules — 모델·난이도·기법별로 필터링하세요.',
+  });
 
   function commit(next: FilterState, extra?: Record<string, string | number | null | undefined>) {
     const merged = new URLSearchParams();
@@ -138,12 +156,47 @@ export default function BrowsePage() {
   const totalPages = data?.totalPages ?? 1;
   const activeCount = countActive(filters);
 
+  // ← / → keyboard pagination. Skips when a typing target is focused so the
+  // arrow keys keep their default behavior inside the search input.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target;
+      if (t instanceof HTMLElement) {
+        const tag = t.tagName;
+        if (t.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+          return;
+        }
+      }
+      if (e.key === 'ArrowRight' && page < totalPages) {
+        e.preventDefault();
+        updateExtras({ page: page + 1 });
+      } else if (e.key === 'ArrowLeft' && page > 1) {
+        e.preventDefault();
+        updateExtras({ page: page - 1 });
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, totalPages]);
+
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-100">
-          Browse
+    <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
+      <header className="space-y-2 mb-7">
+        <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
+          <span aria-hidden className="w-6 h-px bg-volt-500" />
+          카탈로그
+        </p>
+        <h1
+          className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.035em] display-tight"
+          style={{ fontSize: 'var(--text-display-md)' }}
+        >
+          {q ? <>"{q}" 검색 결과</> : filters.category ? <>{filters.category} 카탈로그</> : <>둘러보기</>}
         </h1>
+      </header>
+
+      <div className="flex items-center justify-between mb-7 flex-wrap gap-3">
         <div className="flex items-center gap-2 flex-1 sm:flex-initial max-w-xl">
           <SearchBar
             initialValue={q}
@@ -157,12 +210,12 @@ export default function BrowsePage() {
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
-            className="lg:hidden inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-700 dark:text-zinc-200 hover:border-indigo-300 motion-safe:transition"
+            className="lg:hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
           >
             <SlidersHorizontal className="w-4 h-4" />
-            Filters
+            필터
             {activeCount > 0 && (
-              <span className="inline-flex items-center justify-center w-5 h-5 text-[10px] rounded-full bg-indigo-600 text-white font-semibold">
+              <span className="inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] px-1 text-[0.62rem] rounded-full bg-volt-300 text-ink font-mono font-semibold">
                 {activeCount}
               </span>
             )}
@@ -170,9 +223,9 @@ export default function BrowsePage() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-7 lg:gap-9">
         <aside className="hidden lg:block lg:w-72 shrink-0">
-          <div className="sticky top-24 bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-5">
+          <div className="sticky top-24 rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5">
             <FilterPanel
               value={filters}
               onChange={(next) => commit(next, { page: 1 })}
@@ -232,30 +285,30 @@ export default function BrowsePage() {
               <button
                 type="button"
                 onClick={reset}
-                className="text-xs font-medium text-indigo-700 dark:text-indigo-400 hover:underline"
+                className="text-[0.78rem] font-medium text-volt-700 dark:text-volt-300 hover:underline underline-offset-[3px] focus-volt rounded"
               >
-                Clear all
+                전부 초기화
               </button>
             </div>
           )}
 
-          <p className="text-sm text-gray-500 dark:text-zinc-400 mb-4">
+          <p className="font-mono text-[0.78rem] text-ink-mute dark:text-bone-mute mb-5 tabular-nums">
             {isPending
-              ? 'Loading…'
-              : `${total.toLocaleString()} result${total === 1 ? '' : 's'}`}
+              ? '불러오는 중…'
+              : `${total.toLocaleString()}건`}
             {q && (
               <>
                 {' '}
-                for{' '}
-                <span className="font-medium text-gray-700 dark:text-zinc-200">
-                  “{q}”
+                ·{' '}
+                <span className="text-ink dark:text-bone">
+                  "{q}"
                 </span>
               </>
             )}
           </p>
 
           {error && (
-            <p className="text-rose-600 dark:text-rose-400 text-sm mb-4">
+            <p className="text-coral-deep dark:text-coral text-sm font-mono mb-4">
               {getErrorMessage(error)}
             </p>
           )}
@@ -264,39 +317,73 @@ export default function BrowsePage() {
             <SkeletonGrid count={8} />
           ) : items.length ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="cards-fluid">
                 {items.map((l) => (
-                  <ListingCard key={l.id} listing={l} />
+                  <ListingCard key={l.id} listing={l} highlight={q} />
                 ))}
               </div>
 
               {totalPages > 1 && (
-                <div className="mt-8 flex items-center justify-center gap-2">
-                  <button
-                    disabled={page <= 1}
-                    onClick={() => updateExtras({ page: page - 1 })}
-                    className="px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-zinc-800"
-                  >
-                    ← Prev
-                  </button>
-                  <span className="text-sm text-gray-600 dark:text-zinc-400">
-                    Page {page} of {totalPages}
+                <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                  <div className="inline-flex items-center gap-2">
+                    <button
+                      disabled={page <= 1}
+                      onClick={() => updateExtras({ page: page - 1 })}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition focus-volt"
+                    >
+                      <span aria-hidden>←</span> 이전
+                    </button>
+                    <span className="font-mono text-[0.78rem] tabular-nums text-ink-soft dark:text-bone-soft px-2">
+                      {page} / {totalPages}
+                    </span>
+                    <button
+                      disabled={page >= totalPages}
+                      onClick={() => updateExtras({ page: page + 1 })}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition focus-volt"
+                    >
+                      다음 <span aria-hidden>→</span>
+                    </button>
+                  </div>
+                  <span className="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute inline-flex items-center gap-1.5">
+                    <kbd className="inline-flex items-center justify-center min-w-[1.4rem] h-[1.4rem] px-1 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60">
+                      ←
+                    </kbd>
+                    <kbd className="inline-flex items-center justify-center min-w-[1.4rem] h-[1.4rem] px-1 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60">
+                      →
+                    </kbd>
+                    페이지 이동
                   </span>
-                  <button
-                    disabled={page >= totalPages}
-                    onClick={() => updateExtras({ page: page + 1 })}
-                    className="px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-zinc-800"
-                  >
-                    Next →
-                  </button>
                 </div>
               )}
             </>
           ) : (
-            <EmptyState
-              emoji="🔍"
-              title="No listings found"
-              description="Try resetting filters or a different search term."
+            <BrowseEmptyState
+              q={q}
+              onClearAll={reset}
+              activeFilters={buildActiveFilterRows({
+                q,
+                types: filters.types,
+                models: filters.models,
+                technique: filters.technique,
+                difficulty: filters.difficulty,
+                category: filters.category,
+                price: filters.price,
+                removeType: (t) =>
+                  commit(
+                    { ...filters, types: filters.types.filter((x) => x !== t) },
+                    { page: 1 },
+                  ),
+                removeModel: (m) =>
+                  commit(
+                    { ...filters, models: filters.models.filter((x) => x !== m) },
+                    { page: 1 },
+                  ),
+                removeTechnique: () => commit({ ...filters, technique: '' }, { page: 1 }),
+                removeDifficulty: () => commit({ ...filters, difficulty: '' }, { page: 1 }),
+                removeCategory: () => commit({ ...filters, category: '' }, { page: 1 }),
+                removePrice: () => commit({ ...filters, price: 'all' }, { page: 1 }),
+                removeQuery: () => updateExtras({ q: undefined, page: 1 }),
+              })}
             />
           )}
         </div>
@@ -315,13 +402,13 @@ export default function BrowsePage() {
 
 function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-200 dark:ring-indigo-800 px-2.5 py-1 text-xs font-medium capitalize">
+    <span className="inline-flex items-center gap-1 rounded-full bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200 border border-volt-200 dark:border-volt-800/70 px-2.5 py-1 text-xs font-medium">
       {label}
       <button
         type="button"
         onClick={onRemove}
-        aria-label={`Remove ${label}`}
-        className="ml-0.5 hover:text-indigo-900 dark:hover:text-indigo-100"
+        aria-label={`${label} 필터 제거`}
+        className="ml-0.5 hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt rounded-full"
       >
         <X className="w-3 h-3" />
       </button>
@@ -341,15 +428,15 @@ function SortSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as Sort)}
-        aria-label="Sort"
-        className="appearance-none pl-3 pr-8 py-2 rounded-lg text-sm border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-700 dark:text-zinc-200 hover:border-indigo-300 motion-safe:transition focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        aria-label="정렬"
+        className="appearance-none pl-3.5 pr-8 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
       >
-        <option value="newest">Newest</option>
-        <option value="trending">Trending</option>
-        <option value="top">Top-rated</option>
+        <option value="newest">최신순</option>
+        <option value="trending">트렌딩</option>
+        <option value="top">인기순</option>
       </select>
       <ChevronDown
-        className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-500 pointer-events-none"
+        className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 text-ink-mute dark:text-bone-mute pointer-events-none"
         aria-hidden
       />
     </div>

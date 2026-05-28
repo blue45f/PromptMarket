@@ -6,21 +6,21 @@ interface DifficultyBadgeProps {
   className?: string;
 }
 
-const META: Record<Difficulty, { label: string; pill: string; dark: string }> = {
+const META: Record<Difficulty, { label: string; pill: string; dot: string }> = {
   beginner: {
-    label: 'Beginner',
-    pill: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-    dark: 'dark:bg-emerald-950/60 dark:text-emerald-200 dark:ring-emerald-800',
+    label: '입문',
+    pill: 'bg-volt-100 text-volt-800 border-volt-300 dark:bg-volt-900/40 dark:text-volt-200 dark:border-volt-500/40',
+    dot: 'bg-volt-500',
   },
   intermediate: {
-    label: 'Intermediate',
-    pill: 'bg-amber-50 text-amber-700 ring-amber-200',
-    dark: 'dark:bg-amber-950/60 dark:text-amber-200 dark:ring-amber-800',
+    label: '중급',
+    pill: 'bg-canvas-deep text-ink border-line dark:bg-night-deep dark:text-bone dark:border-night-line',
+    dot: 'bg-iris',
   },
   advanced: {
-    label: 'Advanced',
-    pill: 'bg-rose-50 text-rose-700 ring-rose-200',
-    dark: 'dark:bg-rose-950/60 dark:text-rose-200 dark:ring-rose-800',
+    label: '고급',
+    pill: 'bg-coral/15 text-coral-deep border-coral/40 dark:bg-coral/20 dark:text-coral dark:border-coral/40',
+    dot: 'bg-coral',
   },
 };
 
@@ -32,12 +32,12 @@ export default function DifficultyBadge({
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ring-1',
+        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[0.72rem] font-medium border',
         meta.pill,
-        meta.dark,
         className,
       )}
     >
+      <span aria-hidden className={cn('w-1.5 h-1.5 rounded-full', meta.dot)} />
       {meta.label}
     </span>
   );

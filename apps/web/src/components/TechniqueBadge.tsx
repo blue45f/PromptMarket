@@ -18,15 +18,15 @@ export default function TechniqueBadge({
     <span
       title={meta.hint}
       className={cn(
-        'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium ring-1',
-        'bg-indigo-50 text-indigo-700 ring-indigo-200',
-        'dark:bg-indigo-950/60 dark:text-indigo-200 dark:ring-indigo-800',
+        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.72rem] font-medium border',
+        'bg-violet-soft/60 text-violet-deep border-violet/30',
+        'dark:bg-violet/15 dark:text-violet-soft dark:border-violet/30',
         className,
       )}
     >
       {meta.label}
       {showHint && (
-        <span className="hidden sm:inline text-indigo-500 dark:text-indigo-300/80 font-normal">
+        <span className="hidden sm:inline text-violet/80 dark:text-violet-soft/80 font-normal">
           {meta.hint}
         </span>
       )}

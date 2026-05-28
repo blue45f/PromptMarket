@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +12,7 @@ import {
   type ListingType,
   type PromptTechnique,
 } from '@promptmarket/shared';
-import { Check, Copy, Download, Loader2, ShoppingCart } from 'lucide-react';
+import { BookOpen, Check, Copy, Download, Loader2, PanelRight, Share2, ShoppingCart } from 'lucide-react';
 import { useListing, usePurchase, useCreateReview } from '@features/marketplace/queries';
 import { getErrorMessage } from '@services/api';
 import { formatDate, formatPrice } from '@utils/format';
@@ -25,6 +25,11 @@ import StarRating from '@components/StarRating';
 import MarkdownView from '@components/MarkdownView';
 import SkeletonDetail from '@components/SkeletonDetail';
 import RelatedListings from '@components/RelatedListings';
+import RecentlyViewed from '@components/RecentlyViewed';
+import InstallPanel from '@components/InstallPanel';
+import AudienceMatch from '@components/AudienceMatch';
+import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
+import { usePageMeta } from '@hooks/usePageMeta';
 import { useAuthStore } from '@store/auth';
 import { cn } from '@utils/cn';
 
@@ -85,6 +90,43 @@ export default function ListingDetailPage() {
   const reviewMut = useCreateReview(listing?.id, slug);
 
   const [copied, setCopied] = useState(false);
+  const [shareState, setShareState] = useState<'idle' | 'shared' | 'copied'>('idle');
+  const [readingMode, setReadingMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem('pm.readingMode') === '1';
+  });
+
+  // Persist + ESC exits.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem('pm.readingMode', readingMode ? '1' : '0');
+    if (!readingMode) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setReadingMode(false);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [readingMode]);
+
+  // Track this slug as recently viewed once the detail successfully loads.
+  const { track } = useRecentlyViewed();
+  useEffect(() => {
+    if (listing?.slug) track(listing.slug);
+  }, [listing?.slug, track]);
+
+  // Reflect the listing in the document title and OG/Twitter meta so links
+  // shared into Slack / iMessage / Twitter get a proper card.
+  usePageMeta({
+    title: listing
+      ? `${listing.title} · PromptMarket`
+      : 'PromptMarket',
+    description: listing?.description,
+    ogType: 'product',
+    canonical:
+      typeof window !== 'undefined' && listing?.slug
+        ? `${window.location.origin}/listings/${listing.slug}`
+        : undefined,
+  });
 
   const {
     register,
@@ -123,6 +165,35 @@ export default function ListingDetailPage() {
     }
   }
 
+  async function handleShare() {
+    if (!listing) return;
+    const url =
+      typeof window !== 'undefined' ? `${window.location.origin}/listings/${listing.slug}` : '';
+    const payload = {
+      title: `${listing.title} · PromptMarket`,
+      text: listing.description,
+      url,
+    };
+    // Web Share API on mobile and macOS Safari.
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share(payload);
+        setShareState('shared');
+        setTimeout(() => setShareState('idle'), 1500);
+        return;
+      } catch {
+        /* user cancelled or browser refused — fall through to clipboard */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareState('copied');
+      setTimeout(() => setShareState('idle'), 1500);
+    } catch {
+      /* clipboard denied — silently ignore */
+    }
+  }
+
   function handleDownload() {
     if (!listing?.body) return;
     const blob = new Blob([listing.body], { type: 'text/markdown;charset=utf-8' });
@@ -155,12 +226,12 @@ export default function ListingDetailPage() {
   if (error || !listing) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-16 text-center">
-        <p className="text-rose-600 dark:text-rose-400">
+        <p className="text-coral-deep dark:text-coral">
           {error ? getErrorMessage(error) : 'Listing not found.'}
         </p>
         <Link
           to="/browse"
-          className="mt-4 inline-block text-indigo-700 dark:text-indigo-400 underline"
+          className="mt-4 inline-block text-volt-700 dark:text-volt-300 underline"
         >
           Back to browse
         </Link>
@@ -178,9 +249,32 @@ export default function ListingDetailPage() {
   const models = listing.models ?? [];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8 min-w-0 space-y-6">
+    <div
+      className={cn(
+        'mx-auto px-[clamp(1.25rem,4vw,3rem)] py-8 animate-fade-in motion-safe:transition-[max-width] motion-safe:duration-500',
+        readingMode ? 'max-w-[820px]' : 'max-w-7xl',
+      )}
+    >
+      {readingMode && (
+        <button
+          type="button"
+          onClick={() => setReadingMode(false)}
+          className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] font-medium text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+        >
+          <PanelRight className="w-3.5 h-3.5" />
+          사이드바 다시 열기
+          <kbd className="font-mono text-[0.62rem] px-1 py-0.5 rounded border border-line dark:border-night-line">
+            esc
+          </kbd>
+        </button>
+      )}
+      <div className={cn('grid gap-8', !readingMode && 'grid-cols-1 lg:grid-cols-12')}>
+        <div
+          className={cn(
+            'min-w-0 space-y-6',
+            !readingMode && 'lg:col-span-8',
+          )}
+        >
           {/* Hero cover */}
           <div
             className={cn(
@@ -193,21 +287,21 @@ export default function ListingDetailPage() {
             </span>
             <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
               <TypeBadge type={listing.type} overlay />
-              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-white/80 dark:bg-zinc-900/70 backdrop-blur ring-1 ring-white/40 dark:ring-zinc-700/60 text-gray-900 dark:text-zinc-100">
+              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-canvas/80 dark:bg-night/70 backdrop-blur ring-1 ring-line/60 dark:ring-night-line/60 text-ink dark:text-bone">
                 in {listing.category}
               </span>
             </div>
           </div>
 
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-zinc-100">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-ink dark:text-bone">
               {listing.title}
             </h1>
-            <p className="mt-2 text-sm text-gray-500 dark:text-zinc-400">
+            <p className="mt-2 text-sm text-ink-mute dark:text-bone-mute">
               by{' '}
               <Link
                 to={`/users/${listing.author.username}`}
-                className="text-indigo-700 dark:text-indigo-400 hover:underline font-medium"
+                className="text-volt-700 dark:text-volt-300 hover:underline font-medium"
               >
                 @{listing.author.username}
               </Link>{' '}
@@ -219,7 +313,7 @@ export default function ListingDetailPage() {
                 count={listing.reviewCount}
                 showLabel
               />
-              <span className="inline-flex items-center gap-1 text-gray-500 dark:text-zinc-400">
+              <span className="inline-flex items-center gap-1 text-ink-mute dark:text-bone-mute">
                 <Download className="w-3.5 h-3.5" />
                 {listing.downloads ?? 0} downloads
               </span>
@@ -229,7 +323,7 @@ export default function ListingDetailPage() {
                 {listing.tags.map((t) => (
                   <span
                     key={t}
-                    className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300"
+                    className="text-xs px-2 py-0.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft"
                   >
                     #{t}
                   </span>
@@ -241,13 +335,13 @@ export default function ListingDetailPage() {
           <Tabs.Root defaultValue="overview" className="w-full">
             <Tabs.List
               aria-label="Listing sections"
-              className="flex gap-1 border-b border-gray-200 dark:border-zinc-800"
+              className="flex gap-1 border-b border-line dark:border-night-line"
             >
               {(
                 [
-                  ['overview', 'Overview'],
-                  ['reviews', `Reviews (${reviews.length})`],
-                  ['related', 'Related'],
+                  ['overview', '개요'],
+                  ['reviews', `리뷰 (${reviews.length})`],
+                  ['related', '관련'],
                 ] as const
               ).map(([key, label]) => (
                 <Tabs.Trigger
@@ -255,9 +349,9 @@ export default function ListingDetailPage() {
                   value={key}
                   className={cn(
                     'px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition',
-                    'border-transparent text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200',
-                    'data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-700',
-                    'dark:data-[state=active]:border-indigo-400 dark:data-[state=active]:text-indigo-300',
+                    'border-transparent text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone',
+                    'data-[state=active]:border-volt-500 data-[state=active]:text-ink',
+                    'dark:data-[state=active]:border-volt-400 dark:data-[state=active]:text-bone',
                   )}
                 >
                   {label}
@@ -269,36 +363,44 @@ export default function ListingDetailPage() {
               value="overview"
               className="pt-6 focus-visible:outline-none"
             >
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8">
-                <p className="text-base text-gray-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed">
+              <AudienceMatch
+                type={listing.type}
+                category={listing.category}
+                difficulty={listing.difficulty}
+                technique={listing.technique ?? null}
+                models={listing.models}
+                className="mb-6"
+              />
+              <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
+                <p className="text-base text-ink-soft dark:text-bone-soft whitespace-pre-wrap leading-relaxed">
                   {listing.description}
                 </p>
 
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-zinc-100">
-                    {canViewBody ? 'Content' : 'Preview'}
+                  <h2 className="text-lg font-bold tracking-tight text-ink dark:text-bone">
+                    {canViewBody ? '본문' : '미리보기'}
                   </h2>
                   {canViewBody && listing.body && (
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleCopy}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                       >
                         {copied ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-500" />
+                          <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
                         ) : (
                           <Copy className="w-3.5 h-3.5" />
                         )}
-                        <span className={copied ? 'text-emerald-500' : ''}>
-                          {copied ? 'Copied!' : 'Copy'}
+                        <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
+                          {copied ? '복사됨' : '복사'}
                         </span>
                       </button>
                       <button
                         onClick={handleDownload}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        Download .md
+                        .md 다운로드
                       </button>
                     </div>
                   )}
@@ -312,27 +414,27 @@ export default function ListingDetailPage() {
                       <MarkdownView
                         source={listing.previewBody || '*No preview available.*'}
                       />
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent" />
-                      <div className="mt-6 rounded-xl border border-dashed border-indigo-200 dark:border-indigo-800 bg-indigo-50/60 dark:bg-indigo-950/30 p-6 text-center">
-                        <p className="text-sm text-indigo-900 dark:text-indigo-200 font-medium">
-                          🔒 Unlock the full content
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-canvas-sub dark:from-night-sub to-transparent" />
+                      <div className="mt-6 rounded-xl border border-dashed border-volt-400/60 dark:border-volt-500/40 bg-volt-100/60 dark:bg-volt-900/30 p-6 text-center">
+                        <p className="text-sm text-ink dark:text-bone font-medium">
+                          🔒 전체 본문 잠금 해제
                         </p>
-                        <p className="mt-1 text-xs text-indigo-700 dark:text-indigo-300">
+                        <p className="mt-1 text-xs text-ink-soft dark:text-bone-soft">
                           {free
-                            ? 'Get this listing for free to view the full content.'
-                            : `Purchase for ${formatPrice(listing.priceCents)} to view the full content.`}
+                            ? '무료로 받아 전체 본문을 확인하세요.'
+                            : `${formatPrice(listing.priceCents)}에 구매하면 전체 본문이 보여요.`}
                         </p>
                         <button
                           onClick={handlePurchase}
                           disabled={buying}
-                          className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60"
+                          className="mt-3 group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
                         >
                           {buying ? (
                             <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
                           ) : (
                             <ShoppingCart className="w-4 h-4" />
                           )}
-                          {buying ? 'Processing…' : free ? 'Get free' : 'Buy to unlock'}
+                          {buying ? '처리 중…' : free ? '무료로 받기' : '구매해서 보기'}
                         </button>
                       </div>
                     </div>
@@ -345,14 +447,14 @@ export default function ListingDetailPage() {
               value="reviews"
               className="pt-6 focus-visible:outline-none"
             >
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8">
+              <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
                 {isPurchased && !ownReview && (
                   <form
                     onSubmit={onSubmitReview}
-                    className="mb-6 rounded-xl border border-gray-200 dark:border-zinc-800 p-4 bg-gray-50/60 dark:bg-zinc-950/40"
+                    className="mb-6 rounded-xl border border-line dark:border-night-line p-4 bg-canvas-deep/60 dark:bg-night-deep/40"
                   >
-                    <p className="text-sm font-medium text-gray-900 dark:text-zinc-100 mb-2">
-                      Leave a review
+                    <p className="text-sm font-medium text-ink dark:text-bone mb-2">
+                      리뷰 남기기
                     </p>
                     <StarRating
                       value={rating}
@@ -360,35 +462,35 @@ export default function ListingDetailPage() {
                       size="lg"
                     />
                     {errors.rating && (
-                      <p className="mt-1 text-xs text-rose-600">{errors.rating.message}</p>
+                      <p className="mt-1 text-xs text-coral-deep dark:text-coral">{errors.rating.message}</p>
                     )}
                     <textarea
                       {...register('comment')}
-                      placeholder="What did you think? (optional)"
+                      placeholder="어떠셨나요? (선택)"
                       rows={3}
-                      className="mt-3 w-full rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="mt-3 w-full rounded-lg border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
                     />
                     {errors.comment && (
-                      <p className="mt-1 text-xs text-rose-600">{errors.comment.message}</p>
+                      <p className="mt-1 text-xs text-coral-deep dark:text-coral">{errors.comment.message}</p>
                     )}
                     <div className="mt-3 flex justify-end">
                       <button
                         type="submit"
                         disabled={reviewSubmitting}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60"
+                        className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
                       >
                         {reviewSubmitting && (
                           <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
                         )}
-                        {reviewSubmitting ? 'Submitting…' : 'Submit review'}
+                        {reviewSubmitting ? '제출 중…' : '리뷰 등록'}
                       </button>
                     </div>
                   </form>
                 )}
 
                 {reviews.length === 0 ? (
-                  <p className="text-sm text-gray-500 dark:text-zinc-400">
-                    No reviews yet. Be the first!
+                  <p className="text-sm text-ink-mute dark:text-bone-mute">
+                    아직 리뷰가 없어요. 첫 번째 리뷰가 되어 보세요!
                   </p>
                 ) : (
                   <ul className="space-y-4">
@@ -397,21 +499,21 @@ export default function ListingDetailPage() {
                       return (
                         <li
                           key={r.id}
-                          className="border-b border-gray-100 dark:border-zinc-800 last:border-0 pb-4 last:pb-0"
+                          className="border-b border-line/70 dark:border-night-line/70 last:border-0 pb-4 last:pb-0"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <StarRating value={r.rating} />
-                              <span className="text-sm font-medium text-gray-900 dark:text-zinc-100">
+                              <span className="text-sm font-medium text-ink dark:text-bone">
                                 @{author?.username ?? 'anonymous'}
                               </span>
                             </div>
-                            <span className="text-xs text-gray-500 dark:text-zinc-400">
+                            <span className="text-xs text-ink-mute dark:text-bone-mute">
                               {formatDate(r.createdAt)}
                             </span>
                           </div>
                           {r.comment && (
-                            <p className="mt-2 text-sm text-gray-700 dark:text-zinc-300">
+                            <p className="mt-2 text-sm text-ink-soft dark:text-bone-soft">
                               {r.comment}
                             </p>
                           )}
@@ -433,29 +535,71 @@ export default function ListingDetailPage() {
         </div>
 
         {/* Sticky sidebar */}
+        {!readingMode && (
         <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6">
-            <p className="text-xs uppercase tracking-wide font-semibold text-gray-500 dark:text-zinc-400">
-              {free ? 'Free' : 'Price'}
-            </p>
-            <p className="mt-1 text-3xl font-bold text-gray-900 dark:text-zinc-50">
-              {formatPrice(listing.priceCents)}
-            </p>
+          <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+                  {free ? '무료' : '가격'}
+                </p>
+                <p className="mt-1 font-display text-[2rem] font-bold text-ink dark:text-bone tracking-[-0.02em] tabular-nums">
+                  {formatPrice(listing.priceCents)}
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => setReadingMode((v) => !v)}
+                aria-label="조용한 모드 토글"
+                aria-pressed={readingMode}
+                title="조용한 모드"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleShare}
+                aria-label="이 리스팅 공유"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt text-[0.78rem] font-medium"
+              >
+                {shareState === 'idle' ? (
+                  <Share2 className="w-3.5 h-3.5" />
+                ) : (
+                  <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
+                )}
+                <span
+                  className={
+                    shareState === 'idle'
+                      ? ''
+                      : 'text-volt-700 dark:text-volt-300'
+                  }
+                >
+                  {shareState === 'shared'
+                    ? '공유됨'
+                    : shareState === 'copied'
+                      ? '링크 복사됨'
+                      : '공유'}
+                </span>
+              </button>
+              </div>
+            </div>
 
             <div className="mt-5 space-y-2">
               {isOwner ? (
-                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300">
-                  You own this listing
+                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft">
+                  내가 만든 리스팅
                 </span>
               ) : isPurchased ? (
-                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800 font-semibold">
-                  Owned ✓
+                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200 border border-volt-200 dark:border-volt-800 font-semibold">
+                  보유 중 ✓
                 </span>
               ) : (
                 <button
                   onClick={handlePurchase}
                   disabled={buying}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
+                  className="group w-full relative inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover overflow-hidden"
                 >
                   {buying ? (
                     <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
@@ -463,76 +607,72 @@ export default function ListingDetailPage() {
                     <ShoppingCart className="w-4 h-4" />
                   )}
                   {buying
-                    ? 'Processing…'
+                    ? '처리 중…'
                     : free
-                      ? 'Get for free'
-                      : `Buy for ${formatPrice(listing.priceCents)}`}
+                      ? '무료로 받기'
+                      : `${formatPrice(listing.priceCents)}에 구매`}
                 </button>
               )}
+              <InstallPanel slug={listing.slug} type={listing.type} className="mt-2" />
               {(isPurchased || isOwner) && listing.body && (
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={handleCopy}
-                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                   >
                     {copied ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                      <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
-                    <span className={copied ? 'text-emerald-500' : ''}>
-                      {copied ? 'Copied!' : 'Copy'}
+                    <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
+                      {copied ? '복사됨' : '복사'}
                     </span>
                   </button>
                   <button
                     onClick={handleDownload}
-                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    Download
+                    다운로드
                   </button>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6">
+          <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-5">
             <div className="flex items-center gap-3">
-              <div
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-lg font-bold text-white"
+              <span
                 aria-hidden
+                className="relative inline-flex w-12 h-12 rounded-xl bg-ink dark:bg-bone text-volt-300 dark:text-ink font-display font-bold text-lg items-center justify-center -rotate-3"
               >
                 {listing.author.username[0]?.toUpperCase() ?? '?'}
-              </div>
+                <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-volt-400 ring-2 ring-canvas-sub dark:ring-night-sub" />
+              </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900 dark:text-zinc-100 truncate">
+                <p className="font-display text-[0.95rem] font-semibold text-ink dark:text-bone truncate tracking-tight">
                   @{listing.author.username}
                 </p>
-                <Link
-                  to={`/users/${listing.author.username}`}
-                  className="text-xs text-indigo-700 dark:text-indigo-400 hover:underline"
-                >
-                  View profile
-                </Link>
+                <p className="text-[0.7rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
+                  메이커
+                </p>
               </div>
-              <button
-                type="button"
-                className="text-sm font-medium px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:border-indigo-300 motion-safe:transition"
-                onClick={() => {
-                  /* follow is a no-op for now per spec */
-                }}
+              <Link
+                to={`/users/${listing.author.username}`}
+                className="inline-flex items-center gap-1 text-sm font-medium px-3 py-1.5 rounded-full border border-line dark:border-night-line text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt"
               >
-                Follow
-              </button>
+                프로필
+              </Link>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 space-y-4 text-sm">
-            <Meta label="Type">
+          <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 space-y-4 text-sm">
+            <Meta label="타입">
               <TypeBadge type={listing.type} />
             </Meta>
             {models.length > 0 && (
-              <Meta label="Models">
+              <Meta label="모델">
                 <div className="flex flex-wrap gap-1">
                   {models.map((m) => (
                     <ModelBadge key={m} slug={m} />
@@ -541,46 +681,101 @@ export default function ListingDetailPage() {
               </Meta>
             )}
             {listing.type === 'PROMPT' && listing.technique && (
-              <Meta label="Technique">
+              <Meta label="기법">
                 <TechniqueBadge technique={listing.technique} />
               </Meta>
             )}
             {listing.difficulty && (
-              <Meta label="Difficulty">
+              <Meta label="난이도">
                 <DifficultyBadge difficulty={listing.difficulty} />
               </Meta>
             )}
+            {listing.category && (
+              <Meta label="카테고리">
+                <span className="text-xs text-ink dark:text-bone">{listing.category}</span>
+              </Meta>
+            )}
             {listing.license && (
-              <Meta label="License">
+              <Meta label="라이선스">
                 <LicenseBadge license={listing.license} />
               </Meta>
             )}
             {listing.version && (
-              <Meta label="Version">
-                <span className="font-mono text-xs text-gray-700 dark:text-zinc-200">
+              <Meta label="버전">
+                <span className="font-mono text-xs text-ink-soft dark:text-bone-soft">
                   v{listing.version}
                 </span>
               </Meta>
             )}
-            <Meta label="Updated">
-              <span className="text-xs text-gray-600 dark:text-zinc-400">
+            <Meta label="업데이트">
+              <span className="text-xs text-ink-mute dark:text-bone-mute font-mono">
                 {formatDate(listing.updatedAt ?? listing.createdAt)}
               </span>
             </Meta>
           </div>
         </aside>
+        )}
       </div>
 
       {/* Bottom related */}
       <section className="mt-16">
-        <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-zinc-100 mb-1">
-          You might also like
+        <h2 className="text-xl font-bold tracking-tight text-ink dark:text-bone mb-1">
+          이런 것도 좋아할 거예요
         </h2>
-        <p className="text-sm text-gray-500 dark:text-zinc-400 mb-5">
-          Hand-picked recommendations from the marketplace.
+        <p className="text-sm text-ink-mute dark:text-bone-mute mb-5">
+          마켓플레이스에서 엄선한 추천.
         </p>
         <RelatedListings listingId={listing.id} />
       </section>
+
+      <RecentlyViewed excludeSlug={listing.slug} className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 pb-24 lg:pb-0" />
+
+      {/* Mobile sticky purchase bar — hidden on lg+ where the sticky sidebar
+          already handles this. Respects the iOS bottom safe area. */}
+      <div
+        className="lg:hidden fixed inset-x-0 bottom-0 z-30 surface-glass border-t border-line dark:border-night-line"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="mx-auto max-w-7xl px-4 py-3 flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+              {free ? '무료' : '가격'}
+            </p>
+            <p className="font-display font-bold text-ink dark:text-bone leading-none tabular-nums text-[1.4rem]">
+              {formatPrice(listing.priceCents)}
+            </p>
+          </div>
+          {isOwner ? (
+            <span className="inline-flex items-center text-[0.82rem] font-medium px-4 py-2.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft">
+              내 리스팅
+            </span>
+          ) : isPurchased ? (
+            <span className="inline-flex items-center gap-1.5 text-[0.82rem] font-semibold px-4 py-2.5 rounded-full bg-volt-300 text-ink">
+              <Check className="w-3.5 h-3.5" />
+              보유 중
+            </span>
+          ) : (
+            <button
+              onClick={handlePurchase}
+              disabled={buying}
+              className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold text-[0.86rem] tracking-tight motion-safe:transition focus-volt disabled:opacity-60"
+            >
+              <span
+                aria-hidden
+                className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+              />
+              <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
+                {buying ? (
+                  <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                ) : (
+                  <ShoppingCart className="w-4 h-4" />
+                )}
+                {free ? '받기' : '구매'}
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -588,10 +783,10 @@ export default function ListingDetailPage() {
 function Meta({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-3">
-      <span className="text-xs uppercase tracking-wide font-semibold text-gray-500 dark:text-zinc-400 pt-0.5">
+      <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute pt-1">
         {label}
       </span>
-      <div className="text-right">{children}</div>
+      <div className="text-right min-w-0">{children}</div>
     </div>
   );
 }
