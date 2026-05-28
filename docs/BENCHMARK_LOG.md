@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T20:05 (UTC) — Round 15
+
+- **Benchmark**: [Reddit · HackerNews 페이지네이션](https://reddit.com) — 인기 카탈로그는 마우스 거리 없이 키보드만으로 페이지를 넘길 수 있게 한다. ←/→는 가장 직관적인 매핑이고 입력 필드 위에서는 발동을 막아야 한다.
+- **Shipped**: Browse 페이지네이션 키보드 단축키. 입력/textarea/select/contenteditable 위에서는 안 먹고, ←로 이전 페이지, →로 다음 페이지(엣지에서는 비활성). 페이지네이션 strip을 새 디자인 토큰(Pill, mono 페이지 카운터, 라임 hover)으로 재디자인하고 키 힌트 캡션 추가. ShortcutsOverlay에 "카탈로그 (Browse)" 그룹 신설.
+- **Commit**: `pending`
+- **Next ideas**: (1) 리스팅 상세 페이지에 "j/k로 검색 결과 사이를 이동" (Browse → Detail → Browse 동선). (2) 푸터 줄에 mini 사이트맵.
+
 ## 2026-05-27T19:50 (UTC) — Round 14
 
 - **Benchmark**: [GitHub · Stripe sitemap.xml 정책](https://github.com/sitemap.xml) — 대규모 카탈로그는 정적 빌드 산출물 대신 DB에서 동적으로 sitemap을 만든다. robots.txt에서 sitemap URL을 명시해 크롤러가 자동으로 따라오게 한다.
 - **Shipped**: 동적 `/api/seo/sitemap.xml` (NestJS `SeoModule`). 정적 7개 경로 + 모든 리스팅 + 모든 사용자 슬러그를 `<urlset>`으로 합성. 본문 `<loc>` 절대 URL은 `SITE_ORIGIN` 환경변수, 미설정 시 `https://promptmarket.dev` 폴백. lastmod = 리스팅 updatedAt. 응답 캐시 15분. 정적 `robots.txt`는 `apps/web/public`에 추가하여 SPA 번들에 그대로 동봉. 프로덕션 nginx는 `/sitemap.xml`을 API의 `/api/seo/sitemap.xml`로 프록시, Vite 개발 서버는 동일 rewrite를 자체 proxy에 추가해 dev/prod 모두 동작.
-- **Commit**: `pending`
+- **Commit**: [`94a3ee1`](https://github.com/blue45f/promptmarket/commit/94a3ee1)
 - **Next ideas**: (1) BrowsePage 페이지네이션을 ?page= 기반 cursor 스타일로 키보드 ←/→ 단축키. (2) Sell 폼에 미리보기 모드 토글 (전체 너비 vs 사이드바).
 
 ## 2026-05-27T19:35 (UTC) — Round 13

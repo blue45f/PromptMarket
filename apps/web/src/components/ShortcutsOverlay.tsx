@@ -30,6 +30,13 @@ const GROUPS: Array<{ title: string; rows: Array<{ keys: string[]; label: string
       { keys: ['g', 'l'], label: '로그인' },
     ],
   },
+  {
+    title: '카탈로그 (Browse)',
+    rows: [
+      { keys: ['←'], label: '이전 페이지' },
+      { keys: ['→'], label: '다음 페이지' },
+    ],
+  },
 ];
 
 export default function ShortcutsOverlay() {

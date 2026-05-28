@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   LISTING_TYPE_META,
@@ -156,6 +156,31 @@ export default function BrowsePage() {
   const totalPages = data?.totalPages ?? 1;
   const activeCount = countActive(filters);
 
+  // ← / → keyboard pagination. Skips when a typing target is focused so the
+  // arrow keys keep their default behavior inside the search input.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target;
+      if (t instanceof HTMLElement) {
+        const tag = t.tagName;
+        if (t.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+          return;
+        }
+      }
+      if (e.key === 'ArrowRight' && page < totalPages) {
+        e.preventDefault();
+        updateExtras({ page: page + 1 });
+      } else if (e.key === 'ArrowLeft' && page > 1) {
+        e.preventDefault();
+        updateExtras({ page: page - 1 });
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, totalPages]);
+
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
@@ -289,24 +314,35 @@ export default function BrowsePage() {
               </div>
 
               {totalPages > 1 && (
-                <div className="mt-8 flex items-center justify-center gap-2">
-                  <button
-                    disabled={page <= 1}
-                    onClick={() => updateExtras({ page: page - 1 })}
-                    className="px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-zinc-800"
-                  >
-                    ← Prev
-                  </button>
-                  <span className="text-sm text-gray-600 dark:text-zinc-400">
-                    Page {page} of {totalPages}
+                <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                  <div className="inline-flex items-center gap-2">
+                    <button
+                      disabled={page <= 1}
+                      onClick={() => updateExtras({ page: page - 1 })}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition focus-volt"
+                    >
+                      <span aria-hidden>←</span> 이전
+                    </button>
+                    <span className="font-mono text-[0.78rem] tabular-nums text-ink-soft dark:text-bone-soft px-2">
+                      {page} / {totalPages}
+                    </span>
+                    <button
+                      disabled={page >= totalPages}
+                      onClick={() => updateExtras({ page: page + 1 })}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition focus-volt"
+                    >
+                      다음 <span aria-hidden>→</span>
+                    </button>
+                  </div>
+                  <span className="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute inline-flex items-center gap-1.5">
+                    <kbd className="inline-flex items-center justify-center min-w-[1.4rem] h-[1.4rem] px-1 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60">
+                      ←
+                    </kbd>
+                    <kbd className="inline-flex items-center justify-center min-w-[1.4rem] h-[1.4rem] px-1 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60">
+                      →
+                    </kbd>
+                    페이지 이동
                   </span>
-                  <button
-                    disabled={page >= totalPages}
-                    onClick={() => updateExtras({ page: page + 1 })}
-                    className="px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-zinc-800"
-                  >
-                    Next →
-                  </button>
                 </div>
               )}
             </>
