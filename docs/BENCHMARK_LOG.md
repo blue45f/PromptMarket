@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:40 (UTC) — Round 101
+
+- **Benchmark**: 자체 — Browse 페이지의 가장 큰 미테스트 표면이 FilterPanel. `emptyFilters` / `countActive` 산수는 활성 배지 카운트, 필터 초기화 흐름, 빈 상태 표기 모두에 의존하는데 회귀 가드 부재. 또한 PROMPT 외 타입을 선택했을 때 "프롬프트 기법" 섹션이 숨겨지는 분기는 UX 결정 사항이라 명시 잠금 필요.
+- **Shipped**: `apps/web/src/components/FilterPanel.test.tsx` 8 tests — `emptyFilters` 제로 상태 / `countActive` 빈/활성/price=all 무시 + free·paid 카운트 / 타입 chip 클릭 → onChange types 배열 디스패치 / non-PROMPT 활성 시 "프롬프트 기법" 섹션 제거 / 전부 초기화 버튼 / 가격 radiogroup의 무료 선택. 합계 **161 tests / 28 files** (shared 11 + api 54 + web 99 + storeShare/etc → 실제 web 99) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:35 (UTC) — Round 100
 
 - **Benchmark**: 자체 — theme store는 View Transitions API 사용, OS prefers-color-scheme 폴백, reduced-motion 단축 경로까지 분기가 4개. 단축 경로 회귀 시 모션 민감 사용자가 갑작스러운 페이드를 보게 되는데, 가드가 없었다. 또한 라운드 100 마일스톤으로 백 라운드 마무리.
