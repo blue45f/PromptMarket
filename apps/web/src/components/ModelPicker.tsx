@@ -22,7 +22,7 @@ export default function ModelPicker({
 
   const grouped = useMemo(() => {
     const lc = query.trim().toLowerCase();
-    const map = new Map<string, typeof MODELS[number][]>();
+    const map = new Map<string, (typeof MODELS)[number][]>();
     for (const m of MODELS) {
       if (
         lc &&
@@ -50,15 +50,15 @@ export default function ModelPicker({
       {!hideSearch && (
         <div className="relative">
           <Search
-            className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-500"
+            className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-mute dark:text-bone-mute"
             aria-hidden
           />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search models, vendors…"
-            className="w-full pl-9 pr-3 py-2 rounded-lg text-sm border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 placeholder:text-gray-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="모델 / 벤더 검색…"
+            className="w-full pl-9 pr-3 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas dark:bg-night text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
           />
         </div>
       )}
@@ -72,7 +72,7 @@ export default function ModelPicker({
                 key={slug}
                 type="button"
                 onClick={() => toggle(slug)}
-                className="inline-flex items-center gap-1 rounded-full bg-indigo-600 text-white text-xs font-medium px-2.5 py-1 hover:bg-indigo-700 motion-safe:transition"
+                className="inline-flex items-center gap-1 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-xs font-medium px-2.5 py-1 hover:opacity-90 motion-safe:transition focus-volt"
               >
                 {m?.label ?? slug}
                 <X className="w-3 h-3" />
@@ -82,15 +82,15 @@ export default function ModelPicker({
         </div>
       )}
 
-      <div className="max-h-72 overflow-y-auto rounded-lg border border-gray-200 dark:border-zinc-800 divide-y divide-gray-100 dark:divide-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="max-h-72 overflow-y-auto rounded-2xl border border-line dark:border-night-line divide-y divide-line/60 dark:divide-night-line/60 bg-canvas dark:bg-night">
         {grouped.length === 0 && (
-          <p className="px-3 py-4 text-sm text-gray-500 dark:text-zinc-400">
-            No models match “{query}”.
+          <p className="px-3 py-4 text-sm text-ink-mute dark:text-bone-mute">
+            "{query}"에 맞는 모델이 없어요.
           </p>
         )}
         {grouped.map(([vendor, models]) => (
           <div key={vendor} className="p-2">
-            <p className="px-2 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-zinc-400">
+            <p className="px-2 pt-1 pb-1.5 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300">
               {vendor}
             </p>
             <ul>
@@ -100,21 +100,21 @@ export default function ModelPicker({
                   <li key={m.slug}>
                     <label
                       className={cn(
-                        'flex items-center gap-2 px-2 py-1.5 rounded-md text-sm cursor-pointer',
-                        'hover:bg-gray-50 dark:hover:bg-zinc-800',
-                        checked && 'bg-indigo-50/40 dark:bg-indigo-950/30',
+                        'flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm cursor-pointer motion-safe:transition',
+                        'hover:bg-canvas-deep dark:hover:bg-night-deep',
+                        checked && 'bg-volt-100 dark:bg-volt-900/30',
                       )}
                     >
                       <input
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggle(m.slug)}
-                        className="accent-indigo-600"
+                        className="accent-volt-500"
                       />
-                      <span className="flex-1 truncate text-gray-900 dark:text-zinc-100">
+                      <span className="flex-1 truncate text-ink dark:text-bone">
                         {m.label}
                       </span>
-                      <span className="text-[10px] text-gray-400 dark:text-zinc-500">
+                      <span className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-ink-mute dark:text-bone-mute">
                         {m.family}
                       </span>
                     </label>

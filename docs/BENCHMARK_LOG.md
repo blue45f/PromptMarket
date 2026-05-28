@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T21:50 (UTC) — Round 22
+
+- **Benchmark**: [Stripe API · OpenRouter 모델 셀렉터](https://stripe.com) — 모델/벤더 멀티 선택 UI는 두 가지 동작이 동시에 보여야 한다: (1) 지금 선택된 토큰 chip, (2) 벤더별 그룹된 옵션. 그룹 헤더가 무겁지 않게 mono caps로 처리해야 본문 가독성이 살아난다.
+- **Shipped**: RelatedListings를 `cards-fluid`로 교체하고 한국어 빈 상태로 정리. ModelPicker 전체 리스킨: 입력은 둥근 풀 + 라임 포커스, 선택된 chip은 잉크 풀로 통일, 그룹 헤더(vendor)는 mono 라임 caps로 가독성 향상, 체크박스 액센트를 `accent-volt-500`로, 패밀리 표시도 mono caps로. 영문 카피("Search models, vendors…", "No models match …") 한국어화.
+- **Commit**: `pending`
+- **Next ideas**: (1) NavBar 데스크톱 메뉴 액티브 라임 인디케이터. (2) Browse 필터 사이드바 + 메타 라인 잔여 영문 카피 sweep.
+
 ## 2026-05-27T21:35 (UTC) — Round 21
 
 - **Benchmark**: [Notion · Linear 검색 결과 그리드](https://notion.so) — 결과 카드 그리드를 hard breakpoint 4-column으로 두면 1920+ 와이드에서는 카드가 너무 좁고 1280에서는 4번째 열이 끼어들면서 어색해진다. auto-fit minmax이 정답.
 - **Shipped**: BrowsePage 결과 그리드를 `cards-fluid` (auto-fit minmax 280px)로 교체 — 더 이상 sm/lg/xl 단계 고정 컬럼 없음, 컨테이너 폭에 맞춰 자연스럽게 reflow. (SortSelect와 결과 카운터 라벨은 이전 라운드에서 이미 한국어/라임 토큰으로 들어와 있어 이번 라운드는 그리드 reflow와 잔여 디테일 정리만 집중.)
-- **Commit**: `pending`
+- **Commit**: [`1404585`](https://github.com/blue45f/promptmarket/commit/1404585)
 - **Next ideas**: (1) NavBar 데스크톱 메뉴 라임 인디케이터 정렬. (2) RelatedListings(추천) 컴포넌트 토큰 sweep.
 
 ## 2026-05-27T21:20 (UTC) — Round 20
