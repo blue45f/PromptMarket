@@ -43,6 +43,7 @@ const GROUPS: Array<{ title: string; rows: Array<{ keys: string[]; label: string
     title: '작업',
     rows: [
       { keys: ['c'], label: '새 리스팅 작성 (로그인 시)' },
+      { keys: ['⌘', 'D'], label: '위시리스트 토글 (상세 페이지)' },
     ],
   },
 ];

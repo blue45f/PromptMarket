@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T15:20 (UTC) — Round 81
+
+- **Benchmark**: [Pinterest · Are.na 키보드 저장](https://pinterest.com) — 위시리스트 / 즐겨찾기 토글은 손이 자주 가는 액션. 브라우저의 "이 페이지 북마크" 단축키(⌘D)를 in-app에서 더 의미있게 재사용하는 게 power user 패턴.
+- **Shipped**: ListingDetail에서 ⌘D / Ctrl+D 시 `useWishlist.toggle(slug)`. 입력 필드 위에서는 발동 안 함(브라우저 기본 동작 유지). 카드 ♡, 사이드바 inline 풀, 대시보드 탭에 이어 네 번째 위시리스트 진입점. ShortcutsOverlay "작업" 그룹에 표기.
+- **Commit**: `pending`
+- **Next ideas**: (1) ModelTabs 단위 테스트. (2) Footer Anthology 라벨 hover 시 cycle vol.01 → vol.02.
+
 ## 2026-05-28T15:10 (UTC) — Round 80
 
 - **Benchmark**: [Gumroad · Notion 발행 폼 임시저장](https://gumroad.com) — 긴 본문을 쓰다가 실수로 탭이 닫히면 흐름이 끊기고 다시 안 돌아오는 셀러가 생긴다. 임시저장이 기본값이어야 한다.

@@ -33,6 +33,7 @@ import AudienceMatch from '@components/AudienceMatch';
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
 import { usePageMeta } from '@hooks/usePageMeta';
 import { useStructuredData } from '@hooks/useStructuredData';
+import { useWishlist } from '@hooks/useWishlist';
 import { useAuthStore } from '@store/auth';
 import { cn } from '@utils/cn';
 
@@ -171,6 +172,31 @@ export default function ListingDetailPage() {
         }
       : null;
   useStructuredData(structuredData);
+
+  // ⌘D / Ctrl+D toggles the current listing's wishlist state. Skips when a
+  // typing target is focused so the browser's "bookmark page" shortcut still
+  // works inside inputs. preventDefault overrides the browser bookmark for
+  // power users who explicitly want the listing in the in-app wishlist.
+  const { toggle: toggleWishlist } = useWishlist();
+  useEffect(() => {
+    if (!listing?.slug) return;
+    const slug = listing.slug;
+    function onKey(e: KeyboardEvent) {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      if (e.key.toLowerCase() !== 'd') return;
+      const t = e.target;
+      if (t instanceof HTMLElement) {
+        const tag = t.tagName;
+        if (t.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+          return;
+        }
+      }
+      e.preventDefault();
+      toggleWishlist(slug);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [listing?.slug, toggleWishlist]);
 
   const {
     register,
