@@ -1,0 +1,37 @@
+name: Dependabot auto-merge
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Enable auto-merge for:
+      #   - patch + minor bumps (any dependency type)
+      #   - github-actions ecosystem (versioned actions)
+      #   - dev-dependency majors (build/test only, no runtime blast radius)
+      # Production-dependency majors stay manual — they need code-side review.
+      - name: Enable auto-merge on safe bumps
+        if: |
+          steps.meta.outputs.update-type == 'version-update:semver-patch' ||
+          steps.meta.outputs.update-type == 'version-update:semver-minor' ||
+          steps.meta.outputs.package-ecosystem == 'github_actions' ||
+          (steps.meta.outputs.update-type == 'version-update:semver-major' &&
+           steps.meta.outputs.dependency-type == 'direct:development')
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
