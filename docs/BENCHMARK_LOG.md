@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-27T21:35 (UTC) — Round 21
+
+- **Benchmark**: [Notion · Linear 검색 결과 그리드](https://notion.so) — 결과 카드 그리드를 hard breakpoint 4-column으로 두면 1920+ 와이드에서는 카드가 너무 좁고 1280에서는 4번째 열이 끼어들면서 어색해진다. auto-fit minmax이 정답.
+- **Shipped**: BrowsePage 결과 그리드를 `cards-fluid` (auto-fit minmax 280px)로 교체 — 더 이상 sm/lg/xl 단계 고정 컬럼 없음, 컨테이너 폭에 맞춰 자연스럽게 reflow. (SortSelect와 결과 카운터 라벨은 이전 라운드에서 이미 한국어/라임 토큰으로 들어와 있어 이번 라운드는 그리드 reflow와 잔여 디테일 정리만 집중.)
+- **Commit**: `pending`
+- **Next ideas**: (1) NavBar 데스크톱 메뉴 라임 인디케이터 정렬. (2) RelatedListings(추천) 컴포넌트 토큰 sweep.
+
 ## 2026-05-27T21:20 (UTC) — Round 20
 
 - **Benchmark**: [Read.cv · Are.na 작가 카드 + 메타 사이드바](https://read.cv) — 메타 사이드바가 "라벨: 값" 격자라면 카드는 정보가 아니라 표가 된다. 라벨 톤을 mono 라임 caps로 낮추고 값에 시각 무게를 실어줘야 한다.
