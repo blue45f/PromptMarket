@@ -20,7 +20,7 @@
     "build": "turbo run build",
     "clean": "pnpm -r --if-present run clean",
     "ci": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:run && pnpm run build",
-    "verify": "pnpm run ci",
+    "verify": "pnpm run validate:architecture && pnpm run ci",
     "verify:push": "pnpm run verify",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
@@ -36,7 +36,8 @@
     "shared:dev": "pnpm --filter @promptmarket/shared dev",
     "postinstall": "pnpm --filter @promptmarket/shared build",
     "docker:up": "docker compose up -d --build",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "validate:architecture": "node scripts/validate-architecture.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
