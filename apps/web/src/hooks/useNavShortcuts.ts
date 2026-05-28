@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@store/auth';
 
 /**
- * GitHub-style "g x" two-key navigation. Press `g`, then one of the keys
- * below within 1.2s to jump.
+ * Keyboard navigation:
+ * - "g x"  GitHub-style two-key navigation. Press `g`, then one of the keys
+ *          below within 1.2s to jump.
+ * - "c"    Single-key shortcut to /sell (create listing), authed only.
  *
- * Sequences are intentionally short and only fire when nothing else is
- * focused (so `g` inside a textarea or input stays a literal character).
+ * All shortcuts skip when a typing target is focused so they stay literal
+ * inside inputs/textareas/contentEditable surfaces.
  */
 const SEQUENCE_TIMEOUT_MS = 1200;
 
@@ -27,6 +30,7 @@ function isTypingTarget(target: EventTarget | null) {
 
 export function useNavShortcuts() {
   const navigate = useNavigate();
+  const token = useAuthStore((s) => s.token);
 
   useEffect(() => {
     let armed = false;
@@ -45,9 +49,15 @@ export function useNavShortcuts() {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
 
       if (!armed) {
-        if (e.key.toLowerCase() === 'g') {
+        const lower = e.key.toLowerCase();
+        if (lower === 'g') {
           armed = true;
           timer = window.setTimeout(disarm, SEQUENCE_TIMEOUT_MS);
+          return;
+        }
+        if (lower === 'c' && token) {
+          e.preventDefault();
+          navigate('/sell');
         }
         return;
       }
@@ -66,5 +76,5 @@ export function useNavShortcuts() {
       window.removeEventListener('keydown', onKey);
       if (timer != null) window.clearTimeout(timer);
     };
-  }, [navigate]);
+  }, [navigate, token]);
 }

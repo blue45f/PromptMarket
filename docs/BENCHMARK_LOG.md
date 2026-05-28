@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T08:05 (UTC) — Round 44
+
+- **Benchmark**: [Linear `c` = create issue 키바인딩](https://linear.app) — 핵심 액션 하나에는 한 글자 단축키가 있어야 power-user 흐름이 빨라진다. 다른 페이지에서도 부담 없이 같은 키로 진입할 수 있음.
+- **Shipped**: `useNavShortcuts`에 단일 `c` 단축키 추가 — 인증 상태일 때만 동작, `/sell`로 이동. 입력 필드 위에선 발동 안 함. ShortcutsOverlay에 "작업" 그룹 추가. token 의존성을 zustand store에서 가져와 로그인/로그아웃 시 정확히 토글.
+- **Commit**: `pending`
+- **Next ideas**: (1) FilterPanel sticky 스크롤 그림자. (2) StatsStrip 모바일에서 horizontal scroll snap으로 전환.
+
 ## 2026-05-28T07:55 (UTC) — Round 43
 
 - **Benchmark**: [Stripe footer · Vercel "live numbers"](https://stripe.com) — 모든 페이지가 공유하는 푸터에 살아있는 숫자가 있으면 "이 사이트 운영되고 있다" 신호가 끊기지 않는다. Hero StatsStrip은 홈에만 있고 다른 페이지엔 그 신호가 없었다.

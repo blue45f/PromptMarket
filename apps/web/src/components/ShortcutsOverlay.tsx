@@ -37,6 +37,12 @@ const GROUPS: Array<{ title: string; rows: Array<{ keys: string[]; label: string
       { keys: ['→'], label: '다음 페이지' },
     ],
   },
+  {
+    title: '작업',
+    rows: [
+      { keys: ['c'], label: '새 리스팅 작성 (로그인 시)' },
+    ],
+  },
 ];
 
 export default function ShortcutsOverlay() {
