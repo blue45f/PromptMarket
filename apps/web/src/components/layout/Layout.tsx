@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react';
 import Navbar from './Navbar';
 import CommandPalette from '@components/CommandPalette';
 import ShortcutsOverlay from '@components/ShortcutsOverlay';
+import ScrollToTop from '@components/ScrollToTop';
 import { useMe, useStats } from '@features/marketplace/queries';
 import { useNavShortcuts } from '@hooks/useNavShortcuts';
 import { useSpotlight } from '@hooks/useSpotlight';
@@ -22,6 +23,7 @@ export default function Layout() {
       <Navbar />
       <CommandPalette />
       <ShortcutsOverlay />
+      <ScrollToTop />
       <main className="flex-1">
         <Outlet />
       </main>

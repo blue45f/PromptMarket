@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T11:42 (UTC) — Round 63
+
+- **Benchmark**: [Notion · Substack 긴 글 스크롤 컨트롤](https://substack.com) — 긴 본문에서 맨 위로 돌아가는 동작은 키보드 사용자에게는 `Home`, 마우스 사용자에게는 작은 떠 있는 풀이 표준. 둘 다 막히면 답답하다.
+- **Shipped**: `apps/web/src/components/ScrollToTop.tsx` — 600px scroll threshold, rAF로 스로틀, smooth scroll(reduced-motion 시 instant), iOS safe-area-inset-bottom 대응. Layout에 마운트해 모든 라우트에 전역으로 적용. 비활성 시 `pointer-events-none` + `tabIndex=-1`로 키보드 흐름 깔끔하게 유지.
+- **Commit**: `pending`
+- **Next ideas**: (1) BrowseEmptyState `buildActiveFilterRows` 유닛 테스트. (2) FilterPanel 토글 그룹 키보드 좌우 이동.
+
 ## 2026-05-28T11:30 (UTC) — Round 62
 
 - **Benchmark**: [GitHub · Stack Overflow sitelinks search box](https://schema.org/SearchAction) — 도메인이 어느 정도 인지도가 생기면 SERP에 자체 검색박스가 같이 노출될 수 있는데, 그러려면 WebSite + SearchAction JSON-LD가 반드시 필요.
