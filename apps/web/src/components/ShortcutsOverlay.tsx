@@ -35,6 +35,8 @@ const GROUPS: Array<{ title: string; rows: Array<{ keys: string[]; label: string
     rows: [
       { keys: ['←'], label: '이전 페이지' },
       { keys: ['→'], label: '다음 페이지' },
+      { keys: ['j'], label: '다음 카드 포커스' },
+      { keys: ['k'], label: '이전 카드 포커스' },
     ],
   },
   {

@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T13:58 (UTC) — Round 74
+
+- **Benchmark**: [Linear · Vimium · GitHub 키보드 워크플로](https://linear.app) — 마우스 없이 카탈로그를 빠르게 훑을 수 있어야 power user가 끝까지 머문다. j/k가 vim convention이고 ⌘K + ←/→와 충돌 안 함.
+- **Shipped**: Browse 결과 그리드의 `j` (다음 카드) / `k` (이전 카드) 키보드 네비게이션. 입력 필드 위에서는 발동 안 함, 카드 포커스 + `scrollIntoView`로 자동 스크롤 따라감. 결과 카드 div에 `data-browse-card` 셀렉터 부착. ShortcutsOverlay에도 새 바인딩 표기.
+- **Commit**: `pending`
+- **Next ideas**: (1) Enter 키로 포커스된 카드 열기 (이미 anchor이라 동작하지만 명시). (2) CategoryChips 단위 테스트.
+
 ## 2026-05-28T13:46 (UTC) — Round 73
 
 - **Benchmark**: [Notion · Twitter mobile tab strip](https://twitter.com) — 좁은 화면에서 탭이 줄바꿈되면 시각 위계가 무너진다. 1 row 가로 스크롤 + 가장자리 여백 그라데이션이 표준 패턴.

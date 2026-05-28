@@ -172,8 +172,9 @@ export default function BrowsePage() {
     savedFilters.save(search, label);
   }, [activeCount, filters, q, params, savedFilters]);
 
-  // ← / → keyboard pagination. Skips when a typing target is focused so the
-  // arrow keys keep their default behavior inside the search input.
+  // ← / → keyboard pagination + j / k row navigation. Skips when a typing
+  // target is focused so the arrow keys keep their default behavior inside
+  // the search input.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -187,9 +188,37 @@ export default function BrowsePage() {
       if (e.key === 'ArrowRight' && page < totalPages) {
         e.preventDefault();
         updateExtras({ page: page + 1 });
-      } else if (e.key === 'ArrowLeft' && page > 1) {
+        return;
+      }
+      if (e.key === 'ArrowLeft' && page > 1) {
         e.preventDefault();
         updateExtras({ page: page - 1 });
+        return;
+      }
+      // Vim / Linear-style row navigation: focus the next / previous
+      // listing card within the results grid. Falls back to the first
+      // card if nothing's focused yet.
+      if (e.key === 'j' || e.key === 'k') {
+        const cards = Array.from(
+          document.querySelectorAll<HTMLElement>(
+            '[data-browse-card] a, [data-browse-card] [role="link"]',
+          ),
+        );
+        if (cards.length === 0) return;
+        const focused = document.activeElement as HTMLElement | null;
+        const idx = focused ? cards.indexOf(focused) : -1;
+        const next = e.key === 'j' ? Math.min(cards.length - 1, idx + 1) : Math.max(0, idx - 1);
+        if (idx === -1) {
+          e.preventDefault();
+          cards[0]?.focus();
+          cards[0]?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          return;
+        }
+        if (next !== idx) {
+          e.preventDefault();
+          cards[next]?.focus();
+          cards[next]?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
       }
     }
     window.addEventListener('keydown', onKey);
@@ -372,7 +401,9 @@ export default function BrowsePage() {
             <>
               <div className="cards-fluid">
                 {items.map((l) => (
-                  <ListingCard key={l.id} listing={l} highlight={q} />
+                  <div key={l.id} data-browse-card>
+                    <ListingCard listing={l} highlight={q} />
+                  </div>
                 ))}
               </div>
 
