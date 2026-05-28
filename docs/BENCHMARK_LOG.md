@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T18:08 (UTC) — Round 122
+
+- **Benchmark**: 자체 — MarkdownToc은 사용자가 작성한 마크다운에서 H2/H3 추출. 회귀 시 fenced code 블록 안의 가짜 헤딩이 TOC에 들어가거나(코드 예시에 ##이 등장해도 TOC에 표시되면 안 됨), emphasis 마커가 노출(`**Bold**`)되어 페이지 신뢰도 깨짐.
+- **Shipped**: `apps/web/src/components/MarkdownToc.test.tsx` 5 tests — 헤딩 0개 시 null 반환 / H2 + H3 추출 + H1 제외 / fenced code 블록 내부 헤딩 무시 / `**Bold**` 같은 emphasis 마커 제거 / 한국어 헤딩 정상. 합계 **291 tests / 53 files** (shared 11 + api 86 + web 189) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T18:06 (UTC) — Round 121
 
 - **Benchmark**: 자체 — useTilt와 useSpotlight는 pointer event 기반이라 jsdom에서 완전한 시나리오 검증은 어렵지만, ref 안정성 + 옵션 수용 + 노드 미부착 시 비크래시만큼은 가드 필요. 이로써 web hooks 11개 모두 커버.
