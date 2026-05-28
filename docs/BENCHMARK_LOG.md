@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:12 (UTC) — Round 88
+
+- **Benchmark**: 자체 — Round 87에서 SeoService 보호선이 생긴 김에, ReviewsService도 자유롭게 가드를 리팩토링할 수 있는 기반이 필요. 비즈니스 규칙(평점 1-5 정수, 자기 자신 리스팅 리뷰 금지, 구매 후 리뷰, 중복 리뷰 차단)이 한 메서드에 모여 있어 회귀 비용이 크다.
+- **Shipped**: `apps/api/src/reviews/reviews.service.spec.ts` 11 tests — rating 거부 4종(소수/0/6/NaN), listing 404, 자기 리뷰 forbidden, 구매 없음 forbidden, 중복 리뷰 conflict, 성공 시 prisma.create 호출 인자 + 반환 shape 검증, comment 미제공 시 null 강제, listForListing 매핑/정렬 옵션 검증. 합계 **81 tests / 19 files** (shared 11 + api 14 + web 56) 그린.
+- **Commit**: [`c4909a0`](https://github.com/blue45f/promptmarket/commit/c4909a0)
+
 ## 2026-05-28T16:33 (UTC) — Round 87
 
 - **Benchmark**: 자체 — apps/api도 테스트 0건 상태. SeoService.sitemap()이 XML escape를 잊으면 SEO 결과가 깨지고 사용자에게도 보이지 않는 영역이라 보호선이 절실.
