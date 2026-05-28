@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:16 (UTC) — Round 90
+
+- **Benchmark**: 자체 — ListingsService.getBySlug의 body 가시성(owner/구매자/무료 → 표시, 그 외 → null)이 결제 모델의 핵심이라 회귀가 가장 비싸다. 또한 update/remove의 소유자 가드 회귀는 권한 사고로 직결.
+- **Shipped**: `apps/api/src/listings/listings.service.spec.ts` 12 tests — body 가시성 5종(404/anon-paid 차단/free-anon 허용/owner 항상 허용 + purchase 조회 안 함/purchase 시 허용) + avgRating 평균 계산 + update/remove 비-소유자 forbidden + remove 시 review/purchase 캐스케이드 삭제 + related limit 클램프(0→1, 999→12) + 404 + list vendor 알 수 없음 → `__no_match__` sentinel. 합계 **100 tests / 21 files** (shared 11 + api 33 + web 56) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:14 (UTC) — Round 89
 
 - **Benchmark**: 자체 — PurchasesService에는 가드 5종 + 무료/유료 트랜잭션 두 경로가 한 메서드에 모여 있다. 자기 자신 구매 차단, 잔액 부족 오탐, 판매자 잔액 가산 누락 같은 회귀가 가장 비싼 영역인데 보호선이 없었다.
