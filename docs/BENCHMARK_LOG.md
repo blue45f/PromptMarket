@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:14 (UTC) — Round 89
+
+- **Benchmark**: 자체 — PurchasesService에는 가드 5종 + 무료/유료 트랜잭션 두 경로가 한 메서드에 모여 있다. 자기 자신 구매 차단, 잔액 부족 오탐, 판매자 잔액 가산 누락 같은 회귀가 가장 비싼 영역인데 보호선이 없었다.
+- **Shipped**: `apps/api/src/purchases/purchases.service.spec.ts` 7 tests — 리스팅 404 / 자기 구매 forbidden / 중복 구매 conflict / 무료 리스팅 트랜잭션 2-op + body 반환 + user.findUnique 호출 안함 / 유료에서 buyer 미존재 404 / 잔액 부족 400 / 유료 트랜잭션 4-op + 반환 shape. `$transaction` 모킹은 op 배열 순서 그대로 createdPurchase를 첫 번째에 매핑. 합계 **88 tests / 20 files** (shared 11 + api 21 + web 56) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:12 (UTC) — Round 88
 
 - **Benchmark**: 자체 — Round 87에서 SeoService 보호선이 생긴 김에, ReviewsService도 자유롭게 가드를 리팩토링할 수 있는 기반이 필요. 비즈니스 규칙(평점 1-5 정수, 자기 자신 리스팅 리뷰 금지, 구매 후 리뷰, 중복 리뷰 차단)이 한 메서드에 모여 있어 회귀 비용이 크다.
