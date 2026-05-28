@@ -270,9 +270,9 @@ export default function ListingDetailPage() {
             >
               {(
                 [
-                  ['overview', 'Overview'],
-                  ['reviews', `Reviews (${reviews.length})`],
-                  ['related', 'Related'],
+                  ['overview', '개요'],
+                  ['reviews', `리뷰 (${reviews.length})`],
+                  ['related', '관련'],
                 ] as const
               ).map(([key, label]) => (
                 <Tabs.Trigger
@@ -309,7 +309,7 @@ export default function ListingDetailPage() {
 
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
                   <h2 className="text-lg font-bold tracking-tight text-ink dark:text-bone">
-                    {canViewBody ? 'Content' : 'Preview'}
+                    {canViewBody ? '본문' : '미리보기'}
                   </h2>
                   {canViewBody && listing.body && (
                     <div className="flex items-center gap-2">
@@ -323,7 +323,7 @@ export default function ListingDetailPage() {
                           <Copy className="w-3.5 h-3.5" />
                         )}
                         <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
-                          {copied ? 'Copied!' : 'Copy'}
+                          {copied ? '복사됨' : '복사'}
                         </span>
                       </button>
                       <button
@@ -331,7 +331,7 @@ export default function ListingDetailPage() {
                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        Download .md
+                        .md 다운로드
                       </button>
                     </div>
                   )}
@@ -385,7 +385,7 @@ export default function ListingDetailPage() {
                     className="mb-6 rounded-xl border border-line dark:border-night-line p-4 bg-canvas-deep/60 dark:bg-night-deep/40"
                   >
                     <p className="text-sm font-medium text-ink dark:text-bone mb-2">
-                      Leave a review
+                      리뷰 남기기
                     </p>
                     <StarRating
                       value={rating}
@@ -397,7 +397,7 @@ export default function ListingDetailPage() {
                     )}
                     <textarea
                       {...register('comment')}
-                      placeholder="What did you think? (optional)"
+                      placeholder="어떠셨나요? (선택)"
                       rows={3}
                       className="mt-3 w-full rounded-lg border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
                     />
@@ -421,7 +421,7 @@ export default function ListingDetailPage() {
 
                 {reviews.length === 0 ? (
                   <p className="text-sm text-ink-mute dark:text-bone-mute">
-                    No reviews yet. Be the first!
+                    아직 리뷰가 없어요. 첫 번째 리뷰가 되어 보세요!
                   </p>
                 ) : (
                   <ul className="space-y-4">
@@ -478,11 +478,11 @@ export default function ListingDetailPage() {
             <div className="mt-5 space-y-2">
               {isOwner ? (
                 <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft">
-                  You own this listing
+                  내가 만든 리스팅
                 </span>
               ) : isPurchased ? (
                 <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200 border border-volt-200 dark:border-volt-800 font-semibold">
-                  Owned ✓
+                  보유 중 ✓
                 </span>
               ) : (
                 <button
@@ -496,10 +496,10 @@ export default function ListingDetailPage() {
                     <ShoppingCart className="w-4 h-4" />
                   )}
                   {buying
-                    ? 'Processing…'
+                    ? '처리 중…'
                     : free
-                      ? 'Get for free'
-                      : `Buy for ${formatPrice(listing.priceCents)}`}
+                      ? '무료로 받기'
+                      : `${formatPrice(listing.priceCents)}에 구매`}
                 </button>
               )}
               <InstallPanel slug={listing.slug} type={listing.type} className="mt-2" />
@@ -515,7 +515,7 @@ export default function ListingDetailPage() {
                       <Copy className="w-3.5 h-3.5" />
                     )}
                     <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
-                      {copied ? 'Copied!' : 'Copy'}
+                      {copied ? '복사됨' : '복사'}
                     </span>
                   </button>
                   <button
@@ -523,50 +523,45 @@ export default function ListingDetailPage() {
                     className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    Download
+                    다운로드
                   </button>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6">
+          <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-5">
             <div className="flex items-center gap-3">
-              <div
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-lg font-bold text-white"
+              <span
                 aria-hidden
+                className="relative inline-flex w-12 h-12 rounded-xl bg-ink dark:bg-bone text-volt-300 dark:text-ink font-display font-bold text-lg items-center justify-center -rotate-3"
               >
                 {listing.author.username[0]?.toUpperCase() ?? '?'}
-              </div>
+                <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-volt-400 ring-2 ring-canvas-sub dark:ring-night-sub" />
+              </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-ink dark:text-bone truncate">
+                <p className="font-display text-[0.95rem] font-semibold text-ink dark:text-bone truncate tracking-tight">
                   @{listing.author.username}
                 </p>
-                <Link
-                  to={`/users/${listing.author.username}`}
-                  className="text-xs text-volt-700 dark:text-volt-300 hover:underline"
-                >
-                  View profile
-                </Link>
+                <p className="text-[0.7rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
+                  메이커
+                </p>
               </div>
-              <button
-                type="button"
-                className="text-sm font-medium px-3 py-1.5 rounded-md border border-line dark:border-night-line text-ink-soft dark:text-bone-soft hover:border-volt-400 motion-safe:transition"
-                onClick={() => {
-                  /* follow is a no-op for now per spec */
-                }}
+              <Link
+                to={`/users/${listing.author.username}`}
+                className="inline-flex items-center gap-1 text-sm font-medium px-3 py-1.5 rounded-full border border-line dark:border-night-line text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt"
               >
-                Follow
-              </button>
+                프로필
+              </Link>
             </div>
           </div>
 
           <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 space-y-4 text-sm">
-            <Meta label="Type">
+            <Meta label="타입">
               <TypeBadge type={listing.type} />
             </Meta>
             {models.length > 0 && (
-              <Meta label="Models">
+              <Meta label="모델">
                 <div className="flex flex-wrap gap-1">
                   {models.map((m) => (
                     <ModelBadge key={m} slug={m} />
@@ -575,29 +570,34 @@ export default function ListingDetailPage() {
               </Meta>
             )}
             {listing.type === 'PROMPT' && listing.technique && (
-              <Meta label="Technique">
+              <Meta label="기법">
                 <TechniqueBadge technique={listing.technique} />
               </Meta>
             )}
             {listing.difficulty && (
-              <Meta label="Difficulty">
+              <Meta label="난이도">
                 <DifficultyBadge difficulty={listing.difficulty} />
               </Meta>
             )}
+            {listing.category && (
+              <Meta label="카테고리">
+                <span className="text-xs text-ink dark:text-bone">{listing.category}</span>
+              </Meta>
+            )}
             {listing.license && (
-              <Meta label="License">
+              <Meta label="라이선스">
                 <LicenseBadge license={listing.license} />
               </Meta>
             )}
             {listing.version && (
-              <Meta label="Version">
+              <Meta label="버전">
                 <span className="font-mono text-xs text-ink-soft dark:text-bone-soft">
                   v{listing.version}
                 </span>
               </Meta>
             )}
-            <Meta label="Updated">
-              <span className="text-xs text-ink-mute dark:text-bone-mute">
+            <Meta label="업데이트">
+              <span className="text-xs text-ink-mute dark:text-bone-mute font-mono">
                 {formatDate(listing.updatedAt ?? listing.createdAt)}
               </span>
             </Meta>
@@ -608,10 +608,10 @@ export default function ListingDetailPage() {
       {/* Bottom related */}
       <section className="mt-16">
         <h2 className="text-xl font-bold tracking-tight text-ink dark:text-bone mb-1">
-          You might also like
+          이런 것도 좋아할 거예요
         </h2>
         <p className="text-sm text-ink-mute dark:text-bone-mute mb-5">
-          Hand-picked recommendations from the marketplace.
+          마켓플레이스에서 엄선한 추천.
         </p>
         <RelatedListings listingId={listing.id} />
       </section>
@@ -671,10 +671,10 @@ export default function ListingDetailPage() {
 function Meta({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-3">
-      <span className="text-xs uppercase tracking-wide font-semibold text-ink-mute dark:text-bone-mute pt-0.5">
+      <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute pt-1">
         {label}
       </span>
-      <div className="text-right">{children}</div>
+      <div className="text-right min-w-0">{children}</div>
     </div>
   );
 }

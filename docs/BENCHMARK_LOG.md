@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T21:20 (UTC) — Round 20
+
+- **Benchmark**: [Read.cv · Are.na 작가 카드 + 메타 사이드바](https://read.cv) — 메타 사이드바가 "라벨: 값" 격자라면 카드는 정보가 아니라 표가 된다. 라벨 톤을 mono 라임 caps로 낮추고 값에 시각 무게를 실어줘야 한다.
+- **Shipped**: ListingDetail 메타 사이드바 라벨을 한국어로(타입/모델/기법/난이도/카테고리/라이선스/버전/업데이트), `<Meta>` 컴포넌트의 라벨 톤을 mono 라임 caps로 다듬고 카테고리 행 신규 추가. 작가 카드를 ProfilePage 스타일 회전 아바타 + 라임 인디케이터 닷 + 메이커 mono caps로 재구성, 비활성 Follow 버튼을 실제 동작하는 "프로필" 링크로 교체. Overview/Reviews/Related 탭 라벨, 사이드바 구매 CTA, 본문/미리보기 카피, 복사/다운로드 라벨, "리뷰 남기기"/"No reviews yet" 등 잔여 영문 카피 한국어화.
+- **Commit**: `pending`
+- **Next ideas**: (1) Browse SortSelect 한국어화 + 디자인 토큰 정렬. (2) NavBar 데스크톱 메뉴 액티브 상태 라임 정렬.
+
 ## 2026-05-27T21:05 (UTC) — Round 19
 
 - **Benchmark**: [Linear roadmap · Vercel changelog 상세 페이지](https://linear.app) — 상세 페이지는 마켓의 신뢰감을 결정한다. Tabs, 페이월, 구매 CTA, 리뷰 폼 한 곳이라도 라임/잉크 시스템 밖이면 어색하다.
 - **Shipped**: ListingDetailPage 토큰 sweep. Tabs 액티브를 인디고→라임으로, 페이월 카드(`🔒 전체 본문 잠금 해제`)를 라임 대시드 + canvas-sub로, 페이지 그라디언트 페이드를 canvas-sub/night-sub로, 사이드바 메인 CTA를 ink→lime slide hover + lift, 리뷰 등록 버튼도 동일, "보유 중" 배지를 라임 인디케이터로, gray-100 잔재를 canvas-deep로. 카피 한국어화(처리 중/구매해서 보기/리뷰 등록/제출 중).
-- **Commit**: `pending`
+- **Commit**: [`15aff0b`](https://github.com/blue45f/promptmarket/commit/15aff0b)
 - **Next ideas**: (1) 상세 페이지 메타 사이드바("Type/Category/Difficulty…") 한국어 라벨화. (2) Author 카드 + Follow 버튼 디자인 정리.
 
 ## 2026-05-27T20:50 (UTC) — Round 18
