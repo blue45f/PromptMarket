@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:42 (UTC) — Round 102
+
+- **Benchmark**: 자체 — SearchBar combobox는 WAI-ARIA 패턴(aria-expanded / aria-activedescendant)과 키보드 내비(ArrowDown / Enter / Escape)를 함께 다룬다. 회귀 시 키보드 사용자가 검색을 못 하거나 스크린리더 인식이 깨질 수 있는데 가드가 없었다.
+- **Shipped**: `apps/web/src/components/SearchBar.test.tsx` 8 tests — 트림된 값 onSubmit + history 기록 / 빈/공백 제출 시 history 비기록 / 포커스 시 history가 있으면 listbox 열림 + aria-expanded=true / history 비어있을 때 미열림 / ArrowDown 이동 시 aria-activedescendant 업데이트 / Enter 시 하이라이트된 옵션 commit / Escape 시 닫힘 / 옵션 클릭 → submit. 합계 **172 tests / 29 files** (shared 11 + api 54 + web 107) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:40 (UTC) — Round 101
 
 - **Benchmark**: 자체 — Browse 페이지의 가장 큰 미테스트 표면이 FilterPanel. `emptyFilters` / `countActive` 산수는 활성 배지 카운트, 필터 초기화 흐름, 빈 상태 표기 모두에 의존하는데 회귀 가드 부재. 또한 PROMPT 외 타입을 선택했을 때 "프롬프트 기법" 섹션이 숨겨지는 분기는 UX 결정 사항이라 명시 잠금 필요.
