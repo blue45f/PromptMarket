@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
+    "prepare": "husky",
     "dev:web": "pnpm --filter @promptmarket/web dev",
     "dev:api": "pnpm --filter @promptmarket/api dev",
     "dev:shared": "pnpm --filter @promptmarket/shared dev",
@@ -38,6 +39,19 @@
     "docker:down": "docker compose down"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.5",
+    "prettier": "^3.8.3",
     "turbo": "^2.9.15"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,html}": [
+      "prettier --write"
+    ]
   }
 }
