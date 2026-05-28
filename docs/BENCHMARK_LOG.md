@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T22:50 (UTC) — Round 26
+
+- **Benchmark**: [GitHub README · MDN docs · Vercel changelog](https://github.com) — 좋은 마크다운 뷰는 코드 블록마다 호버 시에만 보이는 작은 복사 버튼을 제공한다. 본문 흐름을 가리지 않으면서 필요할 때 정확히 그 한 블록만 가져갈 수 있어야 한다.
+- **Shipped**: `MarkdownView`의 `<pre>` 블록을 자체 `CodeBlock` 컴포넌트로 래핑. 우상단 호버 복사 버튼(라임 체크 피드백), `extractText`가 ReactNode 트리를 재귀로 풀어서 정확히 그 블록의 텍스트만 클립보드로 보낸다. `.not-prose`로 prose 트랜스폼 무력화, 라임 액티브 시 opacity 그대로 노출. 한국어 카피(복사/복사됨).
+- **Commit**: `pending`
+- **Next ideas**: (1) Browse 페이지 SortSelect를 ⌃/⌥ 키로 토글. (2) Featured/Trending 섹션에 미니 콘트라스트 캐러셀(가로 스크롤 vs 그리드 동시 노출).
+
 ## 2026-05-27T22:35 (UTC) — Round 25
 
 - **Benchmark**: [Substack · Medium · Are.na 공유 버튼](https://substack.com) — 모바일에서는 OS Share Sheet가, 데스크톱에서는 링크 복사가 자연스럽다. 두 경로 모두 처리하지 않으면 절반 사용자에게 안 보이는 기능이 된다.
 - **Shipped**: ListingDetail 사이드바에 Share 버튼 신설. `navigator.share` 가능 시 Web Share API로 OS 시트 호출, 미지원/취소 시 canonical URL을 클립보드로 복사. 공유 상태(공유됨/링크 복사됨/공유)에 따라 라임 체크/Share 아이콘 토글. 가격 라벨을 mono 라임 caps + 디스플레이 스케일 가격으로 다듬어 시각 위계 정리. usePageMeta가 이미 og:url을 세팅해 두어 Share Sheet 미리보기 카드까지 맞물림.
-- **Commit**: `pending`
+- **Commit**: [`e5a2571`](https://github.com/blue45f/promptmarket/commit/e5a2571)
 - **Next ideas**: (1) 코드 블록(`MarkdownView` pre) 우측 상단 인라인 복사 버튼. (2) 리스팅 카드 호버 시 마이크로 미리보기.
 
 ## 2026-05-27T22:20 (UTC) — Round 24
