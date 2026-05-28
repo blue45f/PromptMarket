@@ -1,10 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import {
   CreateListingSchema,
+  CreateReviewSchema,
   LISTING_TYPE_META,
+  ListingQuerySchema,
   ListingType,
+  LoginSchema,
   MODELS,
   MODEL_BY_SLUG,
+  PromptTechnique,
+  RegisterSchema,
+  TECHNIQUE_META,
+  TopupSchema,
   formatPrice,
   modelFamily,
   modelLabel,
@@ -98,5 +105,132 @@ describe('CreateListingSchema', () => {
   it('rejects empty models array', () => {
     const r = CreateListingSchema.safeParse({ ...valid, models: [] });
     expect(r.success).toBe(false);
+  });
+});
+
+describe('TECHNIQUE_META', () => {
+  it('has an entry for every PromptTechnique enum value', () => {
+    for (const t of PromptTechnique.options) {
+      expect(TECHNIQUE_META).toHaveProperty(t);
+      const meta = TECHNIQUE_META[t as PromptTechnique];
+      expect(meta.label).toBeTruthy();
+      expect(meta.hint).toBeTruthy();
+    }
+  });
+});
+
+describe('ListingQuerySchema', () => {
+  it('defaults sort=newest, page=1, pageSize=12 when omitted', () => {
+    const r = ListingQuerySchema.safeParse({});
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data.sort).toBe('newest');
+      expect(r.data.page).toBe(1);
+      expect(r.data.pageSize).toBe(12);
+    }
+  });
+
+  it('coerces string page and pageSize to numbers', () => {
+    const r = ListingQuerySchema.safeParse({ page: '3', pageSize: '24' });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data.page).toBe(3);
+      expect(r.data.pageSize).toBe(24);
+    }
+  });
+
+  it('rejects page < 1', () => {
+    expect(ListingQuerySchema.safeParse({ page: 0 }).success).toBe(false);
+  });
+
+  it('rejects pageSize > 48', () => {
+    expect(ListingQuerySchema.safeParse({ pageSize: 49 }).success).toBe(false);
+  });
+
+  it('accepts all valid sort values', () => {
+    for (const sort of ['newest', 'trending', 'top']) {
+      expect(ListingQuerySchema.safeParse({ sort }).success).toBe(true);
+    }
+  });
+});
+
+describe('RegisterSchema', () => {
+  const valid = { email: 'alice@example.com', username: 'alice_1', password: 'secret1' };
+
+  it('accepts a well-formed payload', () => {
+    expect(RegisterSchema.safeParse(valid).success).toBe(true);
+  });
+
+  it('rejects an invalid email', () => {
+    expect(RegisterSchema.safeParse({ ...valid, email: 'not-an-email' }).success).toBe(false);
+  });
+
+  it('rejects a username with spaces or special chars', () => {
+    expect(RegisterSchema.safeParse({ ...valid, username: 'hi there!' }).success).toBe(false);
+  });
+
+  it('rejects a username that is too short', () => {
+    expect(RegisterSchema.safeParse({ ...valid, username: 'ab' }).success).toBe(false);
+  });
+
+  it('rejects a short password', () => {
+    expect(RegisterSchema.safeParse({ ...valid, password: 'abc' }).success).toBe(false);
+  });
+});
+
+describe('LoginSchema', () => {
+  it('accepts valid email + password', () => {
+    expect(LoginSchema.safeParse({ email: 'a@b.com', password: 'p' }).success).toBe(true);
+  });
+
+  it('rejects missing password', () => {
+    expect(LoginSchema.safeParse({ email: 'a@b.com' }).success).toBe(false);
+  });
+
+  it('rejects invalid email', () => {
+    expect(LoginSchema.safeParse({ email: 'not-email', password: 'pw' }).success).toBe(false);
+  });
+});
+
+describe('CreateReviewSchema', () => {
+  it('accepts rating 1–5 with no comment', () => {
+    for (const rating of [1, 2, 3, 4, 5]) {
+      expect(CreateReviewSchema.safeParse({ rating }).success).toBe(true);
+    }
+  });
+
+  it('accepts an optional comment', () => {
+    expect(CreateReviewSchema.safeParse({ rating: 4, comment: 'Great!' }).success).toBe(true);
+  });
+
+  it('rejects rating 0 and 6', () => {
+    expect(CreateReviewSchema.safeParse({ rating: 0 }).success).toBe(false);
+    expect(CreateReviewSchema.safeParse({ rating: 6 }).success).toBe(false);
+  });
+
+  it('rejects a comment over 1000 chars', () => {
+    expect(
+      CreateReviewSchema.safeParse({ rating: 5, comment: 'x'.repeat(1001) }).success,
+    ).toBe(false);
+  });
+});
+
+describe('TopupSchema', () => {
+  it('accepts amounts between 100 and 100_000 cents', () => {
+    expect(TopupSchema.safeParse({ amountCents: 100 }).success).toBe(true);
+    expect(TopupSchema.safeParse({ amountCents: 50_000 }).success).toBe(true);
+    expect(TopupSchema.safeParse({ amountCents: 100_000 }).success).toBe(true);
+  });
+
+  it('rejects amounts below 100', () => {
+    expect(TopupSchema.safeParse({ amountCents: 99 }).success).toBe(false);
+  });
+
+  it('rejects amounts above 100_000', () => {
+    expect(TopupSchema.safeParse({ amountCents: 100_001 }).success).toBe(false);
+  });
+
+  it('rejects non-integer amounts', () => {
+    expect(TopupSchema.safeParse({ amountCents: 1000.5 }).success).toBe(false);
   });
 });
