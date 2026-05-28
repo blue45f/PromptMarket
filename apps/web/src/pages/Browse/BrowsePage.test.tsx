@@ -4,10 +4,12 @@ import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import BrowsePage from './BrowsePage';
 
-const mockUseListings = vi.fn(() => ({ data: null, isPending: true, error: null }));
+const { mockUseListings } = vi.hoisted(() => ({
+  mockUseListings: vi.fn(() => ({ data: null as unknown, isPending: true, error: null })),
+}));
 
 vi.mock('@features/marketplace/queries', () => ({
-  useListings: (...args: unknown[]) => mockUseListings(...args),
+  useListings: mockUseListings,
 }));
 
 vi.mock('@hooks/useSavedFilters', () => ({

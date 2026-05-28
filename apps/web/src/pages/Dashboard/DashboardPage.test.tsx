@@ -29,7 +29,7 @@ function withProviders(node: React.ReactNode) {
 
 describe('<DashboardPage />', () => {
   beforeEach(() => {
-    (useAuthStore as Mock).mockReturnValue({
+    (useAuthStore as unknown as Mock).mockReturnValue({
       user: { id: 'u1', username: 'alice', balanceCents: 5000 },
     });
   });

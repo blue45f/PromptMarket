@@ -21,11 +21,11 @@ function withProviders(node: React.ReactNode) {
 
 describe('Navbar', () => {
   beforeEach(() => {
-    (useAuthStore as Mock).mockReturnValue({ token: null, user: null, logout: vi.fn() });
+    (useAuthStore as unknown as Mock).mockReturnValue({ token: null, user: null, logout: vi.fn() });
   });
 
   it('renders PromptMarket brand text', () => {
-    (useAuthStore as Mock).mockReturnValue({ token: null, user: null, logout: vi.fn() });
+    (useAuthStore as unknown as Mock).mockReturnValue({ token: null, user: null, logout: vi.fn() });
     render(withProviders(<Navbar />));
     expect(screen.getByText('PromptMarket')).toBeTruthy();
   });
@@ -42,7 +42,7 @@ describe('Navbar', () => {
   });
 
   it('shows 로그아웃 button when authenticated', () => {
-    (useAuthStore as Mock).mockReturnValue({
+    (useAuthStore as unknown as Mock).mockReturnValue({
       token: 'tok',
       user: { id: 'u1', username: 'alice', balanceCents: 5000 },
       logout: vi.fn(),
@@ -52,7 +52,7 @@ describe('Navbar', () => {
   });
 
   it('shows user balance formatted as currency when authenticated', () => {
-    (useAuthStore as Mock).mockReturnValue({
+    (useAuthStore as unknown as Mock).mockReturnValue({
       token: 'tok',
       user: { id: 'u1', username: 'alice', balanceCents: 5000 },
       logout: vi.fn(),

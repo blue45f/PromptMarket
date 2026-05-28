@@ -7,7 +7,7 @@ vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }));
 import { useAuthStore } from '@store/auth';
 
 function TestApp({ token }: { token: string | null }) {
-  (useAuthStore as Mock).mockReturnValue(token);
+  (useAuthStore as unknown as Mock).mockReturnValue(token);
   return (
     <MemoryRouter initialEntries={['/protected']}>
       <Routes>

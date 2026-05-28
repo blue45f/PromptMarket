@@ -29,26 +29,26 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
 describe('<RecentlyViewed />', () => {
   it('returns null when slugs is empty', () => {
-    (useRecentlyViewed as Mock).mockReturnValue({ slugs: [], clear: vi.fn() });
+    (useRecentlyViewed as unknown as Mock).mockReturnValue({ slugs: [], clear: vi.fn() });
     const { container } = render(<RecentlyViewed />, { wrapper: Wrapper });
     expect(container.firstChild).toBeNull();
   });
 
   it('renders the "최근 본" section label when slugs are present', () => {
-    (useRecentlyViewed as Mock).mockReturnValue({ slugs: ['slug-1'], clear: vi.fn() });
+    (useRecentlyViewed as unknown as Mock).mockReturnValue({ slugs: ['slug-1'], clear: vi.fn() });
     render(<RecentlyViewed />, { wrapper: Wrapper });
     expect(screen.getByText(/최근 본/i)).toBeTruthy();
   });
 
   it('renders the "돌아가서 마저 볼만한" heading when slugs are present', () => {
-    (useRecentlyViewed as Mock).mockReturnValue({ slugs: ['slug-1'], clear: vi.fn() });
+    (useRecentlyViewed as unknown as Mock).mockReturnValue({ slugs: ['slug-1'], clear: vi.fn() });
     render(<RecentlyViewed />, { wrapper: Wrapper });
     expect(screen.getByText('돌아가서 마저 볼만한')).toBeTruthy();
   });
 
   it('calls clear when "기록 지우기" button is clicked', () => {
     const clear = vi.fn();
-    (useRecentlyViewed as Mock).mockReturnValue({ slugs: ['slug-1'], clear });
+    (useRecentlyViewed as unknown as Mock).mockReturnValue({ slugs: ['slug-1'], clear });
     render(<RecentlyViewed />, { wrapper: Wrapper });
     fireEvent.click(screen.getByText('기록 지우기'));
     expect(clear).toHaveBeenCalledTimes(1);

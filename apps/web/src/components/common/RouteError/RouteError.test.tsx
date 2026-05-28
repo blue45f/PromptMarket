@@ -24,8 +24,8 @@ function renderRouteError() {
 
 describe('RouteError', () => {
   it('shows the status and statusText when isRouteErrorResponse returns true', () => {
-    (useRouteError as Mock).mockReturnValue({ status: 404, statusText: 'Not Found' });
-    (isRouteErrorResponse as Mock).mockReturnValue(true);
+    (useRouteError as unknown as Mock).mockReturnValue({ status: 404, statusText: 'Not Found' });
+    (isRouteErrorResponse as unknown as Mock).mockReturnValue(true);
 
     renderRouteError();
 
@@ -34,8 +34,8 @@ describe('RouteError', () => {
   });
 
   it('shows 문제가 발생했어요 heading when error is a plain Error', () => {
-    (useRouteError as Mock).mockReturnValue(new Error('something went wrong'));
-    (isRouteErrorResponse as Mock).mockReturnValue(false);
+    (useRouteError as unknown as Mock).mockReturnValue(new Error('something went wrong'));
+    (isRouteErrorResponse as unknown as Mock).mockReturnValue(false);
 
     renderRouteError();
 
@@ -44,8 +44,8 @@ describe('RouteError', () => {
   });
 
   it('shows the error message when error is a plain Error', () => {
-    (useRouteError as Mock).mockReturnValue(new Error('something went wrong'));
-    (isRouteErrorResponse as Mock).mockReturnValue(false);
+    (useRouteError as unknown as Mock).mockReturnValue(new Error('something went wrong'));
+    (isRouteErrorResponse as unknown as Mock).mockReturnValue(false);
 
     renderRouteError();
 
@@ -53,8 +53,8 @@ describe('RouteError', () => {
   });
 
   it('has a 홈으로 link to "/"', () => {
-    (useRouteError as Mock).mockReturnValue(new Error('oops'));
-    (isRouteErrorResponse as Mock).mockReturnValue(false);
+    (useRouteError as unknown as Mock).mockReturnValue(new Error('oops'));
+    (isRouteErrorResponse as unknown as Mock).mockReturnValue(false);
 
     renderRouteError();
 

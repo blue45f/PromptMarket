@@ -84,18 +84,18 @@ function renderPage() {
 }
 
 beforeEach(() => {
-  (useAuthStore as Mock).mockReturnValue({ token: null, user: null });
+  (useAuthStore as unknown as Mock).mockReturnValue({ token: null, user: null });
 });
 
 describe('<ListingDetailPage />', () => {
   it('shows skeleton while loading', () => {
-    (useListing as Mock).mockReturnValue({ data: null, isPending: true, error: null });
+    (useListing as unknown as Mock).mockReturnValue({ data: null, isPending: true, error: null });
     const { container } = renderPage();
     expect(container.querySelector('[class*="animate-pulse"]')).toBeTruthy();
   });
 
   it('shows error message when data fails', () => {
-    (useListing as Mock).mockReturnValue({
+    (useListing as unknown as Mock).mockReturnValue({
       data: null,
       isPending: false,
       error: new Error('not found'),
@@ -105,7 +105,7 @@ describe('<ListingDetailPage />', () => {
   });
 
   it('shows the listing title when loaded', () => {
-    (useListing as Mock).mockReturnValue({
+    (useListing as unknown as Mock).mockReturnValue({
       data: { listing: mockListing, reviews: [] },
       isPending: false,
       error: null,
@@ -116,7 +116,7 @@ describe('<ListingDetailPage />', () => {
   });
 
   it('shows the author username', () => {
-    (useListing as Mock).mockReturnValue({
+    (useListing as unknown as Mock).mockReturnValue({
       data: { listing: mockListing, reviews: [] },
       isPending: false,
       error: null,
@@ -126,7 +126,7 @@ describe('<ListingDetailPage />', () => {
   });
 
   it('shows the price for priceCents=499', () => {
-    (useListing as Mock).mockReturnValue({
+    (useListing as unknown as Mock).mockReturnValue({
       data: { listing: mockListing, reviews: [] },
       isPending: false,
       error: null,

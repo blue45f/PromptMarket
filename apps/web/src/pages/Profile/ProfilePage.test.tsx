@@ -27,7 +27,7 @@ function withProviders(node: React.ReactNode) {
 
 describe('<ProfilePage />', () => {
   beforeEach(() => {
-    (useUserProfile as Mock).mockReturnValue({
+    (useUserProfile as unknown as Mock).mockReturnValue({
       data: undefined,
       isPending: false,
       error: null,
@@ -35,19 +35,19 @@ describe('<ProfilePage />', () => {
   });
 
   it('shows skeleton pulse when loading', () => {
-    (useUserProfile as Mock).mockReturnValue({ data: undefined, isPending: true, error: null });
+    (useUserProfile as unknown as Mock).mockReturnValue({ data: undefined, isPending: true, error: null });
     const { container } = render(withProviders(<ProfilePage />));
     expect(container.querySelector('[class*="animate-pulse"]')).toBeTruthy();
   });
 
   it('shows "사용자를 찾을 수 없어요." when data is absent and no error', () => {
-    (useUserProfile as Mock).mockReturnValue({ data: undefined, isPending: false, error: null });
+    (useUserProfile as unknown as Mock).mockReturnValue({ data: undefined, isPending: false, error: null });
     render(withProviders(<ProfilePage />));
     expect(screen.getByText('사용자를 찾을 수 없어요.')).toBeTruthy();
   });
 
   it('shows the username when loaded', () => {
-    (useUserProfile as Mock).mockReturnValue({
+    (useUserProfile as unknown as Mock).mockReturnValue({
       data: { user: { id: 'u1', username: 'testuser', bio: 'Hello' }, listings: [] },
       isPending: false,
       error: null,
@@ -57,7 +57,7 @@ describe('<ProfilePage />', () => {
   });
 
   it('shows the drop section heading when loaded', () => {
-    (useUserProfile as Mock).mockReturnValue({
+    (useUserProfile as unknown as Mock).mockReturnValue({
       data: { user: { id: 'u1', username: 'testuser', bio: 'Hello' }, listings: [] },
       isPending: false,
       error: null,
