@@ -6,7 +6,8 @@
     "lib": ["ES2022"],
     "declaration": true,
     "strict": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src"]
 }
