@@ -32,6 +32,7 @@ import InstallPanel from '@components/InstallPanel';
 import AudienceMatch from '@components/AudienceMatch';
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
 import { usePageMeta } from '@hooks/usePageMeta';
+import { useStructuredData } from '@hooks/useStructuredData';
 import { useAuthStore } from '@store/auth';
 import { cn } from '@utils/cn';
 
@@ -129,6 +130,47 @@ export default function ListingDetailPage() {
         ? `${window.location.origin}/listings/${listing.slug}`
         : undefined,
   });
+
+  // JSON-LD structured data — pairs with the OG meta so Google / Bing /
+  // Naver can render rich product cards (price + rating + author).
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const structuredData =
+    listing && origin
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: listing.title,
+          description: listing.description,
+          url: `${origin}/listings/${listing.slug}`,
+          category: listing.category,
+          brand: { '@type': 'Brand', name: 'PromptMarket' },
+          author: {
+            '@type': 'Person',
+            name: listing.author?.username
+              ? `@${listing.author.username}`
+              : 'PromptMarket maker',
+          },
+          dateModified: listing.updatedAt ?? listing.createdAt,
+          offers: {
+            '@type': 'Offer',
+            price: ((listing.priceCents ?? 0) / 100).toFixed(2),
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+            url: `${origin}/listings/${listing.slug}`,
+          },
+          aggregateRating:
+            (listing.reviewCount ?? 0) > 0
+              ? {
+                  '@type': 'AggregateRating',
+                  ratingValue: (listing.avgRating ?? 0).toFixed(1),
+                  reviewCount: listing.reviewCount,
+                  bestRating: '5',
+                  worstRating: '1',
+                }
+              : undefined,
+        }
+      : null;
+  useStructuredData(structuredData);
 
   const {
     register,

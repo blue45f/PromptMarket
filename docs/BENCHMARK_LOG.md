@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T11:20 (UTC) — Round 61
+
+- **Benchmark**: [Etsy · Gumroad rich product results](https://etsy.com) — OG 메타로는 social share만 풍부해진다. Google 검색 결과에 별점/가격이 표시되려면 JSON-LD가 필요. 작은 추가지만 시간이 지날수록 organic traffic 차이가 누적.
+- **Shipped**: `useStructuredData` 훅 — mount 시 `<script type="application/ld+json">` 헤드에 주입, unmount 시 제거. ListingDetail에서 Product + Offer + AggregateRating(리뷰 ≥1) 스키마를 합성해서 inject. canonical URL과 일관, reviewCount 0 케이스는 AggregateRating 자체를 omit해서 잘못된 별점 노출 방지.
+- **Commit**: `pending`
+- **Next ideas**: (1) 홈에 WebSite/SearchAction 구조화 데이터. (2) Listing detail 상단에 ScrollToTop 버튼.
+
 ## 2026-05-28T11:05 (UTC) — Round 59
 
 - **Benchmark**: 자체 — 디자인 시스템 + 의존성 메이저 라운드 이후 기존 vitest 2개만 남아 있음. localStorage 기반 훅 두 개에 가벼운 unit test를 박아 두면 회귀가 컴포넌트 단까지 올라오기 전에 잡힘.
