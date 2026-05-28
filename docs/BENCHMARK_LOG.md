@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T16:08 (UTC) — Round 85
+
+- **Benchmark**: 자체 — `useScrollRestore`는 시각적으로 검증하기 까다로워 일단 동작하면 영원히 안 본다. 회귀가 발생해도 모르게 통과할 수 있는 영역이라 안전망이 필수.
+- **Shipped**: `useScrollRestore.test.tsx` 3건 — 빈 storage일 때 top으로 scroll, 저장된 값이 있을 때 정확히 그 픽셀로 restore, pathname+search 조합별로 별도 위치 유지. rAF 동기 실행 + scrollTo spy로 비동기 경로 검증. 56 tests / 16 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) useSearchHistory 호출 확장 (Browse SearchBar onSubmit 외에도 기록). (2) 통합 e2e smoke 시드.
+
 ## 2026-05-28T15:55 (UTC) — Round 84
 
 - **Benchmark**: 자체 — 헤드라인이 너무 많은 줄로 분리되면 임팩트가 떨어진다. Bricolage Grotesque의 가변 폭 axis를 좁히는 게 정답.
