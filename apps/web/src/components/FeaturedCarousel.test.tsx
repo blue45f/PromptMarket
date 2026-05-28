@@ -13,17 +13,18 @@ function withProviders(node: React.ReactNode) {
   );
 }
 
-const card = {
+  const card = {
   id: 'l1',
   slug: 'l1-slug',
   title: 'Card 1',
   type: 'PROMPT' as const,
   description: 'd',
   category: 'Coding',
-  tags: [],
-  models: [],
-  technique: null,
-  difficulty: 'intermediate' as const,
+    tags: [],
+    models: [],
+    author: { id: 'author-1', username: 'author-1' },
+    technique: null,
+    difficulty: 'intermediate' as const,
   license: 'MIT' as const,
   version: '1.0.0',
   priceCents: 0,

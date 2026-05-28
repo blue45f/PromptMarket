@@ -25,14 +25,26 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'undefined') {
 // fires so the hooks don't crash on mount.
 if (typeof globalThis !== 'undefined' && typeof (globalThis as { IntersectionObserver?: unknown }).IntersectionObserver === 'undefined') {
   class IntersectionObserverShim {
-    observe() {}
-    unobserve() {}
+    constructor(
+      _callback: IntersectionObserverCallback,
+      _options: IntersectionObserverInit = {},
+    ) {
+      void _callback;
+      void _options;
+    }
+
+    observe(_target: Element) {}
+    unobserve(_target: Element) {}
     disconnect() {}
-    takeRecords() { return [] as IntersectionObserverEntry[]; }
+    takeRecords() {
+      return [] as IntersectionObserverEntry[];
+    }
+
     root = null;
     rootMargin = '';
     thresholds: ReadonlyArray<number> = [];
   }
-  (globalThis as { IntersectionObserver: typeof IntersectionObserverShim }).IntersectionObserver =
-    IntersectionObserverShim as unknown as typeof IntersectionObserver;
+
+  (globalThis as unknown as { IntersectionObserver: typeof IntersectionObserverShim }).IntersectionObserver =
+    IntersectionObserverShim as never;
 }
