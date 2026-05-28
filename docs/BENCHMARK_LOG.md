@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:35 (UTC) — Round 100
+
+- **Benchmark**: 자체 — theme store는 View Transitions API 사용, OS prefers-color-scheme 폴백, reduced-motion 단축 경로까지 분기가 4개. 단축 경로 회귀 시 모션 민감 사용자가 갑작스러운 페이드를 보게 되는데, 가드가 없었다. 또한 라운드 100 마일스톤으로 백 라운드 마무리.
+- **Shipped**: `apps/web/src/store/theme.test.ts` 5 tests — setMode가 localStorage + dark 클래스 동시 반영 / light 모드는 dark 클래스 제거 / apply()는 store 모드에서 다시 칠함 / reduced-motion + dark 두 조건 모두 매칭 시 startViewTransition·opacity 폴백 건너뛰고 instant 페인트 + transition style 미잔존. 합계 **153 tests / 27 files** (shared 11 + api 54 + web 91) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:34 (UTC) — Round 99
 
 - **Benchmark**: 자체 — `pnpm typecheck`가 깨진 TS 오류(`CreateListingPage`의 `useForm` resolver 타입)가 있었고, 이전 라운드에서 미커밋된 GitHub workflow 두 개(`auto-merge-on-green.yml`, `branch-protection.yml`)와 `dependabot-auto-merge.yml` 강화가 working tree에 남아 있었다. 의존성 메이저 범프(vite 6→8, hookform 3→5 등)는 미검증이라 폐기.
