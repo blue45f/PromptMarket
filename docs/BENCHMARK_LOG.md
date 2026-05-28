@@ -7,6 +7,22 @@
 
 ---
 
+## 2026-05-28T19:20 (UTC) — Rounds 123-131
+
+- **Benchmark**: 전체 monorepo 테스트 커버리지 완성 — 미커버 컴포넌트/페이지/훅 전량 추가.
+- **Shipped**:
+  - Round 123: shared 스키마 검증 22개 (TECHNIQUE_META, ListingQuerySchema, RegisterSchema, LoginSchema, CreateReviewSchema, TopupSchema)
+  - Round 124: `MarkdownView.test.tsx` — GFM, 코드블록 복사 버튼, clipboard.writeText, 복사됨 레이블
+  - Round 125: queryKeys, EmptyState, Spinner, SkeletonCard, RequireAuth, ListingCard — 31 tests
+  - Round 126: SkeletonDetail, AuthLayout, RouteError, NotFoundPage — 18 tests
+  - Round 127: Navbar, LoginPage, RegisterPage — 13 tests
+  - Round 128: RecentlyViewed, CommandPalette, DashboardPage, ProfilePage — 16 tests
+  - Round 129: Hero, BrowsePage, ListingDetailPage — 13 tests
+  - Round 130: Layout, CreateListingPage, HomePage — 10 tests
+  - Round 131: marketplace queries hooks (renderHook, selector-aware auth mock) — 6 tests
+- **Total**: **421 tests / 77 files** (shared 33 + api 86 + web 302). 전체 패키지 그린.
+- **Commits**: `57f8835`, `eaaeff9`, `7a87b25`, `8cc8e50`, `fd83936`, `661d702`, `fdb2cc3`
+
 ## 2026-05-28T18:08 (UTC) — Round 122
 
 - **Benchmark**: 자체 — MarkdownToc은 사용자가 작성한 마크다운에서 H2/H3 추출. 회귀 시 fenced code 블록 안의 가짜 헤딩이 TOC에 들어가거나(코드 예시에 ##이 등장해도 TOC에 표시되면 안 됨), emphasis 마커가 노출(`**Bold**`)되어 페이지 신뢰도 깨짐.
