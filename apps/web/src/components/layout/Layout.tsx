@@ -3,10 +3,12 @@ import { ArrowUpRight } from 'lucide-react';
 import Navbar from './Navbar';
 import CommandPalette from '@components/CommandPalette';
 import ShortcutsOverlay from '@components/ShortcutsOverlay';
-import { useMe } from '@features/marketplace/queries';
+import { useMe, useStats } from '@features/marketplace/queries';
 import { useNavShortcuts } from '@hooks/useNavShortcuts';
 import { useSpotlight } from '@hooks/useSpotlight';
 import { useReveal } from '@hooks/useReveal';
+import { useCountUp } from '@hooks/useCountUp';
+import { formatCompact } from '@utils/format';
 
 export default function Layout() {
   // Triggers the /auth/me query when a token is present and syncs the user
@@ -48,6 +50,7 @@ function SiteFooter() {
       <div className="grain-layer" aria-hidden style={{ opacity: 0.18, mixBlendMode: 'overlay' }} />
 
       <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] pt-16 pb-8">
+        <FooterLiveStats />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 lg:gap-x-10">
           {/* Left: link columns */}
           <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10 text-sm">
@@ -147,6 +150,55 @@ function SiteFooter() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterLiveStats() {
+  const { data } = useStats();
+  const totalListings = data?.totalListings ?? 0;
+  const totalSales = data?.totalSales ?? 0;
+  const totalUsers = data?.totalUsers ?? 0;
+  const a = useCountUp(totalListings);
+  const b = useCountUp(totalSales);
+  const c = useCountUp(totalUsers);
+  return (
+    <div className="mb-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+      <FooterStat refEl={a.ref} value={a.value} label="리스팅" dot="bg-volt-400" />
+      <FooterStat refEl={b.ref} value={b.value} label="다운로드" dot="bg-violet" />
+      <FooterStat refEl={c.ref} value={c.value} label="메이커" dot="bg-coral" />
+    </div>
+  );
+}
+
+function FooterStat({
+  refEl,
+  value,
+  label,
+  dot,
+}: {
+  refEl: React.RefObject<HTMLElement | null>;
+  value: number;
+  label: string;
+  dot: string;
+}) {
+  return (
+    <div
+      ref={refEl as React.RefObject<HTMLDivElement>}
+      className="rounded-2xl border border-bone/10 bg-bone/[0.04] px-5 py-4 flex items-baseline gap-4"
+    >
+      <span aria-hidden className={`w-1.5 h-1.5 rounded-full ${dot} volt-pulse shrink-0 translate-y-[-2px]`} />
+      <div className="flex-1 min-w-0">
+        <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-bone-mute">
+          {label}
+        </p>
+        <p
+          className="font-mono font-bold text-bone tabular-nums tracking-[-0.02em] leading-none mt-1"
+          style={{ fontSize: 'clamp(1.4rem, 1.5vw + 0.9rem, 1.85rem)' }}
+        >
+          {formatCompact(value)}
+        </p>
+      </div>
+    </div>
   );
 }
 

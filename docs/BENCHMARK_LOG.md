@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T07:55 (UTC) — Round 43
+
+- **Benchmark**: [Stripe footer · Vercel "live numbers"](https://stripe.com) — 모든 페이지가 공유하는 푸터에 살아있는 숫자가 있으면 "이 사이트 운영되고 있다" 신호가 끊기지 않는다. Hero StatsStrip은 홈에만 있고 다른 페이지엔 그 신호가 없었다.
+- **Shipped**: SiteFooter 상단에 `FooterLiveStats` 추가. /listings/stats를 useStats로 끌어와 useCountUp으로 0 → target 카운트업, 라임/바이올렛/코랄 닷 + mono 숫자. 사이트 어디서든 푸터 스크롤만 해도 카탈로그 규모가 즉시 보임. dark/light 일관.
+- **Commit**: `pending`
+- **Next ideas**: (1) FilterPanel sticky 스크롤 시 그림자 강화. (2) 키보드 단축키 chord(`g s` 외에 `c` = create listing 등 확장).
+
 ## 2026-05-28T07:45 (UTC) — Round 42
 
 - **Benchmark**: [Next.js Link prefetch · GitHub repo cards](https://nextjs.org) — 호버는 곧 "클릭하려는 의도"의 가장 흔한 시그널. 그 순간에 다음 페이지 쿼리를 미리 끌어오면 클릭 후 인지 지연이 사실상 0이 된다.
