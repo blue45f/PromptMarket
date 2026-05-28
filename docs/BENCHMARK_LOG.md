@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T15:45 (UTC) — Round 83
+
+- **Benchmark**: [Instagram · Facebook 피드 skeleton](https://instagram.com) — 동일 폭 skeleton 4-8개가 줄 맞춰 펄스하면 "로딩이 멈춘 듯" 느껴진다. 폭이 살짝 다른 카드가 섞이면 실제 콘텐츠처럼 자연스럽다.
+- **Shipped**: SkeletonCard에 `seed` prop 추가 — 인덱스 기반 결정론적 폭 선택. Title 4가지, line 3가지, line2 4가지, pill 4가지 폭에서 모듈러 인덱스로 픽. 같은 seed는 항상 같은 모양이라 펄스 중 리렌더가 변하지 않음. SkeletonGrid는 `i`를 그대로 전달.
+- **Commit**: `pending`
+- **Next ideas**: (1) Notifications bell. (2) Hero 헤드라인 모바일에서 한 줄 더 압축.
+
 ## 2026-05-28T15:32 (UTC) — Round 82
 
 - **Benchmark**: 자체 — ModelTabs는 home의 핵심 분기다. shared MODELS / vendor 매핑이 깨지면 사용자가 클릭해도 빈 결과만 받는다. tab 동작과 active state는 두 가지를 한 번에 검증할 수 있는 곳.
