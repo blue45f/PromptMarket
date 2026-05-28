@@ -20,7 +20,7 @@ describe('cn', () => {
 
   it('resolves Tailwind conflicts — last wins', () => {
     expect(cn('p-2', 'p-4')).toBe('p-4');
-    expect(cn('text-red-500', 'text-blue-500')).toBe('text-blue-500');
+    expect(cn('text-coral', 'text-violet')).toBe('text-violet');
   });
 
   it('supports conditional object syntax', () => {
