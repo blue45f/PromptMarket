@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T19:10 (UTC) — Round 11
+
+- **Benchmark**: [Gumroad · Stripe Atlas 대시보드](https://gumroad.com) — 셀러 대시보드는 첫 인상이 "여기서 일이 굴러간다"는 인상을 줘야 한다. 통계 카드, 탭, 빈 상태가 모두 같은 시각 언어를 공유.
+- **Shipped**: Dashboard 페이지를 새 디자인 시스템으로 재작성. 인디고/zinc 잔재 제거 → OKLCH 라임/잉크/크림. 메이커 이름을 헤드라인 디스플레이로, 탭은 Pill 스타일(active는 잉크 슬라이드), 빈 상태마다 CTA + ⌘아이콘. 지갑은 ambient mesh가 있는 카드로 승격, 충전 칩은 라임 액티브. StatCard에 컬러 액센트 닷.
+- **Commit**: `pending`
+- **Next ideas**: (1) 셀러 페이지(`/users/:username`) 디자인 패스. (2) Sell(`/sell`) 발행 폼 톤업.
+
 ## 2026-05-27T18:55 (UTC) — Round 10
 
 - **Benchmark**: [Airbnb · Notion 검색 0건](https://airbnb.com) — "결과 없음"을 단순 알림으로 두지 않고, 어떤 필터가 결과를 막고 있는지 명시한 뒤 한 번에 하나씩 풀 수 있는 인터랙티브 카드를 제공한다.
 - **Shipped**: `apps/web/src/components/BrowseEmptyState.tsx` + `buildActiveFilterRows` 유틸. 활성 필터(검색어 · 타입 다중 · 모델 다중 · 기법 · 난이도 · 카테고리 · 가격)를 한국어 라벨로 나열, 각 행 클릭 시 그 필터 하나만 제거하는 deep-link 동작. 전체 카탈로그 / 필터 초기화 CTA, ambient mesh + 그레인 디자인 일관성. Browse가 `q`와 모든 필터를 그대로 전달.
-- **Commit**: `pending`
+- **Commit**: [`49510a9`](https://github.com/blue45f/promptmarket/commit/49510a9)
 - **Next ideas**: (1) 셀러 라이브러리(`/dashboard`) 빈 상태 톤업. (2) 푸터에 sitemap.xml/robots 라우트 안내.
 
 ## 2026-05-27T18:45 (UTC) — Round 9
