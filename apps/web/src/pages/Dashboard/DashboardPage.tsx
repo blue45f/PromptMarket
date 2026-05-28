@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as Tabs from '@radix-ui/react-tabs';
-import { ArrowUpRight, Copy, Loader2, PlusCircle, Wallet } from 'lucide-react';
-import { getErrorMessage } from '@services/api';
+import { useQueries } from '@tanstack/react-query';
+import { ArrowUpRight, Copy, Heart, Loader2, PlusCircle, Wallet } from 'lucide-react';
+import { api, getErrorMessage } from '@services/api';
 import { useMyListings, useMyPurchases, useTopup } from '@features/marketplace/queries';
+import { listingKey } from '@features/marketplace/queryKeys';
+import type { ListingDetailResponse } from '@/types';
 import { useAuthStore } from '@store/auth';
+import { useWishlist } from '@hooks/useWishlist';
 import { usePageMeta } from '@hooks/usePageMeta';
 import ListingCard from '@components/ListingCard';
 import { SkeletonGrid } from '@components/SkeletonCard';
@@ -18,6 +22,7 @@ const TOPUP_AMOUNTS = [10, 50, 100];
 const TABS = [
   ['listings', '내 리스팅'],
   ['library', '라이브러리'],
+  ['wishlist', '위시리스트'],
   ['wallet', '지갑'],
 ] as const;
 
@@ -199,6 +204,10 @@ export default function DashboardPage() {
           )}
         </Tabs.Content>
 
+        <Tabs.Content value="wishlist" className="mt-7 focus-visible:outline-none">
+          <WishlistTab />
+        </Tabs.Content>
+
         <Tabs.Content value="wallet" className="mt-7 focus-visible:outline-none max-w-xl">
           <section className="relative overflow-hidden rounded-3xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-7 sm:p-8">
             <div
@@ -289,6 +298,69 @@ function StatCard({
       >
         {value}
       </p>
+    </div>
+  );
+}
+
+function WishlistTab() {
+  const { slugs, clear } = useWishlist();
+
+  const results = useQueries({
+    queries: slugs.map((slug) => ({
+      queryKey: listingKey(slug),
+      queryFn: () =>
+        api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${slug}`),
+      staleTime: 10 * 60_000,
+    })),
+  });
+  const items = results
+    .map((r) => r.data?.listing)
+    .filter((l): l is NonNullable<typeof l> => !!l);
+  const pending = results.some((r) => r.isPending);
+
+  if (slugs.length === 0) {
+    return (
+      <EmptyState
+        emoji="💗"
+        title="아직 담은 항목이 없어요"
+        description="마음에 드는 리스팅의 카드 우하단 ♡ 버튼을 눌러 위시리스트에 담아 보세요."
+        action={
+          <Link
+            to="/browse"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.85rem] font-medium focus-volt lift-on-hover"
+          >
+            카탈로그 둘러보기
+            <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        }
+      />
+    );
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between gap-3">
+        <p className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute inline-flex items-center gap-2">
+          <Heart className="w-3.5 h-3.5 text-coral" aria-hidden />
+          담은 항목 {slugs.length}건
+        </p>
+        <button
+          type="button"
+          onClick={clear}
+          className="text-[0.78rem] font-medium text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt rounded"
+        >
+          전부 지우기
+        </button>
+      </div>
+      {pending && items.length === 0 ? (
+        <SkeletonGrid count={4} />
+      ) : (
+        <div className="cards-fluid">
+          {items.map((l) => (
+            <ListingCard key={l.id} listing={l} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

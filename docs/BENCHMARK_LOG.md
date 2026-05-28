@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-28T06:35 (UTC) — Round 36
+
+- **Benchmark**: [Notion · Are.na 위시리스트 탭](https://notion.so) — 카드에 하트만 두면 "어디서 다시 보지?"라는 의문이 남는다. 대시보드에 별도 탭이 있어야 의도가 완결된다.
+- **Shipped**: `/dashboard`에 "위시리스트" 탭 신설. `useWishlist`로 localStorage slug를 읽고 `useQueries`로 각 slug의 상세 데이터를 10분 staleTime으로 하이드레이트, cards-fluid 그리드로 렌더. 빈 상태에는 ♡ 사용법 안내 + 카탈로그 CTA, 상단에는 mono caps 카운터(코랄 하트) + "전부 지우기" 액션.
+- **Commit**: `pending`
+- **Next ideas**: (1) ListingDetail 사이드바에 inline wishlist 풀(저장됨/위시리스트). (2) Featured Maker 회차 회전 (top-5 셔플).
+
 ## 2026-05-28T05:55 (UTC) — Round 29
 
 - **Benchmark**: [Pinterest · Are.na save](https://pinterest.com) — 즐겨찾기는 hover로 살짝 나타나야 자연스럽다. 항상 보이면 카드가 산만해지고, 누른 상태(저장됨)는 다시 강조되어야 한다.
 - **Shipped**: `useWishlist` localStorage 훅 + `WishlistButton` 컴포넌트(카드용 둥근 하트 / 인라인 풀 2가지 변형). 200개 slug 캡, CustomEvent로 같은 탭 내 다중 구독 동기화. ListingCard 표지 우하단에 호버 시만 노출되는 하트 칩을 화살표 인디케이터와 한 줄로 묶음. 활성 시 코랄 fill로 강조.
-- **Commit**: `pending`
+- **Commit**: [`6899b61`](https://github.com/blue45f/promptmarket/commit/6899b61)
 - **Next ideas**: (1) Dashboard에 "위시리스트" 탭 신설. (2) ListingDetail 사이드바에 인라인 wishlist 풀.
 
 ## 2026-05-27T23:05 (UTC) — Round 27
