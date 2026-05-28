@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T18:06 (UTC) — Round 121
+
+- **Benchmark**: 자체 — useTilt와 useSpotlight는 pointer event 기반이라 jsdom에서 완전한 시나리오 검증은 어렵지만, ref 안정성 + 옵션 수용 + 노드 미부착 시 비크래시만큼은 가드 필요. 이로써 web hooks 11개 모두 커버.
+- **Shipped**: `apps/web/src/hooks/useTilt.test.ts` 3 tests — 리렌더 시 ref 동일 identity / max·depth 옵션 수용 / current 노드 없는 기본 상태 비크래시. `apps/web/src/hooks/useSpotlight.test.ts` 2 tests — 리렌더 시 ref 동일 identity / 미부착 상태 비크래시. 합계 **286 tests / 52 files** (shared 11 + api 86 + web 184) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T18:05 (UTC) — Round 120
 
 - **Benchmark**: 자체 — ScrollToTop은 prefers-reduced-motion 사용자에게 부드러운 스크롤 대신 즉시 이동을 보장해야 함. 회귀하면 모션 민감 사용자가 멀미. 또한 미표시 상태에서도 키보드 포커스에 잡히지 않아야 함(tabindex=-1).
