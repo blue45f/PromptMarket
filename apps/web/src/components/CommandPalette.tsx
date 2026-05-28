@@ -8,6 +8,7 @@ import { useListings } from '@features/marketplace/queries';
 import { listingKey } from '@features/marketplace/queryKeys';
 import { api } from '@services/api';
 import { useWishlist } from '@hooks/useWishlist';
+import { useSearchHistory } from '@hooks/useSearchHistory';
 import type { ListingDetailResponse } from '@/types';
 import { Heart } from 'lucide-react';
 import { formatPrice } from '@utils/format';
@@ -89,6 +90,8 @@ export default function CommandPalette() {
   // Wishlist surfacing — hydrate up to 5 saved slugs so visitors can jump
   // from the palette into a previously saved listing.
   const { slugs: wishlistSlugs } = useWishlist();
+  const history = useSearchHistory();
+  const showHistory = !trimmed && history.entries.length > 0;
   const visibleWishlist = wishlistSlugs.slice(0, 5);
   const wishlistResults = useQueries({
     queries: trimmed
@@ -184,6 +187,7 @@ export default function CommandPalette() {
                 setQ(e.target.value);
                 setActive(0);
               }}
+              onBlur={() => history.record(trimmed)}
               onKeyDown={handleInputKey}
               placeholder="검색하거나 작업으로 점프…"
               className="flex-1 bg-transparent outline-none placeholder:text-ink-mute dark:placeholder:text-bone-mute text-ink dark:text-bone"
@@ -212,6 +216,39 @@ export default function CommandPalette() {
                   />
                 ))}
               </Section>
+            )}
+
+            {showHistory && (
+              <div className="px-1.5 py-1.5">
+                <div className="flex items-center justify-between gap-3 px-2 pb-1.5 pt-1">
+                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+                    최근 검색
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => history.clear()}
+                    className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt rounded"
+                  >
+                    지우기
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5 px-2">
+                  {history.entries.map((h) => (
+                    <button
+                      key={h}
+                      type="button"
+                      onClick={() => {
+                        setQ(h);
+                        setActive(0);
+                        inputRef.current?.focus();
+                      }}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line text-[0.74rem] text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+                    >
+                      {h}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
 
             {!trimmed && wishlistListings.length > 0 && (
