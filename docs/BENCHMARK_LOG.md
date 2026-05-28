@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T08:25 (UTC) — Round 46
+
+- **Benchmark**: [Apple HIG · GOV.UK Design](https://designsystem.digital.gov) — 좋은 디자인 시스템은 사용자가 OS 레벨에서 요청하는 접근성 신호(reduced-motion, contrast more)에 자동으로 응답한다. 우리 시스템은 reduced-motion만 다루고 있어서 contrast more가 빠짐.
+- **Shipped**: (1) `prefers-contrast: more` 미디어 쿼리에서 border tokens(`--color-line`, `--color-night-line`)를 더 진한 명도로, focus-volt outline을 3px + 4px offset으로 끌어올림. (2) StarRating의 `aria-label`을 영어 "stars"에서 한국어 "{n}점"으로 변경 — 한국어 스크린리더 사용자에게 자연스럽게 들림.
+- **Commit**: `pending`
+- **Next ideas**: (1) PWA manifest + iOS startup image. (2) 시드 라이브러리 (Library) 빈 상태에서 무료 추천 자동.
+
 ## 2026-05-28T08:15 (UTC) — Round 45
 
 - **Benchmark**: [Airbnb · Notion 사이드바](https://airbnb.com) — sticky 사이드바가 본문보다 살짝 떠 있다는 시각 신호(섀도)가 있어야 페이지 스크롤 시 분리감이 산다. 또한 사이드바 자체가 화면보다 길면 자체 스크롤이 필요하다.

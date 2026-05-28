@@ -43,7 +43,7 @@ export default function StarRating({
                 'leading-none',
                 interactive ? 'cursor-pointer focus-volt rounded' : 'cursor-default',
               )}
-              aria-label={`${n} star${n > 1 ? 's' : ''}`}
+              aria-label={`${n}점`}
             >
               <Star
                 className={cn(

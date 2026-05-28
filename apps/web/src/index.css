@@ -627,6 +627,23 @@
     }
   }
 
+  /* High-contrast accommodation — when a user opts into a more legible UI,
+     borders and focus rings get bolder so the brand surfaces stay readable
+     without losing the OKLCH identity. */
+  @media (prefers-contrast: more) {
+    :root,
+    html.dark {
+      --color-line: oklch(0.65 0.025 90);
+      --color-line-strong: oklch(0.5 0.03 90);
+      --color-night-line: oklch(0.55 0.04 290);
+      --color-night-line-strong: oklch(0.65 0.045 290);
+    }
+    .focus-volt:focus-visible {
+      outline-width: 3px;
+      outline-offset: 4px;
+    }
+  }
+
   /* Reduced motion respects */
   @media (prefers-reduced-motion: reduce) {
     .animate-fade-in,
