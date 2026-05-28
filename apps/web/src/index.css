@@ -154,12 +154,22 @@
   }
 
   /* Tighten the Hangul tracking on display type at small viewports so the
-     headline stops eating its column. */
+     headline stops eating its column. Below 420px we also nudge the
+     Bricolage Grotesque width axis tighter (75 → 70) so 4-syllable Hangul
+     blocks like "프롬프트" sit on one line. */
   @media (max-width: 480px) {
     .display-condense,
     .display-tight,
     .display-wide {
       letter-spacing: -0.02em;
+    }
+  }
+  @media (max-width: 420px) {
+    .display-condense {
+      font-variation-settings: 'wdth' 70, 'wght' 800;
+    }
+    .display-tight {
+      font-variation-settings: 'wdth' 82, 'wght' 700;
     }
   }
 

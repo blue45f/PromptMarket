@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T15:55 (UTC) — Round 84
+
+- **Benchmark**: 자체 — 헤드라인이 너무 많은 줄로 분리되면 임팩트가 떨어진다. Bricolage Grotesque의 가변 폭 axis를 좁히는 게 정답.
+- **Shipped**: `@media (max-width: 420px)`에서 `.display-condense` wdth 75→70, `.display-tight` wdth 88→82. 한글 4음절(프롬프트) 블록이 한 줄에 더 잘 들어감. 모바일 hero 헤드라인 줄 수 감소.
+- **Commit**: `pending`
+- **Next ideas**: (1) Notifications bell stub. (2) `useScrollRestore` 단위 테스트.
+
 ## 2026-05-28T15:45 (UTC) — Round 83
 
 - **Benchmark**: [Instagram · Facebook 피드 skeleton](https://instagram.com) — 동일 폭 skeleton 4-8개가 줄 맞춰 펄스하면 "로딩이 멈춘 듯" 느껴진다. 폭이 살짝 다른 카드가 섞이면 실제 콘텐츠처럼 자연스럽다.
