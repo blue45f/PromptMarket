@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:50 (UTC) — Round 109
+
+- **Benchmark**: 자체 — RelatedListings에는 실제 버그였던 API 응답 shape 정규화(`Array.isArray(data) ? data : data?.items ?? []`)가 들어 있다. 한 번 'data.map is not a function'으로 깨졌고, 양쪽 shape 모두 통과하는 가드가 회귀하면 디테일 페이지 하단이 전부 사라짐. 또한 skeleton 4개 + 빈 상태 한글 카피도 잠금.
+- **Shipped**: `apps/web/src/components/RelatedListings.test.tsx` 4 tests — pending 시 cards-fluid 그리드에 SkeletonCard 4개 / 빈 items 시 '아직 관련 리스팅이 없어요.' / legacy 배열 직접 응답 정규화 / 모던 `{ items: [...] }` 정규화. `useRelated`를 `vi.mock`으로 대체해 QueryClient 부트스트랩 회피, MemoryRouter로 ListingCard 내부의 `<Link>` 안전. 합계 **217 tests / 39 files** (shared 11 + api 86 + web 117) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:49 (UTC) — Round 108
 
 - **Benchmark**: 자체 — 마지막 컨트롤러(SeoController)만 spec 없는 상태였다. sitemap.xml은 검색 엔진이 매일 긁어가는 표면이라 회귀 시 곧바로 인덱싱 누락. SeoService에는 이미 회귀 가드가 있으니 컨트롤러도 짝지어 잠그면 라우팅 + Content-Type 헤더 + 에러 전파까지 모두 보호.
