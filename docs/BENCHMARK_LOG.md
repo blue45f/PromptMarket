@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T22:05 (UTC) — Round 23
+
+- **Benchmark**: [Notion property chips · Linear status pills](https://notion.so) — 좋은 메타데이터 칩은 의미 강도가 색의 강도와 일치해야 한다. "쉬움/어려움" 같은 메타가 너무 화려하면 본문보다 시선을 가져간다.
+- **Shipped**: DifficultyBadge(입문/중급/고급), TechniqueBadge, LicenseBadge 디자인 시스템 정렬. 난이도는 라임 닷(입문) / 아이리스 닷(중급) / 코랄 닷(고급)으로 카테고리를 즉시 읽히게 하고, 기법은 바이올렛 캡슐, 라이선스는 mono 잉크 캡슐. 모든 칩이 둥근 풀 + 보더 한 줄로 일관, 영문 라벨 한국어화(입문/중급/고급).
+- **Commit**: `pending`
+- **Next ideas**: (1) NavBar 데스크톱 메뉴 액티브 라임 인디케이터. (2) RelatedListings 호출처에서 사용하는 헤더("관련" 등) 정리.
+
 ## 2026-05-27T21:50 (UTC) — Round 22
 
 - **Benchmark**: [Stripe API · OpenRouter 모델 셀렉터](https://stripe.com) — 모델/벤더 멀티 선택 UI는 두 가지 동작이 동시에 보여야 한다: (1) 지금 선택된 토큰 chip, (2) 벤더별 그룹된 옵션. 그룹 헤더가 무겁지 않게 mono caps로 처리해야 본문 가독성이 살아난다.
 - **Shipped**: RelatedListings를 `cards-fluid`로 교체하고 한국어 빈 상태로 정리. ModelPicker 전체 리스킨: 입력은 둥근 풀 + 라임 포커스, 선택된 chip은 잉크 풀로 통일, 그룹 헤더(vendor)는 mono 라임 caps로 가독성 향상, 체크박스 액센트를 `accent-volt-500`로, 패밀리 표시도 mono caps로. 영문 카피("Search models, vendors…", "No models match …") 한국어화.
-- **Commit**: `pending`
+- **Commit**: [`aff7945`](https://github.com/blue45f/promptmarket/commit/aff7945)
 - **Next ideas**: (1) NavBar 데스크톱 메뉴 액티브 라임 인디케이터. (2) Browse 필터 사이드바 + 메타 라인 잔여 영문 카피 sweep.
 
 ## 2026-05-27T21:35 (UTC) — Round 21
