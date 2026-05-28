@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T11:55 (UTC) — Round 64
+
+- **Benchmark**: 자체 — Browse 빈 상태는 사용자가 막힌 흐름을 푸는 가장 직접적인 도구다. `buildActiveFilterRows`가 깨지면 사용자 입장에서 "왜 결과가 없는지 알 수 없다"는 최악의 경험으로 전락. 회귀 보호 필수.
+- **Shipped**: `apps/web/src/components/BrowseEmptyState.test.ts` 4건 (empty / all dimensions / per-row remove callback forwarding / price=all omit). 합계 13 tests pass.
+- **Commit**: `pending`
+- **Next ideas**: (1) usePageMeta unit test. (2) Footer wordmark hover에 라임 acceleration.
+
 ## 2026-05-28T11:42 (UTC) — Round 63
 
 - **Benchmark**: [Notion · Substack 긴 글 스크롤 컨트롤](https://substack.com) — 긴 본문에서 맨 위로 돌아가는 동작은 키보드 사용자에게는 `Home`, 마우스 사용자에게는 작은 떠 있는 풀이 표준. 둘 다 막히면 답답하다.
