@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:44 (UTC) — Round 104
+
+- **Benchmark**: 자체 — 컨트롤러 자체는 얇은 프록시지만 데코레이터 매핑(@Param, @Body, @CurrentUser, JwtAuthGuard 노출) 회귀 시 401/500 응답이 사용자 화면에 나타나니 가드 필요. 또한 fresh checkout에서 `prisma generate`를 안 한 채로 `pnpm test:run` 돌리면 모든 api 테스트가 `@prisma/client/runtime/library.js` 미해결로 실패하던 환경 문제도 봉합.
+- **Shipped**: `apps/api/src/reviews/reviews.controller.spec.ts` 3 tests — list가 listingId 전달 / create가 userId + body 전달 / 서비스 throw 시 controller가 그대로 전파. Nest의 `Test.createTestingModule` 대신 직접 `new ReviewsController(mockService)` 사용해 prisma 부트스트랩 회피. `apps/api/package.json`의 `test` / `test:run` 스크립트에 `pnpm run db:generate &&` 프리스텝 추가. 합계 **181 tests / 31 files** (shared 11 + api 57 + web 113) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:43 (UTC) — Round 103
 
 - **Benchmark**: 자체 — ModelPicker는 모델 등록부(MODELS)를 vendor별로 그룹화하고 검색 + 토글 + 칩 제거를 한 컴포넌트에서 처리. 회귀 시 사용자가 모델 필터를 못 쓰거나 잘못된 슬러그 전달.

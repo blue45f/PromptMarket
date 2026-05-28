@@ -9,8 +9,8 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/src/main.js",
     "typecheck": "pnpm run db:generate && tsc --noEmit",
-    "test": "vitest",
-    "test:run": "vitest run",
+    "test": "pnpm run db:generate && vitest",
+    "test:run": "pnpm run db:generate && vitest run",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "seed": "ts-node prisma/seed.ts"
