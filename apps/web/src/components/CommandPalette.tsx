@@ -3,7 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import * as Dialog from '@radix-ui/react-dialog';
 import { ArrowRight, Compass, PlusCircle, Search, Sparkles, User } from 'lucide-react';
 import { LISTING_TYPE_META } from '@promptmarket/shared';
+import { useQueries } from '@tanstack/react-query';
 import { useListings } from '@features/marketplace/queries';
+import { listingKey } from '@features/marketplace/queryKeys';
+import { api } from '@services/api';
+import { useWishlist } from '@hooks/useWishlist';
+import type { ListingDetailResponse } from '@/types';
+import { Heart } from 'lucide-react';
 import { formatPrice } from '@utils/format';
 import { useAuthStore } from '@store/auth';
 import { cn } from '@utils/cn';
@@ -80,6 +86,24 @@ export default function CommandPalette() {
   const listingsQ = useListings(trimmed ? { q: trimmed, pageSize: 8 } : { sort: 'top', pageSize: 6 });
   const listings = listingsQ.data?.items ?? [];
 
+  // Wishlist surfacing — hydrate up to 5 saved slugs so visitors can jump
+  // from the palette into a previously saved listing.
+  const { slugs: wishlistSlugs } = useWishlist();
+  const visibleWishlist = wishlistSlugs.slice(0, 5);
+  const wishlistResults = useQueries({
+    queries: trimmed
+      ? []
+      : visibleWishlist.map((slug) => ({
+          queryKey: listingKey(slug),
+          queryFn: () =>
+            api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${slug}`),
+          staleTime: 10 * 60_000,
+        })),
+  });
+  const wishlistListings = wishlistResults
+    .map((r) => r.data?.listing)
+    .filter((l): l is NonNullable<typeof l> => !!l);
+
   const actions = useMemo(() => {
     const filtered = trimmed
       ? STATIC_ACTIONS.filter((a) =>
@@ -89,8 +113,8 @@ export default function CommandPalette() {
     return filtered;
   }, [trimmed, token]);
 
-  // Flat-index navigation across both sections
-  const total = actions.length + listings.length;
+  // Flat-index navigation across all sections.
+  const total = actions.length + wishlistListings.length + listings.length;
 
   useEffect(() => {
     if (active >= total) setActive(Math.max(0, total - 1));
@@ -123,8 +147,11 @@ export default function CommandPalette() {
       if (active < actions.length) {
         const a = actions[active];
         if (a) go(a.to);
+      } else if (active < actions.length + wishlistListings.length) {
+        const w = wishlistListings[active - actions.length];
+        if (w) go(`/listings/${w.slug}`);
       } else {
-        const l = listings[active - actions.length];
+        const l = listings[active - actions.length - wishlistListings.length];
         if (l) go(`/listings/${l.slug}`);
       }
     }
@@ -187,6 +214,29 @@ export default function CommandPalette() {
               </Section>
             )}
 
+            {!trimmed && wishlistListings.length > 0 && (
+              <Section label="위시리스트">
+                {wishlistListings.map((l, i) => {
+                  const meta = LISTING_TYPE_META[l.type];
+                  const rowIdx = actions.length + i;
+                  return (
+                    <Row
+                      key={l.id}
+                      active={rowIdx === active}
+                      onMouseEnter={() => setActive(rowIdx)}
+                      onClick={() => go(`/listings/${l.slug}`)}
+                      icon={
+                        <Heart className="w-3.5 h-3.5 fill-current text-coral" aria-hidden />
+                      }
+                      title={l.title}
+                      subtitle={`${meta.label.toLowerCase()} · @${l.author?.username ?? '—'}`}
+                      rowIndex={rowIdx}
+                    />
+                  );
+                })}
+              </Section>
+            )}
+
             {(listings.length > 0 || listingsQ.isPending) && (
               <Section label={trimmed ? '리스팅' : '인기 리스팅'}>
                 {listingsQ.isPending && (
@@ -194,7 +244,7 @@ export default function CommandPalette() {
                 )}
                 {listings.map((l, i) => {
                   const meta = LISTING_TYPE_META[l.type];
-                  const rowIdx = actions.length + i;
+                  const rowIdx = actions.length + wishlistListings.length + i;
                   return (
                     <Row
                       key={l.id}

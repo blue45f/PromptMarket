@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T10:10 (UTC) — Round 55
+
+- **Benchmark**: [Raycast favorites at the top](https://raycast.com) — 자주 쓰는 항목은 검색 전에 노출돼야 한다. 명령 팔레트 첫 화면에 위시리스트 미니 뷰가 있으면 "다시 보고 싶은 것"으로 한 번에 점프.
+- **Shipped**: CommandPalette에 "위시리스트" 그룹 추가. 검색어 비어 있을 때만 노출, 최대 5건. `useQueries`로 각 slug의 상세 응답을 10분 staleTime으로 하이드레이트, 코랄 fill 하트 아이콘 + 한 줄 메타. 키보드 네비 인덱스(actions → wishlist → listings)와 Enter 라우팅 모두 새 섹션 인지.
+- **Commit**: `pending`
+- **Next ideas**: (1) Saved filters를 CommandPalette에도 노출. (2) Hero 드롭 마키 사용자가 호버 시 슬러그 prefetch.
+
 ## 2026-05-28T09:55 (UTC) — Round 54
 
 - **Benchmark**: [Notion · Linear saved view chips](https://notion.so) — 필터를 다시 조합하려면 손이 여러 번 가는데, "최근에 본 조합 다섯 개"만 있어도 흐름이 끊기지 않는다.
