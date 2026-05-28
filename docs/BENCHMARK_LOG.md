@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T14:58 (UTC) — Round 79
+
+- **Benchmark**: 자체 — 키보드 단축키는 사용자 경험의 가장 미세한 침해/방해를 발생시키기 쉬운 영역(예: 입력 필드 위 g가 navigate 트리거되면 사용자가 한 글자를 잃음). 회귀 보호선 필수.
+- **Shipped**: `useNavShortcuts.test.tsx` 5건 — g b → /browse / g h → / / 인증 시 c → /sell / 미인증 시 c는 무시 / input 위에서 g b 시퀀스 차단. MemoryRouter + useAuthStore + KeyboardEvent dispatch로 통합 검증. 50 tests / 14 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) /sell 폼 draft autosave (localStorage). (2) ModelTabs 단위 테스트.
+
 ## 2026-05-28T14:45 (UTC) — Round 78
 
 - **Benchmark**: [WAI-ARIA combobox 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) — 검색 드롭다운이 마우스만 받으면 절반의 사용자에게 비활성. ↑↓로 이동, Enter로 선택, Esc로 닫는 게 표준.
