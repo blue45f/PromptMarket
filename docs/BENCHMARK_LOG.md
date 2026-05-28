@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:20 (UTC) — Round 92
+
+- **Benchmark**: 자체 — public/private 사용자 shape 분리가 회귀 시 즉시 PII 누수. topUp 가드는 음수/소수/오버플로우 모두 회귀 비용 큼. myListings 매출 합계는 대시보드 핵심 수치.
+- **Shipped**: `apps/api/src/users/users.service.spec.ts` 12 tests — getPublicProfile 404 / email/balanceCents/passwordHash 미포함 + 닥치는 대로 누수 어설션 / 중첩 listings avgRating + author 매핑 + tags split. topUp 거부 4종(소수/0/-/100001 초과) + increment update 호출 인자. myListings 매출 집계(2건 결제 + 1건 무료 → salesCount 3, earningsCents 2000) + 빈 케이스 0/0. getMe 404 + private shape에 email/balanceCents 포함하되 passwordHash 미포함. 합계 **121 tests / 23 files** (shared 11 + api 54 + web 56) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:18 (UTC) — Round 91
 
 - **Benchmark**: 자체 — 인증/세션이 가장 비싼 회귀 영역. login에서 timing-side-channel을 피하려면 unknown email / wrong password / corrupt hash 모두 같은 401을 내야 한다. 또한 publicUser shape가 passwordHash를 누수하면 즉시 사고.
