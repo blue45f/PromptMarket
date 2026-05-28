@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T06:55 (UTC) — Round 38
+
+- **Benchmark**: [Substack feature writer · Are.na profile of the day](https://substack.com) — 한 명만 영구 노출하면 정적인 인상이 남는다. 시간대 기반 회전을 두면 같은 세션에서는 stable하지만 하루 안에서 자연스럽게 변한다.
+- **Shipped**: MakerSpotlight를 시간 기반 회전으로. 추천 리스팅에서 distinct author 목록을 뽑아 3시간 윈도우 단위 인덱스로 선택. 같은 메이커의 드롭만 우측 3개 슬롯에 채워서 "이 사람의 작업"이 한 화면에 모이게 함. 빈 데이터 폴백은 그대로.
+- **Commit**: `pending`
+- **Next ideas**: (1) MarkdownView TOC 사이드바 (긴 본문). (2) Toast 디자인 시스템 정렬.
+
 ## 2026-05-28T06:45 (UTC) — Round 37
 
 - **Benchmark**: [Pinterest 상세 페이지 저장 버튼](https://pinterest.com) — 카드 hover로만 위시리스트에 담을 수 있으면 모바일/접근성 사용자가 누락된다. 상세 페이지 사이드바에 명시 액션이 있어야 한다.

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 import { useListings } from '@features/marketplace/queries';
@@ -226,19 +226,32 @@ function SectionHeader({
 function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
   const spotlightRef = useSpotlight<HTMLDivElement>();
   const { ref, revealed } = useReveal<HTMLDivElement>();
-  // Pick a maker from the featured items; fall back to a seeded display.
-  const top = items[0];
-  const maker = top?.author?.username
-    ? {
-        username: top.author.username,
-        avatar: top.author.username[0]?.toUpperCase() ?? 'M',
-        listings: items.slice(0, 3),
-      }
-    : {
-        username: 'mira',
-        avatar: 'M',
-        listings: [],
-      };
+
+  // Rotate the featured maker across distinct authors in the featured pool,
+  // pinned per ~3-hour window so the same visitor sees the same spotlight
+  // within a session but the home page feels alive across the day.
+  const maker = useMemo(() => {
+    const seen = new Set<string>();
+    const candidates = items
+      .filter((l) => {
+        const u = l.author?.username;
+        if (!u || seen.has(u)) return false;
+        seen.add(u);
+        return true;
+      })
+      .map((l) => l.author!.username!);
+    if (candidates.length === 0) {
+      return { username: 'mira', avatar: 'M', listings: [] as typeof items };
+    }
+    const slot = Math.floor(Date.now() / (3 * 60 * 60 * 1000));
+    const username = candidates[slot % candidates.length];
+    const listings = items.filter((l) => l.author?.username === username).slice(0, 3);
+    return {
+      username,
+      avatar: username[0]?.toUpperCase() ?? 'M',
+      listings,
+    };
+  }, [items]);
   return (
     <section
       ref={ref}
