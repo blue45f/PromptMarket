@@ -12,7 +12,7 @@ import {
   type ListingType,
   type PromptTechnique,
 } from '@promptmarket/shared';
-import { Check, Copy, Download, Loader2, Share2, ShoppingCart } from 'lucide-react';
+import { BookOpen, Check, Copy, Download, Loader2, PanelRight, Share2, ShoppingCart } from 'lucide-react';
 import { useListing, usePurchase, useCreateReview } from '@features/marketplace/queries';
 import { getErrorMessage } from '@services/api';
 import { formatDate, formatPrice } from '@utils/format';
@@ -91,6 +91,22 @@ export default function ListingDetailPage() {
 
   const [copied, setCopied] = useState(false);
   const [shareState, setShareState] = useState<'idle' | 'shared' | 'copied'>('idle');
+  const [readingMode, setReadingMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem('pm.readingMode') === '1';
+  });
+
+  // Persist + ESC exits.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem('pm.readingMode', readingMode ? '1' : '0');
+    if (!readingMode) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setReadingMode(false);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [readingMode]);
 
   // Track this slug as recently viewed once the detail successfully loads.
   const { track } = useRecentlyViewed();
@@ -233,9 +249,32 @@ export default function ListingDetailPage() {
   const models = listing.models ?? [];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8 min-w-0 space-y-6">
+    <div
+      className={cn(
+        'mx-auto px-[clamp(1.25rem,4vw,3rem)] py-8 animate-fade-in motion-safe:transition-[max-width] motion-safe:duration-500',
+        readingMode ? 'max-w-[820px]' : 'max-w-7xl',
+      )}
+    >
+      {readingMode && (
+        <button
+          type="button"
+          onClick={() => setReadingMode(false)}
+          className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] font-medium text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+        >
+          <PanelRight className="w-3.5 h-3.5" />
+          사이드바 다시 열기
+          <kbd className="font-mono text-[0.62rem] px-1 py-0.5 rounded border border-line dark:border-night-line">
+            esc
+          </kbd>
+        </button>
+      )}
+      <div className={cn('grid gap-8', !readingMode && 'grid-cols-1 lg:grid-cols-12')}>
+        <div
+          className={cn(
+            'min-w-0 space-y-6',
+            !readingMode && 'lg:col-span-8',
+          )}
+        >
           {/* Hero cover */}
           <div
             className={cn(
@@ -496,6 +535,7 @@ export default function ListingDetailPage() {
         </div>
 
         {/* Sticky sidebar */}
+        {!readingMode && (
         <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 lg:self-start">
           <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6">
             <div className="flex items-start justify-between gap-3">
@@ -507,11 +547,22 @@ export default function ListingDetailPage() {
                   {formatPrice(listing.priceCents)}
                 </p>
               </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => setReadingMode((v) => !v)}
+                aria-label="조용한 모드 토글"
+                aria-pressed={readingMode}
+                title="조용한 모드"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+              </button>
               <button
                 type="button"
                 onClick={handleShare}
                 aria-label="이 리스팅 공유"
-                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt text-[0.78rem] font-medium"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt text-[0.78rem] font-medium"
               >
                 {shareState === 'idle' ? (
                   <Share2 className="w-3.5 h-3.5" />
@@ -532,6 +583,7 @@ export default function ListingDetailPage() {
                       : '공유'}
                 </span>
               </button>
+              </div>
             </div>
 
             <div className="mt-5 space-y-2">
@@ -662,6 +714,7 @@ export default function ListingDetailPage() {
             </Meta>
           </div>
         </aside>
+        )}
       </div>
 
       {/* Bottom related */}

@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T23:05 (UTC) — Round 27
+
+- **Benchmark**: [Medium · Reader Mode · Arc Boosts](https://medium.com) — 긴 본문은 사이드바가 가까이 있으면 읽는 흐름을 뺏긴다. 사이트가 직접 제공하는 reader mode가 OS reader mode보다 더 의도된 결과를 만든다.
+- **Shipped**: ListingDetail 사이드바 가격 라벨 옆 BookOpen 아이콘 → "조용한 모드" 토글. 켜면 컨테이너 max-width를 820px로 클램프, 사이드바 숨김, 상단에 "사이드바 다시 열기" 풀 버튼(Esc 단축키 표기). 상태는 localStorage(`pm.readingMode`)에 저장돼 다음 방문에서도 유지. 전환 모션 0.5s ease로 부드럽게.
+- **Commit**: `pending`
+- **Next ideas**: (1) MarkdownView TOC 사이드바(긴 본문일 때만). (2) 셀러 리스팅 분석 페이지 (개별 슬러그 상세 통계).
+
 ## 2026-05-27T22:50 (UTC) — Round 26
 
 - **Benchmark**: [GitHub README · MDN docs · Vercel changelog](https://github.com) — 좋은 마크다운 뷰는 코드 블록마다 호버 시에만 보이는 작은 복사 버튼을 제공한다. 본문 흐름을 가리지 않으면서 필요할 때 정확히 그 한 블록만 가져갈 수 있어야 한다.
 - **Shipped**: `MarkdownView`의 `<pre>` 블록을 자체 `CodeBlock` 컴포넌트로 래핑. 우상단 호버 복사 버튼(라임 체크 피드백), `extractText`가 ReactNode 트리를 재귀로 풀어서 정확히 그 블록의 텍스트만 클립보드로 보낸다. `.not-prose`로 prose 트랜스폼 무력화, 라임 액티브 시 opacity 그대로 노출. 한국어 카피(복사/복사됨).
-- **Commit**: `pending`
+- **Commit**: [`b229165`](https://github.com/blue45f/promptmarket/commit/b229165)
 - **Next ideas**: (1) Browse 페이지 SortSelect를 ⌃/⌥ 키로 토글. (2) Featured/Trending 섹션에 미니 콘트라스트 캐러셀(가로 스크롤 vs 그리드 동시 노출).
 
 ## 2026-05-27T22:35 (UTC) — Round 25
