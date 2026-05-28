@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T12:28 (UTC) — Round 67
+
+- **Benchmark**: 자체 — useWishlist/useSavedFilters는 단위 테스트로 잠궜고, useRecentlyViewed만 비어 있었다. 같은 패턴(localStorage + CustomEvent)이라 동일한 면 채워 두면 회귀 보호선이 일관된다.
+- **Shipped**: `useRecentlyViewed.test.ts` 5건 — 빈 시작 / 최신 우선 + 디듀프 / 16개 캡 / clear / CustomEvent로 다중 구독 동기화. 27 tests / 8 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) ListingCard에 Compose Lighthouse smoke check. (2) Hero KineticHeadline 시각 회귀 (snapshot).
+
 ## 2026-05-28T12:15 (UTC) — Round 66
 
 - **Benchmark**: 자체 — JSON-LD는 SEO 영향을 직접 측정하기 어려우니, 회귀 잡는 테스트가 더 큰 안전망이 된다.
