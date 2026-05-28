@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T12:15 (UTC) — Round 66
+
+- **Benchmark**: 자체 — JSON-LD는 SEO 영향을 직접 측정하기 어려우니, 회귀 잡는 테스트가 더 큰 안전망이 된다.
+- **Shipped**: `apps/web/src/hooks/useStructuredData.test.ts` 4건 — 1 script inject + JSON content / unmount cleanup / null이면 no-op / 데이터 변경 시 중복 없이 교체. `data-source="promptmarket-structured"` 속성으로 다른 페이지의 무관한 ld+json과 격리. 22 tests / 7 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) useRecentlyViewed 단위 테스트. (2) Hero 드롭 마키 e2e smoke.
+
 ## 2026-05-28T12:05 (UTC) — Round 65
 
 - **Benchmark**: 자체 — `usePageMeta`가 head DOM을 직접 만지고 unmount 시 복원한다. mock 없이 jsdom으로 확인하는 게 가장 빠르고 정확.
