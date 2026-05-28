@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:57 (UTC) — Round 115
+
+- **Benchmark**: 자체 — ShortcutsOverlay의 "?" 토글은 입력 컨텍스트 안에서 실수로 열리면 키 입력을 가로채는 사고. 회귀하면 검색바에 "?" 못 침. 또한 modifier 조합("⌘+?" 등)에도 열리면 안 됨.
+- **Shipped**: `apps/web/src/components/ShortcutsOverlay.test.tsx` 6 tests — 기본 닫힘 / "?"로 열림 / 두 번 누르면 닫힘 / INPUT 포커스 중 "?" 무시 / metaKey 동반 시 무시 / 열리면 그룹 헤더 + 라벨 노출. 합계 **258 tests / 45 files** (shared 11 + api 86 + web 156) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:55 (UTC) — Round 114
 
 - **Benchmark**: 자체 — StarRating은 카드 / 리뷰 / 디테일 / 대시보드까지 다양한 위치에서 표시·입력 양쪽으로 쓰이는 기본 UI primitive. 회귀 시 (a) 리뷰 작성 입력이 read-only로 풀려 사용자가 클릭 못 하거나, (b) 카드의 별이 입력 가능하게 잘못 노출. 둘 다 미묘한 사고.
