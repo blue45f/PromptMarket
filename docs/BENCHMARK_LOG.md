@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T18:01 (UTC) — Round 118
+
+- **Benchmark**: 자체 — StatsStrip은 홈 영웅 직하단에 박혀 있어 useStats가 부분 응답을 줄 때(totalListings만 받고 sales/users 누락) 크래시하면 페이지 머리부터 깨짐. 또한 `useCountUp`이 IntersectionObserver에 의존해 jsdom에서 모든 사용 컴포넌트 테스트가 못 부팅하고 있었음.
+- **Shipped**: `apps/web/src/test/setup.ts` — IntersectionObserver no-op 클래스 shim 추가(matchMedia 옆에 동일 패턴). `apps/web/src/components/StatsStrip.test.tsx` 4 tests — 3 셀 한글 라벨 / pending 시 `[class*="animate-pulse"]` 플레이스홀더 3개 / useStats 응답이 각 셀 aria-label에 정확 매핑 / 부분 응답 시 누락된 두 셀 aria-label="0"으로 폴백. useStats를 vi.mock으로 대체. 합계 **275 tests / 48 files** (shared 11 + api 86 + web 173) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:59 (UTC) — Round 117
 
 - **Benchmark**: 자체 — TypeBadge/ModelBadge/DifficultyBadge/LicenseBadge/TechniqueBadge 5종이 카드/디테일/필터 곳곳에 박혀 있는데 모두 메타 lookup만 의존하는 작은 컴포넌트라 회귀 가드가 가벼웠음. 한 번에 묶어서 잠금.

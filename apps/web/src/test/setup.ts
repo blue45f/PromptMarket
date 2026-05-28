@@ -19,3 +19,20 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'undefined') {
       dispatchEvent: () => false,
     } as unknown as MediaQueryList)) as typeof window.matchMedia;
 }
+
+// jsdom also doesn't ship IntersectionObserver. useCountUp and useReveal both
+// gate animation start on entering the viewport; provide a no-op that never
+// fires so the hooks don't crash on mount.
+if (typeof globalThis !== 'undefined' && typeof (globalThis as { IntersectionObserver?: unknown }).IntersectionObserver === 'undefined') {
+  class IntersectionObserverShim {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() { return [] as IntersectionObserverEntry[]; }
+    root = null;
+    rootMargin = '';
+    thresholds: ReadonlyArray<number> = [];
+  }
+  (globalThis as { IntersectionObserver: typeof IntersectionObserverShim }).IntersectionObserver =
+    IntersectionObserverShim as unknown as typeof IntersectionObserver;
+}
