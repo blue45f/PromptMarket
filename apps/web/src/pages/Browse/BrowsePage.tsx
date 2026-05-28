@@ -182,11 +182,21 @@ export default function BrowsePage() {
   }, [page, totalPages]);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-zinc-100">
-          Browse
+    <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
+      <header className="space-y-2 mb-7">
+        <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
+          <span aria-hidden className="w-6 h-px bg-volt-500" />
+          카탈로그
+        </p>
+        <h1
+          className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.035em] display-tight"
+          style={{ fontSize: 'var(--text-display-md)' }}
+        >
+          {q ? <>"{q}" 검색 결과</> : filters.category ? <>{filters.category} 카탈로그</> : <>둘러보기</>}
         </h1>
+      </header>
+
+      <div className="flex items-center justify-between mb-7 flex-wrap gap-3">
         <div className="flex items-center gap-2 flex-1 sm:flex-initial max-w-xl">
           <SearchBar
             initialValue={q}
@@ -200,12 +210,12 @@ export default function BrowsePage() {
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
-            className="lg:hidden inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-700 dark:text-zinc-200 hover:border-indigo-300 motion-safe:transition"
+            className="lg:hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
           >
             <SlidersHorizontal className="w-4 h-4" />
-            Filters
+            필터
             {activeCount > 0 && (
-              <span className="inline-flex items-center justify-center w-5 h-5 text-[10px] rounded-full bg-indigo-600 text-white font-semibold">
+              <span className="inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] px-1 text-[0.62rem] rounded-full bg-volt-300 text-ink font-mono font-semibold">
                 {activeCount}
               </span>
             )}
@@ -213,9 +223,9 @@ export default function BrowsePage() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-7 lg:gap-9">
         <aside className="hidden lg:block lg:w-72 shrink-0">
-          <div className="sticky top-24 bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-5">
+          <div className="sticky top-24 rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5">
             <FilterPanel
               value={filters}
               onChange={(next) => commit(next, { page: 1 })}
@@ -275,30 +285,30 @@ export default function BrowsePage() {
               <button
                 type="button"
                 onClick={reset}
-                className="text-xs font-medium text-indigo-700 dark:text-indigo-400 hover:underline"
+                className="text-[0.78rem] font-medium text-volt-700 dark:text-volt-300 hover:underline underline-offset-[3px] focus-volt rounded"
               >
-                Clear all
+                전부 초기화
               </button>
             </div>
           )}
 
-          <p className="text-sm text-gray-500 dark:text-zinc-400 mb-4">
+          <p className="font-mono text-[0.78rem] text-ink-mute dark:text-bone-mute mb-5 tabular-nums">
             {isPending
-              ? 'Loading…'
-              : `${total.toLocaleString()} result${total === 1 ? '' : 's'}`}
+              ? '불러오는 중…'
+              : `${total.toLocaleString()}건`}
             {q && (
               <>
                 {' '}
-                for{' '}
-                <span className="font-medium text-gray-700 dark:text-zinc-200">
-                  “{q}”
+                ·{' '}
+                <span className="text-ink dark:text-bone">
+                  "{q}"
                 </span>
               </>
             )}
           </p>
 
           {error && (
-            <p className="text-rose-600 dark:text-rose-400 text-sm mb-4">
+            <p className="text-coral-deep dark:text-coral text-sm font-mono mb-4">
               {getErrorMessage(error)}
             </p>
           )}
@@ -392,13 +402,13 @@ export default function BrowsePage() {
 
 function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-200 dark:ring-indigo-800 px-2.5 py-1 text-xs font-medium capitalize">
+    <span className="inline-flex items-center gap-1 rounded-full bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200 border border-volt-200 dark:border-volt-800/70 px-2.5 py-1 text-xs font-medium">
       {label}
       <button
         type="button"
         onClick={onRemove}
-        aria-label={`Remove ${label}`}
-        className="ml-0.5 hover:text-indigo-900 dark:hover:text-indigo-100"
+        aria-label={`${label} 필터 제거`}
+        className="ml-0.5 hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt rounded-full"
       >
         <X className="w-3 h-3" />
       </button>
@@ -418,15 +428,15 @@ function SortSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as Sort)}
-        aria-label="Sort"
-        className="appearance-none pl-3 pr-8 py-2 rounded-lg text-sm border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-700 dark:text-zinc-200 hover:border-indigo-300 motion-safe:transition focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        aria-label="정렬"
+        className="appearance-none pl-3.5 pr-8 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
       >
-        <option value="newest">Newest</option>
-        <option value="trending">Trending</option>
-        <option value="top">Top-rated</option>
+        <option value="newest">최신순</option>
+        <option value="trending">트렌딩</option>
+        <option value="top">인기순</option>
       </select>
       <ChevronDown
-        className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-500 pointer-events-none"
+        className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 text-ink-mute dark:text-bone-mute pointer-events-none"
         aria-hidden
       />
     </div>

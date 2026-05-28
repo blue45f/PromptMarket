@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T20:35 (UTC) — Round 17
+
+- **Benchmark**: [Vercel templates · Linear changelog 카탈로그 헤더](https://vercel.com/templates) — 좋은 카탈로그 페이지는 사용자가 어디 와 있는지 명시한다. mono kicker + 디스플레이 타이틀로 컨텍스트(검색 결과 / 카테고리 / 둘러보기)를 즉시 보여준다.
+- **Shipped**: BrowsePage 헤더를 새 디자인 시스템으로 재구성. 라임 kicker, 디스플레이 타이틀이 검색어/카테고리/기본 상태별로 변환. 필터 칩(`Chip`)을 인디고에서 라임으로, SortSelect를 라운드 풀로, 모바일 "필터" 버튼을 풀+카운터 chip로, 결과 카운터를 mono tabular-nums로. 사이드바 패널, 페이지네이션, 액티브 필터 chip strip 모두 새 토큰 정렬.
+- **Commit**: `pending`
+- **Next ideas**: (1) FilterPanel 내부 인디고 잔재 정리. (2) FilterDrawer 모바일 시트 토큰 정렬.
+
 ## 2026-05-27T20:20 (UTC) — Round 16
 
 - **Benchmark**: [Coupang · Amazon 모바일 상세 페이지](https://coupang.com) — 모바일에서는 본문이 길어지면 CTA가 멀어진다. 모든 커머스 앱이 하단에 sticky purchase bar를 둔다.
 - **Shipped**: 리스팅 상세 페이지 모바일 전용 sticky CTA. `lg:hidden` + `fixed inset-x-0 bottom-0` + glass 배경 + 라임 슬라이드 호버. 가격을 mono tabular-nums로 강조, 상태별 분기(내 리스팅 / 보유 중 / 구매·받기) 처리. `env(safe-area-inset-bottom)`으로 iOS notch 대응. 본문 끝에 `pb-24`를 줘서 RecentlyViewed가 sticky 바와 겹치지 않게.
-- **Commit**: `pending`
+- **Commit**: [`8033d79`](https://github.com/blue45f/promptmarket/commit/8033d79)
 - **Next ideas**: (1) 모바일 sticky 바를 iOS와 Android 모두에서 화면 회전 시 검증. (2) 카탈로그/홈 페이지에도 "지금 어디 있는지" sticky breadcrumb.
 
 ## 2026-05-27T20:05 (UTC) — Round 15
