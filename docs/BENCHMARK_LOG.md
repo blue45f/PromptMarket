@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T18:05 (UTC) — Round 120
+
+- **Benchmark**: 자체 — ScrollToTop은 prefers-reduced-motion 사용자에게 부드러운 스크롤 대신 즉시 이동을 보장해야 함. 회귀하면 모션 민감 사용자가 멀미. 또한 미표시 상태에서도 키보드 포커스에 잡히지 않아야 함(tabindex=-1).
+- **Shipped**: `apps/web/src/components/ScrollToTop.test.tsx` 3 tests — 초기 aria-hidden=true + tabindex=-1 / 클릭 시 window.scrollTo({top:0, behavior:'smooth'}) / matchMedia가 reduce 매치하면 behavior:'auto'. aria-hidden 버튼이라 testing-library role 쿼리 대신 querySelector 직접 사용. 합계 **281 tests / 50 files** (shared 11 + api 86 + web 179) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T18:03 (UTC) — Round 119
 
 - **Benchmark**: 자체 — Home 페이지의 Featured 섹션 carousel. 회귀하면 (a) 로딩 중 stale 카드가 그대로 표시되어 사용자 혼란, (b) region role 누락 시 스크린리더 사용자에게 단순 div로만 노출. 둘 다 사용성 사고.
