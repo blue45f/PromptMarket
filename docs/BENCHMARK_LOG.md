@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:22 (UTC) — Round 93
+
+- **Benchmark**: 자체 — api/shared 모두 테스트 커버가 빠르게 채워지는 동안 web 패키지의 핵심 무거운 흐름(인증 토큰 영속화, 가격 포맷)이 회귀 보호 없이 남아있었다. 토큰을 로그아웃 시 제대로 못 지우는 회귀는 잘못된 세션 유지로 직결.
+- **Shipped**: `apps/web/src/utils/format.test.ts` 10 tests — `formatDollars`(0/100/199/12345/undefined/null) / `formatDate`(unparseable → ''/Date 객체/ISO 문자열에 '2026' 포함) / `formatCompact`(null/undefined/NaN/Infinity → '0', 1234 → 1.2K, 2.5M). `apps/web/src/store/auth.test.ts` 4 tests — login이 localStorage + 스토어 동시 반영 / logout 시 둘 다 정리 / setUser는 토큰 보존 / setUser(null)도 토큰 보존. 합계 **135 tests / 25 files** (shared 11 + api 54 + web 70) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:20 (UTC) — Round 92
 
 - **Benchmark**: 자체 — public/private 사용자 shape 분리가 회귀 시 즉시 PII 누수. topUp 가드는 음수/소수/오버플로우 모두 회귀 비용 큼. myListings 매출 합계는 대시보드 핵심 수치.
