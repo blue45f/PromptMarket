@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T15:32 (UTC) — Round 82
+
+- **Benchmark**: 자체 — ModelTabs는 home의 핵심 분기다. shared MODELS / vendor 매핑이 깨지면 사용자가 클릭해도 빈 결과만 받는다. tab 동작과 active state는 두 가지를 한 번에 검증할 수 있는 곳.
+- **Shipped**: `ModelTabs.test.tsx` 3건 — 5개 패밀리 탭 렌더 / Claude 기본 active(aria-selected=true) / GPT 클릭 시 active 전환. QueryClientProvider + MemoryRouter 컨텍스트로 실제 사용 환경과 동일. 53 tests / 15 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) Notifications bell (위시리스트 가격 변동 알림). (2) ListingCard skeleton 모양 다양화.
+
 ## 2026-05-28T15:20 (UTC) — Round 81
 
 - **Benchmark**: [Pinterest · Are.na 키보드 저장](https://pinterest.com) — 위시리스트 / 즐겨찾기 토글은 손이 자주 가는 액션. 브라우저의 "이 페이지 북마크" 단축키(⌘D)를 in-app에서 더 의미있게 재사용하는 게 power user 패턴.
