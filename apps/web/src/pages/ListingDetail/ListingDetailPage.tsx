@@ -378,8 +378,8 @@ export default function ListingDetailPage() {
 
           <Tabs.Root defaultValue="overview" className="w-full">
             <Tabs.List
-              aria-label="Listing sections"
-              className="flex gap-1 border-b border-line dark:border-night-line"
+              aria-label="리스팅 섹션"
+              className="flex gap-1 border-b border-line dark:border-night-line overflow-x-auto scrollbar-hide -mx-[clamp(1.25rem,4vw,3rem)] sm:mx-0 px-[clamp(1.25rem,4vw,3rem)] sm:px-0"
             >
               {(
                 [
@@ -392,7 +392,7 @@ export default function ListingDetailPage() {
                   key={key}
                   value={key}
                   className={cn(
-                    'px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition',
+                    'shrink-0 whitespace-nowrap px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition focus-volt',
                     'border-transparent text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone',
                     'data-[state=active]:border-volt-500 data-[state=active]:text-ink',
                     'dark:data-[state=active]:border-volt-400 dark:data-[state=active]:text-bone',

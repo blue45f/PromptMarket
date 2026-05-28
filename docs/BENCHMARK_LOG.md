@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T13:46 (UTC) — Round 73
+
+- **Benchmark**: [Notion · Twitter mobile tab strip](https://twitter.com) — 좁은 화면에서 탭이 줄바꿈되면 시각 위계가 무너진다. 1 row 가로 스크롤 + 가장자리 여백 그라데이션이 표준 패턴.
+- **Shipped**: ListingDetail `Tabs.List`에 `overflow-x-auto`, `scrollbar-hide`, 모바일에서만 `-mx-[clamp(...)] px-[clamp(...)]`로 가장자리까지 밀착하고, 트리거에 `shrink-0 whitespace-nowrap`을 더해 wrap 방지. `aria-label`도 한국어로. focus-volt 적용해 키보드 사용자 가시성도 일관.
+- **Commit**: `pending`
+- **Next ideas**: (1) ListingCard 본문 모바일 truncation 라인 수 1줄로 축소. (2) Top-of-page progress bar polish (Hero 안에서만 active).
+
 ## 2026-05-28T13:35 (UTC) — Round 72
 
 - **Benchmark**: [Google · Naver 검색창 드롭다운](https://google.com) — 검색창에 포커스가 들어왔을 때 최근 검색이 자동으로 펼쳐지면 키 입력 없이 재방문이 가능. 단, 검색창 밖 클릭 / 검색어 입력 시 즉시 사라져야 시야가 깔끔.
