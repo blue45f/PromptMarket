@@ -1,5 +1,6 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { Search } from 'lucide-react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { Search, X } from 'lucide-react';
+import { useSearchHistory } from '@hooks/useSearchHistory';
 import { cn } from '@utils/cn';
 
 interface SearchBarProps {
@@ -16,18 +17,45 @@ export default function SearchBar({
   className,
 }: SearchBarProps) {
   const [value, setValue] = useState(initialValue);
+  const [focused, setFocused] = useState(false);
+  const wrapRef = useRef<HTMLFormElement>(null);
+  const history = useSearchHistory();
 
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    onSubmit(value.trim());
+  // Close history when clicking anywhere outside the form.
+  useEffect(() => {
+    if (!focused) return;
+    function onClick(e: MouseEvent) {
+      if (!wrapRef.current) return;
+      if (!wrapRef.current.contains(e.target as Node)) setFocused(false);
+    }
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, [focused]);
+
+  function commit(v: string) {
+    const trimmed = v.trim();
+    if (trimmed) history.record(trimmed);
+    setFocused(false);
+    onSubmit(trimmed);
   }
 
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    commit(value);
+  }
+
+  const showHistory = focused && value.trim() === '' && history.entries.length > 0;
+
   return (
-    <form onSubmit={handleSubmit} className={cn('relative group', className)}>
+    <form
+      ref={wrapRef}
+      onSubmit={handleSubmit}
+      className={cn('relative group', className)}
+    >
       <Search
         className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-mute dark:text-bone-mute pointer-events-none motion-safe:transition-colors group-focus-within:text-volt-700 dark:group-focus-within:text-volt-300"
         aria-hidden
@@ -36,6 +64,7 @@ export default function SearchBar({
         type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
         placeholder={placeholder}
         aria-label={placeholder}
         className={cn(
@@ -54,6 +83,68 @@ export default function SearchBar({
       >
         <span>⌘</span>K
       </kbd>
+
+      {showHistory && (
+        <div
+          role="listbox"
+          aria-label="최근 검색"
+          className="absolute left-0 right-0 top-full mt-2 z-30 rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night shadow-xl shadow-ink/10 dark:shadow-black/40 overflow-hidden"
+        >
+          <div className="flex items-center justify-between px-3.5 py-2 border-b border-line/70 dark:border-night-line/70">
+            <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute">
+              최근 검색
+            </span>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={history.clear}
+              className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt rounded"
+            >
+              지우기
+            </button>
+          </div>
+          <ul className="py-1.5">
+            {history.entries.map((q) => (
+              <li key={q}>
+                <button
+                  type="button"
+                  // mouseDown fires before blur so the option stays clickable.
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    setValue(q);
+                    commit(q);
+                  }}
+                  className="group/row w-full flex items-center justify-between gap-3 px-3.5 py-1.5 text-left text-[0.86rem] text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub motion-safe:transition"
+                >
+                  <span className="inline-flex items-center gap-2 min-w-0">
+                    <Search className="w-3.5 h-3.5 text-ink-mute dark:text-bone-mute shrink-0" aria-hidden />
+                    <span className="truncate">{q}</span>
+                  </span>
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    aria-label="기록에서 지우기"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      history.remove(q);
+                    }}
+                    onKeyDown={(ev) => {
+                      if (ev.key === 'Enter' || ev.key === ' ') {
+                        ev.preventDefault();
+                        history.remove(q);
+                      }
+                    }}
+                    className="opacity-0 group-hover/row:opacity-100 motion-safe:transition inline-flex items-center justify-center w-5 h-5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral cursor-pointer"
+                  >
+                    <X className="w-3 h-3" aria-hidden />
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </form>
   );
 }

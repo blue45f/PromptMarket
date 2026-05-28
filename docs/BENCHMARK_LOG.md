@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T13:35 (UTC) — Round 72
+
+- **Benchmark**: [Google · Naver 검색창 드롭다운](https://google.com) — 검색창에 포커스가 들어왔을 때 최근 검색이 자동으로 펼쳐지면 키 입력 없이 재방문이 가능. 단, 검색창 밖 클릭 / 검색어 입력 시 즉시 사라져야 시야가 깔끔.
+- **Shipped**: SearchBar 리팩토링 — `useSearchHistory` 연결, focus + empty input일 때만 dropdown 노출, mousedown preventDefault로 옵션 클릭 시 input blur로 인한 자동 닫힘 방지, document mousedown으로 외부 클릭 시 닫음. commit 시 `history.record(trimmed)`로 검색어 영구 저장. 각 항목에 hover-만 노출 ✕ 버튼으로 개별 삭제 가능, 헤더에 "지우기" 전체 삭제. SearchBar는 Navbar + Browse + mobile drawer 어디서든 같은 history 공유.
+- **Commit**: `pending`
+- **Next ideas**: (1) ListingDetail Tabs 모바일 가로 스크롤. (2) Notification toast 디자인 토큰 추가 검증.
+
 ## 2026-05-28T13:22 (UTC) — Round 71
 
 - **Benchmark**: [Raycast · Linear 검색 히스토리](https://raycast.com) — 명령 팔레트는 같은 검색을 반복적으로 던지는 경향이 있다. 직전 몇 개만 다시 한 번 클릭으로 띄울 수 있으면 키 입력 수가 확연히 줄어든다.
