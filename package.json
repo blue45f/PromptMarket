@@ -38,6 +38,6 @@
     "docker:down": "docker compose down"
   },
   "devDependencies": {
-    "turbo": "^2.3.0"
+    "turbo": "^2.9.15"
   }
 }
