@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:51 (UTC) — Round 110
+
+- **Benchmark**: 자체 — 위시리스트 토글 버튼은 ListingCard 위에 떠 있는 floating 버튼이라 부모 `<Link>` 클릭으로 페이지 이동을 일으키면 사용자 의도를 거스른다. 회귀하면 사용자가 위시리스트를 누를 때마다 페이지가 점프. 또한 inline / card 변형이 모두 같은 토글 상태를 표시해야 함.
+- **Shipped**: `apps/web/src/components/WishlistButton.test.tsx` 6 tests — card 기본 비활성 ARIA / localStorage 사전 등록 시 ARIA aria-pressed=true + label '위시리스트에서 빼기' / 클릭 시 localStorage 추가 + 부모 link onClick 미호출 (stopPropagation 검증) / 두 번째 클릭 시 제거 / inline 변형 텍스트 '위시리스트' / 활성 시 '저장됨' 텍스트. 합계 **223 tests / 40 files** (shared 11 + api 86 + web 123) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:50 (UTC) — Round 109
 
 - **Benchmark**: 자체 — RelatedListings에는 실제 버그였던 API 응답 shape 정규화(`Array.isArray(data) ? data : data?.items ?? []`)가 들어 있다. 한 번 'data.map is not a function'으로 깨졌고, 양쪽 shape 모두 통과하는 가드가 회귀하면 디테일 페이지 하단이 전부 사라짐. 또한 skeleton 4개 + 빈 상태 한글 카피도 잠금.
