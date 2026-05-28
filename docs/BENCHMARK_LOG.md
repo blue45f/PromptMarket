@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T12:55 (UTC) — Round 69
+
+- **Benchmark**: 자체 — useReveal는 IntersectionObserver + matchMedia 두 브라우저 API에 의존한다. jsdom은 matchMedia를 제공하지 않아 다른 훅 테스트가 우연히 통과한 케이스도 있을 수 있다 — 폴리필을 setup에 깔아두면 모든 훅이 일관된 가정 위에서 돈다.
+- **Shipped**: `apps/web/src/test/setup.ts`에 matchMedia 폴리필 추가(기본 `matches=false`, 개별 테스트가 패치 가능). `useReveal.test.ts` 2건 — 초기 false + null ref / prefers-reduced-motion 시 즉시 true. 32 tests / 10 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) useNavShortcuts/useSpotlight/useTilt 테스트. (2) Hero KineticHeadline e2e snapshot.
+
 ## 2026-05-28T12:42 (UTC) — Round 68
 
 - **Benchmark**: 자체 — useCountUp는 IntersectionObserver + rAF가 얽혀 단위 테스트로는 핵심 애니메이션 경로를 직접 검증하기 까다롭다. 그래도 ref 안정성/초기값/계약 자체는 회귀 보호 가치가 있음.
