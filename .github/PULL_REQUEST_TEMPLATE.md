@@ -24,6 +24,7 @@
 ## 체크리스트
 
 - [ ] `pnpm run verify` 통과
+- [ ] `CodeRabbit review gate` 통과
 - [ ] API 계약 변경 시 shared schema 갱신
 - [ ] 사용자 흐름 변경 시 테스트 또는 수동 확인 기록
 - [ ] 문서 업데이트 필요 여부 확인

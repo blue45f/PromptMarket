@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T12:42 (UTC) — Round 68
+
+- **Benchmark**: 자체 — useCountUp는 IntersectionObserver + rAF가 얽혀 단위 테스트로는 핵심 애니메이션 경로를 직접 검증하기 까다롭다. 그래도 ref 안정성/초기값/계약 자체는 회귀 보호 가치가 있음.
+- **Shipped**: `useCountUp.test.ts` 3건 — 초기 0 + null ref / rerender 시 ref 동일성 / 커스텀 duration 안전. 30 tests / 9 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) useReveal 단위 테스트. (2) Footer mega wordmark hover에 라임 acceleration.
+
 ## 2026-05-28T12:28 (UTC) — Round 67
 
 - **Benchmark**: 자체 — useWishlist/useSavedFilters는 단위 테스트로 잠궜고, useRecentlyViewed만 비어 있었다. 같은 패턴(localStorage + CustomEvent)이라 동일한 면 채워 두면 회귀 보호선이 일관된다.

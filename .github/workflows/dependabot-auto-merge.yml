@@ -31,7 +31,7 @@ jobs:
           steps.meta.outputs.package-ecosystem == 'github_actions' ||
           (steps.meta.outputs.update-type == 'version-update:semver-major' &&
            steps.meta.outputs.dependency-type == 'direct:development')
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: gh pr merge --auto --squash --delete-branch "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
