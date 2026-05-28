@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T06:45 (UTC) — Round 37
+
+- **Benchmark**: [Pinterest 상세 페이지 저장 버튼](https://pinterest.com) — 카드 hover로만 위시리스트에 담을 수 있으면 모바일/접근성 사용자가 누락된다. 상세 페이지 사이드바에 명시 액션이 있어야 한다.
+- **Shipped**: ListingDetail 사이드바 구매 CTA 아래에 `WishlistButton variant="inline"` 풀 형태로 추가. 비활성 시 잉크 보더 + "위시리스트", 활성 시 코랄 필 + "저장됨". `useWishlist` 훅이 dashboard와 동기화돼서 즉시 반영. 카드 호버 노출 + 사이드바 명시 액션 두 진입점이 같은 store를 가리킴.
+- **Commit**: `pending`
+- **Next ideas**: (1) MarkdownView TOC 사이드바(긴 본문 reading mode). (2) Featured Maker 회전.
+
 ## 2026-05-28T06:35 (UTC) — Round 36
 
 - **Benchmark**: [Notion · Are.na 위시리스트 탭](https://notion.so) — 카드에 하트만 두면 "어디서 다시 보지?"라는 의문이 남는다. 대시보드에 별도 탭이 있어야 의도가 완결된다.

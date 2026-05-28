@@ -26,6 +26,7 @@ import MarkdownView from '@components/MarkdownView';
 import SkeletonDetail from '@components/SkeletonDetail';
 import RelatedListings from '@components/RelatedListings';
 import RecentlyViewed from '@components/RecentlyViewed';
+import WishlistButton from '@components/WishlistButton';
 import InstallPanel from '@components/InstallPanel';
 import AudienceMatch from '@components/AudienceMatch';
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
@@ -613,6 +614,9 @@ export default function ListingDetailPage() {
                       : `${formatPrice(listing.priceCents)}에 구매`}
                 </button>
               )}
+              <div className="flex items-center justify-center">
+                <WishlistButton slug={listing.slug} variant="inline" />
+              </div>
               <InstallPanel slug={listing.slug} type={listing.type} className="mt-2" />
               {(isPurchased || isOwner) && listing.body && (
                 <div className="grid grid-cols-2 gap-2">
