@@ -77,6 +77,10 @@
   --card-min: 16.5rem;
   --card-min-lg: 18rem;
 
+  /* Off-screen perf helper — applied via .card-perf on tilt-host wrappers
+     so the browser can skip layout for cards far below the fold. */
+  --card-skeleton-h: 22rem;
+
   /* Brand fonts — off the reflex-reject list. Pretendard Variable is the
      Korean partner; CSS picks it up automatically for Hangul glyphs that
      Bricolage / Hanken don't cover. */
@@ -414,6 +418,15 @@
      column they're dropped into rather than to the viewport. */
   .cq {
     container-type: inline-size;
+  }
+
+  /* Skip render work for off-screen cards. content-visibility: auto means
+     the browser only fully renders the card when it's near the viewport,
+     and contain-intrinsic-size gives the scroll height a stable anchor so
+     scrollbars don't jitter. ListingCard adds this via a wrapper class. */
+  .card-perf {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px var(--card-skeleton-h);
   }
 
   /* Ambient orbs for hero glow */

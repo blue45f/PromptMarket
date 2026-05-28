@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T07:32 (UTC) — Round 41
+
+- **Benchmark**: [Pinterest 그리드 perf](https://pinterest.com) — 카드 그리드가 수십 개로 늘어나면 hover 시 3D 틸트가 모든 카드에 계속 계산된다. `content-visibility: auto`는 뷰포트 밖 카드를 layout/paint에서 빼주는 1-line 윈인.
+- **Shipped**: `index.css`에 `.card-perf` 유틸 추가 — `content-visibility: auto` + `contain-intrinsic-size: 1px var(--card-skeleton-h)`. ListingCard의 tilt-host 래퍼에 적용. 다이렉트 측정값은 없지만, 50+ 카드 페이지에서 paint cost가 visible viewport에 비례하게 줄어든다.
+- **Commit**: `pending`
+- **Next ideas**: (1) FilterPanel sticky 스크롤 시 그림자/배경 강화. (2) RelatedListings 호버 시 prefetch.
+
 ## 2026-05-28T07:20 (UTC) — Round 40
 
 - **Benchmark**: [GitBook · Substack 긴 글 TOC](https://gitbook.com) — reader mode에서 본문이 길면 ToC가 위치감을 잡아준다. 짧은 본문에서는 노출 자체가 노이즈가 되니 ≥2 entries에서만 보여야 한다.

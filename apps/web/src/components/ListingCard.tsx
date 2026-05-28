@@ -43,7 +43,7 @@ export default function ListingCard({
     <div
       ref={tiltRef}
       className={cn(
-        'tilt-host relative',
+        'tilt-host card-perf relative',
         fixedWidth && 'w-[280px] sm:w-[300px] shrink-0 snap-start',
         isFeatured && 'lg:row-span-2',
         className,
