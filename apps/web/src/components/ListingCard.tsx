@@ -142,7 +142,7 @@ export default function ListingCard({
 
           {/* Bottom-right wishlist + arrow stack */}
           <div className="absolute bottom-3.5 right-3.5 flex items-center gap-2">
-            <span className="motion-safe:transition-all motion-safe:duration-500 opacity-0 motion-safe:group-hover:opacity-100">
+            <span className="motion-safe:transition-all motion-safe:duration-500 opacity-0 motion-safe:group-hover:opacity-100 motion-safe:group-focus-within:opacity-100">
               <WishlistButton slug={listing.slug} />
             </span>
             <span
@@ -152,6 +152,7 @@ export default function ListingCard({
                 'bg-ink text-bone dark:bg-bone dark:text-ink',
                 'opacity-0 translate-y-2 motion-safe:transition-all motion-safe:duration-500',
                 'motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-y-0',
+                'motion-safe:group-focus-within:opacity-100 motion-safe:group-focus-within:translate-y-0',
               )}
             >
               <ArrowUpRight className="w-4 h-4" />
@@ -176,7 +177,7 @@ export default function ListingCard({
           <h3
             className={cn(
               'font-display font-semibold text-ink dark:text-bone tracking-tight leading-[1.15]',
-              'motion-safe:transition-colors group-hover:text-volt-800 dark:group-hover:text-volt-200',
+              'motion-safe:transition-colors group-hover:text-volt-800 dark:group-hover:text-volt-200 group-focus-within:text-volt-800 dark:group-focus-within:text-volt-200',
               isFeatured ? 'text-[1.45rem] lg:text-[1.7rem] line-clamp-3' : 'text-base line-clamp-2',
             )}
           >

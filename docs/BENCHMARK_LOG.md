@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T14:32 (UTC) — Round 77
+
+- **Benchmark**: 자체 — `j`/`k`로 카드를 포커스해도 어포던스(하트 + 화살표)가 안 뜨면 키보드 사용자에게는 사실상 비활성 상태로 보인다. hover와 focus-within이 동일한 시각 신호를 내야 한다.
+- **Shipped**: ListingCard 호버 어포던스(♡ wishlist 토글 + 화살표 인디케이터)와 제목 hover-color에 `group-focus-within:` 변형 추가. 키보드 포커스가 카드 내부 anchor에 들어오면 호버와 동일한 노출. motion-safe 조합 유지.
+- **Commit**: `pending`
+- **Next ideas**: (1) ModelTabs 단위 테스트. (2) SearchBar 드롭다운 키보드 ↓↑ 네비.
+
 ## 2026-05-28T14:22 (UTC) — Round 76
 
 - **Benchmark**: [WAI-ARIA radiogroup 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/radio/) — 토글 그룹은 tab + space만 지원하면 스크린리더 사용자가 모든 옵션을 일일이 tab해야 한다. radiogroup으로 묶고 ←/→로 안에서 이동 + 활성만 tabIndex=0이 표준.
