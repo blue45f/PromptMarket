@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T18:03 (UTC) — Round 119
+
+- **Benchmark**: 자체 — Home 페이지의 Featured 섹션 carousel. 회귀하면 (a) 로딩 중 stale 카드가 그대로 표시되어 사용자 혼란, (b) region role 누락 시 스크린리더 사용자에게 단순 div로만 노출. 둘 다 사용성 사고.
+- **Shipped**: `apps/web/src/components/FeaturedCarousel.test.tsx` 3 tests — loading=true 시 6 SkeletonCard 슬롯 / items=[c1,c2]일 때 두 카드 모두 렌더 + 제목 노출 / region role + 'Featured listings' aria-label 노출. 합계 **278 tests / 49 files** (shared 11 + api 86 + web 176) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T18:01 (UTC) — Round 118
 
 - **Benchmark**: 자체 — StatsStrip은 홈 영웅 직하단에 박혀 있어 useStats가 부분 응답을 줄 때(totalListings만 받고 sales/users 누락) 크래시하면 페이지 머리부터 깨짐. 또한 `useCountUp`이 IntersectionObserver에 의존해 jsdom에서 모든 사용 컴포넌트 테스트가 못 부팅하고 있었음.
