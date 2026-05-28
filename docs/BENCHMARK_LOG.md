@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T12:05 (UTC) — Round 65
+
+- **Benchmark**: 자체 — `usePageMeta`가 head DOM을 직접 만지고 unmount 시 복원한다. mock 없이 jsdom으로 확인하는 게 가장 빠르고 정확.
+- **Shipped**: `apps/web/src/hooks/usePageMeta.test.ts` 5건 — title 설정+복원 / description+og:title+og:type / og:image 있을 때 twitter:card=summary_large_image 업그레이드 / canonical link 출력 / og:image 없을 때 summary 폴백. afterEach가 hook이 append한 노드 전부 청소해 테스트 간 격리. 합계 18 tests / 6 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) useStructuredData 단위 테스트. (2) Hero KineticHeadline의 reduced-motion 케이스 시각 확인.
+
 ## 2026-05-28T11:55 (UTC) — Round 64
 
 - **Benchmark**: 자체 — Browse 빈 상태는 사용자가 막힌 흐름을 푸는 가장 직접적인 도구다. `buildActiveFilterRows`가 깨지면 사용자 입장에서 "왜 결과가 없는지 알 수 없다"는 최악의 경험으로 전락. 회귀 보호 필수.
