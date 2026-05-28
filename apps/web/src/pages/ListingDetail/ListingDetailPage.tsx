@@ -27,6 +27,7 @@ import SkeletonDetail from '@components/SkeletonDetail';
 import RelatedListings from '@components/RelatedListings';
 import RecentlyViewed from '@components/RecentlyViewed';
 import WishlistButton from '@components/WishlistButton';
+import MarkdownToc from '@components/MarkdownToc';
 import InstallPanel from '@components/InstallPanel';
 import AudienceMatch from '@components/AudienceMatch';
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
@@ -408,6 +409,9 @@ export default function ListingDetailPage() {
                 </div>
 
                 <div className="mt-4">
+                  {readingMode && canViewBody && listing.body && (
+                    <MarkdownToc source={listing.body} className="mb-6" />
+                  )}
                   {canViewBody && listing.body ? (
                     <MarkdownView source={listing.body} />
                   ) : (

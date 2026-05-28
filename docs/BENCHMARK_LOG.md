@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T07:20 (UTC) — Round 40
+
+- **Benchmark**: [GitBook · Substack 긴 글 TOC](https://gitbook.com) — reader mode에서 본문이 길면 ToC가 위치감을 잡아준다. 짧은 본문에서는 노출 자체가 노이즈가 되니 ≥2 entries에서만 보여야 한다.
+- **Shipped**: `apps/web/src/components/MarkdownToc.tsx` — H2/H3 ATX 헤딩만 정규식으로 추출(코드펜스 스킵), 한글 슬러그 안전. IntersectionObserver로 현재 보이는 섹션을 추적해 라임 닷 + bold 액티브 표시. 본문 헤딩에 자동 id를 부착해 anchor jump가 동작. ListingDetail의 reading mode에서만(`readingMode && canViewBody`) 본문 위에 인라인 카드로 표시.
+- **Commit**: `pending`
+- **Next ideas**: (1) Image lazy-load + 카드 skeleton 통합. (2) `/api/sitemap.xml` SSR 메타 등 SEO 추가 폴리시.
+
 ## 2026-05-28T07:05 (UTC) — Round 39
 
 - **Benchmark**: [Linear · Vercel toast](https://linear.app) — 토스트가 OS 알림처럼 보이면 디자인 시스템 밖이라는 느낌이 든다. 카드 보더/그림자/폰트가 본문 시스템과 일치해야 한다.
