@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:49 (UTC) — Round 108
+
+- **Benchmark**: 자체 — 마지막 컨트롤러(SeoController)만 spec 없는 상태였다. sitemap.xml은 검색 엔진이 매일 긁어가는 표면이라 회귀 시 곧바로 인덱싱 누락. SeoService에는 이미 회귀 가드가 있으니 컨트롤러도 짝지어 잠그면 라우팅 + Content-Type 헤더 + 에러 전파까지 모두 보호.
+- **Shipped**: `apps/api/src/seo/seo.controller.spec.ts` 2 tests — sitemap()이 서비스 호출 결과 그대로 반환 / 서비스 reject 시 그대로 전파. 이로써 7개 컨트롤러(Auth/Users/Listings/Reviews/Purchases/Seo) 모두 spec 보유. 합계 **210 tests / 38 files** (shared 11 + api 86 + web 113) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:48 (UTC) — Round 107
 
 - **Benchmark**: 자체 — JwtAuthGuard / OptionalAuthGuard는 모든 인증 경계의 단일 지점. 회귀 시 ① 401이 200으로 바뀌어 무인증 접근 허용, ② 200이 401로 바뀌어 정상 사용자 잠금, ③ req.user에 잘못된 키 매핑(payload.sub → user.id) 등 보안 사고. 보호선 필수.
