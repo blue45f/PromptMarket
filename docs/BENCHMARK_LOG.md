@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T22:20 (UTC) — Round 24
+
+- **Benchmark**: [Vercel · Linear 잔여 컴포넌트](https://vercel.com) — 핵심 페이지가 다 정리되어도 자주 안 보이는 상태(에러 페이지, 마크다운, 스켈레톤, 스피너, 타입 배지 오버레이)가 인디고/회색이면 디테일에서 들통난다.
+- **Shipped**: 잔여 컴포넌트 토큰 sweep. TypeBadge는 오버레이/기본 두 변형 모두 라임/잉크 토큰으로, MarkdownView는 인디고 링크/zinc 코드블록을 라임/잉크로 + Bricolage display 헤딩, SkeletonDetail은 canvas-deep/night-sub 펄스로, Spinner는 라임 회전 + 인크 라벨로, RouteError는 코랄 키커 + 잉크 글래스 카드 + ink→bone CTA로 한국어화. NavBar는 이미 라임 underline + 잉크 토큰을 갖춰서 변경 없음.
+- **Commit**: `pending`
+- **Next ideas**: (1) 검색 결과 카운트 라인에 정렬·필터 요약 통합. (2) Dashboard 라이브러리 다운로드 버튼 라임 액션 인디케이션.
+
 ## 2026-05-27T22:05 (UTC) — Round 23
 
 - **Benchmark**: [Notion property chips · Linear status pills](https://notion.so) — 좋은 메타데이터 칩은 의미 강도가 색의 강도와 일치해야 한다. "쉬움/어려움" 같은 메타가 너무 화려하면 본문보다 시선을 가져간다.
 - **Shipped**: DifficultyBadge(입문/중급/고급), TechniqueBadge, LicenseBadge 디자인 시스템 정렬. 난이도는 라임 닷(입문) / 아이리스 닷(중급) / 코랄 닷(고급)으로 카테고리를 즉시 읽히게 하고, 기법은 바이올렛 캡슐, 라이선스는 mono 잉크 캡슐. 모든 칩이 둥근 풀 + 보더 한 줄로 일관, 영문 라벨 한국어화(입문/중급/고급).
-- **Commit**: `pending`
+- **Commit**: [`b66fde3`](https://github.com/blue45f/promptmarket/commit/b66fde3)
 - **Next ideas**: (1) NavBar 데스크톱 메뉴 액티브 라임 인디케이터. (2) RelatedListings 호출처에서 사용하는 헤더("관련" 등) 정리.
 
 ## 2026-05-27T21:50 (UTC) — Round 22
