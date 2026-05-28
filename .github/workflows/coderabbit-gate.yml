@@ -1,8 +1,6 @@
 name: CodeRabbit review gate
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review:
     types: [submitted, edited, dismissed]
 
@@ -11,7 +9,7 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: coderabbit-review-gate-${{ github.event.pull_request.number || github.event.review.pull_request_url || github.ref }}
+  group: coderabbit-review-gate-${{ github.event.review.pull_request_url }}
   cancel-in-progress: false
 
 jobs:
@@ -19,12 +17,6 @@ jobs:
     name: CodeRabbit review gate
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Draft PRs don't get auto-reviewed by CodeRabbit (and shouldn't be
-    # merged anyway), so skip the gate for them. PR template's
-    # "Ready for review" transition will re-trigger this workflow.
-    if: |
-      (github.event_name == 'pull_request' && github.event.pull_request.draft == false) ||
-      (github.event_name == 'pull_request_review')
     steps:
       - name: Verify CodeRabbit approved the latest PR head
         uses: actions/github-script@v9
