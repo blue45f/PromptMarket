@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:35 (UTC) — Round 97
+
+- **Benchmark**: 유사 서비스(Smithery, Awesome ChatGPT Prompts) — 활동 타임스탬프는 상대 시간이 기본이고 hover 시 절대 시간을 보여주는 패턴이 흔하다. ListingDetail에서는 절대 날짜만 노출되고 있어 "신선한 콘텐츠인지" 즉시 알기 어려웠다.
+- **Shipped**: `apps/web/src/pages/ListingDetail/ListingDetailPage.tsx` — 리뷰 작성 시간과 리스팅 등록 시간을 `formatRelative`로 표시(예: "3시간 전"), `title` 속성에 절대 날짜를 담아 hover 시 정확한 시점도 확인 가능. 또한 api.test.ts의 axios interceptor 핸들러 핸드 헬퍼 함수로 정리해 TS 타입 오류 제거. 합계 **148 tests / 26 files** 그린, typecheck 깨끗.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:33 (UTC) — Round 96
 
 - **Benchmark**: 자체 — `formatDate`/`formatCompact`가 시스템 로케일에 의존해 KR 서버에서는 한글, 외산 SSR에서는 영문이 섞여 나갈 위험이 있었다. 또 활동 타임스탬프에 절대 날짜만 있어 "방금/3분 전" 정도의 신선도 표시 안 됨.

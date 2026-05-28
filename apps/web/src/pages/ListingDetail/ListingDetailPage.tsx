@@ -15,7 +15,7 @@ import {
 import { BookOpen, Check, Copy, Download, Loader2, PanelRight, Share2, ShoppingCart } from 'lucide-react';
 import { useListing, usePurchase, useCreateReview } from '@features/marketplace/queries';
 import { getErrorMessage } from '@services/api';
-import { formatDate, formatPrice } from '@utils/format';
+import { formatDate, formatPrice, formatRelative } from '@utils/format';
 import TypeBadge from '@components/TypeBadge';
 import ModelBadge from '@components/ModelBadge';
 import TechniqueBadge from '@components/TechniqueBadge';
@@ -375,7 +375,7 @@ export default function ListingDetailPage() {
               >
                 @{listing.author.username}
               </Link>{' '}
-              · {formatDate(listing.createdAt)}
+              · <span title={formatDate(listing.createdAt)}>{formatRelative(listing.createdAt)}</span>
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
               <StarRating
@@ -581,8 +581,11 @@ export default function ListingDetailPage() {
                                 @{author?.username ?? 'anonymous'}
                               </span>
                             </div>
-                            <span className="text-xs text-ink-mute dark:text-bone-mute">
-                              {formatDate(r.createdAt)}
+                            <span
+                              className="text-xs text-ink-mute dark:text-bone-mute"
+                              title={formatDate(r.createdAt)}
+                            >
+                              {formatRelative(r.createdAt)}
                             </span>
                           </div>
                           {r.comment && (

@@ -8,23 +8,29 @@ beforeEach(() => {
 });
 
 describe('api request interceptor', () => {
+  function reqHandler() {
+    const handlers = (
+      api.interceptors.request as unknown as {
+        handlers: { fulfilled: (config: unknown) => Promise<{ headers: Record<string, string> }> }[];
+      }
+    ).handlers;
+    return handlers[0].fulfilled;
+  }
+
   it('does not attach Authorization when no token is set', async () => {
-    const handler = api.interceptors.request.handlers[0]!.fulfilled;
-    const config = await handler({ headers: {} });
+    const config = await reqHandler()({ headers: {} });
     expect(config.headers.Authorization).toBeUndefined();
   });
 
   it('attaches Bearer token when the auth store has one', async () => {
     useAuthStore.setState({ token: 't-1', user: null });
-    const handler = api.interceptors.request.handlers[0]!.fulfilled;
-    const config = await handler({ headers: {} });
+    const config = await reqHandler()({ headers: {} });
     expect(config.headers.Authorization).toBe('Bearer t-1');
   });
 
   it('creates headers if config arrived without them', async () => {
     useAuthStore.setState({ token: 't-2', user: null });
-    const handler = api.interceptors.request.handlers[0]!.fulfilled;
-    const config = await handler({});
+    const config = await reqHandler()({});
     expect(config.headers.Authorization).toBe('Bearer t-2');
   });
 });
