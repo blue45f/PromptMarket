@@ -12,7 +12,7 @@ import {
   type ListingType,
   type PromptTechnique,
 } from '@promptmarket/shared';
-import { Check, Copy, Download, Loader2, ShoppingCart } from 'lucide-react';
+import { Check, Copy, Download, Loader2, Share2, ShoppingCart } from 'lucide-react';
 import { useListing, usePurchase, useCreateReview } from '@features/marketplace/queries';
 import { getErrorMessage } from '@services/api';
 import { formatDate, formatPrice } from '@utils/format';
@@ -90,6 +90,7 @@ export default function ListingDetailPage() {
   const reviewMut = useCreateReview(listing?.id, slug);
 
   const [copied, setCopied] = useState(false);
+  const [shareState, setShareState] = useState<'idle' | 'shared' | 'copied'>('idle');
 
   // Track this slug as recently viewed once the detail successfully loads.
   const { track } = useRecentlyViewed();
@@ -145,6 +146,35 @@ export default function ListingDetailPage() {
       setTimeout(() => setCopied(false), 1500);
     } catch {
       /* ignore */
+    }
+  }
+
+  async function handleShare() {
+    if (!listing) return;
+    const url =
+      typeof window !== 'undefined' ? `${window.location.origin}/listings/${listing.slug}` : '';
+    const payload = {
+      title: `${listing.title} · PromptMarket`,
+      text: listing.description,
+      url,
+    };
+    // Web Share API on mobile and macOS Safari.
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share(payload);
+        setShareState('shared');
+        setTimeout(() => setShareState('idle'), 1500);
+        return;
+      } catch {
+        /* user cancelled or browser refused — fall through to clipboard */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareState('copied');
+      setTimeout(() => setShareState('idle'), 1500);
+    } catch {
+      /* clipboard denied — silently ignore */
     }
   }
 
@@ -468,12 +498,41 @@ export default function ListingDetailPage() {
         {/* Sticky sidebar */}
         <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 lg:self-start">
           <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6">
-            <p className="text-xs uppercase tracking-wide font-semibold text-ink-mute dark:text-bone-mute">
-              {free ? 'Free' : 'Price'}
-            </p>
-            <p className="mt-1 text-3xl font-bold text-ink dark:text-bone">
-              {formatPrice(listing.priceCents)}
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+                  {free ? '무료' : '가격'}
+                </p>
+                <p className="mt-1 font-display text-[2rem] font-bold text-ink dark:text-bone tracking-[-0.02em] tabular-nums">
+                  {formatPrice(listing.priceCents)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleShare}
+                aria-label="이 리스팅 공유"
+                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt text-[0.78rem] font-medium"
+              >
+                {shareState === 'idle' ? (
+                  <Share2 className="w-3.5 h-3.5" />
+                ) : (
+                  <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
+                )}
+                <span
+                  className={
+                    shareState === 'idle'
+                      ? ''
+                      : 'text-volt-700 dark:text-volt-300'
+                  }
+                >
+                  {shareState === 'shared'
+                    ? '공유됨'
+                    : shareState === 'copied'
+                      ? '링크 복사됨'
+                      : '공유'}
+                </span>
+              </button>
+            </div>
 
             <div className="mt-5 space-y-2">
               {isOwner ? (

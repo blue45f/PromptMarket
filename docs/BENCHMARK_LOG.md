@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T22:35 (UTC) — Round 25
+
+- **Benchmark**: [Substack · Medium · Are.na 공유 버튼](https://substack.com) — 모바일에서는 OS Share Sheet가, 데스크톱에서는 링크 복사가 자연스럽다. 두 경로 모두 처리하지 않으면 절반 사용자에게 안 보이는 기능이 된다.
+- **Shipped**: ListingDetail 사이드바에 Share 버튼 신설. `navigator.share` 가능 시 Web Share API로 OS 시트 호출, 미지원/취소 시 canonical URL을 클립보드로 복사. 공유 상태(공유됨/링크 복사됨/공유)에 따라 라임 체크/Share 아이콘 토글. 가격 라벨을 mono 라임 caps + 디스플레이 스케일 가격으로 다듬어 시각 위계 정리. usePageMeta가 이미 og:url을 세팅해 두어 Share Sheet 미리보기 카드까지 맞물림.
+- **Commit**: `pending`
+- **Next ideas**: (1) 코드 블록(`MarkdownView` pre) 우측 상단 인라인 복사 버튼. (2) 리스팅 카드 호버 시 마이크로 미리보기.
+
 ## 2026-05-27T22:20 (UTC) — Round 24
 
 - **Benchmark**: [Vercel · Linear 잔여 컴포넌트](https://vercel.com) — 핵심 페이지가 다 정리되어도 자주 안 보이는 상태(에러 페이지, 마크다운, 스켈레톤, 스피너, 타입 배지 오버레이)가 인디고/회색이면 디테일에서 들통난다.
 - **Shipped**: 잔여 컴포넌트 토큰 sweep. TypeBadge는 오버레이/기본 두 변형 모두 라임/잉크 토큰으로, MarkdownView는 인디고 링크/zinc 코드블록을 라임/잉크로 + Bricolage display 헤딩, SkeletonDetail은 canvas-deep/night-sub 펄스로, Spinner는 라임 회전 + 인크 라벨로, RouteError는 코랄 키커 + 잉크 글래스 카드 + ink→bone CTA로 한국어화. NavBar는 이미 라임 underline + 잉크 토큰을 갖춰서 변경 없음.
-- **Commit**: `pending`
+- **Commit**: [`8e93562`](https://github.com/blue45f/promptmarket/commit/8e93562)
 - **Next ideas**: (1) 검색 결과 카운트 라인에 정렬·필터 요약 통합. (2) Dashboard 라이브러리 다운로드 버튼 라임 액션 인디케이션.
 
 ## 2026-05-27T22:05 (UTC) — Round 23
