@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T19:50 (UTC) — Round 14
+
+- **Benchmark**: [GitHub · Stripe sitemap.xml 정책](https://github.com/sitemap.xml) — 대규모 카탈로그는 정적 빌드 산출물 대신 DB에서 동적으로 sitemap을 만든다. robots.txt에서 sitemap URL을 명시해 크롤러가 자동으로 따라오게 한다.
+- **Shipped**: 동적 `/api/seo/sitemap.xml` (NestJS `SeoModule`). 정적 7개 경로 + 모든 리스팅 + 모든 사용자 슬러그를 `<urlset>`으로 합성. 본문 `<loc>` 절대 URL은 `SITE_ORIGIN` 환경변수, 미설정 시 `https://promptmarket.dev` 폴백. lastmod = 리스팅 updatedAt. 응답 캐시 15분. 정적 `robots.txt`는 `apps/web/public`에 추가하여 SPA 번들에 그대로 동봉. 프로덕션 nginx는 `/sitemap.xml`을 API의 `/api/seo/sitemap.xml`로 프록시, Vite 개발 서버는 동일 rewrite를 자체 proxy에 추가해 dev/prod 모두 동작.
+- **Commit**: `pending`
+- **Next ideas**: (1) BrowsePage 페이지네이션을 ?page= 기반 cursor 스타일로 키보드 ←/→ 단축키. (2) Sell 폼에 미리보기 모드 토글 (전체 너비 vs 사이드바).
+
 ## 2026-05-27T19:35 (UTC) — Round 13
 
 - **Benchmark**: [Gumroad publish flow · Vercel deploy](https://gumroad.com) — 발행 폼이 유리벽처럼 가벼워 보이면서도 단계가 명확하다. 라이브 미리보기를 sticky 사이드바에 둬서 입력 결과를 즉시 확인.
 - **Shipped**: CreateListing 폼 디자인 패스. 입력 표면을 라임 포커스 링 + canvas-sub 카드로 통일, 탭 underline을 인디고→라임, 게시 버튼을 잉크→라임 슬라이드 인 호버, 모든 카피 한국어화(제목/타입/카테고리/본문/태그/모델/기법/난이도/라이선스/버전). Field 라벨/에러 텍스트도 새 토큰. 미리보기 사이드바도 같은 토큰으로 정리. `usePageMeta` 추가.
-- **Commit**: `pending`
+- **Commit**: [`c0b3a32`](https://github.com/blue45f/promptmarket/commit/c0b3a32)
 - **Next ideas**: (1) 푸터에 robots.txt + sitemap.xml 라우트(API). (2) 키보드 단축키 확장(검색 후 j/k 네비, c 새 리스팅).
 
 ## 2026-05-27T19:22 (UTC) — Round 12

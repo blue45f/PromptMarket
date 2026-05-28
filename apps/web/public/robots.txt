@@ -1,0 +1,8 @@
+# PromptMarket robots policy
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /sell
+
+Sitemap: /sitemap.xml
