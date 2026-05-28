@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T07:05 (UTC) — Round 39
+
+- **Benchmark**: [Linear · Vercel toast](https://linear.app) — 토스트가 OS 알림처럼 보이면 디자인 시스템 밖이라는 느낌이 든다. 카드 보더/그림자/폰트가 본문 시스템과 일치해야 한다.
+- **Shipped**: `AppProviders`의 `Toaster` 기본 토스트 옵션을 OKLCH 시스템으로 정렬. Hanken Grotesk + Pretendard 폰트 패밀리, 14px 라운드, 깊이감 있는 ink-tinted 그림자, 라임 success / 코랄 error / 라임 loading 아이콘 테마. 다크모드에서는 night-sub 배경 + bone 텍스트로 자동 전환(CSS 변수가 이미 dark에서 스위칭).
+- **Commit**: `pending`
+- **Next ideas**: (1) MarkdownView TOC 사이드바. (2) Image lazy-load + skeleton 통합.
+
 ## 2026-05-28T06:55 (UTC) — Round 38
 
 - **Benchmark**: [Substack feature writer · Are.na profile of the day](https://substack.com) — 한 명만 영구 노출하면 정적인 인상이 남는다. 시간대 기반 회전을 두면 같은 세션에서는 stable하지만 하루 안에서 자연스럽게 변한다.
