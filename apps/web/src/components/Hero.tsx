@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Compass } from 'lucide-react';
 import { useListings } from '@features/marketplace/queries';
+import { useQueryClient } from '@tanstack/react-query';
+import { listingKey } from '@features/marketplace/queryKeys';
+import { api } from '@services/api';
+import type { ListingDetailResponse } from '@/types';
 import { LISTING_TYPE_META } from '@promptmarket/shared';
 import { formatPrice } from '@utils/format';
 import { cn } from '@utils/cn';
@@ -309,10 +313,26 @@ function DropsMarquee({ items, loading }: DropsMarqueeProps) {
 function DropRow({ drop }: { drop: DropsMarqueeProps['items'][number] }) {
   const meta = LISTING_TYPE_META[drop.type];
   const free = (drop.priceCents ?? 0) === 0;
+  const qc = useQueryClient();
+  // Seed entries (no real id, fake slug) shouldn't trigger prefetches —
+  // they'd just 404 against the API and waste a request.
+  const realSlug = drop.id.startsWith('seed-') ? null : drop.slug;
+  const prefetch = () => {
+    if (!realSlug) return;
+    if (qc.getQueryData(listingKey(realSlug)) != null) return;
+    qc.prefetchQuery({
+      queryKey: listingKey(realSlug),
+      queryFn: () =>
+        api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${realSlug}`),
+      staleTime: 60_000,
+    });
+  };
   return (
     <li className="mx-3.5">
       <Link
         to={`/listings/${drop.slug}`}
+        onMouseEnter={prefetch}
+        onFocus={prefetch}
         className="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-line/60 dark:border-night-line/60 bg-canvas/70 dark:bg-night/40 hover:bg-canvas-deep/80 dark:hover:bg-night-deep/80 hover:border-volt-300 dark:hover:border-volt-500/50 motion-safe:transition-colors"
       >
         <span

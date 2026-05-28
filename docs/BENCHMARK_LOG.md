@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T10:25 (UTC) — Round 56
+
+- **Benchmark**: [Next.js Link prefetch coverage](https://nextjs.org) — 일반 카드만 prefetch하면 hero에서 클릭한 사용자의 첫 인상은 여전히 느리다. 모든 entry 포인트에서 동일한 패턴이 필요.
+- **Shipped**: Hero DropRow에 hover/focus prefetch 추가. ListingCard와 같은 60s staleTime, 캐시 있으면 skip. Seed 데이터(API 없을 때 폴백)는 `id.startsWith('seed-')`로 가드해서 404 prefetch 방지.
+- **Commit**: `pending`
+- **Next ideas**: (1) CommandPalette에 saved filter 그룹. (2) 다크모드 토글에 transition 모션.
+
 ## 2026-05-28T10:10 (UTC) — Round 55
 
 - **Benchmark**: [Raycast favorites at the top](https://raycast.com) — 자주 쓰는 항목은 검색 전에 노출돼야 한다. 명령 팔레트 첫 화면에 위시리스트 미니 뷰가 있으면 "다시 보고 싶은 것"으로 한 번에 점프.
