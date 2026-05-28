@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T20:50 (UTC) — Round 18
+
+- **Benchmark**: [Airbnb · Booking 필터 시트](https://airbnb.com) — 필터 패널은 마켓플레이스의 두 번째 표지다. 한국어 라벨, 라임 액티브, 부드러운 인풋 인디케이션이 신뢰감을 좌우한다.
+- **Shipped**: FilterPanel/FilterDrawer 디자인 패스. 섹션 헤더에 mono kicker + 라임 헤어라인, 타입/카테고리 칩을 인디고에서 라임 토큰으로, 난이도/가격 토글 그룹을 라임 액티브 + 깊이 있는 캔버스 배경으로, 라디오/체크박스 액센트를 `accent-volt-500`으로 통일. 모든 영문 라벨(Filters/Type/Models/Prompt technique/Category/Difficulty/Price)을 한국어로(필터/타입/모델/프롬프트 기법/카테고리/난이도/가격), 난이도·가격 옵션도 입문/중급/고급/전체/무료/유료 한글화. FilterDrawer는 새 인플레이션 글래스 + 잉크→라임 슬라이드 적용 버튼.
+- **Commit**: `pending`
+- **Next ideas**: (1) 모델 피커(`ModelPicker`) 잔재 정리. (2) 리스팅 상세 페이지의 메타 사이드바 잔재(Tabs trigger 색상, "Type/Category" 카피) 정리.
+
 ## 2026-05-27T20:35 (UTC) — Round 17
 
 - **Benchmark**: [Vercel templates · Linear changelog 카탈로그 헤더](https://vercel.com/templates) — 좋은 카탈로그 페이지는 사용자가 어디 와 있는지 명시한다. mono kicker + 디스플레이 타이틀로 컨텍스트(검색 결과 / 카테고리 / 둘러보기)를 즉시 보여준다.
 - **Shipped**: BrowsePage 헤더를 새 디자인 시스템으로 재구성. 라임 kicker, 디스플레이 타이틀이 검색어/카테고리/기본 상태별로 변환. 필터 칩(`Chip`)을 인디고에서 라임으로, SortSelect를 라운드 풀로, 모바일 "필터" 버튼을 풀+카운터 chip로, 결과 카운터를 mono tabular-nums로. 사이드바 패널, 페이지네이션, 액티브 필터 chip strip 모두 새 토큰 정렬.
-- **Commit**: `pending`
+- **Commit**: [`33a4a1c`](https://github.com/blue45f/promptmarket/commit/33a4a1c)
 - **Next ideas**: (1) FilterPanel 내부 인디고 잔재 정리. (2) FilterDrawer 모바일 시트 토큰 정렬.
 
 ## 2026-05-27T20:20 (UTC) — Round 16
