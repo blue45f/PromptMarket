@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:25 (UTC) — Round 94
+
+- **Benchmark**: 자체 — 모든 API 호출이 통과하는 axios 인스턴스에 회귀 보호가 없었다. 요청 인터셉터가 Bearer를 빠뜨리면 인증된 라우트가 통째로 401, getErrorMessage가 망가지면 토스트 메시지가 사라져 사용자가 무슨 일인지 모름.
+- **Shipped**: `apps/web/src/services/api.test.ts` 9 tests — 인터셉터 3종(토큰 없음 / 토큰 있음 / config.headers 미존재 시 생성) + getErrorMessage 6종(axios 문자열 message / 배열 message join / response body 없을 때 err.message 폴백 / 빈 message 시 fallback 문자열 / Error 인스턴스 / unknown 타입 fb 폴백). 합계 **144 tests / 26 files** (shared 11 + api 54 + web 79) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:22 (UTC) — Round 93
 
 - **Benchmark**: 자체 — api/shared 모두 테스트 커버가 빠르게 채워지는 동안 web 패키지의 핵심 무거운 흐름(인증 토큰 영속화, 가격 포맷)이 회귀 보호 없이 남아있었다. 토큰을 로그아웃 시 제대로 못 지우는 회귀는 잘못된 세션 유지로 직결.
