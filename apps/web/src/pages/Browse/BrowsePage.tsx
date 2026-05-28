@@ -25,7 +25,7 @@ import FilterPanel, {
 import FilterDrawer from '@components/FilterDrawer';
 import SearchBar from '@components/SearchBar';
 import { SkeletonGrid } from '@components/SkeletonCard';
-import EmptyState from '@components/EmptyState';
+import BrowseEmptyState, { buildActiveFilterRows } from '@components/BrowseEmptyState';
 import { cn } from '@utils/cn';
 
 const VALID_TYPES = new Set<ListingType>(ListingTypeEnum.options);
@@ -311,10 +311,33 @@ export default function BrowsePage() {
               )}
             </>
           ) : (
-            <EmptyState
-              emoji="🔍"
-              title="No listings found"
-              description="Try resetting filters or a different search term."
+            <BrowseEmptyState
+              q={q}
+              onClearAll={reset}
+              activeFilters={buildActiveFilterRows({
+                q,
+                types: filters.types,
+                models: filters.models,
+                technique: filters.technique,
+                difficulty: filters.difficulty,
+                category: filters.category,
+                price: filters.price,
+                removeType: (t) =>
+                  commit(
+                    { ...filters, types: filters.types.filter((x) => x !== t) },
+                    { page: 1 },
+                  ),
+                removeModel: (m) =>
+                  commit(
+                    { ...filters, models: filters.models.filter((x) => x !== m) },
+                    { page: 1 },
+                  ),
+                removeTechnique: () => commit({ ...filters, technique: '' }, { page: 1 }),
+                removeDifficulty: () => commit({ ...filters, difficulty: '' }, { page: 1 }),
+                removeCategory: () => commit({ ...filters, category: '' }, { page: 1 }),
+                removePrice: () => commit({ ...filters, price: 'all' }, { page: 1 }),
+                removeQuery: () => updateExtras({ q: undefined, page: 1 }),
+              })}
             />
           )}
         </div>

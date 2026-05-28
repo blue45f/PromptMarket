@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T18:55 (UTC) — Round 10
+
+- **Benchmark**: [Airbnb · Notion 검색 0건](https://airbnb.com) — "결과 없음"을 단순 알림으로 두지 않고, 어떤 필터가 결과를 막고 있는지 명시한 뒤 한 번에 하나씩 풀 수 있는 인터랙티브 카드를 제공한다.
+- **Shipped**: `apps/web/src/components/BrowseEmptyState.tsx` + `buildActiveFilterRows` 유틸. 활성 필터(검색어 · 타입 다중 · 모델 다중 · 기법 · 난이도 · 카테고리 · 가격)를 한국어 라벨로 나열, 각 행 클릭 시 그 필터 하나만 제거하는 deep-link 동작. 전체 카탈로그 / 필터 초기화 CTA, ambient mesh + 그레인 디자인 일관성. Browse가 `q`와 모든 필터를 그대로 전달.
+- **Commit**: `pending`
+- **Next ideas**: (1) 셀러 라이브러리(`/dashboard`) 빈 상태 톤업. (2) 푸터에 sitemap.xml/robots 라우트 안내.
+
 ## 2026-05-27T18:45 (UTC) — Round 9
 
 - **Benchmark**: [Linear · Vercel · Stripe 로그인](https://linear.app/login) — 폼 + 브랜드 가치 제안을 좌우로 분할한 스플릿 레이아웃. 가입 직전이 첫인상을 결정하는 페이지인데도 보통 무성의하게 두는 곳을 멋지게 다뤘다.
 - **Shipped**: 공용 `AuthLayout` 컴포넌트(좌측 폼 / 우측 ambient mesh + 가치 제안 카드). Login은 데모 계정 3종 빠른 채우기 칩(alice / bob / carol) 포함. Register는 사용자명 → 프로필 URL 힌트 문구. 두 페이지 모두 라임 슬라이드 인 호버 CTA, ⌘K 가이드, OG/Twitter 메타까지 자동 세팅.
-- **Commit**: `pending`
+- **Commit**: [`2d0f541`](https://github.com/blue45f/promptmarket/commit/2d0f541)
 - **Next ideas**: (1) Browse empty state 강화 (검색어 + 활성 필터 인사이트). (2) "구매한 라이브러리" 빈 상태 톤업.
 
 ## 2026-05-27T18:30 (UTC) — Round 8
