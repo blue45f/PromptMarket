@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:59 (UTC) — Round 117
+
+- **Benchmark**: 자체 — TypeBadge/ModelBadge/DifficultyBadge/LicenseBadge/TechniqueBadge 5종이 카드/디테일/필터 곳곳에 박혀 있는데 모두 메타 lookup만 의존하는 작은 컴포넌트라 회귀 가드가 가벼웠음. 한 번에 묶어서 잠금.
+- **Shipped**: `apps/web/src/components/Badges.test.tsx` 9 tests — TypeBadge: PROMPT/SKILL 라벨 + overlay 스타일링 클래스 / ModelBadge: 알려진 slug → 라벨, vendor title 속성, 알 수 없는 slug에도 비크래시 / DifficultyBadge: beginner/intermediate/advanced 한글 라벨 / LicenseBadge: 라이센스 문자열 직접 / TechniqueBadge: TECHNIQUE_META 라벨 (slug 자체는 노출 안 됨). 합계 **271 tests / 47 files** (shared 11 + api 86 + web 169) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:58 (UTC) — Round 116
 
 - **Benchmark**: 자체 — ThemeToggle은 헤더에 항상 노출되는 단일 컨트롤이라 회귀 시 사용자가 즉시 인지. dropdown(Radix portal)은 jsdom에서 검증이 까다로워 trigger 아이콘 매핑(Sun/Moon/Monitor)만 핵심 잠금.
