@@ -24,7 +24,7 @@ describe('ReviewsController', () => {
 
   it('POST :id/reviews forwards the auth user id and body', async () => {
     const { controller, service } = makeController();
-    const user: AuthUser = { id: 'u1' };
+    const user: AuthUser = { id: 'u1', email: 'u1@example.com', username: 'user-u1' };
     await controller.create(user, 'listing-1', { rating: 5, comment: 'good' });
     expect(service.create).toHaveBeenCalledWith('u1', 'listing-1', {
       rating: 5,
