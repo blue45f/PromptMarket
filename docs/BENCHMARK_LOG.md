@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T14:10 (UTC) — Round 75
+
+- **Benchmark**: 자체 — CategoryChips는 카탈로그 진입의 첫 분기이고 shared CATEGORIES 변경 시 가장 먼저 깨질 위치다. 단순한 렌더 테스트만으로도 회귀 보호선이 한 단계 굵어진다.
+- **Shipped**: `CategoryChips.test.tsx` 3건 — CATEGORIES 전체에 대한 chip + "전체" reset 렌더 / active prop이 해당 chip에 ink fill 적용 / active 없을 때 "전체"가 active로 표시. 45 tests / 13 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) ModelTabs 단위 테스트. (2) FilterPanel toggle group 키보드 좌우 이동.
+
 ## 2026-05-28T13:58 (UTC) — Round 74
 
 - **Benchmark**: [Linear · Vimium · GitHub 키보드 워크플로](https://linear.app) — 마우스 없이 카탈로그를 빠르게 훑을 수 있어야 power user가 끝까지 머문다. j/k가 vim convention이고 ⌘K + ←/→와 충돌 안 함.
