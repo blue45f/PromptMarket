@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T08:38 (UTC) — Round 47
+
+- **Benchmark**: [Vercel · Linear PWA manifest](https://vercel.com) — "Add to Home Screen"이 가능하면 모바일 사용자에게 앱처럼 보인다. 브랜드 컬러와 아이콘이 OS 레벨에서 적용돼야 첫 인상이 깔끔하다.
+- **Shipped**: `apps/web/public/manifest.webmanifest` + `icon.svg`(lime "P" sigil on cosmic-ink). `index.html`에 manifest 링크, apple-touch-icon, prefers-color-scheme별 theme-color 두 개(라이트=크림, 다크=잉크), apple-mobile-web-app-* 메타 3종, viewport-fit=cover. 매니페스트에 둘러보기/판매 shortcuts 2개.
+- **Commit**: `pending`
+- **Next ideas**: (1) Library 빈 상태에서 무료 추천 자동 보여주기. (2) Footer 라이브 통계 호버 시 카운트업 재실행.
+
 ## 2026-05-28T08:25 (UTC) — Round 46
 
 - **Benchmark**: [Apple HIG · GOV.UK Design](https://designsystem.digital.gov) — 좋은 디자인 시스템은 사용자가 OS 레벨에서 요청하는 접근성 신호(reduced-motion, contrast more)에 자동으로 응답한다. 우리 시스템은 reduced-motion만 다루고 있어서 contrast more가 빠짐.
