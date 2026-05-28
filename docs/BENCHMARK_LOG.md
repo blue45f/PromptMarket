@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:43 (UTC) — Round 103
+
+- **Benchmark**: 자체 — ModelPicker는 모델 등록부(MODELS)를 vendor별로 그룹화하고 검색 + 토글 + 칩 제거를 한 컴포넌트에서 처리. 회귀 시 사용자가 모델 필터를 못 쓰거나 잘못된 슬러그 전달.
+- **Shipped**: `apps/web/src/components/ModelPicker.test.tsx` 6 tests — vendor 섹션 다수 렌더 / 벤더명 검색 case-insensitive 필터(Anthropic 검색 시 OpenAI 사라짐) / 매치 0건 시 한글 빈 상태 / 체크박스 클릭으로 슬러그 토글(추가/제거) / hideSearch=true 시 입력창 미렌더 / value에 슬러그 있으면 칩 하나 + 클릭 시 onChange([]) 비움. 합계 **178 tests / 30 files** (shared 11 + api 54 + web 113) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:42 (UTC) — Round 102
 
 - **Benchmark**: 자체 — SearchBar combobox는 WAI-ARIA 패턴(aria-expanded / aria-activedescendant)과 키보드 내비(ArrowDown / Enter / Escape)를 함께 다룬다. 회귀 시 키보드 사용자가 검색을 못 하거나 스크린리더 인식이 깨질 수 있는데 가드가 없었다.
