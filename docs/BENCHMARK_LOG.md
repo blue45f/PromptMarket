@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T21:05 (UTC) — Round 19
+
+- **Benchmark**: [Linear roadmap · Vercel changelog 상세 페이지](https://linear.app) — 상세 페이지는 마켓의 신뢰감을 결정한다. Tabs, 페이월, 구매 CTA, 리뷰 폼 한 곳이라도 라임/잉크 시스템 밖이면 어색하다.
+- **Shipped**: ListingDetailPage 토큰 sweep. Tabs 액티브를 인디고→라임으로, 페이월 카드(`🔒 전체 본문 잠금 해제`)를 라임 대시드 + canvas-sub로, 페이지 그라디언트 페이드를 canvas-sub/night-sub로, 사이드바 메인 CTA를 ink→lime slide hover + lift, 리뷰 등록 버튼도 동일, "보유 중" 배지를 라임 인디케이터로, gray-100 잔재를 canvas-deep로. 카피 한국어화(처리 중/구매해서 보기/리뷰 등록/제출 중).
+- **Commit**: `pending`
+- **Next ideas**: (1) 상세 페이지 메타 사이드바("Type/Category/Difficulty…") 한국어 라벨화. (2) Author 카드 + Follow 버튼 디자인 정리.
+
 ## 2026-05-27T20:50 (UTC) — Round 18
 
 - **Benchmark**: [Airbnb · Booking 필터 시트](https://airbnb.com) — 필터 패널은 마켓플레이스의 두 번째 표지다. 한국어 라벨, 라임 액티브, 부드러운 인풋 인디케이션이 신뢰감을 좌우한다.
 - **Shipped**: FilterPanel/FilterDrawer 디자인 패스. 섹션 헤더에 mono kicker + 라임 헤어라인, 타입/카테고리 칩을 인디고에서 라임 토큰으로, 난이도/가격 토글 그룹을 라임 액티브 + 깊이 있는 캔버스 배경으로, 라디오/체크박스 액센트를 `accent-volt-500`으로 통일. 모든 영문 라벨(Filters/Type/Models/Prompt technique/Category/Difficulty/Price)을 한국어로(필터/타입/모델/프롬프트 기법/카테고리/난이도/가격), 난이도·가격 옵션도 입문/중급/고급/전체/무료/유료 한글화. FilterDrawer는 새 인플레이션 글래스 + 잉크→라임 슬라이드 적용 버튼.
-- **Commit**: `pending`
+- **Commit**: [`3595bb4`](https://github.com/blue45f/promptmarket/commit/3595bb4)
 - **Next ideas**: (1) 모델 피커(`ModelPicker`) 잔재 정리. (2) 리스팅 상세 페이지의 메타 사이드바 잔재(Tabs trigger 색상, "Type/Category" 카피) 정리.
 
 ## 2026-05-27T20:35 (UTC) — Round 17

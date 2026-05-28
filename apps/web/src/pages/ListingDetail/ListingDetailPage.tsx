@@ -180,12 +180,12 @@ export default function ListingDetailPage() {
   if (error || !listing) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-16 text-center">
-        <p className="text-rose-600 dark:text-rose-400">
+        <p className="text-coral-deep dark:text-coral">
           {error ? getErrorMessage(error) : 'Listing not found.'}
         </p>
         <Link
           to="/browse"
-          className="mt-4 inline-block text-indigo-700 dark:text-indigo-400 underline"
+          className="mt-4 inline-block text-volt-700 dark:text-volt-300 underline"
         >
           Back to browse
         </Link>
@@ -218,21 +218,21 @@ export default function ListingDetailPage() {
             </span>
             <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
               <TypeBadge type={listing.type} overlay />
-              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-white/80 dark:bg-zinc-900/70 backdrop-blur ring-1 ring-white/40 dark:ring-zinc-700/60 text-gray-900 dark:text-zinc-100">
+              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-canvas/80 dark:bg-night/70 backdrop-blur ring-1 ring-line/60 dark:ring-night-line/60 text-ink dark:text-bone">
                 in {listing.category}
               </span>
             </div>
           </div>
 
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-zinc-100">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-ink dark:text-bone">
               {listing.title}
             </h1>
-            <p className="mt-2 text-sm text-gray-500 dark:text-zinc-400">
+            <p className="mt-2 text-sm text-ink-mute dark:text-bone-mute">
               by{' '}
               <Link
                 to={`/users/${listing.author.username}`}
-                className="text-indigo-700 dark:text-indigo-400 hover:underline font-medium"
+                className="text-volt-700 dark:text-volt-300 hover:underline font-medium"
               >
                 @{listing.author.username}
               </Link>{' '}
@@ -244,7 +244,7 @@ export default function ListingDetailPage() {
                 count={listing.reviewCount}
                 showLabel
               />
-              <span className="inline-flex items-center gap-1 text-gray-500 dark:text-zinc-400">
+              <span className="inline-flex items-center gap-1 text-ink-mute dark:text-bone-mute">
                 <Download className="w-3.5 h-3.5" />
                 {listing.downloads ?? 0} downloads
               </span>
@@ -254,7 +254,7 @@ export default function ListingDetailPage() {
                 {listing.tags.map((t) => (
                   <span
                     key={t}
-                    className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300"
+                    className="text-xs px-2 py-0.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft"
                   >
                     #{t}
                   </span>
@@ -266,7 +266,7 @@ export default function ListingDetailPage() {
           <Tabs.Root defaultValue="overview" className="w-full">
             <Tabs.List
               aria-label="Listing sections"
-              className="flex gap-1 border-b border-gray-200 dark:border-zinc-800"
+              className="flex gap-1 border-b border-line dark:border-night-line"
             >
               {(
                 [
@@ -280,9 +280,9 @@ export default function ListingDetailPage() {
                   value={key}
                   className={cn(
                     'px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition',
-                    'border-transparent text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200',
-                    'data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-700',
-                    'dark:data-[state=active]:border-indigo-400 dark:data-[state=active]:text-indigo-300',
+                    'border-transparent text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone',
+                    'data-[state=active]:border-volt-500 data-[state=active]:text-ink',
+                    'dark:data-[state=active]:border-volt-400 dark:data-[state=active]:text-bone',
                   )}
                 >
                   {label}
@@ -302,33 +302,33 @@ export default function ListingDetailPage() {
                 models={listing.models}
                 className="mb-6"
               />
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8">
-                <p className="text-base text-gray-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed">
+              <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
+                <p className="text-base text-ink-soft dark:text-bone-soft whitespace-pre-wrap leading-relaxed">
                   {listing.description}
                 </p>
 
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-zinc-100">
+                  <h2 className="text-lg font-bold tracking-tight text-ink dark:text-bone">
                     {canViewBody ? 'Content' : 'Preview'}
                   </h2>
                   {canViewBody && listing.body && (
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleCopy}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                       >
                         {copied ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-500" />
+                          <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
                         ) : (
                           <Copy className="w-3.5 h-3.5" />
                         )}
-                        <span className={copied ? 'text-emerald-500' : ''}>
+                        <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
                           {copied ? 'Copied!' : 'Copy'}
                         </span>
                       </button>
                       <button
                         onClick={handleDownload}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                       >
                         <Download className="w-3.5 h-3.5" />
                         Download .md
@@ -345,27 +345,27 @@ export default function ListingDetailPage() {
                       <MarkdownView
                         source={listing.previewBody || '*No preview available.*'}
                       />
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent" />
-                      <div className="mt-6 rounded-xl border border-dashed border-indigo-200 dark:border-indigo-800 bg-indigo-50/60 dark:bg-indigo-950/30 p-6 text-center">
-                        <p className="text-sm text-indigo-900 dark:text-indigo-200 font-medium">
-                          🔒 Unlock the full content
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-canvas-sub dark:from-night-sub to-transparent" />
+                      <div className="mt-6 rounded-xl border border-dashed border-volt-400/60 dark:border-volt-500/40 bg-volt-100/60 dark:bg-volt-900/30 p-6 text-center">
+                        <p className="text-sm text-ink dark:text-bone font-medium">
+                          🔒 전체 본문 잠금 해제
                         </p>
-                        <p className="mt-1 text-xs text-indigo-700 dark:text-indigo-300">
+                        <p className="mt-1 text-xs text-ink-soft dark:text-bone-soft">
                           {free
-                            ? 'Get this listing for free to view the full content.'
-                            : `Purchase for ${formatPrice(listing.priceCents)} to view the full content.`}
+                            ? '무료로 받아 전체 본문을 확인하세요.'
+                            : `${formatPrice(listing.priceCents)}에 구매하면 전체 본문이 보여요.`}
                         </p>
                         <button
                           onClick={handlePurchase}
                           disabled={buying}
-                          className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60"
+                          className="mt-3 group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
                         >
                           {buying ? (
                             <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
                           ) : (
                             <ShoppingCart className="w-4 h-4" />
                           )}
-                          {buying ? 'Processing…' : free ? 'Get free' : 'Buy to unlock'}
+                          {buying ? '처리 중…' : free ? '무료로 받기' : '구매해서 보기'}
                         </button>
                       </div>
                     </div>
@@ -378,13 +378,13 @@ export default function ListingDetailPage() {
               value="reviews"
               className="pt-6 focus-visible:outline-none"
             >
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8">
+              <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
                 {isPurchased && !ownReview && (
                   <form
                     onSubmit={onSubmitReview}
-                    className="mb-6 rounded-xl border border-gray-200 dark:border-zinc-800 p-4 bg-gray-50/60 dark:bg-zinc-950/40"
+                    className="mb-6 rounded-xl border border-line dark:border-night-line p-4 bg-canvas-deep/60 dark:bg-night-deep/40"
                   >
-                    <p className="text-sm font-medium text-gray-900 dark:text-zinc-100 mb-2">
+                    <p className="text-sm font-medium text-ink dark:text-bone mb-2">
                       Leave a review
                     </p>
                     <StarRating
@@ -393,34 +393,34 @@ export default function ListingDetailPage() {
                       size="lg"
                     />
                     {errors.rating && (
-                      <p className="mt-1 text-xs text-rose-600">{errors.rating.message}</p>
+                      <p className="mt-1 text-xs text-coral-deep dark:text-coral">{errors.rating.message}</p>
                     )}
                     <textarea
                       {...register('comment')}
                       placeholder="What did you think? (optional)"
                       rows={3}
-                      className="mt-3 w-full rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="mt-3 w-full rounded-lg border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
                     />
                     {errors.comment && (
-                      <p className="mt-1 text-xs text-rose-600">{errors.comment.message}</p>
+                      <p className="mt-1 text-xs text-coral-deep dark:text-coral">{errors.comment.message}</p>
                     )}
                     <div className="mt-3 flex justify-end">
                       <button
                         type="submit"
                         disabled={reviewSubmitting}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60"
+                        className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
                       >
                         {reviewSubmitting && (
                           <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
                         )}
-                        {reviewSubmitting ? 'Submitting…' : 'Submit review'}
+                        {reviewSubmitting ? '제출 중…' : '리뷰 등록'}
                       </button>
                     </div>
                   </form>
                 )}
 
                 {reviews.length === 0 ? (
-                  <p className="text-sm text-gray-500 dark:text-zinc-400">
+                  <p className="text-sm text-ink-mute dark:text-bone-mute">
                     No reviews yet. Be the first!
                   </p>
                 ) : (
@@ -430,21 +430,21 @@ export default function ListingDetailPage() {
                       return (
                         <li
                           key={r.id}
-                          className="border-b border-gray-100 dark:border-zinc-800 last:border-0 pb-4 last:pb-0"
+                          className="border-b border-line/70 dark:border-night-line/70 last:border-0 pb-4 last:pb-0"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <StarRating value={r.rating} />
-                              <span className="text-sm font-medium text-gray-900 dark:text-zinc-100">
+                              <span className="text-sm font-medium text-ink dark:text-bone">
                                 @{author?.username ?? 'anonymous'}
                               </span>
                             </div>
-                            <span className="text-xs text-gray-500 dark:text-zinc-400">
+                            <span className="text-xs text-ink-mute dark:text-bone-mute">
                               {formatDate(r.createdAt)}
                             </span>
                           </div>
                           {r.comment && (
-                            <p className="mt-2 text-sm text-gray-700 dark:text-zinc-300">
+                            <p className="mt-2 text-sm text-ink-soft dark:text-bone-soft">
                               {r.comment}
                             </p>
                           )}
@@ -467,28 +467,28 @@ export default function ListingDetailPage() {
 
         {/* Sticky sidebar */}
         <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6">
-            <p className="text-xs uppercase tracking-wide font-semibold text-gray-500 dark:text-zinc-400">
+          <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6">
+            <p className="text-xs uppercase tracking-wide font-semibold text-ink-mute dark:text-bone-mute">
               {free ? 'Free' : 'Price'}
             </p>
-            <p className="mt-1 text-3xl font-bold text-gray-900 dark:text-zinc-50">
+            <p className="mt-1 text-3xl font-bold text-ink dark:text-bone">
               {formatPrice(listing.priceCents)}
             </p>
 
             <div className="mt-5 space-y-2">
               {isOwner ? (
-                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300">
+                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft">
                   You own this listing
                 </span>
               ) : isPurchased ? (
-                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800 font-semibold">
+                <span className="block w-full text-center px-3 py-2.5 text-sm rounded-lg bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200 border border-volt-200 dark:border-volt-800 font-semibold">
                   Owned ✓
                 </span>
               ) : (
                 <button
                   onClick={handlePurchase}
                   disabled={buying}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
+                  className="group w-full relative inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover overflow-hidden"
                 >
                   {buying ? (
                     <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
@@ -507,20 +507,20 @@ export default function ListingDetailPage() {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={handleCopy}
-                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                   >
                     {copied ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                      <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
-                    <span className={copied ? 'text-emerald-500' : ''}>
+                    <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
                       {copied ? 'Copied!' : 'Copy'}
                     </span>
                   </button>
                   <button
                     onClick={handleDownload}
-                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 motion-safe:transition"
+                    className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Download
@@ -530,7 +530,7 @@ export default function ListingDetailPage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6">
+          <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6">
             <div className="flex items-center gap-3">
               <div
                 className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-lg font-bold text-white"
@@ -539,19 +539,19 @@ export default function ListingDetailPage() {
                 {listing.author.username[0]?.toUpperCase() ?? '?'}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900 dark:text-zinc-100 truncate">
+                <p className="text-sm font-semibold text-ink dark:text-bone truncate">
                   @{listing.author.username}
                 </p>
                 <Link
                   to={`/users/${listing.author.username}`}
-                  className="text-xs text-indigo-700 dark:text-indigo-400 hover:underline"
+                  className="text-xs text-volt-700 dark:text-volt-300 hover:underline"
                 >
                   View profile
                 </Link>
               </div>
               <button
                 type="button"
-                className="text-sm font-medium px-3 py-1.5 rounded-md border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:border-indigo-300 motion-safe:transition"
+                className="text-sm font-medium px-3 py-1.5 rounded-md border border-line dark:border-night-line text-ink-soft dark:text-bone-soft hover:border-volt-400 motion-safe:transition"
                 onClick={() => {
                   /* follow is a no-op for now per spec */
                 }}
@@ -561,7 +561,7 @@ export default function ListingDetailPage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 space-y-4 text-sm">
+          <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 space-y-4 text-sm">
             <Meta label="Type">
               <TypeBadge type={listing.type} />
             </Meta>
@@ -591,13 +591,13 @@ export default function ListingDetailPage() {
             )}
             {listing.version && (
               <Meta label="Version">
-                <span className="font-mono text-xs text-gray-700 dark:text-zinc-200">
+                <span className="font-mono text-xs text-ink-soft dark:text-bone-soft">
                   v{listing.version}
                 </span>
               </Meta>
             )}
             <Meta label="Updated">
-              <span className="text-xs text-gray-600 dark:text-zinc-400">
+              <span className="text-xs text-ink-mute dark:text-bone-mute">
                 {formatDate(listing.updatedAt ?? listing.createdAt)}
               </span>
             </Meta>
@@ -607,10 +607,10 @@ export default function ListingDetailPage() {
 
       {/* Bottom related */}
       <section className="mt-16">
-        <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-zinc-100 mb-1">
+        <h2 className="text-xl font-bold tracking-tight text-ink dark:text-bone mb-1">
           You might also like
         </h2>
-        <p className="text-sm text-gray-500 dark:text-zinc-400 mb-5">
+        <p className="text-sm text-ink-mute dark:text-bone-mute mb-5">
           Hand-picked recommendations from the marketplace.
         </p>
         <RelatedListings listingId={listing.id} />
@@ -671,7 +671,7 @@ export default function ListingDetailPage() {
 function Meta({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-3">
-      <span className="text-xs uppercase tracking-wide font-semibold text-gray-500 dark:text-zinc-400 pt-0.5">
+      <span className="text-xs uppercase tracking-wide font-semibold text-ink-mute dark:text-bone-mute pt-0.5">
         {label}
       </span>
       <div className="text-right">{children}</div>
