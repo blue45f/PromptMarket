@@ -7,11 +7,17 @@
 
 ---
 
+## 2026-05-28T16:33 (UTC) — Round 87
+
+- **Benchmark**: 자체 — apps/api도 테스트 0건 상태. SeoService.sitemap()이 XML escape를 잊으면 SEO 결과가 깨지고 사용자에게도 보이지 않는 영역이라 보호선이 절실.
+- **Shipped**: `apps/api`에 vitest 부트스트랩 — `vitest.config.ts`에 `@promptmarket/shared` 경로 alias 부여해 빌드 산출물 없이 직접 src를 본다. `seo.service.spec.ts` 3건 — urlset 래핑 + static/dynamic URL 포함 / XML 특수문자 escape(`&<>"'`) / `SITE_ORIGIN` 미설정 시 폴백. 합계 **70 tests / 18 files** (shared 11 + api 3 + web 56) 그린.
+- **Commit**: [`194e15d`](https://github.com/blue45f/promptmarket/commit/194e15d)
+
 ## 2026-05-28T16:20 (UTC) — Round 86
 
 - **Benchmark**: 자체 — shared 패키지가 web/api 양쪽 계약을 모두 제공하는데 테스트가 0건이었다. 카테고리 enum이 하나라도 빠지면 양쪽이 동시에 깨지는데 회귀 보호선이 부재.
 - **Shipped**: `packages/shared`에 vitest + 11 tests 추가 — formatPrice 출력 / LISTING_TYPE_META가 ListingType enum과 모두 매핑됨 / MODELS ↔ MODEL_BY_SLUG round-trip / unknown slug 안전 fallback / CreateListingSchema 양/음 케이스 5종(title min, priceCents 음수, semver, models empty). turbo가 자동으로 양쪽 패키지의 test:run을 합쳐서 **67 tests / 17 files** 그린.
-- **Commit**: `pending`
+- **Commit**: [`88e584a`](https://github.com/blue45f/promptmarket/commit/88e584a)
 - **Next ideas**: (1) apps/api에도 vitest 도입(controllers/service 단위). (2) shared formatDollars 분리 검증.
 
 ## 2026-05-28T16:08 (UTC) — Round 85
