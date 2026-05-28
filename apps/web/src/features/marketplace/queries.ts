@@ -152,7 +152,7 @@ export function useLogin() {
     onSuccess: (res) => {
       login(res.token, res.user as unknown as User);
       qc.setQueryData(meKey, res.user);
-      toast.success(`Welcome back, @${res.user.username}!`);
+      toast.success(`@${res.user.username}님, 다시 오신 걸 환영해요`);
     },
     onError: (err) => {
       toast.error(getErrorMessage(err));
@@ -169,7 +169,7 @@ export function useRegister() {
     onSuccess: (res) => {
       login(res.token, res.user as unknown as User);
       qc.setQueryData(meKey, res.user);
-      toast.success('Account created!');
+      toast.success('계정이 생성됐어요');
     },
     onError: (err) => {
       toast.error(getErrorMessage(err));
@@ -189,7 +189,7 @@ export function useCreateListing() {
       void qc.invalidateQueries({ queryKey: ['listings'] });
       void qc.invalidateQueries({ queryKey: meListingsKey });
       void qc.invalidateQueries({ queryKey: statsKey });
-      toast.success('Listing published!');
+      toast.success('리스팅이 게시됐어요');
     },
     onError: (err) => {
       toast.error(getErrorMessage(err));
@@ -201,7 +201,7 @@ export function usePurchase(listingId: string | undefined, slug?: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      if (!listingId) throw new Error('Missing listing id');
+      if (!listingId) throw new Error('리스팅 ID가 비어 있어요');
       return api.post(`/listings/${listingId}/purchase`);
     },
     onSuccess: () => {
@@ -209,7 +209,7 @@ export function usePurchase(listingId: string | undefined, slug?: string) {
       void qc.invalidateQueries({ queryKey: mePurchasesKey });
       void qc.invalidateQueries({ queryKey: meKey });
       void qc.invalidateQueries({ queryKey: ['listings'] });
-      toast.success('Purchase complete');
+      toast.success('구매가 완료됐어요');
     },
     onError: (err) => {
       toast.error(getErrorMessage(err));
@@ -224,7 +224,7 @@ export function useTopup() {
       api.post('/me/topup', { amountCents }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: meKey });
-      toast.success('Wallet topped up');
+      toast.success('잔액이 충전됐어요');
     },
     onError: (err) => {
       toast.error(getErrorMessage(err));
@@ -236,7 +236,7 @@ export function useCreateReview(listingId: string | undefined, slug?: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (input: CreateReviewInput) => {
-      if (!listingId) throw new Error('Missing listing id');
+      if (!listingId) throw new Error('리스팅 ID가 비어 있어요');
       return api.post<{ review: Review }, { review: Review }>(
         `/listings/${listingId}/reviews`,
         input,
@@ -245,7 +245,7 @@ export function useCreateReview(listingId: string | undefined, slug?: string) {
     onSuccess: () => {
       if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) });
       if (listingId) void qc.invalidateQueries({ queryKey: reviewsKey(listingId) });
-      toast.success('Review posted');
+      toast.success('리뷰가 등록됐어요');
     },
     onError: (err) => {
       toast.error(getErrorMessage(err));

@@ -297,13 +297,13 @@ export default function ListingDetailPage() {
     return (
       <div className="mx-auto max-w-5xl px-4 py-16 text-center">
         <p className="text-coral-deep dark:text-coral">
-          {error ? getErrorMessage(error) : 'Listing not found.'}
+          {error ? getErrorMessage(error) : '해당 리스팅을 찾을 수 없어요.'}
         </p>
         <Link
           to="/browse"
           className="mt-4 inline-block text-volt-700 dark:text-volt-300 underline"
         >
-          Back to browse
+          탐색으로 돌아가기
         </Link>
       </div>
     );

@@ -20,7 +20,7 @@ api.interceptors.response.use(
 );
 
 // Helper to extract a human-readable error message from an axios error.
-export function getErrorMessage(err: unknown, fallback = 'Something went wrong'): string {
+export function getErrorMessage(err: unknown, fallback = '문제가 발생했어요'): string {
   if (axios.isAxiosError(err)) {
     const msg = err.response?.data?.message;
     if (Array.isArray(msg)) return msg.join(', ');

@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:30 (UTC) — Round 95
+
+- **Benchmark**: 자체 — UI 본문은 한글로 바뀌었는데 토스트 6종(Welcome / Account created / Listing published / Purchase complete / Wallet topped up / Review posted), getErrorMessage 기본 메시지, ListingDetail 404 본문, CreateListing zod refine 메시지가 영어로 남아 있었다. 토스트는 가장 빈번한 사용자 피드백 채널.
+- **Shipped**: `apps/web/src/features/marketplace/queries.ts` — 토스트 6종 + Error 메시지 2건 한글화(@${user}님 다시 오신 걸 환영해요 등). `apps/web/src/services/api.ts` — getErrorMessage 기본 폴백 "문제가 발생했어요"로 교체. `apps/web/src/pages/ListingDetail/ListingDetailPage.tsx` — '해당 리스팅을 찾을 수 없어요.' + '탐색으로 돌아가기'. `apps/web/src/pages/CreateListing/CreateListingPage.tsx` — 가격/모델 refine 메시지 한글. 합계 **144 tests / 26 files** 유지(테스트 기대값은 이미 한글 fallback 사용 중).
+- **Commit**: `pending`
+
 ## 2026-05-28T17:25 (UTC) — Round 94
 
 - **Benchmark**: 자체 — 모든 API 호출이 통과하는 axios 인스턴스에 회귀 보호가 없었다. 요청 인터셉터가 Bearer를 빠뜨리면 인증된 라우트가 통째로 401, getErrorMessage가 망가지면 토스트 메시지가 사라져 사용자가 무슨 일인지 모름.

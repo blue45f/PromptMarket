@@ -43,8 +43,8 @@ const FormSchema = CreateListingSchema.omit({
 }).extend({
   priceDollars: z
     .string()
-    .refine((v) => Number.isFinite(Number.parseFloat(v)), 'Enter a valid price'),
-  modelsArr: z.array(z.string()).min(1, 'Select at least one model'),
+    .refine((v) => Number.isFinite(Number.parseFloat(v)), '가격을 정확히 입력해 주세요'),
+  modelsArr: z.array(z.string()).min(1, '모델을 한 개 이상 선택해 주세요'),
 });
 type FormShape = z.infer<typeof FormSchema>;
 
