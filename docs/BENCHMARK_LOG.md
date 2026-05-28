@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:48 (UTC) — Round 107
+
+- **Benchmark**: 자체 — JwtAuthGuard / OptionalAuthGuard는 모든 인증 경계의 단일 지점. 회귀 시 ① 401이 200으로 바뀌어 무인증 접근 허용, ② 200이 401로 바뀌어 정상 사용자 잠금, ③ req.user에 잘못된 키 매핑(payload.sub → user.id) 등 보안 사고. 보호선 필수.
+- **Shipped**: `apps/api/src/auth/jwt-auth.guard.spec.ts` 5 tests — Authorization 미존재/Basic 스킴/verify throw 모두 401, 유효 시 token verify + req.user 매핑(sub→id/email/username), Bearer 토큰 공백 트림. `apps/api/src/auth/optional-auth.guard.spec.ts` 4 tests — 헤더 미존재 시 통과 + req.user 미설정 / Basic 스킴 통과 + req.user 미설정 / verify throw 시 통과 + req.user 미설정 / 유효 토큰 시 req.user 부착. 합계 **208 tests / 37 files** (shared 11 + api 84 + web 113) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:47 (UTC) — Round 106
 
 - **Benchmark**: 자체 — Auth/Users 컨트롤러도 동일 패턴 적용해 6개 컨트롤러 모두 wiring 잠금 완료. /me 라우트 다섯 개가 모두 @CurrentUser → user.id 매핑에 의존하니 회귀하면 비루트 접근 사고로 직결.
