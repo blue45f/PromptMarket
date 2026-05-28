@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:47 (UTC) — Round 106
+
+- **Benchmark**: 자체 — Auth/Users 컨트롤러도 동일 패턴 적용해 6개 컨트롤러 모두 wiring 잠금 완료. /me 라우트 다섯 개가 모두 @CurrentUser → user.id 매핑에 의존하니 회귀하면 비루트 접근 사고로 직결.
+- **Shipped**: `apps/api/src/auth/auth.controller.spec.ts` 3 tests + `apps/api/src/users/users.controller.spec.ts` 5 tests — register/login dto 전달 / me는 user.id 전달 / getProfile username 전달 / me/topup/myPurchases/myListings 모두 인증된 user.id 전달. 합계 **199 tests / 35 files** (shared 11 + api 75 + web 113) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:46 (UTC) — Round 105
 
 - **Benchmark**: 자체 — Listings/Purchases 컨트롤러도 데코레이터 매핑이 회귀하면 사용자에게 직격탄. 특히 `related` 라우트는 `limit` 쿼리 문자열을 정수 파싱 + 0/NaN 폴백 처리하는 가벼운 비즈니스 로직이 들어가 있어 가드 필요.
