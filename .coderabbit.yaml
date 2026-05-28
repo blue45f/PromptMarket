@@ -1,0 +1,69 @@
+# CodeRabbit configuration — https://docs.coderabbit.ai/reference/configuration
+language: ko-KR
+
+reviews:
+  # Walk through changes, not just file-by-file.
+  review_status: true
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  collapse_walkthrough: false
+  changed_files_summary: true
+  sequence_diagrams: false
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+  suggested_labels: true
+  suggested_reviewers: false
+  # Auto-review every PR by default.
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+    base_branches:
+      - main
+    ignore_title_keywords:
+      - WIP
+      - DO NOT REVIEW
+  # Quality bar: comprehensive review unless the diff is tiny.
+  profile: chill
+
+  # Path-specific overrides.
+  path_filters:
+    - "!**/*.lock"
+    - "!pnpm-lock.yaml"
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/.turbo/**"
+    - "!apps/api/prisma/migrations/**"
+
+  # Custom path-aware instructions.
+  path_instructions:
+    - path: "apps/web/src/**/*.{ts,tsx}"
+      instructions: |
+        - Confirm the OKLCH design tokens are used (volt / ink / canvas / coral / violet).
+          Flag any new bg-indigo-*, text-zinc-*, bg-gray-* etc.
+        - Korean copy must keep `word-break: keep-all` semantics intact.
+        - Hooks must respect prefers-reduced-motion where they animate.
+    - path: "apps/api/src/**/*.ts"
+      instructions: |
+        - Zod schemas in @promptmarket/shared are the single source of truth;
+          don't introduce parallel DTO shapes.
+        - PrismaClient should always go through PrismaService (the adapter is
+          baked in there).
+    - path: "packages/shared/src/**/*.ts"
+      instructions: |
+        - Breaking changes to enums or schemas must update both the api and
+          web consumers in the same PR.
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  opt_out: false
+  learnings:
+    scope: auto
+  issues:
+    scope: auto
+  pull_requests:
+    scope: auto

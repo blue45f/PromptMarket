@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T09:38 (UTC) — Round 52
+
+- **Benchmark**: [Anthropic / Vercel / Linear PR gating](https://github.com/vercel/next.js) — 자동 코드 리뷰가 PR 게이트로 강제될 때만 의미가 있다. config 파일만 두면 무시되고, branch protection에서 contexts로 require해야 강제력이 생긴다.
+- **Shipped**: `.coderabbit.yaml` 추가 — 한국어 리뷰, auto-review 켜짐, lock/dist/migrations 경로 무시, web/api/shared 경로별 가이드(라임 토큰 검사, zod 스키마 단일 진실 공급원, PrismaService 경유 강제). GitHub branch protection을 main에 적용 — `quality` (CI 워크플로) + `CodeRabbit` 두 status check를 required로, force-push와 delete 금지. enforce_admins=false로 두어 admin 직접 push는 유지.
+- **Commit**: `pending`
+- **Next ideas**: (1) auto-merge 워크플로에 CodeRabbit 통과 의존. (2) PR template 추가해 리뷰 컨텍스트를 자동으로 채움.
+
 ## 2026-05-28T09:25 (UTC) — Round 51
 
 - **Benchmark**: [Pinterest · Reddit · Amazon back-nav](https://pinterest.com) — 카탈로그 깊이 스크롤 → 카드 클릭 → 뒤로 갔을 때 다시 맨 위로 가는 것만큼 답답한 게 없다. 페이지별 sessionStorage 키로 스크롤 위치 복원이 표준.
