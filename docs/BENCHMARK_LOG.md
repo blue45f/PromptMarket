@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T16:20 (UTC) — Round 86
+
+- **Benchmark**: 자체 — shared 패키지가 web/api 양쪽 계약을 모두 제공하는데 테스트가 0건이었다. 카테고리 enum이 하나라도 빠지면 양쪽이 동시에 깨지는데 회귀 보호선이 부재.
+- **Shipped**: `packages/shared`에 vitest + 11 tests 추가 — formatPrice 출력 / LISTING_TYPE_META가 ListingType enum과 모두 매핑됨 / MODELS ↔ MODEL_BY_SLUG round-trip / unknown slug 안전 fallback / CreateListingSchema 양/음 케이스 5종(title min, priceCents 음수, semver, models empty). turbo가 자동으로 양쪽 패키지의 test:run을 합쳐서 **67 tests / 17 files** 그린.
+- **Commit**: `pending`
+- **Next ideas**: (1) apps/api에도 vitest 도입(controllers/service 단위). (2) shared formatDollars 분리 검증.
+
 ## 2026-05-28T16:08 (UTC) — Round 85
 
 - **Benchmark**: 자체 — `useScrollRestore`는 시각적으로 검증하기 까다로워 일단 동작하면 영원히 안 본다. 회귀가 발생해도 모르게 통과할 수 있는 영역이라 안전망이 필수.

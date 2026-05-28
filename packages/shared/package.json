@@ -17,13 +17,16 @@
   "files": ["dist", "src"],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --watch"
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "tsup": "^8.3.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
   }
 }
