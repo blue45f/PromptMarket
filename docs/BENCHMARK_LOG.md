@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T13:22 (UTC) — Round 71
+
+- **Benchmark**: [Raycast · Linear 검색 히스토리](https://raycast.com) — 명령 팔레트는 같은 검색을 반복적으로 던지는 경향이 있다. 직전 몇 개만 다시 한 번 클릭으로 띄울 수 있으면 키 입력 수가 확연히 줄어든다.
+- **Shipped**: `useSearchHistory` 훅 (localStorage 8건 cap, MRU 정렬, dedupe, CustomEvent fanout) + 단위 테스트 5건. CommandPalette는 (1) 입력이 비어 있을 때만 상단에 "최근 검색" chip 줄을 노출하고, (2) 입력 onBlur에 record를 호출해서 사용자가 결과를 본 검색만 저장. "지우기" 버튼은 전체 history를 비움. 42 tests / 12 files green.
+- **Commit**: [`680e288`](https://github.com/blue45f/promptmarket/commit/680e288)
+- **Next ideas**: (1) Browse SearchBar에서도 history 노출. (2) ListingDetail Tabs 모바일 가로 스크롤.
+
 ## 2026-05-28T13:08 (UTC) — Round 70
 
 - **Benchmark**: 자체 — `<Highlight />`는 사용자 입력을 정규식으로 합성하기 때문에 escape를 안 하면 검색어에 `(`나 `.`이 들어왔을 때 터지거나 잘못 매치된다. 코드 한 줄짜리 버그라도 통째로 뷰가 비는 결과로 이어짐.
