@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:46 (UTC) — Round 105
+
+- **Benchmark**: 자체 — Listings/Purchases 컨트롤러도 데코레이터 매핑이 회귀하면 사용자에게 직격탄. 특히 `related` 라우트는 `limit` 쿼리 문자열을 정수 파싱 + 0/NaN 폴백 처리하는 가벼운 비즈니스 로직이 들어가 있어 가드 필요.
+- **Shipped**: `apps/api/src/purchases/purchases.controller.spec.ts` 2 tests + `apps/api/src/listings/listings.controller.spec.ts` 8 tests — purchase forward + 서비스 reject 전파 / list 쿼리 통과 / stats 인자 없음 / related '8' → 8 / undefined/'0'/'NaN' → 4 폴백 / getBySlug null vs user.id / create + update + remove 매핑. 합계 **191 tests / 33 files** (shared 11 + api 67 + web 113) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:44 (UTC) — Round 104
 
 - **Benchmark**: 자체 — 컨트롤러 자체는 얇은 프록시지만 데코레이터 매핑(@Param, @Body, @CurrentUser, JwtAuthGuard 노출) 회귀 시 401/500 응답이 사용자 화면에 나타나니 가드 필요. 또한 fresh checkout에서 `prisma generate`를 안 한 채로 `pnpm test:run` 돌리면 모든 api 테스트가 `@prisma/client/runtime/library.js` 미해결로 실패하던 환경 문제도 봉합.
