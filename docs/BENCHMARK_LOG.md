@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T08:50 (UTC) — Round 48
+
+- **Benchmark**: [Spotify · Apple Music empty libraries](https://music.apple.com) — "비어 있어요" 만 두면 사용자가 어디로 가야 할지 알 수 없다. 무료 추천으로 첫 한 줄을 채워주면 그 자리에서 첫 행동을 끌어낼 수 있다.
+- **Shipped**: Dashboard 라이브러리 빈 상태가 EmptyState + 자동 무료 추천(top 4) cards-fluid 그리드로 확장. `useListings({ free: 'true', sort: 'top', pageSize: 4 })`로 페치, 라임 kicker "이걸로 시작해 보세요 · 무료". 카탈로그 둘러보기 CTA는 그대로.
+- **Commit**: `pending`
+- **Next ideas**: (1) FooterLiveStats 호버 시 카운트업 재실행. (2) Sell 폼에 "최근 트렌딩 카테고리" 자동 제안.
+
 ## 2026-05-28T08:38 (UTC) — Round 47
 
 - **Benchmark**: [Vercel · Linear PWA manifest](https://vercel.com) — "Add to Home Screen"이 가능하면 모바일 사용자에게 앱처럼 보인다. 브랜드 컬러와 아이콘이 OS 레벨에서 적용돼야 첫 인상이 깔끔하다.

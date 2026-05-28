@@ -4,7 +4,7 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { useQueries } from '@tanstack/react-query';
 import { ArrowUpRight, Copy, Heart, Loader2, PlusCircle, Wallet } from 'lucide-react';
 import { api, getErrorMessage } from '@services/api';
-import { useMyListings, useMyPurchases, useTopup } from '@features/marketplace/queries';
+import { useMyListings, useMyPurchases, useTopup, useListings } from '@features/marketplace/queries';
 import { listingKey } from '@features/marketplace/queryKeys';
 import type { ListingDetailResponse } from '@/types';
 import { useAuthStore } from '@store/auth';
@@ -157,20 +157,7 @@ export default function DashboardPage() {
           {libraryQ.isPending ? (
             <SkeletonGrid count={6} />
           ) : library.length === 0 ? (
-            <EmptyState
-              emoji="📚"
-              title="라이브러리가 비어 있어요"
-              description="구매한 리스팅이 여기에 보여요."
-              action={
-                <Link
-                  to="/browse"
-                  className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.86rem] font-medium tracking-tight focus-volt lift-on-hover"
-                >
-                  카탈로그 둘러보기
-                  <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
-                </Link>
-              }
-            />
+            <EmptyLibraryWithRecs />
           ) : (
             <div className="cards-fluid">
               {library.map((l) => (
@@ -298,6 +285,45 @@ function StatCard({
       >
         {value}
       </p>
+    </div>
+  );
+}
+
+function EmptyLibraryWithRecs() {
+  const { data, isPending } = useListings({ free: 'true', sort: 'top', pageSize: 4 });
+  const items = data?.items ?? [];
+
+  return (
+    <div className="space-y-7">
+      <EmptyState
+        emoji="📚"
+        title="라이브러리가 비어 있어요"
+        description="구매한 리스팅이 여기에 보여요. 우선 무료부터 골라 보세요."
+        action={
+          <Link
+            to="/browse"
+            className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.86rem] font-medium tracking-tight focus-volt lift-on-hover"
+          >
+            카탈로그 둘러보기
+            <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+          </Link>
+        }
+      />
+      <section>
+        <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mb-4">
+          <span aria-hidden className="w-5 h-px bg-volt-500" />
+          이걸로 시작해 보세요 · 무료
+        </p>
+        {isPending ? (
+          <SkeletonGrid count={4} />
+        ) : items.length > 0 ? (
+          <div className="cards-fluid">
+            {items.map((l) => (
+              <ListingCard key={l.id} listing={l} />
+            ))}
+          </div>
+        ) : null}
+      </section>
     </div>
   );
 }
