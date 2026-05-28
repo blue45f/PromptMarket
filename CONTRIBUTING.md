@@ -27,3 +27,13 @@ pnpm run dev
 ## 코드 스타일
 
 TypeScript strict 기준을 유지합니다. 도메인 schema, enum, 공유 타입은 `packages/shared`에 두고, 앱 내부 구현 세부사항은 각 앱 아래에 둡니다.
+
+## PR 규칙
+
+1. PR 템플릿의 체크리스트를 모두 채웁니다.
+2. PR 본문에는 아래를 남깁니다.
+   - 변경 요약 및 영향 범위
+   - `pnpm run verify` 실행 결과 / 주요 에러 로그
+   - API 스키마/DB/디자인 변경 시 되돌림 포인트
+3. `.github/workflows/coderabbit-gate.yml`가 있는 저장소는 `CodeRabbit review gate`가 `APPROVED` 상태여야 병합으로 전환합니다.
+4. 코드/문서/스크린샷 증빙이 누락되면 병합을 대기합니다.
