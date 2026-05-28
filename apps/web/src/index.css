@@ -57,15 +57,15 @@
   --color-iris: oklch(0.7 0.18 245);
   --color-iris-deep: oklch(0.5 0.18 245);
 
-  /* Fluid type — clamp() everything that scales */
-  --text-display-xl: clamp(3.5rem, 7vw + 1.5rem, 9.5rem);
-  --text-display-lg: clamp(2.75rem, 5vw + 1.25rem, 6rem);
-  --text-display-md: clamp(2rem, 3.5vw + 0.875rem, 4rem);
-  --text-display-sm: clamp(1.65rem, 2vw + 0.75rem, 2.5rem);
+  /* Fluid type — clamp() everything that scales. Lower bounds tuned for 320px. */
+  --text-display-xl: clamp(2.6rem, 7vw + 1rem, 9.5rem);
+  --text-display-lg: clamp(2.25rem, 5vw + 1rem, 6rem);
+  --text-display-md: clamp(1.75rem, 3.5vw + 0.75rem, 4rem);
+  --text-display-sm: clamp(1.5rem, 2vw + 0.65rem, 2.5rem);
   --text-overline: clamp(0.72rem, 0.4vw + 0.6rem, 0.82rem);
   --text-meta: clamp(0.78rem, 0.3vw + 0.7rem, 0.88rem);
-  --text-body: clamp(1rem, 0.4vw + 0.875rem, 1.125rem);
-  --text-lead: clamp(1.1rem, 0.7vw + 0.9rem, 1.375rem);
+  --text-body: clamp(0.95rem, 0.4vw + 0.85rem, 1.125rem);
+  --text-lead: clamp(1.02rem, 0.7vw + 0.85rem, 1.375rem);
 
   /* Fluid spacing for editorial breathing */
   --space-section: clamp(4rem, 8vw, 9rem);
@@ -144,6 +144,19 @@
   button,
   li {
     word-break: keep-all;
+    /* Korean-aware: allow break inside unbreakable strings if they would
+       otherwise overflow their container. */
+    overflow-wrap: anywhere;
+  }
+
+  /* Tighten the Hangul tracking on display type at small viewports so the
+     headline stops eating its column. */
+  @media (max-width: 480px) {
+    .display-condense,
+    .display-tight,
+    .display-wide {
+      letter-spacing: -0.02em;
+    }
   }
 
   html.dark body {

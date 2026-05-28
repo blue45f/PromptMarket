@@ -1,4 +1,5 @@
 import { useRelated } from '@features/marketplace/queries';
+import type { ListingCard as ListingCardType } from '@/types';
 import ListingCard from './ListingCard';
 import SkeletonCard from './SkeletonCard';
 
@@ -8,7 +9,11 @@ interface RelatedListingsProps {
 
 export default function RelatedListings({ listingId }: RelatedListingsProps) {
   const { data, isPending } = useRelated(listingId);
-  const items = data ?? [];
+  // The API may return either a bare array (legacy) or { items: [...] }.
+  // Normalise both shapes so the component never crashes.
+  const items: ListingCardType[] = Array.isArray(data)
+    ? data
+    : (data as { items?: ListingCardType[] } | undefined)?.items ?? [];
 
   if (isPending) {
     return (
