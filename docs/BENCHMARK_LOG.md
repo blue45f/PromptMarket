@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T19:35 (UTC) — Round 13
+
+- **Benchmark**: [Gumroad publish flow · Vercel deploy](https://gumroad.com) — 발행 폼이 유리벽처럼 가벼워 보이면서도 단계가 명확하다. 라이브 미리보기를 sticky 사이드바에 둬서 입력 결과를 즉시 확인.
+- **Shipped**: CreateListing 폼 디자인 패스. 입력 표면을 라임 포커스 링 + canvas-sub 카드로 통일, 탭 underline을 인디고→라임, 게시 버튼을 잉크→라임 슬라이드 인 호버, 모든 카피 한국어화(제목/타입/카테고리/본문/태그/모델/기법/난이도/라이선스/버전). Field 라벨/에러 텍스트도 새 토큰. 미리보기 사이드바도 같은 토큰으로 정리. `usePageMeta` 추가.
+- **Commit**: `pending`
+- **Next ideas**: (1) 푸터에 robots.txt + sitemap.xml 라우트(API). (2) 키보드 단축키 확장(검색 후 j/k 네비, c 새 리스팅).
+
 ## 2026-05-27T19:22 (UTC) — Round 12
 
 - **Benchmark**: [Are.na profile · Read.cv](https://are.na) — 메이커 페이지를 단순 "사진 + 이름"이 아니라 카탈로그의 한 챕터처럼 다룬다. 통계 칩(리스팅 수, 무료 포함 여부)이 시각 리듬을 만든다.
 - **Shipped**: ProfilePage를 새 디자인 시스템으로 재작성. 라임/잉크 회전 아바타 + 라임 인디케이터 닷, 디스플레이 스케일 사용자명, ambient mesh 히어로, 컬렉션 섹션은 cards-fluid 그리드. `usePageMeta`로 `@username · PromptMarket` 타이틀 + 바이오 디스크립션. 인디고/zinc/rose 잔재 제거.
-- **Commit**: `pending`
+- **Commit**: [`e57b635`](https://github.com/blue45f/promptmarket/commit/e57b635)
 - **Next ideas**: (1) Sell 발행 폼 디자인 패스. (2) CreateListing 미리보기 카드 톤업.
 
 ## 2026-05-27T19:10 (UTC) — Round 11
