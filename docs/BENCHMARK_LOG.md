@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T13:08 (UTC) — Round 70
+
+- **Benchmark**: 자체 — `<Highlight />`는 사용자 입력을 정규식으로 합성하기 때문에 escape를 안 하면 검색어에 `(`나 `.`이 들어왔을 때 터지거나 잘못 매치된다. 코드 한 줄짜리 버그라도 통째로 뷰가 비는 결과로 이어짐.
+- **Shipped**: `Highlight.test.tsx` 5건 — 빈 query passthrough / 대소문자 무시 + 원본 케이스 유지 / 공백 토큰화 / 정규식 특수문자 escape / 빈 text 안전. 37 tests / 11 files green.
+- **Commit**: `pending`
+- **Next ideas**: (1) CommandPalette 검색 히스토리. (2) ListingDetail Tabs 모바일 가로 스크롤.
+
 ## 2026-05-28T12:55 (UTC) — Round 69
 
 - **Benchmark**: 자체 — useReveal는 IntersectionObserver + matchMedia 두 브라우저 API에 의존한다. jsdom은 matchMedia를 제공하지 않아 다른 훅 테스트가 우연히 통과한 케이스도 있을 수 있다 — 폴리필을 setup에 깔아두면 모든 훅이 일관된 가정 위에서 돈다.
