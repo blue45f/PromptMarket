@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:53 (UTC) — Round 112
+
+- **Benchmark**: 자체 — AudienceMatch는 ListingDetail 사이드바의 결정 신호 카드. 리스팅 메타데이터(type/difficulty/technique/models/category)를 받아 "이런 분께 / 이럴 땐 다른 걸" 두 섹션을 동적으로 합성. 회귀 시 잘못된 추천이 나가 구매 결정에 직접 영향.
+- **Shipped**: `apps/web/src/components/AudienceMatch.test.tsx` 8 tests — PROMPT 타입 fit 핵심 카피 / 카테고리 라인 동적 추가 / difficulty=beginner 시 fit+mismatch 모두 / technique 힌트 동적 추가 / 단일 모델 '전용' / 다중 모델 'N개 최적화' / 'any' → 모델 비종속 / mismatch 섹션 헤더 항상 표시. 합계 **236 tests / 42 files** (shared 11 + api 86 + web 136) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:52 (UTC) — Round 111
 
 - **Benchmark**: 자체 — 모바일에서 FilterPanel을 감싸는 FilterDrawer는 저장된 필터 chip 흐름을 책임진다. 회귀 시 (a) chip 클릭이 drawer 닫지 못함, (b) X 버튼 클릭이 chip 자체 클릭으로 전파되어 의도치 않은 페이지 이동, (c) 잘못된 search string으로 navigate 발생. 모두 사용자 신뢰 깨짐.
