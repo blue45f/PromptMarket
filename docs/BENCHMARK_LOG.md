@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T09:25 (UTC) — Round 51
+
+- **Benchmark**: [Pinterest · Reddit · Amazon back-nav](https://pinterest.com) — 카탈로그 깊이 스크롤 → 카드 클릭 → 뒤로 갔을 때 다시 맨 위로 가는 것만큼 답답한 게 없다. 페이지별 sessionStorage 키로 스크롤 위치 복원이 표준.
+- **Shipped**: `useScrollRestore` 훅 — 경로+쿼리 단위로 sessionStorage 키 생성, location key 변경 시 한 번만 restore. rAF로 스로틀해 성능 영향 없음. BrowsePage에 마운트해 카탈로그 → 상세 → 뒤로 갈 때 정확히 같은 위치로 돌아옴. /browse?category=Coding 과 /browse?category=Design은 서로 다른 위치 유지.
+- **Commit**: `pending`
+- **Next ideas**: (1) Sell publish 후 토스트에 미리보기 카드 미니. (2) DashboardPage 라이브러리 탭에도 wishlist처럼 cards-fluid.
+
 ## 2026-05-28T09:10 (UTC) — Round 50
 
 - **Benchmark**: [Are.na · BBC time-aware homepage](https://bbc.com) — 시간대에 맞춰 카피가 살짝 변하면 "내 시간을 알고 있다"는 인상이 생긴다. 큰 변화 아니지만 brand presence가 단단해진다.

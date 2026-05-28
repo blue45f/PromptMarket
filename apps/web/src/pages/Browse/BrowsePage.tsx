@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useScrollRestore } from '@hooks/useScrollRestore';
 import {
   LISTING_TYPE_META,
   ListingType as ListingTypeEnum,
@@ -41,6 +42,7 @@ const VALID_TECHNIQUES = new Set<PromptTechnique>(PromptTechniqueEnum.options);
 type Sort = (typeof VALID_SORTS)[number];
 
 export default function BrowsePage() {
+  useScrollRestore();
   const [params, setParams] = useSearchParams();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
