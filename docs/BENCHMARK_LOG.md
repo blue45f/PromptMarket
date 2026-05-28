@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:18 (UTC) — Round 91
+
+- **Benchmark**: 자체 — 인증/세션이 가장 비싼 회귀 영역. login에서 timing-side-channel을 피하려면 unknown email / wrong password / corrupt hash 모두 같은 401을 내야 한다. 또한 publicUser shape가 passwordHash를 누수하면 즉시 사고.
+- **Shipped**: `apps/api/src/auth/auth.service.spec.ts` 9 tests — register 충돌 conflict / 패스워드 argon2 해시 + create 인자 / 토큰 + public user 응답 + jwt.sign payload + passwordHash 미노출 / login unknown 401 / wrong password 401 / argon2.verify throw 시 401 (try-catch 경로) / success 시 token + public user / me 401 / me public shape. argon2를 `vi.mock`으로 결정적 해시(`hashed:${pw}`)로 대체. 합계 **109 tests / 22 files** (shared 11 + api 42 + web 56) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:16 (UTC) — Round 90
 
 - **Benchmark**: 자체 — ListingsService.getBySlug의 body 가시성(owner/구매자/무료 → 표시, 그 외 → null)이 결제 모델의 핵심이라 회귀가 가장 비싸다. 또한 update/remove의 소유자 가드 회귀는 권한 사고로 직결.
