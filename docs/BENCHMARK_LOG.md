@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T08:15 (UTC) — Round 45
+
+- **Benchmark**: [Airbnb · Notion 사이드바](https://airbnb.com) — sticky 사이드바가 본문보다 살짝 떠 있다는 시각 신호(섀도)가 있어야 페이지 스크롤 시 분리감이 산다. 또한 사이드바 자체가 화면보다 길면 자체 스크롤이 필요하다.
+- **Shipped**: Browse 사이드바를 `max-h-[calc(100vh-7rem)] overflow-y-auto`로 만들어 사이드바 자체에 스크롤이 생기고, `backdrop-blur-sm` + 잉크 그림자로 살짝 띄움. `scrollbar-hide` 적용으로 노이즈 없음.
+- **Commit**: `pending`
+- **Next ideas**: (1) StatsStrip 모바일 가로 스크롤 스냅. (2) Hero 드롭 마키 사용자 호버 시 일시 정지 + 더 자세히 보기 인터랙션.
+
 ## 2026-05-28T08:05 (UTC) — Round 44
 
 - **Benchmark**: [Linear `c` = create issue 키바인딩](https://linear.app) — 핵심 액션 하나에는 한 글자 단축키가 있어야 power-user 흐름이 빨라진다. 다른 페이지에서도 부담 없이 같은 키로 진입할 수 있음.

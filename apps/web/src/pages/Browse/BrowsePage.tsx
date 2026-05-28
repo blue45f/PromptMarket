@@ -225,7 +225,7 @@ export default function BrowsePage() {
 
       <div className="flex flex-col lg:flex-row gap-7 lg:gap-9">
         <aside className="hidden lg:block lg:w-72 shrink-0">
-          <div className="sticky top-24 rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5">
+          <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl border border-line dark:border-night-line bg-canvas-sub/85 dark:bg-night-sub/85 backdrop-blur-sm p-5 shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.35)] dark:shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.65)] scrollbar-hide">
             <FilterPanel
               value={filters}
               onChange={(next) => commit(next, { page: 1 })}
