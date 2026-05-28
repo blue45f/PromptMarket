@@ -29,6 +29,13 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
       },
+      // Sitemap is exposed at /sitemap.xml in prod (via nginx). Mirror the
+      // rewrite locally so search-console previews work in dev too.
+      '/sitemap.xml': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: () => '/api/seo/sitemap.xml',
+      },
     },
   },
   test: {

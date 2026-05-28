@@ -11,12 +11,12 @@ export default function Spinner({ size = 24, className = '', label }: SpinnerPro
   return (
     <div
       className={cn(
-        'flex items-center justify-center gap-2 text-gray-500 dark:text-zinc-400',
+        'flex items-center justify-center gap-2 text-ink-mute dark:text-bone-mute',
         className,
       )}
     >
       <Loader2
-        className="motion-safe:animate-spin text-indigo-600 dark:text-indigo-400"
+        className="motion-safe:animate-spin text-volt-700 dark:text-volt-300"
         style={{ width: size, height: size }}
       />
       {label && <span className="text-sm">{label}</span>}

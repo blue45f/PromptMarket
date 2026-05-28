@@ -1,0 +1,339 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import * as Dialog from '@radix-ui/react-dialog';
+import { ArrowRight, Compass, PlusCircle, Search, Sparkles, User } from 'lucide-react';
+import { LISTING_TYPE_META } from '@promptmarket/shared';
+import { useListings } from '@features/marketplace/queries';
+import { formatPrice } from '@utils/format';
+import { useAuthStore } from '@store/auth';
+import { cn } from '@utils/cn';
+
+/* ---------------------------------------------------------------------------
+ * Command Palette — global ⌘K / Ctrl+K / "/" launcher. Opens a fluid search
+ * dialog with arrow-key navigation, jumps to a listing or a quick action.
+ *
+ * Inspired by the Linear / Raycast / Vercel patterns: a single editor focused
+ * on speed, no chrome. Results stream from the existing /listings API so the
+ * palette stays in sync with the catalog at all times.
+ * ------------------------------------------------------------------------- */
+
+interface QuickAction {
+  id: string;
+  label: string;
+  hint: string;
+  to: string;
+  icon: typeof Compass;
+}
+
+const STATIC_ACTIONS: QuickAction[] = [
+  { id: 'browse', label: '카탈로그 둘러보기', hint: '/browse', to: '/browse', icon: Compass },
+  { id: 'browse-trending', label: '트렌딩', hint: '/browse?sort=trending', to: '/browse?sort=trending', icon: Sparkles },
+  { id: 'browse-newest', label: '최신', hint: '/browse?sort=newest', to: '/browse?sort=newest', icon: Sparkles },
+  { id: 'browse-free', label: '무료 리스팅', hint: '/browse?free=true', to: '/browse?free=true', icon: Sparkles },
+  { id: 'sell', label: '프롬프트 판매', hint: '/sell', to: '/sell', icon: PlusCircle },
+  { id: 'dashboard', label: '대시보드', hint: '/dashboard', to: '/dashboard', icon: User },
+];
+
+export default function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState('');
+  const [active, setActive] = useState(0);
+  const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const token = useAuthStore((s) => s.token);
+
+  // Global shortcut: ⌘K / Ctrl+K / "/"
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const isModK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k';
+      const isSlash =
+        e.key === '/' &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !e.altKey &&
+        !(
+          e.target instanceof HTMLInputElement ||
+          e.target instanceof HTMLTextAreaElement ||
+          (e.target instanceof HTMLElement && e.target.isContentEditable)
+        );
+      if (isModK || isSlash) {
+        e.preventDefault();
+        setOpen((v) => !v);
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // Reset state on open
+  useEffect(() => {
+    if (open) {
+      setQ('');
+      setActive(0);
+      // Focus the input on the next tick after Radix mounts it
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [open]);
+
+  const trimmed = q.trim();
+  const listingsQ = useListings(trimmed ? { q: trimmed, pageSize: 8 } : { sort: 'top', pageSize: 6 });
+  const listings = listingsQ.data?.items ?? [];
+
+  const actions = useMemo(() => {
+    const filtered = trimmed
+      ? STATIC_ACTIONS.filter((a) =>
+          (a.label + ' ' + a.hint).toLowerCase().includes(trimmed.toLowerCase()),
+        )
+      : STATIC_ACTIONS.filter((a) => (token ? true : a.id !== 'dashboard'));
+    return filtered;
+  }, [trimmed, token]);
+
+  // Flat-index navigation across both sections
+  const total = actions.length + listings.length;
+
+  useEffect(() => {
+    if (active >= total) setActive(Math.max(0, total - 1));
+  }, [total, active]);
+
+  // Keep the selected row in view
+  useEffect(() => {
+    if (!open) return;
+    const el = listRef.current?.querySelector<HTMLElement>(`[data-row="${active}"]`);
+    el?.scrollIntoView({ block: 'nearest' });
+  }, [active, open]);
+
+  const go = useCallback(
+    (to: string) => {
+      setOpen(false);
+      navigate(to);
+    },
+    [navigate],
+  );
+
+  function handleInputKey(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActive((i) => (i + 1) % Math.max(1, total));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive((i) => (i - 1 + Math.max(1, total)) % Math.max(1, total));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (active < actions.length) {
+        const a = actions[active];
+        if (a) go(a.to);
+      } else {
+        const l = listings[active - actions.length];
+        if (l) go(`/listings/${l.slug}`);
+      }
+    }
+  }
+
+  return (
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/50 dark:bg-night/70 backdrop-blur-md data-[state=open]:motion-safe:animate-in data-[state=open]:fade-in data-[state=closed]:motion-safe:animate-out data-[state=closed]:fade-out" />
+        <Dialog.Content
+          className={cn(
+            'fixed left-1/2 top-[14vh] -translate-x-1/2 z-50 w-[min(640px,calc(100vw-2rem))]',
+            'rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night shadow-2xl shadow-ink/40',
+            'data-[state=open]:motion-safe:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2',
+            'data-[state=closed]:motion-safe:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95',
+          )}
+        >
+          <Dialog.Title className="sr-only">명령 팔레트</Dialog.Title>
+          <Dialog.Description className="sr-only">
+            검색하거나 빠른 작업으로 이동하세요. 화살표 키로 이동, Enter로 선택, Esc로 닫기.
+          </Dialog.Description>
+
+          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-line dark:border-night-line">
+            <Search className="w-4 h-4 text-ink-mute dark:text-bone-mute shrink-0" aria-hidden />
+            <input
+              ref={inputRef}
+              type="text"
+              value={q}
+              onChange={(e) => {
+                setQ(e.target.value);
+                setActive(0);
+              }}
+              onKeyDown={handleInputKey}
+              placeholder="검색하거나 작업으로 점프…"
+              className="flex-1 bg-transparent outline-none placeholder:text-ink-mute dark:placeholder:text-bone-mute text-ink dark:text-bone"
+              aria-label="명령 팔레트 검색"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <kbd className="hidden sm:inline-flex font-mono text-[0.65rem] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded border border-line dark:border-night-line text-ink-mute dark:text-bone-mute">
+              esc
+            </kbd>
+          </div>
+
+          <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2">
+            {actions.length > 0 && (
+              <Section label={trimmed ? '액션' : '빠른 작업'}>
+                {actions.map((a, i) => (
+                  <Row
+                    key={a.id}
+                    active={i === active}
+                    onMouseEnter={() => setActive(i)}
+                    onClick={() => go(a.to)}
+                    icon={<a.icon className="w-4 h-4" aria-hidden />}
+                    title={a.label}
+                    subtitle={a.hint}
+                    rowIndex={i}
+                  />
+                ))}
+              </Section>
+            )}
+
+            {(listings.length > 0 || listingsQ.isPending) && (
+              <Section label={trimmed ? '리스팅' : '인기 리스팅'}>
+                {listingsQ.isPending && (
+                  <div className="px-3 py-6 text-sm text-ink-mute dark:text-bone-mute">불러오는 중…</div>
+                )}
+                {listings.map((l, i) => {
+                  const meta = LISTING_TYPE_META[l.type];
+                  const rowIdx = actions.length + i;
+                  return (
+                    <Row
+                      key={l.id}
+                      active={rowIdx === active}
+                      onMouseEnter={() => setActive(rowIdx)}
+                      onClick={() => go(`/listings/${l.slug}`)}
+                      icon={
+                        <span
+                          aria-hidden
+                          className="inline-flex w-6 h-6 items-center justify-center rounded-md text-base"
+                        >
+                          {l.coverEmoji || meta.emoji}
+                        </span>
+                      }
+                      title={l.title}
+                      subtitle={`${meta.label.toLowerCase()} · @${l.author?.username ?? '—'}`}
+                      trailing={
+                        <span
+                          className={cn(
+                            'shrink-0 inline-flex items-center font-mono text-[0.66rem] px-1.5 py-0.5 rounded-md',
+                            (l.priceCents ?? 0) === 0
+                              ? 'bg-volt-300 text-ink'
+                              : 'bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft border border-line dark:border-night-line',
+                          )}
+                        >
+                          {formatPrice(l.priceCents ?? 0)}
+                        </span>
+                      }
+                      rowIndex={rowIdx}
+                    />
+                  );
+                })}
+              </Section>
+            )}
+
+            {!listingsQ.isPending && total === 0 && (
+              <div className="px-4 py-10 text-center text-sm text-ink-mute dark:text-bone-mute">
+                <p className="font-display text-[1.15rem] text-ink dark:text-bone mb-1">결과 없음</p>
+                <p>다른 키워드를 입력해 보세요.</p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-t border-line dark:border-night-line text-[0.66rem] font-mono uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute">
+            <div className="flex items-center gap-3">
+              <Hint k="↑↓" label="이동" />
+              <Hint k="↵" label="선택" />
+              <Hint k="/" label="열기" />
+            </div>
+            <span className="hidden sm:inline-flex items-center gap-1">
+              <Sparkles className="w-3 h-3" aria-hidden /> PromptMarket
+            </span>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
+
+function Section({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="px-1.5 py-1.5">
+      <p className="px-2 pb-1.5 pt-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+        {label}
+      </p>
+      <div className="flex flex-col gap-0.5">{children}</div>
+    </div>
+  );
+}
+
+function Row({
+  active,
+  onClick,
+  onMouseEnter,
+  icon,
+  title,
+  subtitle,
+  trailing,
+  rowIndex,
+}: {
+  active: boolean;
+  onClick: () => void;
+  onMouseEnter: () => void;
+  icon: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  trailing?: React.ReactNode;
+  rowIndex: number;
+}) {
+  return (
+    <button
+      type="button"
+      data-row={rowIndex}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      className={cn(
+        'group flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-left motion-safe:transition-colors',
+        active
+          ? 'bg-volt-100 dark:bg-volt-900/40 text-ink dark:text-bone'
+          : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub',
+      )}
+    >
+      <span
+        className={cn(
+          'shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-lg border',
+          active
+            ? 'bg-volt-300 text-ink border-volt-400/70'
+            : 'bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft border-line dark:border-night-line',
+        )}
+      >
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-medium text-ink dark:text-bone truncate">{title}</span>
+        {subtitle && (
+          <span className="block text-[0.72rem] font-mono text-ink-mute dark:text-bone-mute truncate">
+            {subtitle}
+          </span>
+        )}
+      </span>
+      {trailing}
+      <ArrowRight
+        className={cn(
+          'w-3.5 h-3.5 shrink-0 text-ink-mute dark:text-bone-mute motion-safe:transition',
+          active ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-1',
+        )}
+        aria-hidden
+      />
+    </button>
+  );
+}
+
+function Hint({ k, label }: { k: string; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1">
+      <kbd className="inline-flex font-mono text-[0.62rem] uppercase px-1 py-0.5 rounded border border-line dark:border-night-line text-ink-soft dark:text-bone-soft">
+        {k}
+      </kbd>
+      {label}
+    </span>
+  );
+}

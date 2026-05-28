@@ -8,7 +8,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/src/main.js",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "pnpm run db:generate && tsc --noEmit",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "seed": "ts-node prisma/seed.ts"
@@ -38,7 +38,7 @@
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.10.0",
+    "@types/node": "^25.9.1",
     "prisma": "^6.1.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",

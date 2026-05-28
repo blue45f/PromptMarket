@@ -18,10 +18,10 @@ export default function TypeBadge({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ring-1',
+        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.7rem] font-medium border',
         overlay
-          ? 'backdrop-blur bg-white/80 text-gray-900 ring-white/40 dark:bg-zinc-900/70 dark:text-zinc-100 dark:ring-zinc-700/60'
-          : `${meta.pill} dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700`,
+          ? 'backdrop-blur bg-canvas/80 text-ink border-line/60 dark:bg-night/70 dark:text-bone dark:border-night-line/70'
+          : 'bg-canvas-sub text-ink-soft border-line dark:bg-night-sub dark:text-bone-soft dark:border-night-line',
         className,
       )}
     >

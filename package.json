@@ -20,6 +20,7 @@
     "clean": "pnpm -r --if-present run clean",
     "ci": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:run && pnpm run build",
     "verify": "pnpm run ci",
+    "verify:push": "pnpm run verify",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "test": "turbo run test",
@@ -37,6 +38,6 @@
     "docker:down": "docker compose down"
   },
   "devDependencies": {
-    "turbo": "^2.3.0"
+    "turbo": "^2.9.15"
   }
 }

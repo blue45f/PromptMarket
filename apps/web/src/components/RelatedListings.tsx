@@ -1,4 +1,5 @@
 import { useRelated } from '@features/marketplace/queries';
+import type { ListingCard as ListingCardType } from '@/types';
 import ListingCard from './ListingCard';
 import SkeletonCard from './SkeletonCard';
 
@@ -8,11 +9,15 @@ interface RelatedListingsProps {
 
 export default function RelatedListings({ listingId }: RelatedListingsProps) {
   const { data, isPending } = useRelated(listingId);
-  const items = data ?? [];
+  // The API may return either a bare array (legacy) or { items: [...] }.
+  // Normalise both shapes so the component never crashes.
+  const items: ListingCardType[] = Array.isArray(data)
+    ? data
+    : (data as { items?: ListingCardType[] } | undefined)?.items ?? [];
 
   if (isPending) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="cards-fluid">
         {Array.from({ length: 4 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -22,14 +27,14 @@ export default function RelatedListings({ listingId }: RelatedListingsProps) {
 
   if (items.length === 0) {
     return (
-      <p className="text-sm text-gray-500 dark:text-zinc-400">
-        No related listings yet.
+      <p className="text-sm text-ink-mute dark:text-bone-mute">
+        아직 관련 리스팅이 없어요.
       </p>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="cards-fluid">
       {items.map((l) => (
         <ListingCard key={l.id} listing={l} />
       ))}
