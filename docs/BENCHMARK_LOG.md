@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:55 (UTC) — Round 114
+
+- **Benchmark**: 자체 — StarRating은 카드 / 리뷰 / 디테일 / 대시보드까지 다양한 위치에서 표시·입력 양쪽으로 쓰이는 기본 UI primitive. 회귀 시 (a) 리뷰 작성 입력이 read-only로 풀려 사용자가 클릭 못 하거나, (b) 카드의 별이 입력 가능하게 잘못 노출. 둘 다 미묘한 사고.
+- **Shipped**: `apps/web/src/components/StarRating.test.tsx` 8 tests — 항상 5 버튼 / value 반올림으로 fill 개수 결정(3.4 → 3개) / onChange 없으면 모든 버튼 disabled / onChange 있으면 모두 enabled / 클릭 시 1-based index 디스패치 / showLabel + count 시 "4.5 (12)" / count만 시 "(7)" / hover 시 미리보기 fill이 value와 독립적으로 페인트. 합계 **250 tests / 44 files** (shared 11 + api 86 + web 150) 그린.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:54 (UTC) — Round 113
 
 - **Benchmark**: 자체 — InstallPanel은 `fits(type)` 게이트로 리스팅 타입에 맞는 설치 명령 탭만 노출. 회귀하면 MCP 서버에 Claude Code 탭이 잘못 떠 사용자가 동작 안 하는 명령을 복사해 갈 위험. 또한 cURL 폴백은 항상 떠야 함(모든 타입 대응).
