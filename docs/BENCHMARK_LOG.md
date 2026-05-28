@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T09:10 (UTC) — Round 50
+
+- **Benchmark**: [Are.na · BBC time-aware homepage](https://bbc.com) — 시간대에 맞춰 카피가 살짝 변하면 "내 시간을 알고 있다"는 인상이 생긴다. 큰 변화 아니지만 brand presence가 단단해진다.
+- **Shipped**: Hero의 RotatingPhrase 입력을 시간 기반 함수(`timeOfDayPhrases`)로 교체. 아침(5–11): "아침엔 새 드롭부터", 낮(11–17): "지금 트렌딩", 저녁(17–22): "오늘의 픽", 밤(22–5): "조용한 시간 컬렉션". 마지막 슬롯엔 항상 "실전 검증" 또는 비슷한 브랜드 앵커를 둬서 일관성 유지.
+- **Commit**: `pending`
+- **Next ideas**: (1) Recently viewed에 thumbnail-only super-compact 모드. (2) /sell publish 후 새 리스팅 미리보기로 자동 이동.
+
 ## 2026-05-28T09:00 (UTC) — Round 49
 
 - **Benchmark**: [Etsy seller onboarding · Gumroad publish form](https://etsy.com) — 발행 폼에 "지금 잘 팔리는 카테고리"가 보이면 셀러가 빈 추측 대신 데이터로 결정한다. 단, 강요하지 않고 보조 칩으로 두는 게 핵심.

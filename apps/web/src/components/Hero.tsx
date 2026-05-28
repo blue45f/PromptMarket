@@ -62,9 +62,7 @@ export default function Hero() {
                 <span className="relative inline-flex w-2 h-2 rounded-full bg-volt-500 volt-pulse" />
                 Live · MMVI · 앤솔로지 vol.01
               </span>
-              <RotatingPhrase
-                phrases={['실전 검증', '에이전트 시대', '빌더의 선반', '오픈 카탈로그']}
-              />
+              <RotatingPhrase phrases={timeOfDayPhrases()} />
             </div>
 
             <KineticHeadline />
@@ -195,6 +193,25 @@ function KineticHeadline() {
  * Rotating phrase — a small kicker beside the live badge that cycles through
  * a few brand phrases. Subtle but adds a sense of life to the kicker.
  * ------------------------------------------------------------------------- */
+
+/**
+ * Pick a kicker rotation based on the visitor's local hour so the same hero
+ * feels like it's tracking the day. Morning highlights newness, afternoon
+ * leans on momentum, evening surfaces curated picks, late night goes quiet.
+ */
+function timeOfDayPhrases(): string[] {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 11) {
+    return ['아침엔 새 드롭부터', '실전 검증', '오늘 시작', '빌더의 작업장'];
+  }
+  if (hour >= 11 && hour < 17) {
+    return ['지금 트렌딩', '에이전트 시대', '실전 검증', '오픈 카탈로그'];
+  }
+  if (hour >= 17 && hour < 22) {
+    return ['오늘의 픽', '빌더의 선반', '저녁의 카탈로그', '실전 검증'];
+  }
+  return ['조용한 시간 컬렉션', '깊게 읽기', '심야 큐레이션', '실전 검증'];
+}
 
 function RotatingPhrase({ phrases }: { phrases: string[] }) {
   const [idx, setIdx] = useState(0);
