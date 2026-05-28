@@ -3,27 +3,33 @@ name: Dependabot auto-merge
 on:
   pull_request:
     branches: [main]
+    types: [opened, reopened, synchronize, labeled]
 
 permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   auto-merge:
-    if: github.actor == 'dependabot[bot]'
+    name: Enable safe Dependabot auto-merge
+    if: |
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Fetch Dependabot metadata
         id: meta
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Enable auto-merge for:
-      #   - patch + minor bumps (any dependency type)
-      #   - github-actions ecosystem (versioned actions)
-      #   - dev-dependency majors (build/test only, no runtime blast radius)
-      # Production-dependency majors stay manual — they need code-side review.
+      # Enable auto-merge only for low-risk updates. Production dependency
+      # majors stay manual because they can change runtime behavior.
       - name: Enable auto-merge on safe bumps
         if: |
           steps.meta.outputs.update-type == 'version-update:semver-patch' ||

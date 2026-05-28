@@ -7,6 +7,12 @@
 
 ---
 
+## 2026-05-28T17:34 (UTC) — Round 99
+
+- **Benchmark**: 자체 — `pnpm typecheck`가 깨진 TS 오류(`CreateListingPage`의 `useForm` resolver 타입)가 있었고, 이전 라운드에서 미커밋된 GitHub workflow 두 개(`auto-merge-on-green.yml`, `branch-protection.yml`)와 `dependabot-auto-merge.yml` 강화가 working tree에 남아 있었다. 의존성 메이저 범프(vite 6→8, hookform 3→5 등)는 미검증이라 폐기.
+- **Shipped**: ① `apps/web/src/pages/CreateListing/CreateListingPage.tsx` — `zodResolver(FormSchema)`를 `Resolver<FormShape>`로 안전 캐스트, 타입 검사 통과. ② `.github/workflows/auto-merge-on-green.yml` — `automerge` 라벨 시 squash auto-merge 활성화 + 브랜치 정리. ③ `.github/workflows/branch-protection.yml` — `workflow_dispatch`로 main 보호 규칙 멱등 재적용(`Quality gate` + `CodeRabbit review gate` 필수 + force-push/삭제 금지). ④ `dependabot-auto-merge.yml` — concurrency 그룹, 더 좁은 actor 체크, timeout-minutes 5, fetch-metadata v3 업그레이드. 의존성 메이저 범프는 폐기. 합계 **148 tests / 26 files** 그린 + typecheck 깨끗.
+- **Commit**: `pending`
+
 ## 2026-05-28T17:38 (UTC) — Round 98
 
 - **Benchmark**: Smithery, Awesome ChatGPT Prompts 모두 태그 chip이 클릭 가능한 드릴다운. PromptMarket은 chip이 정적 span이라 발견 흐름이 끊김. 또한 "by @user" + "N downloads"가 영어로 남아 있음.

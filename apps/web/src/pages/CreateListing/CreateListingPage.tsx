@@ -103,7 +103,9 @@ export default function CreateListingPage() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormShape>({
-    resolver: zodResolver(FormSchema),
+    // Cast: zod's narrowed enum types end up wider than FormShape's because
+    // omit() doesn't fully propagate optionality through the inferred shape.
+    resolver: zodResolver(FormSchema) as unknown as import('react-hook-form').Resolver<FormShape>,
     defaultValues: initialDraft,
   });
 

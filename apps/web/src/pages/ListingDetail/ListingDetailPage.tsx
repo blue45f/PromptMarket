@@ -358,7 +358,7 @@ export default function ListingDetailPage() {
             <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
               <TypeBadge type={listing.type} overlay />
               <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-canvas/80 dark:bg-night/70 backdrop-blur ring-1 ring-line/60 dark:ring-night-line/60 text-ink dark:text-bone">
-                in {listing.category}
+                {listing.category} 카테고리
               </span>
             </div>
           </div>
