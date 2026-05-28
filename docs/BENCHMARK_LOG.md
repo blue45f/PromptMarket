@@ -7,6 +7,13 @@
 
 ---
 
+## 2026-05-28T10:40 (UTC) — Round 57
+
+- **Benchmark**: [GitHub · Vercel View Transitions](https://github.com) — 다크 토글이 hard flip이면 잠깐 눈이 적응해야 한다. View Transitions API가 있는 브라우저는 자동 cross-fade, 없는 곳도 280ms opacity sweep만 있으면 충분히 부드럽다.
+- **Shipped**: `paintWithTransition`이 (1) `prefers-reduced-motion: reduce`면 즉시 paint, (2) `document.startViewTransition`이 있으면 그걸로 cross-fade, (3) 없으면 documentElement에 `transition: background-color, color 280ms ease`만 임시로 부여하고 320ms 후 제거. setMode + system 변경 시 모두 새 경로 경유.
+- **Commit**: `pending`
+- **Next ideas**: (1) CommandPalette에 saved filter 그룹. (2) Browse 사이드바 모바일 드로어에서 saved filter chip 노출.
+
 ## 2026-05-28T10:25 (UTC) — Round 56
 
 - **Benchmark**: [Next.js Link prefetch coverage](https://nextjs.org) — 일반 카드만 prefetch하면 hero에서 클릭한 사용자의 첫 인상은 여전히 느리다. 모든 entry 포인트에서 동일한 패턴이 필요.
