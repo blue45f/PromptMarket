@@ -7,11 +7,18 @@
 
 ---
 
+## 2026-05-27T20:20 (UTC) — Round 16
+
+- **Benchmark**: [Coupang · Amazon 모바일 상세 페이지](https://coupang.com) — 모바일에서는 본문이 길어지면 CTA가 멀어진다. 모든 커머스 앱이 하단에 sticky purchase bar를 둔다.
+- **Shipped**: 리스팅 상세 페이지 모바일 전용 sticky CTA. `lg:hidden` + `fixed inset-x-0 bottom-0` + glass 배경 + 라임 슬라이드 호버. 가격을 mono tabular-nums로 강조, 상태별 분기(내 리스팅 / 보유 중 / 구매·받기) 처리. `env(safe-area-inset-bottom)`으로 iOS notch 대응. 본문 끝에 `pb-24`를 줘서 RecentlyViewed가 sticky 바와 겹치지 않게.
+- **Commit**: `pending`
+- **Next ideas**: (1) 모바일 sticky 바를 iOS와 Android 모두에서 화면 회전 시 검증. (2) 카탈로그/홈 페이지에도 "지금 어디 있는지" sticky breadcrumb.
+
 ## 2026-05-27T20:05 (UTC) — Round 15
 
 - **Benchmark**: [Reddit · HackerNews 페이지네이션](https://reddit.com) — 인기 카탈로그는 마우스 거리 없이 키보드만으로 페이지를 넘길 수 있게 한다. ←/→는 가장 직관적인 매핑이고 입력 필드 위에서는 발동을 막아야 한다.
 - **Shipped**: Browse 페이지네이션 키보드 단축키. 입력/textarea/select/contenteditable 위에서는 안 먹고, ←로 이전 페이지, →로 다음 페이지(엣지에서는 비활성). 페이지네이션 strip을 새 디자인 토큰(Pill, mono 페이지 카운터, 라임 hover)으로 재디자인하고 키 힌트 캡션 추가. ShortcutsOverlay에 "카탈로그 (Browse)" 그룹 신설.
-- **Commit**: `pending`
+- **Commit**: [`29b2211`](https://github.com/blue45f/promptmarket/commit/29b2211)
 - **Next ideas**: (1) 리스팅 상세 페이지에 "j/k로 검색 결과 사이를 이동" (Browse → Detail → Browse 동선). (2) 푸터 줄에 mini 사이트맵.
 
 ## 2026-05-27T19:50 (UTC) — Round 14

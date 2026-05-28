@@ -616,7 +616,54 @@ export default function ListingDetailPage() {
         <RelatedListings listingId={listing.id} />
       </section>
 
-      <RecentlyViewed excludeSlug={listing.slug} className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12" />
+      <RecentlyViewed excludeSlug={listing.slug} className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 pb-24 lg:pb-0" />
+
+      {/* Mobile sticky purchase bar — hidden on lg+ where the sticky sidebar
+          already handles this. Respects the iOS bottom safe area. */}
+      <div
+        className="lg:hidden fixed inset-x-0 bottom-0 z-30 surface-glass border-t border-line dark:border-night-line"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="mx-auto max-w-7xl px-4 py-3 flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+              {free ? '무료' : '가격'}
+            </p>
+            <p className="font-display font-bold text-ink dark:text-bone leading-none tabular-nums text-[1.4rem]">
+              {formatPrice(listing.priceCents)}
+            </p>
+          </div>
+          {isOwner ? (
+            <span className="inline-flex items-center text-[0.82rem] font-medium px-4 py-2.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft">
+              내 리스팅
+            </span>
+          ) : isPurchased ? (
+            <span className="inline-flex items-center gap-1.5 text-[0.82rem] font-semibold px-4 py-2.5 rounded-full bg-volt-300 text-ink">
+              <Check className="w-3.5 h-3.5" />
+              보유 중
+            </span>
+          ) : (
+            <button
+              onClick={handlePurchase}
+              disabled={buying}
+              className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold text-[0.86rem] tracking-tight motion-safe:transition focus-volt disabled:opacity-60"
+            >
+              <span
+                aria-hidden
+                className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+              />
+              <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
+                {buying ? (
+                  <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                ) : (
+                  <ShoppingCart className="w-4 h-4" />
+                )}
+                {free ? '받기' : '구매'}
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
