@@ -88,7 +88,7 @@ export default function RegisterPage() {
         </>
       }
     >
-      <form onSubmit={onSubmit} className="space-y-5">
+      <form onSubmit={onSubmit} noValidate className="space-y-5">
         <div>
           <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
             {t('common.email')}
@@ -102,7 +102,7 @@ export default function RegisterPage() {
           />
           {errors.email && (
             <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
-              {errors.email.message}
+              {t('validation.email')}
             </p>
           )}
         </div>
@@ -119,7 +119,7 @@ export default function RegisterPage() {
           />
           {errors.username && (
             <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
-              {errors.username.message}
+              {t('validation.username')}
             </p>
           )}
           <p className="mt-1 text-[0.72rem] text-ink-mute dark:text-bone-mute">
@@ -140,7 +140,7 @@ export default function RegisterPage() {
           />
           {errors.password && (
             <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
-              {errors.password.message}
+              {t('validation.password')}
             </p>
           )}
         </div>

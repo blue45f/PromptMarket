@@ -279,7 +279,11 @@ export default function CreateListingPage() {
         </div>
       )}
 
-      <form onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7">
+      <form
+        onSubmit={onSubmit}
+        noValidate
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7"
+      >
         <div className="rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 space-y-5">
           <Tabs.Root value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <Tabs.List className="flex gap-1 mb-5 border-b border-line dark:border-night-line">
