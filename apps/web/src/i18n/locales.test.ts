@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resources, NS } from './index'
+import i18n, { resources, NS } from './index'
 
 // i18next plural suffixes — Korean has no plural distinction, so a key may
 // legitimately exist as `key_other` in en but a single form in ko. Normalize
@@ -29,5 +29,17 @@ describe('i18n locale parity', () => {
     const missingInEn = [...ko].filter((k) => !en.has(k)).sort()
     const missingInKo = [...en].filter((k) => !ko.has(k)).sort()
     expect({ missingInEn, missingInKo }).toEqual({ missingInEn: [], missingInKo: [] })
+  })
+})
+
+// Korean is the default operating language; the switcher flips to en. The
+// <html lang> attribute must follow so screen readers and CJK line-breaking
+// pick the right rules.
+describe('i18n <html lang> sync', () => {
+  it('updates document.documentElement.lang on language change', async () => {
+    await i18n.changeLanguage('en')
+    expect(document.documentElement.lang).toBe('en')
+    await i18n.changeLanguage('ko')
+    expect(document.documentElement.lang).toBe('ko')
   })
 })
