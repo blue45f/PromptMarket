@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "PromptMarket — 검증된 AI 프롬프트, 스킬, 에이전트",
+    "title": "PromptMarket · 검증된 AI 프롬프트, 스킬, 에이전트",
     "description": "Claude, GPT-5, Gemini로 프로덕션을 굽고 있는 빌더들의 카탈로그. 프롬프트, CLAUDE.md, Claude Code 스킬, MCP 서버, 서브에이전트, .cursorrules를 사고팝니다."
   },
   "hero": {
@@ -88,7 +88,7 @@
   },
   "featured": {
     "emptyTitle": "아직 추천 드롭이 없어요",
-    "emptyDescription": "조금만 기다려 주세요 — 에디터가 고르고 있어요."
+    "emptyDescription": "조금만 기다려 주세요. 에디터가 고르고 있어요."
   },
   "trending": {
     "emptyTitle": "아직 트렌딩 리스팅이 없어요",

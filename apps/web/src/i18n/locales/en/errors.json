@@ -6,7 +6,7 @@
     "home": "Back home"
   },
   "notFound": {
-    "metaTitle": "404 · This page isn't in the catalog — PromptMarket",
+    "metaTitle": "404 · This page isn't in the catalog · PromptMarket",
     "metaDescription": "The address is wrong or the page has moved. Browse the catalog or search fast with ⌘K.",
     "eyebrow": "error 404 · {{path}}",
     "headlineLine1": "This page isn't",
@@ -69,7 +69,7 @@
         "closeDialog": "Close dialog"
       },
       "nav": {
-        "title": "Navigation — after g",
+        "title": "Navigation (after g)",
         "home": "Home",
         "browse": "Browse",
         "dashboard": "Dashboard",

@@ -6,7 +6,7 @@
     "home": "홈으로"
   },
   "notFound": {
-    "metaTitle": "404 · 이 페이지는 카탈로그에 없어요 — PromptMarket",
+    "metaTitle": "404 · 이 페이지는 카탈로그에 없어요 · PromptMarket",
     "metaDescription": "주소가 잘못되었거나 페이지가 이동되었어요. 카탈로그를 둘러보거나 ⌘K로 빠르게 검색해 보세요.",
     "eyebrow": "error 404 · {{path}}",
     "headlineLine1": "이 페이지는",
@@ -69,7 +69,7 @@
         "closeDialog": "다이얼로그 닫기"
       },
       "nav": {
-        "title": "네비게이션 — g 다음에",
+        "title": "네비게이션 (g 다음에)",
         "home": "홈",
         "browse": "둘러보기",
         "dashboard": "대시보드",

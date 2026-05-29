@@ -13,7 +13,7 @@ interface PageMeta {
 }
 
 const DEFAULTS = {
-  title: 'PromptMarket — 검증된 AI 프롬프트, 스킬, 에이전트',
+  title: 'PromptMarket · 검증된 AI 프롬프트, 스킬, 에이전트',
   description:
     '에이전트 시대를 진지하게 다루는 카탈로그. 프롬프트, Claude Code 스킬, MCP 서버, 서브에이전트, .cursorrules를 사고팝니다.',
 }

@@ -37,6 +37,11 @@ export default function ModelTabs() {
 
   const items = data?.items ?? []
 
+  // The empty-state title needs the *displayed* tab label, not the internal
+  // key (e.g. the "Tool" tab shows a translated label, not "Tool").
+  const activeTab = FAMILY_TABS.find((tb) => tb.key === active)
+  const activeLabel = activeTab?.labelKey ? t(activeTab.labelKey) : (activeTab?.label ?? active)
+
   return (
     <div>
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3 lg:gap-6 mb-7 lg:mb-9">
@@ -118,7 +123,7 @@ export default function ModelTabs() {
       ) : items.length === 0 ? (
         <EmptyState
           emoji="🛰️"
-          title={t('models.emptyTitle', { family: active })}
+          title={t('models.emptyTitle', { family: activeLabel })}
           description={t('models.emptyDescription')}
         />
       ) : (

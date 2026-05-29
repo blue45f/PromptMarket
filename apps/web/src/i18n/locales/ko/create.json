@@ -35,7 +35,7 @@
     "tagsHint": "쉼표로 구분합니다.",
     "models": "모델",
     "technique": "프롬프트 기법",
-    "techniqueNone": "— 기법 선택 (선택사항) —",
+    "techniqueNone": "기법 선택 (선택사항)",
     "difficulty": "난이도",
     "license": "라이선스",
     "version": "버전 (semver)"

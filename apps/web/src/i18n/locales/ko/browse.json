@@ -11,7 +11,7 @@
     "titleTrending": "트렌딩",
     "titleTop": "인기",
     "titleDefault": "카탈로그 둘러보기",
-    "description": "프롬프트, 스킬, MCP 서버, 에이전트, .cursorrules — 모델·난이도·기법별로 필터링하세요."
+    "description": "프롬프트, 스킬, MCP 서버, 에이전트, .cursorrules. 모델·난이도·기법별로 필터링하세요."
   },
   "toolbar": {
     "filter": "필터",

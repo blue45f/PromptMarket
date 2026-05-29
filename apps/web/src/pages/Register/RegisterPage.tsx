@@ -119,7 +119,15 @@ export default function RegisterPage() {
           />
           {errors.username && (
             <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
-              {t('validation.username')}
+              {t(
+                `validation.username.${
+                  errors.username.type === 'too_small'
+                    ? 'tooShort'
+                    : errors.username.type === 'too_big'
+                      ? 'tooLong'
+                      : 'format'
+                }`
+              )}
             </p>
           )}
           <p className="mt-1 text-[0.72rem] text-ink-mute dark:text-bone-mute">
@@ -140,7 +148,9 @@ export default function RegisterPage() {
           />
           {errors.password && (
             <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
-              {t('validation.password')}
+              {t(
+                `validation.password.${errors.password.type === 'too_big' ? 'tooLong' : 'tooShort'}`
+              )}
             </p>
           )}
         </div>

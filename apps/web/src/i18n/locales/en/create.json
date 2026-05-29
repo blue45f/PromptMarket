@@ -35,7 +35,7 @@
     "tagsHint": "Separate with commas.",
     "models": "Models",
     "technique": "Prompt technique",
-    "techniqueNone": "— Select a technique (optional) —",
+    "techniqueNone": "Select a technique (optional)",
     "difficulty": "Difficulty",
     "license": "License",
     "version": "Version (semver)"

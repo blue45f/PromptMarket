@@ -56,7 +56,7 @@
       "CLAUDE_MD": {
         "fit1": "Want project-level rules that keep Claude Code's answers consistent",
         "fit2": "Want to bake team conventions into code across a monorepo",
-        "mismatch1": "You need editor-agnostic rules — see agent.md"
+        "mismatch1": "You need editor-agnostic rules; see agent.md"
       },
       "AGENT_MD": {
         "fit1": "Want the same rules across multiple editors like Codex / Copilot",
@@ -115,9 +115,9 @@
     },
     "techniqueLine": "Prompt technique: {{hint}}",
     "model": {
-      "any": "Model-agnostic — works wherever you use it",
+      "any": "Model-agnostic, works wherever you use it",
       "single": "Tuned specifically for {{model}}",
-      "multi": "Optimized for {{count}} models — great for comparison experiments"
+      "multi": "Optimized for {{count}} models, great for comparison experiments"
     },
     "categoryLine": "Often work on {{category}} category tasks"
   },

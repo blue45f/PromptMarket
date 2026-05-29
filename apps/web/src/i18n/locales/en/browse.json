@@ -11,7 +11,7 @@
     "titleTrending": "Trending",
     "titleTop": "Top",
     "titleDefault": "Browse the catalog",
-    "description": "Prompts, skills, MCP servers, agents, and .cursorrules — filter by model, difficulty, and technique."
+    "description": "Prompts, skills, MCP servers, agents, and .cursorrules. Filter by model, difficulty, and technique."
   },
   "toolbar": {
     "filter": "Filters",
@@ -88,7 +88,7 @@
     "body": {
       "filters": "Try removing a filter, or browse the full catalog.",
       "query": "Check for typos, or try a shorter keyword.",
-      "blank": "Check back soon — new drops are on the way."
+      "blank": "Check back soon. New drops are on the way."
     },
     "browseAll": "Full catalog",
     "clearAll": "Clear all filters",

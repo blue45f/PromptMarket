@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "PromptMarket — Battle-tested AI prompts, skills, and agents",
+    "title": "PromptMarket · Battle-tested AI prompts, skills, and agents",
     "description": "A catalog from builders shipping production with Claude, GPT-5, and Gemini. Buy and sell prompts, CLAUDE.md files, Claude Code skills, MCP servers, sub-agents, and .cursorrules."
   },
   "hero": {
@@ -88,7 +88,7 @@
   },
   "featured": {
     "emptyTitle": "No featured drops yet",
-    "emptyDescription": "Hang tight — our editors are picking them out."
+    "emptyDescription": "Hang tight, our editors are picking them out."
   },
   "trending": {
     "emptyTitle": "No trending listings yet",

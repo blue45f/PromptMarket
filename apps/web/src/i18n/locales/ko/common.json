@@ -115,9 +115,9 @@
     },
     "techniqueLine": "프롬프트 기법: {{hint}}",
     "model": {
-      "any": "모델 비종속 — 어디서 쓰든 동작",
+      "any": "모델 비종속, 어디서 쓰든 동작",
       "single": "{{model}} 전용으로 다듬어졌어요",
-      "multi": "{{count}}개 모델에 최적화 — 비교 실험에 좋아요"
+      "multi": "{{count}}개 모델에 최적화, 비교 실험에 좋아요"
     },
     "categoryLine": "{{category}} 카테고리 작업이 잦은 분"
   },
