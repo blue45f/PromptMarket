@@ -30,6 +30,9 @@
     "recent": "Recent searches",
     "removeFromHistory": "Remove from history"
   },
+  "listing": {
+    "unrated": "No reviews yet"
+  },
   "rating": {
     "starLabel": "{{count}} stars"
   },
