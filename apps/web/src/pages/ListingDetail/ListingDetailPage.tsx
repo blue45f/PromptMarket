@@ -552,7 +552,7 @@ export default function ListingDetailPage() {
                       size="lg"
                     />
                     {errors.rating && (
-                      <p className="mt-1 text-xs text-coral-deep dark:text-coral">
+                      <p role="alert" className="mt-1 text-xs text-coral-deep dark:text-coral">
                         {t('reviews.validation.rating')}
                       </p>
                     )}
@@ -560,10 +560,16 @@ export default function ListingDetailPage() {
                       {...register('comment')}
                       placeholder={t('reviews.commentPlaceholder')}
                       rows={3}
+                      aria-invalid={errors.comment ? true : undefined}
+                      aria-describedby={errors.comment ? 'review-comment-error' : undefined}
                       className="mt-3 w-full rounded-lg border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
                     />
                     {errors.comment && (
-                      <p className="mt-1 text-xs text-coral-deep dark:text-coral">
+                      <p
+                        id="review-comment-error"
+                        role="alert"
+                        className="mt-1 text-xs text-coral-deep dark:text-coral"
+                      >
                         {t('reviews.validation.comment')}
                       </p>
                     )}
