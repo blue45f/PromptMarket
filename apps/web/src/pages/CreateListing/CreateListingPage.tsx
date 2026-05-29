@@ -563,7 +563,11 @@ function Field({
         {label}
       </label>
       {children}
-      {error && <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
+          {error}
+        </p>
+      )}
     </div>
   )
 }
