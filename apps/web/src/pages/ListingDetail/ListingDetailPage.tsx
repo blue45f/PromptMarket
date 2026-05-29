@@ -26,6 +26,7 @@ import {
 import { useListing, usePurchase, useCreateReview } from '@features/marketplace/queries'
 import { getErrorMessage } from '@services/api'
 import { formatDate, formatPrice, formatRelative } from '@utils/format'
+import toast from 'react-hot-toast'
 import TypeBadge from '@components/TypeBadge'
 import ModelBadge from '@components/ModelBadge'
 import TechniqueBadge from '@components/TechniqueBadge'
@@ -248,6 +249,14 @@ export default function ListingDetailPage() {
       navigate('/login', { state: { from: `/listings/${listing.slug}` } })
       return
     }
+    // Pre-empt a guaranteed-to-fail request: if the wallet can't cover the
+    // price, show a localized, actionable message instead of letting the
+    // server reject it with an English error.
+    const price = listing.priceCents ?? 0
+    if (price > 0 && typeof user?.balanceCents === 'number' && user.balanceCents < price) {
+      toast.error(t('purchase.insufficient', { amount: formatPrice(price - user.balanceCents) }))
+      return
+    }
     try {
       await purchaseMut.mutateAsync()
     } catch {
@@ -342,6 +351,14 @@ export default function ListingDetailPage() {
     return user && author?.id === user.id
   })
   const free = (listing.priceCents ?? 0) === 0
+  const cannotAfford =
+    !!token &&
+    !free &&
+    !isOwner &&
+    !isPurchased &&
+    typeof user?.balanceCents === 'number' &&
+    user.balanceCents < (listing.priceCents ?? 0)
+  const shortfallCents = cannotAfford ? (listing.priceCents ?? 0) - (user?.balanceCents ?? 0) : 0
   const buying = purchaseMut.isPending
   const reviewSubmitting = isSubmitting || reviewMut.isPending
   const models = listing.models ?? []
@@ -706,6 +723,17 @@ export default function ListingDetailPage() {
                         ? t('sidebar.getFree')
                         : t('sidebar.buy', { price: formatPrice(listing.priceCents) })}
                   </button>
+                )}
+                {cannotAfford && (
+                  <p
+                    role="alert"
+                    className="text-[0.78rem] text-coral-deep dark:text-coral text-center"
+                  >
+                    {t('purchase.shortBy', { amount: formatPrice(shortfallCents) })}{' '}
+                    <Link to="/dashboard" className="underline font-medium focus-volt">
+                      {t('purchase.topUp')}
+                    </Link>
+                  </p>
                 )}
                 <div className="flex items-center justify-center">
                   <WishlistButton slug={listing.slug} variant="inline" />

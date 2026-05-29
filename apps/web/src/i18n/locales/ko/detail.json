@@ -35,6 +35,11 @@
     "getFree": "무료로 받기",
     "buyToView": "구매해서 보기"
   },
+  "purchase": {
+    "insufficient": "잔액이 {{amount}} 부족해요. 충전 후 다시 시도해 주세요.",
+    "shortBy": "{{amount}} 부족합니다.",
+    "topUp": "충전하기"
+  },
   "reviews": {
     "writePrompt": "리뷰 남기기",
     "commentPlaceholder": "어떠셨나요? (선택)",

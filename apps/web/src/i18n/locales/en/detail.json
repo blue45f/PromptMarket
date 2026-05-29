@@ -35,6 +35,11 @@
     "getFree": "Get it free",
     "buyToView": "Buy to read"
   },
+  "purchase": {
+    "insufficient": "You're {{amount}} short. Top up your balance and try again.",
+    "shortBy": "Short by {{amount}}.",
+    "topUp": "Top up"
+  },
   "reviews": {
     "writePrompt": "Leave a review",
     "commentPlaceholder": "How was it? (optional)",
