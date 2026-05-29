@@ -1,3 +1,22 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
+allowBuilds:
+  '@nestjs/core': true
+  '@prisma/engines': true
+  '@scarf/scarf': true
+  argon2: true
+  better-sqlite3: true
+  esbuild: true
+  prisma: true
+
+minimumReleaseAgeExclude:
+  - '@turbo/*'
+  - enhanced-resolve
+  - hasown
+  - lucide-react
+  - react-router
+  - react-router-dom
+  - tldts-core
+  - turbo
+  - zustand
