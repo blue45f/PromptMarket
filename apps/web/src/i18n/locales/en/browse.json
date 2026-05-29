@@ -1,1 +1,107 @@
-{}
+{
+  "eyebrow": "Catalog",
+  "heading": {
+    "default": "Browse",
+    "search": "Results for \"{{q}}\"",
+    "category": "{{category}} catalog"
+  },
+  "meta": {
+    "titleSearch": "Results for \"{{q}}\"",
+    "titleCategory": "{{category}} catalog",
+    "titleTrending": "Trending",
+    "titleTop": "Top",
+    "titleDefault": "Browse the catalog",
+    "description": "Prompts, skills, MCP servers, agents, and .cursorrules — filter by model, difficulty, and technique."
+  },
+  "toolbar": {
+    "filter": "Filters",
+    "sortLabel": "Sort"
+  },
+  "sort": {
+    "newest": "Newest",
+    "trending": "Trending",
+    "top": "Top"
+  },
+  "saved": {
+    "label": "Recent filters",
+    "remove": "Clear this saved filter"
+  },
+  "chips": {
+    "reset": "Clear all",
+    "remove": "Remove {{label}} filter"
+  },
+  "results": {
+    "loading": "Loading…",
+    "count_one": "{{formatted}} result",
+    "count_other": "{{formatted}} results"
+  },
+  "pagination": {
+    "prev": "Previous",
+    "next": "Next",
+    "hint": "Page navigation"
+  },
+  "describe": {
+    "typesCount": "{{count}} types",
+    "free": "Free",
+    "paid": "Paid"
+  },
+  "panel": {
+    "title": "Filters",
+    "reset": "Clear all",
+    "sections": {
+      "type": "Type",
+      "model": "Model",
+      "technique": "Prompt technique",
+      "category": "Category",
+      "difficulty": "Difficulty",
+      "price": "Price"
+    },
+    "all": "All",
+    "difficultyGroup": "Difficulty",
+    "priceGroup": "Price",
+    "difficulty": {
+      "all": "All",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "price": {
+      "all": "All",
+      "free": "Free",
+      "paid": "Paid"
+    }
+  },
+  "drawer": {
+    "title": "Filters",
+    "close": "Close filters",
+    "savedLabel": "Recent filters",
+    "savedRemove": "Clear this saved filter",
+    "apply": "Apply filters"
+  },
+  "empty": {
+    "title": {
+      "queryLead": "No results match",
+      "queryTail": "\"{{q}}\".",
+      "filters": "No results match these filters.",
+      "blank": "The catalog is empty for now."
+    },
+    "body": {
+      "filters": "Try removing a filter, or browse the full catalog.",
+      "query": "Check for typos, or try a shorter keyword.",
+      "blank": "Check back soon — new drops are on the way."
+    },
+    "browseAll": "Full catalog",
+    "clearAll": "Clear all filters",
+    "activeHeading": "Active filters",
+    "removeRow": "Remove ✕"
+  },
+  "activeFilter": {
+    "query": "Search \"{{q}}\"",
+    "type": "Type · {{value}}",
+    "model": "Model · {{value}}",
+    "technique": "Technique · {{value}}",
+    "difficulty": "Difficulty · {{value}}",
+    "category": "Category · {{value}}",
+    "price": "Price · {{value}}"
+  }
+}

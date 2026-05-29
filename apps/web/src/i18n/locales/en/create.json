@@ -1,1 +1,61 @@
-{}
+{
+  "meta": {
+    "title": "Publish a listing · PromptMarket",
+    "description": "Publish prompts, skills, MCP servers, subagents, and rule files to the catalog."
+  },
+  "header": {
+    "eyebrow": "New listing",
+    "title": "Publish a drop",
+    "subtitle": "Add prompts, skills, MCP servers, subagents, and rule files to the catalog. The preview on the right updates as you type."
+  },
+  "draft": {
+    "badge": "Draft restored",
+    "restored": "We filled this in from your last edit. To start over, use the button.",
+    "restart": "Start over"
+  },
+  "sectionTabs": {
+    "basics": "Basics",
+    "content": "Content",
+    "metadata": "Metadata"
+  },
+  "fields": {
+    "title": "Title",
+    "titlePlaceholder": "A ruthless prompt for SaaS landing pages",
+    "type": "Type",
+    "category": "Category",
+    "description": "Description",
+    "descriptionPlaceholder": "A short one-liner to show on the card.",
+    "coverEmoji": "Cover emoji",
+    "body": "Body (Markdown)",
+    "bodyPlaceholder": "# My prompt\n\nYou are a helpful assistant…",
+    "price": "Price (USD)",
+    "priceHint": "Enter 0 to publish it for free.",
+    "tags": "Tags",
+    "tagsPlaceholder": "saas, copywriting, gpt",
+    "tagsHint": "Separate with commas.",
+    "models": "Models",
+    "technique": "Prompt technique",
+    "techniqueNone": "— Select a technique (optional) —",
+    "difficulty": "Difficulty",
+    "license": "License",
+    "version": "Version (semver)"
+  },
+  "trending": {
+    "label": "Trending this week"
+  },
+  "submit": {
+    "publishing": "Publishing…",
+    "publish": "Publish listing"
+  },
+  "preview": {
+    "eyebrow": "Live preview",
+    "body": "Body",
+    "titlePlaceholder": "Your listing title",
+    "descriptionPlaceholder": "Your description will appear here.",
+    "bodyPlaceholder": "*Start typing to see a body preview here…*"
+  },
+  "validation": {
+    "price": "Please enter a valid price",
+    "models": "Select at least one model"
+  }
+}

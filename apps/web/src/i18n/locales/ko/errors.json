@@ -1,1 +1,96 @@
-{}
+{
+  "route": {
+    "eyebrow": "라우트 에러",
+    "title": "문제가 발생했어요",
+    "fallbackMessage": "페이지를 렌더할 수 없어요.",
+    "home": "홈으로"
+  },
+  "notFound": {
+    "metaTitle": "404 · 이 페이지는 카탈로그에 없어요 — PromptMarket",
+    "metaDescription": "주소가 잘못되었거나 페이지가 이동되었어요. 카탈로그를 둘러보거나 ⌘K로 빠르게 검색해 보세요.",
+    "eyebrow": "error 404 · {{path}}",
+    "headlineLine1": "이 페이지는",
+    "headlineLine2Prefix": "카탈로그에",
+    "headlineHighlight": "없어요",
+    "body": "주소가 잘못되었거나, 리스팅이 이동·삭제되었을 수 있어요. 아래에서 다시 출발점을 골라 보세요.",
+    "home": "홈으로",
+    "openPalette": "검색 팔레트 열기",
+    "suggestionsEyebrow": "대신 이런 건 어때요",
+    "suggestions": {
+      "browse": { "label": "카탈로그 둘러보기", "hint": "8가지 아티팩트 · 14개 카테고리" },
+      "trending": { "label": "트렌딩", "hint": "이번 주 다운로드 상위" },
+      "newest": { "label": "최신 드롭", "hint": "방금 작업장에서 나온 것" },
+      "free": { "label": "무료 리스팅", "hint": "바로 가져다 쓰는 것" }
+    }
+  },
+  "palette": {
+    "srTitle": "명령 팔레트",
+    "srDescription": "검색하거나 빠른 작업으로 이동하세요. 화살표 키로 이동, Enter로 선택, Esc로 닫기.",
+    "placeholder": "검색하거나 작업으로 점프…",
+    "inputLabel": "명령 팔레트 검색",
+    "recentSearches": "최근 검색",
+    "clear": "지우기",
+    "loading": "불러오는 중…",
+    "emptyTitle": "결과 없음",
+    "emptyBody": "다른 키워드를 입력해 보세요.",
+    "groups": {
+      "actions": "액션",
+      "quickActions": "빠른 작업",
+      "wishlist": "위시리스트",
+      "listings": "리스팅",
+      "topListings": "인기 리스팅"
+    },
+    "actions": {
+      "browse": "카탈로그 둘러보기",
+      "trending": "트렌딩",
+      "newest": "최신",
+      "free": "무료 리스팅",
+      "sell": "프롬프트 판매",
+      "dashboard": "대시보드"
+    },
+    "hints": {
+      "navigate": "이동",
+      "select": "선택",
+      "open": "열기"
+    }
+  },
+  "shortcuts": {
+    "title": "키보드 단축키",
+    "subtitle": "마우스 없이도 빠르게 돌아다니세요.",
+    "close": "닫기",
+    "reopenHint": "로 언제든 다시 열 수 있어요.",
+    "groups": {
+      "global": {
+        "title": "전역",
+        "openPalette": "명령 팔레트 열기",
+        "openPaletteWin": "명령 팔레트 (Win/Linux)",
+        "palette": "명령 팔레트",
+        "help": "이 도움말",
+        "closeDialog": "다이얼로그 닫기"
+      },
+      "nav": {
+        "title": "네비게이션 — g 다음에",
+        "home": "홈",
+        "browse": "둘러보기",
+        "dashboard": "대시보드",
+        "sell": "판매 페이지",
+        "login": "로그인"
+      },
+      "catalog": {
+        "title": "카탈로그 (Browse)",
+        "prevPage": "이전 페이지",
+        "nextPage": "다음 페이지",
+        "nextCard": "다음 카드 포커스",
+        "prevCard": "이전 카드 포커스"
+      },
+      "actions": {
+        "title": "작업",
+        "create": "새 리스팅 작성 (로그인 시)",
+        "wishlist": "위시리스트 토글 (상세 페이지)"
+      }
+    }
+  },
+  "scrollTop": {
+    "label": "맨 위로"
+  }
+}

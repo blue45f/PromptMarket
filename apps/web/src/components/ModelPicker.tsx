@@ -1,15 +1,16 @@
-import { useMemo, useState } from 'react';
-import { MODELS } from '@promptmarket/shared';
-import { Search, X } from 'lucide-react';
-import { cn } from '@utils/cn';
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { MODELS } from '@promptmarket/shared'
+import { Search, X } from 'lucide-react'
+import { cn } from '@utils/cn'
 
 interface ModelPickerProps {
   /** Currently selected model slugs. */
-  value: string[];
-  onChange: (next: string[]) => void;
+  value: string[]
+  onChange: (next: string[]) => void
   /** Hide the search input — useful inside dense filter panels. */
-  hideSearch?: boolean;
-  className?: string;
+  hideSearch?: boolean
+  className?: string
 }
 
 export default function ModelPicker({
@@ -18,11 +19,12 @@ export default function ModelPicker({
   hideSearch = false,
   className,
 }: ModelPickerProps) {
-  const [query, setQuery] = useState('');
+  const { t } = useTranslation('home')
+  const [query, setQuery] = useState('')
 
   const grouped = useMemo(() => {
-    const lc = query.trim().toLowerCase();
-    const map = new Map<string, (typeof MODELS)[number][]>();
+    const lc = query.trim().toLowerCase()
+    const map = new Map<string, (typeof MODELS)[number][]>()
     for (const m of MODELS) {
       if (
         lc &&
@@ -30,19 +32,17 @@ export default function ModelPicker({
         !m.vendor.toLowerCase().includes(lc) &&
         !m.family.toLowerCase().includes(lc)
       ) {
-        continue;
+        continue
       }
-      const arr = map.get(m.vendor) ?? [];
-      arr.push(m);
-      map.set(m.vendor, arr);
+      const arr = map.get(m.vendor) ?? []
+      arr.push(m)
+      map.set(m.vendor, arr)
     }
-    return Array.from(map.entries());
-  }, [query]);
+    return Array.from(map.entries())
+  }, [query])
 
   function toggle(slug: string) {
-    onChange(
-      value.includes(slug) ? value.filter((s) => s !== slug) : [...value, slug],
-    );
+    onChange(value.includes(slug) ? value.filter((s) => s !== slug) : [...value, slug])
   }
 
   return (
@@ -57,7 +57,7 @@ export default function ModelPicker({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="모델 / 벤더 검색…"
+            placeholder={t('modelPicker.searchPlaceholder')}
             className="w-full pl-9 pr-3 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas dark:bg-night text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
           />
         </div>
@@ -66,7 +66,7 @@ export default function ModelPicker({
       {value.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {value.map((slug) => {
-            const m = MODELS.find((x) => x.slug === slug);
+            const m = MODELS.find((x) => x.slug === slug)
             return (
               <button
                 key={slug}
@@ -77,7 +77,7 @@ export default function ModelPicker({
                 {m?.label ?? slug}
                 <X className="w-3 h-3" />
               </button>
-            );
+            )
           })}
         </div>
       )}
@@ -85,7 +85,7 @@ export default function ModelPicker({
       <div className="max-h-72 overflow-y-auto rounded-2xl border border-line dark:border-night-line divide-y divide-line/60 dark:divide-night-line/60 bg-canvas dark:bg-night">
         {grouped.length === 0 && (
           <p className="px-3 py-4 text-sm text-ink-mute dark:text-bone-mute">
-            "{query}"에 맞는 모델이 없어요.
+            {t('modelPicker.noResults', { query })}
           </p>
         )}
         {grouped.map(([vendor, models]) => (
@@ -95,14 +95,14 @@ export default function ModelPicker({
             </p>
             <ul>
               {models.map((m) => {
-                const checked = value.includes(m.slug);
+                const checked = value.includes(m.slug)
                 return (
                   <li key={m.slug}>
                     <label
                       className={cn(
                         'flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm cursor-pointer motion-safe:transition',
                         'hover:bg-canvas-deep dark:hover:bg-night-deep',
-                        checked && 'bg-volt-100 dark:bg-volt-900/30',
+                        checked && 'bg-volt-100 dark:bg-volt-900/30'
                       )}
                     >
                       <input
@@ -111,20 +111,18 @@ export default function ModelPicker({
                         onChange={() => toggle(m.slug)}
                         className="accent-volt-500"
                       />
-                      <span className="flex-1 truncate text-ink dark:text-bone">
-                        {m.label}
-                      </span>
+                      <span className="flex-1 truncate text-ink dark:text-bone">{m.label}</span>
                       <span className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-ink-mute dark:text-bone-mute">
                         {m.family}
                       </span>
                     </label>
                   </li>
-                );
+                )
               })}
             </ul>
           </div>
         ))}
       </div>
     </div>
-  );
+  )
 }

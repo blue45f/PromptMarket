@@ -1,11 +1,12 @@
-import { Heart } from 'lucide-react';
-import { useWishlist } from '@hooks/useWishlist';
-import { cn } from '@utils/cn';
+import { useTranslation } from 'react-i18next'
+import { Heart } from 'lucide-react'
+import { useWishlist } from '@hooks/useWishlist'
+import { cn } from '@utils/cn'
 
 interface WishlistButtonProps {
-  slug: string;
-  variant?: 'card' | 'inline';
-  className?: string;
+  slug: string
+  variant?: 'card' | 'inline'
+  className?: string
 }
 
 /* ---------------------------------------------------------------------------
@@ -15,18 +16,15 @@ interface WishlistButtonProps {
  * `inline` variant: a regular button with text label, for sidebars.
  * ------------------------------------------------------------------------- */
 
-export default function WishlistButton({
-  slug,
-  variant = 'card',
-  className,
-}: WishlistButtonProps) {
-  const { has, toggle } = useWishlist();
-  const active = has(slug);
+export default function WishlistButton({ slug, variant = 'card', className }: WishlistButtonProps) {
+  const { t } = useTranslation('common')
+  const { has, toggle } = useWishlist()
+  const active = has(slug)
 
   function onClick(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    toggle(slug);
+    e.preventDefault()
+    e.stopPropagation()
+    toggle(slug)
   }
 
   if (variant === 'inline') {
@@ -35,19 +33,19 @@ export default function WishlistButton({
         type="button"
         onClick={onClick}
         aria-pressed={active}
-        aria-label={active ? '위시리스트에서 빼기' : '위시리스트에 담기'}
+        aria-label={active ? t('wishlist.remove') : t('wishlist.add')}
         className={cn(
           'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[0.78rem] font-medium motion-safe:transition focus-volt',
           active
             ? 'bg-coral/15 text-coral-deep border-coral/40 dark:bg-coral/20 dark:text-coral dark:border-coral/40'
             : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:text-coral-deep dark:hover:text-coral hover:border-coral/40',
-          className,
+          className
         )}
       >
         <Heart className={cn('w-3.5 h-3.5', active && 'fill-current')} />
-        {active ? '저장됨' : '위시리스트'}
+        {active ? t('wishlist.saved') : t('wishlist.label')}
       </button>
-    );
+    )
   }
 
   return (
@@ -55,16 +53,16 @@ export default function WishlistButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      aria-label={active ? '위시리스트에서 빼기' : '위시리스트에 담기'}
+      aria-label={active ? t('wishlist.remove') : t('wishlist.add')}
       className={cn(
         'inline-flex items-center justify-center w-8 h-8 rounded-full backdrop-blur-sm motion-safe:transition focus-volt',
         active
           ? 'bg-coral text-bone'
           : 'bg-ink/55 text-bone hover:bg-coral/85 dark:bg-night/65 dark:hover:bg-coral/85',
-        className,
+        className
       )}
     >
       <Heart className={cn('w-3.5 h-3.5', active && 'fill-current')} />
     </button>
-  );
+  )
 }

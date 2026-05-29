@@ -25,7 +25,101 @@
     "more": "+{{count}}"
   },
   "search": {
-    "placeholder": "Search prompts, agents, skills…"
+    "placeholder": "Search prompts, agents, skills…",
+    "commandPaletteHint": "Open command palette",
+    "recent": "Recent searches",
+    "removeFromHistory": "Remove from history"
+  },
+  "rating": {
+    "starLabel": "{{count}} stars"
+  },
+  "difficulty": {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
+  "wishlist": {
+    "add": "Add to wishlist",
+    "remove": "Remove from wishlist",
+    "saved": "Saved",
+    "label": "Wishlist"
+  },
+  "audience": {
+    "fitHeading": "Great if you",
+    "mismatchHeading": "Look elsewhere if",
+    "type": {
+      "PROMPT": {
+        "fit1": "Want a proven, task-ready prompt you can use right away",
+        "fit2": "Want to send the same input to several models and compare results",
+        "mismatch1": "You need an automated agent workflow (see Skill / Sub-agent)"
+      },
+      "CLAUDE_MD": {
+        "fit1": "Want project-level rules that keep Claude Code's answers consistent",
+        "fit2": "Want to bake team conventions into code across a monorepo",
+        "mismatch1": "You need editor-agnostic rules — see agent.md"
+      },
+      "AGENT_MD": {
+        "fit1": "Want the same rules across multiple editors like Codex / Copilot",
+        "mismatch1": "Claude-only workflows are more precise with CLAUDE.md"
+      },
+      "SKILL": {
+        "fit1": "Want to turn repetitive tasks in Claude Code into a one-line command",
+        "fit2": "Want to ship a standard procedure to your team for consistent output",
+        "mismatch1": "If a single prompt is enough, the Prompt category is lighter"
+      },
+      "MCP_SERVER": {
+        "fit1": "Want to let agents reach external tools, databases, and APIs",
+        "fit2": "Want the same data source across clients like Claude Desktop, Cursor, and Continue",
+        "mismatch1": "Overkill if a prompt alone can solve the task"
+      },
+      "SLASH_COMMAND": {
+        "fit1": "Want to call your go-to prompts with a shortcut command",
+        "mismatch1": "A Sub-agent fits better for long, autonomous work"
+      },
+      "SUBAGENT": {
+        "fit1": "Want to split out a specific persona or role and delegate work",
+        "fit2": "Are setting up a multi-agent configuration in Claude Code",
+        "mismatch1": "A Prompt is enough for one-off transforms or summaries"
+      },
+      "CURSOR_RULES": {
+        "fit1": "Want to lock your project assistant's tone inside Cursor",
+        "mismatch1": "If you need editor-agnostic rules, see agent.md"
+      }
+    },
+    "difficultyTone": {
+      "beginner": {
+        "fit": "Easy to apply right away, even for beginners",
+        "mismatch": "May feel light if you expect advanced options and settings"
+      },
+      "intermediate": {
+        "fit": "A good level for those with some hands-on experience",
+        "mismatch": "Complete beginners may need a little setup"
+      },
+      "advanced": {
+        "fit": "Suited to seniors and teams that need deep customization",
+        "mismatch": "Beginners should start with a beginner listing in the same category"
+      }
+    },
+    "technique": {
+      "chain-of-thought": "A pattern that prompts problem decomposition and step-by-step reasoning",
+      "tree-of-thoughts": "Compares multiple reasoning paths while pruning branches",
+      "few-shot": "Learns tone and format quickly from a few examples",
+      "zero-shot": "Works from instructions alone, with no examples",
+      "role-prompt": "Locks the answer's tone to a specific persona",
+      "react": "Alternates between reasoning and tool use (ReAct)",
+      "rag": "Pulls in external documents and data to answer (RAG)",
+      "reflexion": "A loop that self-checks and revises after answering",
+      "self-consistency": "Boosts stability via majority vote across samples",
+      "plan-and-solve": "Plans first, then executes step by step",
+      "meta-prompt": "A prompt for prompts"
+    },
+    "techniqueLine": "Prompt technique: {{hint}}",
+    "model": {
+      "any": "Model-agnostic — works wherever you use it",
+      "single": "Tuned specifically for {{model}}",
+      "multi": "Optimized for {{count}} models — great for comparison experiments"
+    },
+    "categoryLine": "Often work on {{category}} category tasks"
   },
   "lang": {
     "label": "Language",

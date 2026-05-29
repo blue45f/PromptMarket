@@ -1,19 +1,20 @@
-import { useMemo } from 'react';
-import { useQueries } from '@tanstack/react-query';
-import { Eye, X } from 'lucide-react';
-import { api } from '@services/api';
-import { listingKey } from '@features/marketplace/queryKeys';
-import type { ListingDetailResponse } from '@/types';
-import { useRecentlyViewed } from '@hooks/useRecentlyViewed';
-import ListingCard from './ListingCard';
-import { cn } from '@utils/cn';
+import { useMemo } from 'react'
+import { useQueries } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
+import { Eye, X } from 'lucide-react'
+import { api } from '@services/api'
+import { listingKey } from '@features/marketplace/queryKeys'
+import type { ListingDetailResponse } from '@/types'
+import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
+import ListingCard from './ListingCard'
+import { cn } from '@utils/cn'
 
 interface RecentlyViewedProps {
   /** Slug to exclude from the rail (e.g. when shown on a detail page). */
-  excludeSlug?: string;
-  className?: string;
+  excludeSlug?: string
+  className?: string
   /** Max items to render. Defaults to 8. */
-  limit?: number;
+  limit?: number
 }
 
 /* ---------------------------------------------------------------------------
@@ -22,16 +23,13 @@ interface RecentlyViewedProps {
  * signed-out visitors and adds zero API contract surface.
  * ------------------------------------------------------------------------- */
 
-export default function RecentlyViewed({
-  excludeSlug,
-  className,
-  limit = 8,
-}: RecentlyViewedProps) {
-  const { slugs, clear } = useRecentlyViewed();
+export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: RecentlyViewedProps) {
+  const { t } = useTranslation('home')
+  const { slugs, clear } = useRecentlyViewed()
 
   const visible = useMemo(() => {
-    return slugs.filter((s) => s !== excludeSlug).slice(0, limit);
-  }, [slugs, excludeSlug, limit]);
+    return slugs.filter((s) => s !== excludeSlug).slice(0, limit)
+  }, [slugs, excludeSlug, limit])
 
   const results = useQueries({
     queries: visible.map((slug) => ({
@@ -40,16 +38,14 @@ export default function RecentlyViewed({
       // 10 minutes — recently viewed is inherently fuzzy, no need to refetch eagerly
       staleTime: 10 * 60_000,
     })),
-  });
+  })
 
   // Quietly drop any that failed (could be deleted listings) so the rail never
   // shows a broken row.
-  const items = results
-    .map((r) => r.data?.listing)
-    .filter((l): l is NonNullable<typeof l> => !!l);
+  const items = results.map((r) => r.data?.listing).filter((l): l is NonNullable<typeof l> => !!l)
 
   if (visible.length === 0 || (items.length === 0 && !results.some((r) => r.isPending))) {
-    return null;
+    return null
   }
 
   return (
@@ -58,13 +54,13 @@ export default function RecentlyViewed({
         <div className="space-y-1.5">
           <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
             <Eye className="w-3 h-3" aria-hidden />
-            최근 본
+            {t('recentlyViewed.kicker')}
           </p>
           <h2
             className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.03em] display-tight"
             style={{ fontSize: 'var(--text-display-sm)' }}
           >
-            돌아가서 마저 볼만한
+            {t('recentlyViewed.title')}
           </h2>
         </div>
         <button
@@ -73,7 +69,7 @@ export default function RecentlyViewed({
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.78rem] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub/60 motion-safe:transition focus-volt"
         >
           <X className="w-3.5 h-3.5" aria-hidden />
-          기록 지우기
+          {t('recentlyViewed.clear')}
         </button>
       </div>
 
@@ -89,7 +85,7 @@ export default function RecentlyViewed({
         <div
           className="flex gap-4 lg:gap-5 overflow-x-auto snap-x snap-mandatory pb-5 scrollbar-hide"
           role="region"
-          aria-label="최근 본 리스팅"
+          aria-label={t('recentlyViewed.aria')}
         >
           {items.map((l) => (
             <ListingCard key={l.id} listing={l} fixedWidth />
@@ -97,5 +93,5 @@ export default function RecentlyViewed({
         </div>
       </div>
     </section>
-  );
+  )
 }

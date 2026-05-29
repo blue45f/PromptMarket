@@ -1,1 +1,20 @@
-{}
+{
+  "meta": {
+    "title": "@{{name}} · PromptMarket",
+    "description": "@{{name}}의 리스팅 컬렉션."
+  },
+  "notFound": "사용자를 찾을 수 없어요.",
+  "eyebrow": "메이커 프로필",
+  "stats": {
+    "listings": "리스팅 {{count}}건",
+    "hasFree": "무료 드롭 포함"
+  },
+  "collection": {
+    "eyebrow": "컬렉션",
+    "title": "@{{name}}의 드롭"
+  },
+  "empty": {
+    "title": "아직 게시한 작업이 없어요",
+    "description": "이 메이커가 첫 드롭을 올리면 여기에 표시돼요."
+  }
+}

@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Compass } from 'lucide-react';
-import { useListings } from '@features/marketplace/queries';
-import { useQueryClient } from '@tanstack/react-query';
-import { listingKey } from '@features/marketplace/queryKeys';
-import { api } from '@services/api';
-import type { ListingDetailResponse } from '@/types';
-import { LISTING_TYPE_META } from '@promptmarket/shared';
-import { formatPrice } from '@utils/format';
-import { cn } from '@utils/cn';
-import { useSpotlight } from '@hooks/useSpotlight';
-import StatsStrip from './StatsStrip';
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
+import { ArrowRight, Compass } from 'lucide-react'
+import { useListings } from '@features/marketplace/queries'
+import { useQueryClient } from '@tanstack/react-query'
+import { listingKey } from '@features/marketplace/queryKeys'
+import { api } from '@services/api'
+import type { ListingDetailResponse } from '@/types'
+import { LISTING_TYPE_META } from '@promptmarket/shared'
+import { formatPrice } from '@utils/format'
+import { cn } from '@utils/cn'
+import { useSpotlight } from '@hooks/useSpotlight'
+import StatsStrip from './StatsStrip'
 
 /* ---------------------------------------------------------------------------
  * Hero — editorial asymmetric layout with kinetic typography, cursor-followed
@@ -19,27 +21,25 @@ import StatsStrip from './StatsStrip';
  * ------------------------------------------------------------------------- */
 
 const HEADLINE_TOKENS: Array<{
-  text: string;
-  size: 'condense' | 'tight' | 'wide';
-  highlight?: boolean;
+  textKey: string
+  size: 'condense' | 'tight' | 'wide'
+  highlight?: boolean
 }> = [
-  { text: '검증된', size: 'condense' },
-  { text: '프롬프트,', size: 'tight' },
-  { text: '스킬', size: 'tight', highlight: true },
-  { text: '그리고', size: 'wide' },
-  { text: '에이전트.', size: 'wide' },
-];
+  { textKey: 'hero.headline.verified', size: 'condense' },
+  { textKey: 'hero.headline.prompts', size: 'tight' },
+  { textKey: 'hero.headline.skills', size: 'tight', highlight: true },
+  { textKey: 'hero.headline.and', size: 'wide' },
+  { textKey: 'hero.headline.agents', size: 'wide' },
+]
 
 export default function Hero() {
-  const recentQ = useListings({ sort: 'newest', pageSize: 10 });
-  const drops = recentQ.data?.items ?? [];
-  const spotlightRef = useSpotlight<HTMLDivElement>();
+  const { t } = useTranslation('home')
+  const recentQ = useListings({ sort: 'newest', pageSize: 10 })
+  const drops = recentQ.data?.items ?? []
+  const spotlightRef = useSpotlight<HTMLDivElement>()
 
   return (
-    <section
-      ref={spotlightRef}
-      className="spotlight-host relative overflow-hidden isolate"
-    >
+    <section ref={spotlightRef} className="spotlight-host relative overflow-hidden isolate">
       {/* Cursor-following lime spotlight, behind everything else */}
       <div className="spotlight -z-10" aria-hidden />
 
@@ -64,19 +64,18 @@ export default function Hero() {
             <div className="flex items-center gap-3 mb-5 animate-fade-up">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[0.7rem] font-mono uppercase tracking-[0.16em] surface-glass border border-line-strong dark:border-night-line text-ink-soft dark:text-bone-soft">
                 <span className="relative inline-flex w-2 h-2 rounded-full bg-volt-500 volt-pulse" />
-                Live · MMVI · 앤솔로지 vol.01
+                {t('hero.badge')}
               </span>
-              <RotatingPhrase phrases={timeOfDayPhrases()} />
+              <RotatingPhrase phrases={timeOfDayPhrases(t)} />
             </div>
 
-            <KineticHeadline />
+            <KineticHeadline t={t} />
 
             <p
               className="mt-7 max-w-[40ch] text-ink-soft dark:text-bone-soft leading-[1.55] animate-fade-up stagger-3"
               style={{ fontSize: 'var(--text-lead)' }}
             >
-              Claude, GPT-5, Gemini로 프로덕션을 굽고 있는 빌더들이 만든 컬렉션.
-              둘러보고, 구매하고, 리믹스하세요. 에이전트 시대를 진지하게 다루는 카탈로그입니다.
+              {t('hero.lead')}
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3 animate-fade-up stagger-4">
@@ -89,7 +88,7 @@ export default function Hero() {
                   className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
                 />
                 <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors motion-safe:duration-300">
-                  카탈로그 둘러보기
+                  {t('hero.browseCta')}
                   <ArrowRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" />
                 </span>
               </Link>
@@ -98,22 +97,22 @@ export default function Hero() {
                 className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone font-medium tracking-tight hover:border-ink dark:hover:border-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub focus-volt motion-safe:transition"
               >
                 <Compass className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:-rotate-12" />
-                프롬프트 판매하기
+                {t('hero.sellCta')}
               </Link>
               <span className="hidden sm:inline-flex items-center gap-2 ml-2 text-meta text-ink-mute dark:text-bone-mute font-mono">
-                <span aria-hidden>↓</span> 프론티어 모델 21종 · 아티팩트 8종
+                <span aria-hidden>↓</span> {t('hero.modelCount')}
               </span>
             </div>
 
             {/* Tagline strip — mini-marquee that tilts in the brand's tech voice */}
             <div className="mt-12 -mx-[clamp(1.25rem,4vw,3rem)] overflow-hidden animate-fade-up stagger-5">
               <div className="flex items-center gap-10 marquee-track whitespace-nowrap py-2 font-mono text-[0.72rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
-                {[
-                  ...['◆ prompts', 'claude.md', 'agent.md', 'skills', 'mcp', 'slash cmds', 'sub-agents', '.cursorrules', '◆ 에이전틱', '카탈로그'],
-                  ...['◆ prompts', 'claude.md', 'agent.md', 'skills', 'mcp', 'slash cmds', 'sub-agents', '.cursorrules', '◆ 에이전틱', '카탈로그'],
-                ].map((t, i) => (
+                {(() => {
+                  const words = t('marquee.tagline', { returnObjects: true }) as string[]
+                  return [...words, ...words]
+                })().map((word, i) => (
                   <span key={i} className="inline-flex items-center gap-10">
-                    {t}
+                    {word}
                     <span aria-hidden className="w-1 h-1 rounded-full bg-volt-500/60" />
                   </span>
                 ))}
@@ -123,7 +122,7 @@ export default function Hero() {
 
           {/* Live drops marquee — right column */}
           <aside className="lg:col-span-4 xl:col-span-4 relative min-w-0 animate-fade-up stagger-3">
-            <DropsMarquee items={drops} loading={recentQ.isPending} />
+            <DropsMarquee items={drops} loading={recentQ.isPending} t={t} />
           </aside>
         </div>
 
@@ -133,7 +132,7 @@ export default function Hero() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 /* ---------------------------------------------------------------------------
@@ -142,27 +141,35 @@ export default function Hero() {
  * itself lands.
  * ------------------------------------------------------------------------- */
 
-function KineticHeadline() {
+function KineticHeadline({ t }: { t: TFunction }) {
   return (
     <h1
       className="font-display text-ink dark:text-bone leading-[0.88] tracking-[-0.045em]"
       style={{ fontSize: 'var(--text-display-xl)' }}
     >
       {HEADLINE_TOKENS.map((tok, i) => {
+        const text = t(tok.textKey)
         const sizeClass =
-          tok.size === 'condense' ? 'display-condense' : tok.size === 'tight' ? 'display-tight' : 'display-wide';
+          tok.size === 'condense'
+            ? 'display-condense'
+            : tok.size === 'tight'
+              ? 'display-tight'
+              : 'display-wide'
         const isFirstInLine =
-          i === 0 || i === 1 || i === 3 || (i === 4 && tok.size === 'wide' && HEADLINE_TOKENS[3]?.size !== 'wide');
+          i === 0 ||
+          i === 1 ||
+          i === 3 ||
+          (i === 4 && tok.size === 'wide' && HEADLINE_TOKENS[3]?.size !== 'wide')
         // Place "스킬" inline after "프롬프트,"; "그리고" + "에이전트." on their own lines.
         return (
           <span
-            key={tok.text + i}
+            key={tok.textKey + i}
             className={cn(
               sizeClass,
               tok.highlight && 'relative inline-block',
               isFirstInLine && 'block',
               !isFirstInLine && i === 2 && 'inline-block ml-[0.25em]',
-              !isFirstInLine && i !== 2 && 'inline-block',
+              !isFirstInLine && i !== 2 && 'inline-block'
             )}
             style={
               {
@@ -172,8 +179,11 @@ function KineticHeadline() {
           >
             {tok.highlight ? (
               <>
-                <span className="relative z-10 letter-in" style={{ '--i': i } as React.CSSProperties}>
-                  {tok.text}
+                <span
+                  className="relative z-10 letter-in"
+                  style={{ '--i': i } as React.CSSProperties}
+                >
+                  {text}
                 </span>
                 <span
                   aria-hidden
@@ -183,14 +193,14 @@ function KineticHeadline() {
               </>
             ) : (
               <span className="letter-in inline-block" style={{ '--i': i } as React.CSSProperties}>
-                {tok.text}
+                {text}
               </span>
             )}
           </span>
-        );
+        )
       })}
     </h1>
-  );
+  )
 }
 
 /* ---------------------------------------------------------------------------
@@ -203,29 +213,30 @@ function KineticHeadline() {
  * feels like it's tracking the day. Morning highlights newness, afternoon
  * leans on momentum, evening surfaces curated picks, late night goes quiet.
  */
-function timeOfDayPhrases(): string[] {
-  const hour = new Date().getHours();
+function timeOfDayPhrases(t: TFunction): string[] {
+  const hour = new Date().getHours()
+  let slot: 'morning' | 'afternoon' | 'evening' | 'night'
   if (hour >= 5 && hour < 11) {
-    return ['아침엔 새 드롭부터', '실전 검증', '오늘 시작', '빌더의 작업장'];
+    slot = 'morning'
+  } else if (hour >= 11 && hour < 17) {
+    slot = 'afternoon'
+  } else if (hour >= 17 && hour < 22) {
+    slot = 'evening'
+  } else {
+    slot = 'night'
   }
-  if (hour >= 11 && hour < 17) {
-    return ['지금 트렌딩', '에이전트 시대', '실전 검증', '오픈 카탈로그'];
-  }
-  if (hour >= 17 && hour < 22) {
-    return ['오늘의 픽', '빌더의 선반', '저녁의 카탈로그', '실전 검증'];
-  }
-  return ['조용한 시간 컬렉션', '깊게 읽기', '심야 큐레이션', '실전 검증'];
+  return t(`hero.phrases.${slot}`, { returnObjects: true }) as string[]
 }
 
 function RotatingPhrase({ phrases }: { phrases: string[] }) {
-  const [idx, setIdx] = useState(0);
+  const [idx, setIdx] = useState(0)
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) return;
-    const id = setInterval(() => setIdx((i) => (i + 1) % phrases.length), 2600);
-    return () => clearInterval(id);
-  }, [phrases.length]);
+    if (typeof window === 'undefined') return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+    const id = setInterval(() => setIdx((i) => (i + 1) % phrases.length), 2600)
+    return () => clearInterval(id)
+  }, [phrases.length])
   return (
     <span
       aria-live="polite"
@@ -239,37 +250,48 @@ function RotatingPhrase({ phrases }: { phrases: string[] }) {
         {phrases[idx]}
       </span>
     </span>
-  );
+  )
 }
 
 /* ------------------------------------------------------------------------- */
 
 interface DropsMarqueeProps {
   items: Array<{
-    id: string;
-    slug: string;
-    title: string;
-    type: keyof typeof LISTING_TYPE_META;
-    priceCents: number | null | undefined;
-    coverEmoji?: string | null;
-    author?: { username?: string | null } | null;
-  }>;
-  loading?: boolean;
+    id: string
+    slug: string
+    title: string
+    type: keyof typeof LISTING_TYPE_META
+    priceCents: number | null | undefined
+    coverEmoji?: string | null
+    author?: { username?: string | null } | null
+  }>
+  loading?: boolean
+  t: TFunction
 }
 
-function DropsMarquee({ items, loading }: DropsMarqueeProps) {
+function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
+  const seedTitles = [
+    t('hero.seed.codeReviewer'),
+    t('hero.seed.dataSubagent'),
+    t('hero.seed.mcpFilesystem'),
+    t('hero.seed.monorepoClaudeMd'),
+    t('hero.seed.artDirector'),
+    t('hero.seed.cursorSwift'),
+  ]
   const seed: DropsMarqueeProps['items'] = items.length
     ? items
     : Array.from({ length: 6 }).map((_, i) => ({
         id: `seed-${i}`,
         slug: `seed-${i}`,
-        title: ['시니어 코드 리뷰어', '데이터 분석 서브에이전트', 'MCP 파일시스템', '모노레포 CLAUDE.md', '이미지 생성 아트 디렉터', 'Cursor Swift 룰'][i],
-        type: ['SUBAGENT', 'AGENT_MD', 'MCP_SERVER', 'CLAUDE_MD', 'PROMPT', 'CURSOR_RULES'][i] as keyof typeof LISTING_TYPE_META,
+        title: seedTitles[i],
+        type: ['SUBAGENT', 'AGENT_MD', 'MCP_SERVER', 'CLAUDE_MD', 'PROMPT', 'CURSOR_RULES'][
+          i
+        ] as keyof typeof LISTING_TYPE_META,
         priceCents: [499, 0, 0, 299, 1299, 0][i],
         coverEmoji: ['🧑‍⚖️', '📊', '🗂️', '📘', '🎨', '🦅'][i],
         author: { username: ['alex', 'mira', 'kenji', 'lou', 'pia', 'rin'][i] },
-      }));
-  const doubled = [...seed, ...seed];
+      }))
+  const doubled = [...seed, ...seed]
 
   return (
     <div
@@ -277,7 +299,11 @@ function DropsMarquee({ items, loading }: DropsMarqueeProps) {
       style={{ height: 'clamp(22rem, 56vh, 34rem)' }}
     >
       {/* Inner spotlight (different hue) */}
-      <div className="spotlight" aria-hidden style={{ ['--spot-color' as string]: 'oklch(0.66 0.24 305 / 0.25)' }} />
+      <div
+        className="spotlight"
+        aria-hidden
+        style={{ ['--spot-color' as string]: 'oklch(0.66 0.24 305 / 0.25)' }}
+      />
 
       {/* Top + bottom fade */}
       <div
@@ -293,9 +319,9 @@ function DropsMarquee({ items, loading }: DropsMarqueeProps) {
       <div className="absolute top-3.5 inset-x-3.5 z-20 flex items-center justify-between text-[0.66rem] font-mono uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
         <span className="inline-flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-volt-500 volt-pulse" />
-          새 드롭
+          {t('hero.drops.title')}
         </span>
-        <span>{loading ? '동기화 중…' : 'live'}</span>
+        <span>{loading ? t('hero.drops.syncing') : t('hero.drops.live')}</span>
       </div>
 
       {/* Vertical marquee */}
@@ -307,26 +333,25 @@ function DropsMarquee({ items, loading }: DropsMarqueeProps) {
         </ul>
       </div>
     </div>
-  );
+  )
 }
 
 function DropRow({ drop }: { drop: DropsMarqueeProps['items'][number] }) {
-  const meta = LISTING_TYPE_META[drop.type];
-  const free = (drop.priceCents ?? 0) === 0;
-  const qc = useQueryClient();
+  const meta = LISTING_TYPE_META[drop.type]
+  const free = (drop.priceCents ?? 0) === 0
+  const qc = useQueryClient()
   // Seed entries (no real id, fake slug) shouldn't trigger prefetches —
   // they'd just 404 against the API and waste a request.
-  const realSlug = drop.id.startsWith('seed-') ? null : drop.slug;
+  const realSlug = drop.id.startsWith('seed-') ? null : drop.slug
   const prefetch = () => {
-    if (!realSlug) return;
-    if (qc.getQueryData(listingKey(realSlug)) != null) return;
+    if (!realSlug) return
+    if (qc.getQueryData(listingKey(realSlug)) != null) return
     qc.prefetchQuery({
       queryKey: listingKey(realSlug),
-      queryFn: () =>
-        api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${realSlug}`),
+      queryFn: () => api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${realSlug}`),
       staleTime: 60_000,
-    });
-  };
+    })
+  }
   return (
     <li className="mx-3.5">
       <Link
@@ -339,7 +364,7 @@ function DropRow({ drop }: { drop: DropsMarqueeProps['items'][number] }) {
           aria-hidden
           className={cn(
             'shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-lg bg-gradient-to-br motion-safe:transition-transform motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-6',
-            meta.gradient,
+            meta.gradient
           )}
         >
           {drop.coverEmoji || meta.emoji}
@@ -356,14 +381,12 @@ function DropRow({ drop }: { drop: DropsMarqueeProps['items'][number] }) {
         <span
           className={cn(
             'shrink-0 text-[0.68rem] font-mono px-2 py-0.5 rounded-full',
-            free
-              ? 'bg-volt-300 text-ink'
-              : 'bg-ink text-bone dark:bg-bone dark:text-ink',
+            free ? 'bg-volt-300 text-ink' : 'bg-ink text-bone dark:bg-bone dark:text-ink'
           )}
         >
           {formatPrice(drop.priceCents ?? 0)}
         </span>
       </Link>
     </li>
-  );
+  )
 }

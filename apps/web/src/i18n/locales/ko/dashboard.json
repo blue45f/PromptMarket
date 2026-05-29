@@ -1,1 +1,58 @@
-{}
+{
+  "meta": {
+    "title": "대시보드 · PromptMarket",
+    "description": "내 리스팅, 라이브러리, 지갑을 관리하세요."
+  },
+  "header": {
+    "eyebrow": "대시보드",
+    "title": "@{{username}}의 작업장",
+    "fallbackName": "메이커",
+    "subtitle": "내 리스팅, 구매한 라이브러리, 지갑 잔고를 한 곳에서 관리하세요."
+  },
+  "tabs": {
+    "aria": "대시보드 섹션",
+    "listings": "내 리스팅",
+    "library": "라이브러리",
+    "wishlist": "위시리스트",
+    "wallet": "지갑"
+  },
+  "stats": {
+    "listings": "리스팅",
+    "totalSales": "총 판매",
+    "earnings": "수익"
+  },
+  "listings": {
+    "empty": {
+      "title": "아직 등록한 리스팅이 없어요",
+      "description": "첫 리스팅을 게시하고 수익을 만들기 시작해 보세요.",
+      "action": "첫 리스팅 만들기"
+    },
+    "salesCount": "판매 {{count}}건"
+  },
+  "library": {
+    "copyLink": "링크 복사",
+    "copied": "링크 복사됨",
+    "open": "열기",
+    "empty": {
+      "title": "라이브러리가 비어 있어요",
+      "description": "구매한 리스팅이 여기에 보여요. 우선 무료부터 골라 보세요.",
+      "action": "카탈로그 둘러보기"
+    },
+    "recs": "이걸로 시작해 보세요 · 무료"
+  },
+  "wishlist": {
+    "empty": {
+      "title": "아직 담은 항목이 없어요",
+      "description": "마음에 드는 리스팅의 카드 우하단 ♡ 버튼을 눌러 위시리스트에 담아 보세요.",
+      "action": "카탈로그 둘러보기"
+    },
+    "count": "담은 항목 {{count}}건",
+    "clear": "전부 지우기"
+  },
+  "wallet": {
+    "balance": "현재 잔액",
+    "topup": "충전",
+    "processing": "처리 중…",
+    "note": "데모 지갑이라 충전은 즉시 시뮬레이션 처리돼요."
+  }
+}

@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom';
-import { CATEGORIES } from '@promptmarket/shared';
-import { cn } from '@utils/cn';
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { CATEGORIES } from '@promptmarket/shared'
+import { cn } from '@utils/cn'
 
 interface CategoryChipsProps {
-  active?: string;
+  active?: string
 }
 
 const ICONS: Record<string, string> = {
@@ -21,26 +22,10 @@ const ICONS: Record<string, string> = {
   DevOps: '⚙️',
   Security: '🛡️',
   Other: '🧩',
-};
-
-const LABELS: Record<string, string> = {
-  Coding: '코딩',
-  Writing: '글쓰기',
-  Marketing: '마케팅',
-  Productivity: '생산성',
-  Agents: '에이전트',
-  'Cursor Rules': 'Cursor 룰',
-  MCP: 'MCP',
-  Data: '데이터',
-  Design: '디자인',
-  Research: '리서치',
-  Education: '교육',
-  DevOps: 'DevOps',
-  Security: '보안',
-  Other: '기타',
-};
+}
 
 export default function CategoryChips({ active }: CategoryChipsProps) {
+  const { t } = useTranslation('home')
   return (
     <div className="relative -mx-[clamp(1.25rem,4vw,3rem)] px-[clamp(1.25rem,4vw,3rem)]">
       {/* Edge fades */}
@@ -55,7 +40,7 @@ export default function CategoryChips({ active }: CategoryChipsProps) {
       <div
         className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide"
         role="navigation"
-        aria-label="카테고리"
+        aria-label={t('categories.aria')}
       >
         <Link
           to="/browse"
@@ -64,14 +49,14 @@ export default function CategoryChips({ active }: CategoryChipsProps) {
             'motion-safe:transition focus-volt',
             !active
               ? 'bg-ink text-bone dark:bg-bone dark:text-ink shadow-[0_8px_24px_-12px_oklch(0.16_0.03_290_/_0.45)]'
-              : 'bg-canvas-sub dark:bg-night-sub text-ink-soft dark:text-bone-soft border border-line dark:border-night-line hover:border-ink/40 dark:hover:border-bone/30 hover:text-ink dark:hover:text-bone',
+              : 'bg-canvas-sub dark:bg-night-sub text-ink-soft dark:text-bone-soft border border-line dark:border-night-line hover:border-ink/40 dark:hover:border-bone/30 hover:text-ink dark:hover:text-bone'
           )}
         >
           <span aria-hidden>✦</span>
-          전체
+          {t('categories.all')}
         </Link>
         {CATEGORIES.map((cat) => {
-          const isActive = active === cat;
+          const isActive = active === cat
           return (
             <Link
               key={cat}
@@ -81,15 +66,15 @@ export default function CategoryChips({ active }: CategoryChipsProps) {
                 'motion-safe:transition focus-volt',
                 isActive
                   ? 'bg-ink text-bone dark:bg-bone dark:text-ink shadow-[0_8px_24px_-12px_oklch(0.16_0.03_290_/_0.45)]'
-                  : 'bg-canvas-sub dark:bg-night-sub text-ink-soft dark:text-bone-soft border border-line dark:border-night-line hover:border-volt-500 dark:hover:border-volt-500/70 hover:text-ink dark:hover:text-bone',
+                  : 'bg-canvas-sub dark:bg-night-sub text-ink-soft dark:text-bone-soft border border-line dark:border-night-line hover:border-volt-500 dark:hover:border-volt-500/70 hover:text-ink dark:hover:text-bone'
               )}
             >
               <span aria-hidden>{ICONS[cat] ?? '🏷️'}</span>
-              {LABELS[cat] ?? cat}
+              {t(`categories.labels.${cat}`, { defaultValue: cat })}
             </Link>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }

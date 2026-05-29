@@ -1,1 +1,162 @@
-{}
+{
+  "meta": {
+    "title": "PromptMarket — 검증된 AI 프롬프트, 스킬, 에이전트",
+    "description": "Claude, GPT-5, Gemini로 프로덕션을 굽고 있는 빌더들의 카탈로그. 프롬프트, CLAUDE.md, Claude Code 스킬, MCP 서버, 서브에이전트, .cursorrules를 사고팝니다."
+  },
+  "hero": {
+    "badge": "Live · MMVI · 앤솔로지 vol.01",
+    "lead": "Claude, GPT-5, Gemini로 프로덕션을 굽고 있는 빌더들이 만든 컬렉션. 둘러보고, 구매하고, 리믹스하세요. 에이전트 시대를 진지하게 다루는 카탈로그입니다.",
+    "browseCta": "카탈로그 둘러보기",
+    "sellCta": "프롬프트 판매하기",
+    "modelCount": "프론티어 모델 21종 · 아티팩트 8종",
+    "headline": {
+      "verified": "검증된",
+      "prompts": "프롬프트,",
+      "skills": "스킬",
+      "and": "그리고",
+      "agents": "에이전트."
+    },
+    "phrases": {
+      "morning": ["아침엔 새 드롭부터", "실전 검증", "오늘 시작", "빌더의 작업장"],
+      "afternoon": ["지금 트렌딩", "에이전트 시대", "실전 검증", "오픈 카탈로그"],
+      "evening": ["오늘의 픽", "빌더의 선반", "저녁의 카탈로그", "실전 검증"],
+      "night": ["조용한 시간 컬렉션", "깊게 읽기", "심야 큐레이션", "실전 검증"]
+    },
+    "drops": {
+      "title": "새 드롭",
+      "syncing": "동기화 중…",
+      "live": "live"
+    },
+    "seed": {
+      "codeReviewer": "시니어 코드 리뷰어",
+      "dataSubagent": "데이터 분석 서브에이전트",
+      "mcpFilesystem": "MCP 파일시스템",
+      "monorepoClaudeMd": "모노레포 CLAUDE.md",
+      "artDirector": "이미지 생성 아트 디렉터",
+      "cursorSwift": "Cursor Swift 룰"
+    }
+  },
+  "marquee": {
+    "words": [
+      "프롬프트",
+      "에이전트",
+      "스킬",
+      "MCP 서버",
+      "슬래시 커맨드",
+      ".cursorrules",
+      "claude.md",
+      "서브에이전트",
+      "에이전틱 워크플로"
+    ],
+    "tagline": [
+      "◆ prompts",
+      "claude.md",
+      "agent.md",
+      "skills",
+      "mcp",
+      "slash cmds",
+      "sub-agents",
+      ".cursorrules",
+      "◆ 에이전틱",
+      "카탈로그"
+    ]
+  },
+  "common": {
+    "viewAll": "전체 보기"
+  },
+  "sections": {
+    "featured": {
+      "chapter": "01 / 추천",
+      "title": "엄선 드롭",
+      "kicker": "이번 주 카탈로그의 표지."
+    },
+    "categories": {
+      "chapter": "02 / 카탈로그",
+      "title": "카테고리로 둘러보기",
+      "kicker": "14개 분야, 한 책장."
+    },
+    "trending": {
+      "chapter": "03 / 트렌딩",
+      "title": "이번 주 뜨거워요",
+      "kicker": "지난 7일간 다운로드 상위."
+    },
+    "recent": {
+      "chapter": "04 / 신규",
+      "title": "방금 작업장에서 나왔어요",
+      "kicker": "최근 며칠 사이의 드롭. 가져다 쓰고, 포크하고, 리믹스하세요."
+    }
+  },
+  "featured": {
+    "emptyTitle": "아직 추천 드롭이 없어요",
+    "emptyDescription": "조금만 기다려 주세요 — 에디터가 고르고 있어요."
+  },
+  "trending": {
+    "emptyTitle": "아직 트렌딩 리스팅이 없어요",
+    "emptyDescription": "첫 번째 게시자가 되어 보세요."
+  },
+  "categories": {
+    "aria": "카테고리",
+    "all": "전체",
+    "labels": {
+      "Coding": "코딩",
+      "Writing": "글쓰기",
+      "Marketing": "마케팅",
+      "Productivity": "생산성",
+      "Agents": "에이전트",
+      "Cursor Rules": "Cursor 룰",
+      "MCP": "MCP",
+      "Data": "데이터",
+      "Design": "디자인",
+      "Research": "리서치",
+      "Education": "교육",
+      "DevOps": "DevOps",
+      "Security": "보안",
+      "Other": "기타"
+    }
+  },
+  "carousel": {
+    "aria": "추천 리스팅"
+  },
+  "recentlyViewed": {
+    "kicker": "최근 본",
+    "title": "돌아가서 마저 볼만한",
+    "clear": "기록 지우기",
+    "aria": "최근 본 리스팅"
+  },
+  "makerSpotlight": {
+    "chapter": "SPOT / 이번 주의 메이커",
+    "role": "Anthology curator · 12 drops",
+    "bio": "에이전트 시대를 가장 빨리 받아들이는 빌더 중 한 명. Claude Code 스킬과 하이브리드 MCP 워크플로를 동시에 출시하며 카탈로그의 톤을 만들고 있어요.",
+    "viewMaker": "메이커 페이지 보기",
+    "empty": "곧 메이커의 첫 드롭이 여기에 떠요."
+  },
+  "models": {
+    "chapter": "05 / 벤더",
+    "title": "모델 패밀리별",
+    "kicker": "프론티어 벤더별 인기 리스팅.",
+    "tablistAria": "모델 패밀리",
+    "toolTab": "에디터",
+    "emptyTitle": "{{family}} 카테고리에 아직 리스팅이 없어요",
+    "emptyDescription": "첫 번째 게시자가 되어 보세요."
+  },
+  "modelPicker": {
+    "searchPlaceholder": "모델 / 벤더 검색…",
+    "noResults": "\"{{query}}\"에 맞는 모델이 없어요."
+  },
+  "cta": {
+    "kicker": "빌더를 위해",
+    "titleLine1": "프롬프트를 만들었나요?",
+    "titleLine2": "이제 수익도 만드세요.",
+    "body": "프롬프트, 스킬 번들, MCP 서버를 게시하세요. 스토어, 페이월, 정산은 저희가 처리합니다. 빌더는 계속 빌드만 하면 돼요.",
+    "stats": {
+      "payoutValue": "82%",
+      "payoutLabel": "크리에이터 정산",
+      "timeValue": "약 2분",
+      "timeLabel": "첫 리스팅까지 걸리는 시간",
+      "costValue": "0원",
+      "costLabel": "초기 비용 · 월 구독료 없음"
+    },
+    "startListing": "리스팅 시작",
+    "openDashboard": "대시보드 열기"
+  }
+}

@@ -1,1 +1,162 @@
-{}
+{
+  "meta": {
+    "title": "PromptMarket — Battle-tested AI prompts, skills, and agents",
+    "description": "A catalog from builders shipping production with Claude, GPT-5, and Gemini. Buy and sell prompts, CLAUDE.md files, Claude Code skills, MCP servers, sub-agents, and .cursorrules."
+  },
+  "hero": {
+    "badge": "Live · MMVI · Anthology vol.01",
+    "lead": "A collection built by people shipping production with Claude, GPT-5, and Gemini. Browse, buy, remix. A catalog that takes the agent era seriously.",
+    "browseCta": "Browse the catalog",
+    "sellCta": "Sell a prompt",
+    "modelCount": "21 frontier models · 8 artifact types",
+    "headline": {
+      "verified": "Verified",
+      "prompts": "prompts,",
+      "skills": "skills",
+      "and": "and",
+      "agents": "agents."
+    },
+    "phrases": {
+      "morning": ["New drops first", "Battle-tested", "Start today", "The builder's workbench"],
+      "afternoon": ["Trending now", "The agent era", "Battle-tested", "An open catalog"],
+      "evening": ["Today's picks", "The builder's shelf", "An evening catalog", "Battle-tested"],
+      "night": ["After-hours collection", "Read deep", "Late-night curation", "Battle-tested"]
+    },
+    "drops": {
+      "title": "New drops",
+      "syncing": "Syncing…",
+      "live": "live"
+    },
+    "seed": {
+      "codeReviewer": "Senior Code Reviewer",
+      "dataSubagent": "Data Analysis Sub-agent",
+      "mcpFilesystem": "MCP Filesystem",
+      "monorepoClaudeMd": "Monorepo CLAUDE.md",
+      "artDirector": "Image Gen Art Director",
+      "cursorSwift": "Cursor Swift Rules"
+    }
+  },
+  "marquee": {
+    "words": [
+      "Prompts",
+      "Agents",
+      "Skills",
+      "MCP servers",
+      "Slash commands",
+      ".cursorrules",
+      "claude.md",
+      "Sub-agents",
+      "Agentic workflows"
+    ],
+    "tagline": [
+      "◆ prompts",
+      "claude.md",
+      "agent.md",
+      "skills",
+      "mcp",
+      "slash cmds",
+      "sub-agents",
+      ".cursorrules",
+      "◆ agentic",
+      "catalog"
+    ]
+  },
+  "common": {
+    "viewAll": "View all"
+  },
+  "sections": {
+    "featured": {
+      "chapter": "01 / Featured",
+      "title": "Curated drops",
+      "kicker": "This week's cover of the catalog."
+    },
+    "categories": {
+      "chapter": "02 / Catalog",
+      "title": "Browse by category",
+      "kicker": "14 fields, one shelf."
+    },
+    "trending": {
+      "chapter": "03 / Trending",
+      "title": "Hot this week",
+      "kicker": "Top downloads over the last 7 days."
+    },
+    "recent": {
+      "chapter": "04 / New",
+      "title": "Fresh off the workbench",
+      "kicker": "Drops from the last few days. Grab them, fork them, remix them."
+    }
+  },
+  "featured": {
+    "emptyTitle": "No featured drops yet",
+    "emptyDescription": "Hang tight — our editors are picking them out."
+  },
+  "trending": {
+    "emptyTitle": "No trending listings yet",
+    "emptyDescription": "Be the first to publish one."
+  },
+  "categories": {
+    "aria": "Categories",
+    "all": "All",
+    "labels": {
+      "Coding": "Coding",
+      "Writing": "Writing",
+      "Marketing": "Marketing",
+      "Productivity": "Productivity",
+      "Agents": "Agents",
+      "Cursor Rules": "Cursor Rules",
+      "MCP": "MCP",
+      "Data": "Data",
+      "Design": "Design",
+      "Research": "Research",
+      "Education": "Education",
+      "DevOps": "DevOps",
+      "Security": "Security",
+      "Other": "Other"
+    }
+  },
+  "carousel": {
+    "aria": "Featured listings"
+  },
+  "recentlyViewed": {
+    "kicker": "Recently viewed",
+    "title": "Worth picking back up",
+    "clear": "Clear history",
+    "aria": "Recently viewed listings"
+  },
+  "makerSpotlight": {
+    "chapter": "SPOT / Maker of the week",
+    "role": "Anthology curator · 12 drops",
+    "bio": "One of the fastest builders to embrace the agent era. Shipping Claude Code skills and hybrid MCP workflows side by side, setting the tone for the catalog.",
+    "viewMaker": "View maker page",
+    "empty": "The maker's first drop lands here soon."
+  },
+  "models": {
+    "chapter": "05 / Vendor",
+    "title": "By model family",
+    "kicker": "Popular listings by frontier vendor.",
+    "tablistAria": "Model family",
+    "toolTab": "Editors",
+    "emptyTitle": "No listings in the {{family}} category yet",
+    "emptyDescription": "Be the first to publish one."
+  },
+  "modelPicker": {
+    "searchPlaceholder": "Search models / vendors…",
+    "noResults": "No models match \"{{query}}\"."
+  },
+  "cta": {
+    "kicker": "For builders",
+    "titleLine1": "Built a prompt?",
+    "titleLine2": "Now build an income.",
+    "body": "Publish your prompts, skill bundles, and MCP servers. We handle the store, the paywall, and payouts. You just keep building.",
+    "stats": {
+      "payoutValue": "82%",
+      "payoutLabel": "Creator payout",
+      "timeValue": "~2 min",
+      "timeLabel": "To your first listing",
+      "costValue": "$0",
+      "costLabel": "Upfront · no monthly fee"
+    },
+    "startListing": "Start a listing",
+    "openDashboard": "Open dashboard"
+  }
+}

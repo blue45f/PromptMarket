@@ -1,1 +1,21 @@
-{}
+{
+  "meta": {
+    "title": "@{{name}} · PromptMarket",
+    "description": "@{{name}}'s collection of listings."
+  },
+  "notFound": "We couldn't find that user.",
+  "eyebrow": "Maker profile",
+  "stats": {
+    "listings_one": "{{count}} listing",
+    "listings_other": "{{count}} listings",
+    "hasFree": "Includes free drops"
+  },
+  "collection": {
+    "eyebrow": "Collection",
+    "title": "@{{name}}'s drops"
+  },
+  "empty": {
+    "title": "No work published yet",
+    "description": "When this maker ships their first drop, it'll show up here."
+  }
+}

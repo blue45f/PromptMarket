@@ -1,43 +1,44 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
-import { useListings } from '@features/marketplace/queries';
-import { getErrorMessage } from '@services/api';
-import { useReveal } from '@hooks/useReveal';
-import { useSpotlight } from '@hooks/useSpotlight';
-import { usePageMeta } from '@hooks/usePageMeta';
-import { useStructuredData } from '@hooks/useStructuredData';
-import { LISTING_TYPE_META } from '@promptmarket/shared';
-import { typeGradient } from '@utils/format';
-import { cn } from '@utils/cn';
-import Hero from '@components/Hero';
-import CategoryChips from '@components/CategoryChips';
-import FeaturedCarousel from '@components/FeaturedCarousel';
-import ListingCard from '@components/ListingCard';
-import ModelTabs from '@components/ModelTabs';
-import RecentlyViewed from '@components/RecentlyViewed';
-import { SkeletonGrid } from '@components/SkeletonCard';
-import SkeletonCard from '@components/SkeletonCard';
-import EmptyState from '@components/EmptyState';
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { ArrowUpRight, Sparkles } from 'lucide-react'
+import { useListings } from '@features/marketplace/queries'
+import { getErrorMessage } from '@services/api'
+import { useReveal } from '@hooks/useReveal'
+import { useSpotlight } from '@hooks/useSpotlight'
+import { usePageMeta } from '@hooks/usePageMeta'
+import { useStructuredData } from '@hooks/useStructuredData'
+import { LISTING_TYPE_META } from '@promptmarket/shared'
+import { typeGradient } from '@utils/format'
+import { cn } from '@utils/cn'
+import Hero from '@components/Hero'
+import CategoryChips from '@components/CategoryChips'
+import FeaturedCarousel from '@components/FeaturedCarousel'
+import ListingCard from '@components/ListingCard'
+import ModelTabs from '@components/ModelTabs'
+import RecentlyViewed from '@components/RecentlyViewed'
+import { SkeletonGrid } from '@components/SkeletonCard'
+import SkeletonCard from '@components/SkeletonCard'
+import EmptyState from '@components/EmptyState'
 
 export default function HomePage() {
-  const featuredQ = useListings({ sort: 'top', pageSize: 6 });
-  const trendingQ = useListings({ sort: 'trending', pageSize: 8 });
-  const recentQ = useListings({ sort: 'newest', pageSize: 8 });
+  const { t } = useTranslation('home')
+  const featuredQ = useListings({ sort: 'top', pageSize: 6 })
+  const trendingQ = useListings({ sort: 'trending', pageSize: 8 })
+  const recentQ = useListings({ sort: 'newest', pageSize: 8 })
 
-  const featured = featuredQ.data?.items ?? [];
-  const trending = trendingQ.data?.items ?? [];
-  const recent = recentQ.data?.items ?? [];
-  const error = trendingQ.error ?? recentQ.error ?? featuredQ.error;
+  const featured = featuredQ.data?.items ?? []
+  const trending = trendingQ.data?.items ?? []
+  const recent = recentQ.data?.items ?? []
+  const error = trendingQ.error ?? recentQ.error ?? featuredQ.error
 
   usePageMeta({
-    title: 'PromptMarket — 검증된 AI 프롬프트, 스킬, 에이전트',
-    description:
-      'Claude, GPT-5, Gemini로 프로덕션을 굽고 있는 빌더들의 카탈로그. 프롬프트, CLAUDE.md, Claude Code 스킬, MCP 서버, 서브에이전트, .cursorrules를 사고팝니다.',
-  });
+    title: t('meta.title'),
+    description: t('meta.description'),
+  })
 
   // WebSite + SearchAction so Google can render a sitelinks search box.
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
   useStructuredData(
     origin
       ? {
@@ -56,8 +57,8 @@ export default function HomePage() {
             'query-input': 'required name=search_term_string',
           },
         }
-      : null,
-  );
+      : null
+  )
 
   return (
     <div className="animate-fade-in">
@@ -77,9 +78,9 @@ export default function HomePage() {
         {/* FEATURED — bento grid */}
         <section>
           <SectionHeader
-            chapter="01 / 추천"
-            title="엄선 드롭"
-            kicker="이번 주 카탈로그의 표지."
+            chapter={t('sections.featured.chapter')}
+            title={t('sections.featured.title')}
+            kicker={t('sections.featured.kicker')}
             href="/browse?sort=top"
           />
           {featuredQ.isPending ? (
@@ -95,8 +96,8 @@ export default function HomePage() {
           ) : (
             <EmptyState
               emoji="✨"
-              title="아직 추천 드롭이 없어요"
-              description="조금만 기다려 주세요 — 에디터가 고르고 있어요."
+              title={t('featured.emptyTitle')}
+              description={t('featured.emptyDescription')}
             />
           )}
         </section>
@@ -104,9 +105,9 @@ export default function HomePage() {
         {/* CATEGORIES */}
         <section>
           <SectionHeader
-            chapter="02 / 카탈로그"
-            title="카테고리로 둘러보기"
-            kicker="14개 분야, 한 책장."
+            chapter={t('sections.categories.chapter')}
+            title={t('sections.categories.title')}
+            kicker={t('sections.categories.kicker')}
           />
           <CategoryChips />
         </section>
@@ -114,9 +115,9 @@ export default function HomePage() {
         {/* TRENDING — large left + carousel right on desktop */}
         <section>
           <SectionHeader
-            chapter="03 / 트렌딩"
-            title="이번 주 뜨거워요"
-            kicker="지난 7일간 다운로드 상위."
+            chapter={t('sections.trending.chapter')}
+            title={t('sections.trending.title')}
+            kicker={t('sections.trending.kicker')}
             href="/browse?sort=trending"
           />
           {trendingQ.isPending ? (
@@ -137,8 +138,8 @@ export default function HomePage() {
           ) : (
             <EmptyState
               emoji="🔥"
-              title="아직 트렌딩 리스팅이 없어요"
-              description="첫 번째 게시자가 되어 보세요."
+              title={t('trending.emptyTitle')}
+              description={t('trending.emptyDescription')}
             />
           )}
         </section>
@@ -146,9 +147,9 @@ export default function HomePage() {
         {/* RECENT — featured carousel keeps horizontal momentum */}
         <section>
           <SectionHeader
-            chapter="04 / 신규"
-            title="방금 작업장에서 나왔어요"
-            kicker="최근 며칠 사이의 드롭. 가져다 쓰고, 포크하고, 리믹스하세요."
+            chapter={t('sections.recent.chapter')}
+            title={t('sections.recent.title')}
+            kicker={t('sections.recent.kicker')}
             href="/browse?sort=newest"
           />
           <FeaturedCarousel items={recent} loading={recentQ.isPending} />
@@ -169,32 +170,32 @@ export default function HomePage() {
         <SellerCallToAction />
       </div>
     </div>
-  );
+  )
 }
 
 /* ---------- Scroll progress bar --------------------------------------- */
 
 function ScrollProgress() {
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0)
   useEffect(() => {
-    let raf = 0;
+    let raf = 0
     const tick = () => {
-      const h = document.documentElement;
-      const max = h.scrollHeight - h.clientHeight;
-      setProgress(max <= 0 ? 0 : h.scrollTop / max);
-    };
+      const h = document.documentElement
+      const max = h.scrollHeight - h.clientHeight
+      setProgress(max <= 0 ? 0 : h.scrollTop / max)
+    }
     const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(tick);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    tick();
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(tick)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    tick()
     return () => {
-      window.removeEventListener('scroll', onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-  return <div className="scroll-progress" style={{ ['--progress' as string]: progress }} />;
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
+  return <div className="scroll-progress" style={{ ['--progress' as string]: progress }} />
 }
 
 /* ---------- Section primitives ----------------------------------------- */
@@ -205,12 +206,13 @@ function SectionHeader({
   kicker,
   href,
 }: {
-  chapter: string;
-  title: string;
-  kicker?: string;
-  href?: string;
+  chapter: string
+  title: string
+  kicker?: string
+  href?: string
 }) {
-  const { ref, revealed } = useReveal<HTMLDivElement>();
+  const { t } = useTranslation('home')
+  const { ref, revealed } = useReveal<HTMLDivElement>()
   return (
     <div
       ref={ref}
@@ -237,56 +239,57 @@ function SectionHeader({
           to={href}
           className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition focus-volt shrink-0"
         >
-          전체 보기
+          {t('common.viewAll')}
           <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
         </Link>
       )}
     </div>
-  );
+  )
 }
 
 /* ---------- Maker Spotlight ------------------------------------------- */
 
 function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
-  const spotlightRef = useSpotlight<HTMLDivElement>();
-  const { ref, revealed } = useReveal<HTMLDivElement>();
+  const { t } = useTranslation('home')
+  const spotlightRef = useSpotlight<HTMLDivElement>()
+  const { ref, revealed } = useReveal<HTMLDivElement>()
 
   // Rotate the featured maker across distinct authors in the featured pool,
   // pinned per ~3-hour window so the same visitor sees the same spotlight
   // within a session but the home page feels alive across the day.
   const maker = useMemo(() => {
-    const seen = new Set<string>();
+    const seen = new Set<string>()
     const candidates = items
       .filter((l) => {
-        const u = l.author?.username;
-        if (!u || seen.has(u)) return false;
-        seen.add(u);
-        return true;
+        const u = l.author?.username
+        if (!u || seen.has(u)) return false
+        seen.add(u)
+        return true
       })
-      .map((l) => l.author!.username!);
+      .map((l) => l.author!.username!)
     if (candidates.length === 0) {
-      return { username: 'mira', avatar: 'M', listings: [] as typeof items };
+      return { username: 'mira', avatar: 'M', listings: [] as typeof items }
     }
-    const slot = Math.floor(Date.now() / (3 * 60 * 60 * 1000));
-    const username = candidates[slot % candidates.length];
-    const listings = items.filter((l) => l.author?.username === username).slice(0, 3);
+    const slot = Math.floor(Date.now() / (3 * 60 * 60 * 1000))
+    const username = candidates[slot % candidates.length]
+    const listings = items.filter((l) => l.author?.username === username).slice(0, 3)
     return {
       username,
       avatar: username[0]?.toUpperCase() ?? 'M',
       listings,
-    };
-  }, [items]);
+    }
+  }, [items])
   return (
-    <section
-      ref={ref}
-      data-revealed={revealed}
-      className="reveal relative"
-    >
+    <section ref={ref} data-revealed={revealed} className="reveal relative">
       <div
         ref={spotlightRef}
         className="spotlight-host relative overflow-hidden rounded-[2rem] surface-card border-line dark:border-night-line"
       >
-        <div className="spotlight" aria-hidden style={{ ['--spot-color' as string]: 'oklch(0.83 0.23 124 / 0.22)' }} />
+        <div
+          className="spotlight"
+          aria-hidden
+          style={{ ['--spot-color' as string]: 'oklch(0.83 0.23 124 / 0.22)' }}
+        />
         <div className="cursor-sheen" aria-hidden />
         <div className="grain-layer" aria-hidden />
 
@@ -295,7 +298,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
           <div className="lg:col-span-5 flex flex-col gap-5">
             <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
               <span aria-hidden className="w-6 h-px bg-volt-500" />
-              SPOT / 이번 주의 메이커
+              {t('makerSpotlight.chapter')}
             </p>
             <div className="flex items-center gap-4">
               <span
@@ -310,13 +313,12 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
                   @{maker.username}
                 </p>
                 <p className="mt-1 text-[0.78rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
-                  Anthology curator · 12 drops
+                  {t('makerSpotlight.role')}
                 </p>
               </div>
             </div>
             <p className="text-ink-soft dark:text-bone-soft leading-relaxed max-w-[44ch]">
-              에이전트 시대를 가장 빨리 받아들이는 빌더 중 한 명. Claude Code 스킬과
-              하이브리드 MCP 워크플로를 동시에 출시하며 카탈로그의 톤을 만들고 있어요.
+              {t('makerSpotlight.bio')}
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
               {['claude', 'mcp', 'workflows', 'agents'].map((t) => (
@@ -333,7 +335,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
               className="self-start group inline-flex items-center gap-2 mt-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink font-medium text-[0.85rem] tracking-tight focus-volt lift-on-hover"
             >
               <Sparkles className="w-4 h-4" />
-              메이커 페이지 보기
+              {t('makerSpotlight.viewMaker')}
               <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
             </Link>
           </div>
@@ -350,7 +352,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
                     <div
                       className={cn(
                         'shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl flex items-center justify-center text-[2.5rem] sm:text-[3rem] bg-gradient-to-br',
-                        typeGradient(l.type),
+                        typeGradient(l.type)
                       )}
                     >
                       {l.coverEmoji || LISTING_TYPE_META[l.type].emoji}
@@ -373,7 +375,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
             ) : (
               <li>
                 <div className="p-8 rounded-2xl border border-dashed border-line dark:border-night-line text-center text-ink-mute dark:text-bone-mute">
-                  곧 메이커의 첫 드롭이 여기에 떠요.
+                  {t('makerSpotlight.empty')}
                 </div>
               </li>
             )}
@@ -381,14 +383,14 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 /* ---------- Bento featured grid ---------------------------------------- */
 
 function BentoFeatured({ items }: { items: import('@/types').ListingCard[] }) {
-  const [lead, ...rest] = items;
-  if (!lead) return null;
+  const [lead, ...rest] = items
+  if (!lead) return null
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--space-gap-lg)] auto-rows-[minmax(0,1fr)]">
       <div className="sm:col-span-2 sm:row-span-2 lg:col-span-2 lg:row-span-2 min-w-0">
@@ -398,25 +400,15 @@ function BentoFeatured({ items }: { items: import('@/types').ListingCard[] }) {
         <ListingCard key={l.id} listing={l} className="min-w-0" />
       ))}
     </div>
-  );
+  )
 }
 
 /* ---------- Marquee strip ---------------------------------------------- */
 
-const MARQUEE_WORDS = [
-  '프롬프트',
-  '에이전트',
-  '스킬',
-  'MCP 서버',
-  '슬래시 커맨드',
-  '.cursorrules',
-  'claude.md',
-  '서브에이전트',
-  '에이전틱 워크플로',
-];
-
 function MarqueeStrip() {
-  const items = [...MARQUEE_WORDS, ...MARQUEE_WORDS];
+  const { t } = useTranslation('home')
+  const words = t('marquee.words', { returnObjects: true }) as string[]
+  const items = [...words, ...words]
   return (
     <div className="border-y border-line dark:border-night-line bg-ink text-bone dark:bg-bone dark:text-ink overflow-hidden">
       <div className="flex items-center gap-12 py-4 marquee-track whitespace-nowrap">
@@ -434,12 +426,18 @@ function MarqueeStrip() {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 /* ---------- Seller CTA ------------------------------------------------- */
 
 function SellerCallToAction() {
+  const { t } = useTranslation('home')
+  const stats: Array<[string, string]> = [
+    [t('cta.stats.payoutValue'), t('cta.stats.payoutLabel')],
+    [t('cta.stats.timeValue'), t('cta.stats.timeLabel')],
+    [t('cta.stats.costValue'), t('cta.stats.costLabel')],
+  ]
   return (
     <section className="relative isolate overflow-hidden rounded-[2rem] surface-card border-line-strong dark:border-night-line-strong">
       <div
@@ -454,27 +452,21 @@ function SellerCallToAction() {
       <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-y-8 lg:gap-x-10 px-7 sm:px-10 lg:px-14 py-12 sm:py-16">
         <div className="lg:col-span-7">
           <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink-soft mb-3">
-            빌더를 위해
+            {t('cta.kicker')}
           </p>
           <h3
             className="font-display font-bold leading-[0.92] tracking-[-0.035em] text-ink display-tight"
             style={{ fontSize: 'var(--text-display-md)' }}
           >
-            프롬프트를 만들었나요?{' '}
-            <span className="block">이제 수익도 만드세요.</span>
+            {t('cta.titleLine1')} <span className="block">{t('cta.titleLine2')}</span>
           </h3>
           <p className="mt-5 text-ink-soft text-[1.05rem] leading-relaxed max-w-[44ch]">
-            프롬프트, 스킬 번들, MCP 서버를 게시하세요. 스토어, 페이월, 정산은
-            저희가 처리합니다. 빌더는 계속 빌드만 하면 돼요.
+            {t('cta.body')}
           </p>
         </div>
         <div className="lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 flex flex-col justify-center gap-5">
           <ul className="space-y-2.5 text-ink text-[0.95rem]">
-            {[
-              ['82%', '크리에이터 정산'],
-              ['약 2분', '첫 리스팅까지 걸리는 시간'],
-              ['0원', '초기 비용 · 월 구독료 없음'],
-            ].map(([n, l]) => (
+            {stats.map(([n, l]) => (
               <li key={l} className="flex items-baseline gap-3">
                 <span className="font-mono text-volt-800 font-semibold w-20 shrink-0">{n}</span>
                 <span className="text-ink-soft">{l}</span>
@@ -486,18 +478,18 @@ function SellerCallToAction() {
               to="/sell"
               className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-ink text-bone font-medium tracking-tight focus-volt lift-on-hover"
             >
-              리스팅 시작
+              {t('cta.startListing')}
               <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
             </Link>
             <Link
               to="/dashboard"
               className="inline-flex items-center px-5 py-3 rounded-full border border-ink/20 text-ink font-medium tracking-tight hover:bg-ink/5 focus-volt motion-safe:transition"
             >
-              대시보드 열기
+              {t('cta.openDashboard')}
             </Link>
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

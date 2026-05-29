@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
-import { Keyboard, X } from 'lucide-react';
-import { cn } from '@utils/cn';
+import { useEffect, useState } from 'react'
+import * as Dialog from '@radix-ui/react-dialog'
+import { Keyboard, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { cn } from '@utils/cn'
 
 /* ---------------------------------------------------------------------------
  * ShortcutsOverlay — `?` opens a sheet listing every global keyboard
@@ -9,62 +10,63 @@ import { cn } from '@utils/cn';
  * features that own them (CommandPalette, useNavShortcuts).
  * ------------------------------------------------------------------------- */
 
-const GROUPS: Array<{ title: string; rows: Array<{ keys: string[]; label: string }> }> = [
+const GROUPS: Array<{ titleKey: string; rows: Array<{ keys: string[]; labelKey: string }> }> = [
   {
-    title: '전역',
+    titleKey: 'shortcuts.groups.global.title',
     rows: [
-      { keys: ['⌘', 'K'], label: '명령 팔레트 열기' },
-      { keys: ['Ctrl', 'K'], label: '명령 팔레트 (Win/Linux)' },
-      { keys: ['/'], label: '명령 팔레트' },
-      { keys: ['?'], label: '이 도움말' },
-      { keys: ['Esc'], label: '다이얼로그 닫기' },
+      { keys: ['⌘', 'K'], labelKey: 'shortcuts.groups.global.openPalette' },
+      { keys: ['Ctrl', 'K'], labelKey: 'shortcuts.groups.global.openPaletteWin' },
+      { keys: ['/'], labelKey: 'shortcuts.groups.global.palette' },
+      { keys: ['?'], labelKey: 'shortcuts.groups.global.help' },
+      { keys: ['Esc'], labelKey: 'shortcuts.groups.global.closeDialog' },
     ],
   },
   {
-    title: '네비게이션 — g 다음에',
+    titleKey: 'shortcuts.groups.nav.title',
     rows: [
-      { keys: ['g', 'h'], label: '홈' },
-      { keys: ['g', 'b'], label: '둘러보기' },
-      { keys: ['g', 'd'], label: '대시보드' },
-      { keys: ['g', 's'], label: '판매 페이지' },
-      { keys: ['g', 'l'], label: '로그인' },
+      { keys: ['g', 'h'], labelKey: 'shortcuts.groups.nav.home' },
+      { keys: ['g', 'b'], labelKey: 'shortcuts.groups.nav.browse' },
+      { keys: ['g', 'd'], labelKey: 'shortcuts.groups.nav.dashboard' },
+      { keys: ['g', 's'], labelKey: 'shortcuts.groups.nav.sell' },
+      { keys: ['g', 'l'], labelKey: 'shortcuts.groups.nav.login' },
     ],
   },
   {
-    title: '카탈로그 (Browse)',
+    titleKey: 'shortcuts.groups.catalog.title',
     rows: [
-      { keys: ['←'], label: '이전 페이지' },
-      { keys: ['→'], label: '다음 페이지' },
-      { keys: ['j'], label: '다음 카드 포커스' },
-      { keys: ['k'], label: '이전 카드 포커스' },
+      { keys: ['←'], labelKey: 'shortcuts.groups.catalog.prevPage' },
+      { keys: ['→'], labelKey: 'shortcuts.groups.catalog.nextPage' },
+      { keys: ['j'], labelKey: 'shortcuts.groups.catalog.nextCard' },
+      { keys: ['k'], labelKey: 'shortcuts.groups.catalog.prevCard' },
     ],
   },
   {
-    title: '작업',
+    titleKey: 'shortcuts.groups.actions.title',
     rows: [
-      { keys: ['c'], label: '새 리스팅 작성 (로그인 시)' },
-      { keys: ['⌘', 'D'], label: '위시리스트 토글 (상세 페이지)' },
+      { keys: ['c'], labelKey: 'shortcuts.groups.actions.create' },
+      { keys: ['⌘', 'D'], labelKey: 'shortcuts.groups.actions.wishlist' },
     ],
   },
-];
+]
 
 export default function ShortcutsOverlay() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
+  const { t } = useTranslation('errors')
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key !== '?' || e.metaKey || e.ctrlKey || e.altKey) return;
-      const t = e.target;
+      if (e.key !== '?' || e.metaKey || e.ctrlKey || e.altKey) return
+      const t = e.target
       if (t instanceof HTMLElement) {
-        const tag = t.tagName;
-        if (t.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA') return;
+        const tag = t.tagName
+        if (t.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA') return
       }
-      e.preventDefault();
-      setOpen((v) => !v);
+      e.preventDefault()
+      setOpen((v) => !v)
     }
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -74,7 +76,7 @@ export default function ShortcutsOverlay() {
           className={cn(
             'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[min(540px,calc(100vw-2rem))]',
             'rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night shadow-2xl shadow-ink/40 overflow-hidden',
-            'data-[state=open]:motion-safe:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95',
+            'data-[state=open]:motion-safe:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95'
           )}
         >
           <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-line dark:border-night-line">
@@ -87,17 +89,17 @@ export default function ShortcutsOverlay() {
               </span>
               <div>
                 <Dialog.Title className="font-display text-[1.1rem] font-semibold text-ink dark:text-bone leading-none tracking-tight">
-                  키보드 단축키
+                  {t('shortcuts.title')}
                 </Dialog.Title>
                 <Dialog.Description className="text-[0.78rem] text-ink-mute dark:text-bone-mute leading-tight mt-0.5">
-                  마우스 없이도 빠르게 돌아다니세요.
+                  {t('shortcuts.subtitle')}
                 </Dialog.Description>
               </div>
             </div>
             <Dialog.Close asChild>
               <button
                 type="button"
-                aria-label="닫기"
+                aria-label={t('shortcuts.close')}
                 className="inline-flex items-center justify-center w-8 h-8 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub motion-safe:transition focus-volt"
               >
                 <X className="w-4 h-4" />
@@ -107,14 +109,16 @@ export default function ShortcutsOverlay() {
 
           <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
             {GROUPS.map((g) => (
-              <section key={g.title} className="space-y-2.5">
+              <section key={g.titleKey} className="space-y-2.5">
                 <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300">
-                  {g.title}
+                  {t(g.titleKey)}
                 </p>
                 <ul className="space-y-1.5">
                   {g.rows.map((row) => (
-                    <li key={row.label} className="flex items-center justify-between gap-3">
-                      <span className="text-[0.86rem] text-ink-soft dark:text-bone-soft">{row.label}</span>
+                    <li key={row.labelKey} className="flex items-center justify-between gap-3">
+                      <span className="text-[0.86rem] text-ink-soft dark:text-bone-soft">
+                        {t(row.labelKey)}
+                      </span>
                       <span className="inline-flex items-center gap-1 shrink-0">
                         {row.keys.map((k, i) => (
                           <kbd
@@ -137,12 +141,12 @@ export default function ShortcutsOverlay() {
               <kbd className="font-mono text-[0.66rem] px-1.5 py-0.5 rounded border border-line dark:border-night-line">
                 ?
               </kbd>{' '}
-              로 언제든 다시 열 수 있어요.
+              {t('shortcuts.reopenHint')}
             </span>
             <span className="font-mono uppercase tracking-[0.14em]">PromptMarket</span>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  );
+  )
 }

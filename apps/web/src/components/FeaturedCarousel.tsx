@@ -1,13 +1,15 @@
-import type { ListingCard as ListingCardType } from '@/types';
-import ListingCard from './ListingCard';
-import SkeletonCard from './SkeletonCard';
+import { useTranslation } from 'react-i18next'
+import type { ListingCard as ListingCardType } from '@/types'
+import ListingCard from './ListingCard'
+import SkeletonCard from './SkeletonCard'
 
 interface FeaturedCarouselProps {
-  items: ListingCardType[];
-  loading?: boolean;
+  items: ListingCardType[]
+  loading?: boolean
 }
 
 export default function FeaturedCarousel({ items, loading }: FeaturedCarouselProps) {
+  const { t } = useTranslation('home')
   return (
     <div className="relative -mx-[clamp(1.25rem,4vw,3rem)] px-[clamp(1.25rem,4vw,3rem)]">
       {/* Edge fades for momentum cue */}
@@ -22,21 +24,16 @@ export default function FeaturedCarousel({ items, loading }: FeaturedCarouselPro
       <div
         className="flex gap-4 lg:gap-5 overflow-x-auto snap-x snap-mandatory pb-5 scrollbar-hide"
         role="region"
-        aria-label="Featured listings"
+        aria-label={t('carousel.aria')}
       >
         {loading
           ? Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="w-[280px] sm:w-[300px] shrink-0 snap-start"
-              >
+              <div key={i} className="w-[280px] sm:w-[300px] shrink-0 snap-start">
                 <SkeletonCard />
               </div>
             ))
-          : items.map((l) => (
-              <ListingCard key={l.id} listing={l} fixedWidth />
-            ))}
+          : items.map((l) => <ListingCard key={l.id} listing={l} fixedWidth />)}
       </div>
     </div>
-  );
+  )
 }

@@ -1,1 +1,106 @@
-{}
+{
+  "eyebrow": "카탈로그",
+  "heading": {
+    "default": "둘러보기",
+    "search": "\"{{q}}\" 검색 결과",
+    "category": "{{category}} 카탈로그"
+  },
+  "meta": {
+    "titleSearch": "\"{{q}}\" 검색 결과",
+    "titleCategory": "{{category}} 카탈로그",
+    "titleTrending": "트렌딩",
+    "titleTop": "인기",
+    "titleDefault": "카탈로그 둘러보기",
+    "description": "프롬프트, 스킬, MCP 서버, 에이전트, .cursorrules — 모델·난이도·기법별로 필터링하세요."
+  },
+  "toolbar": {
+    "filter": "필터",
+    "sortLabel": "정렬"
+  },
+  "sort": {
+    "newest": "최신순",
+    "trending": "트렌딩",
+    "top": "인기순"
+  },
+  "saved": {
+    "label": "최근 필터",
+    "remove": "이 저장 필터 지우기"
+  },
+  "chips": {
+    "reset": "전부 초기화",
+    "remove": "{{label}} 필터 제거"
+  },
+  "results": {
+    "loading": "불러오는 중…",
+    "count_other": "{{formatted}}건"
+  },
+  "pagination": {
+    "prev": "이전",
+    "next": "다음",
+    "hint": "페이지 이동"
+  },
+  "describe": {
+    "typesCount": "타입 {{count}}종",
+    "free": "무료",
+    "paid": "유료"
+  },
+  "panel": {
+    "title": "필터",
+    "reset": "전부 초기화",
+    "sections": {
+      "type": "타입",
+      "model": "모델",
+      "technique": "프롬프트 기법",
+      "category": "카테고리",
+      "difficulty": "난이도",
+      "price": "가격"
+    },
+    "all": "전체",
+    "difficultyGroup": "난이도",
+    "priceGroup": "가격",
+    "difficulty": {
+      "all": "전체",
+      "beginner": "입문",
+      "intermediate": "중급",
+      "advanced": "고급"
+    },
+    "price": {
+      "all": "전체",
+      "free": "무료",
+      "paid": "유료"
+    }
+  },
+  "drawer": {
+    "title": "필터",
+    "close": "필터 닫기",
+    "savedLabel": "최근 필터",
+    "savedRemove": "이 저장 필터 지우기",
+    "apply": "필터 적용"
+  },
+  "empty": {
+    "title": {
+      "queryLead": "\"{{q}}\"에 맞는",
+      "queryTail": "결과가 없어요.",
+      "filters": "필터에 맞는 결과가 없어요.",
+      "blank": "아직 카탈로그가 비어 있어요."
+    },
+    "body": {
+      "filters": "필터를 하나씩 풀어 보거나, 전체 카탈로그를 둘러보세요.",
+      "query": "오타가 있는지 확인하거나 더 짧은 키워드로 다시 시도해 보세요.",
+      "blank": "잠시 후 다시 와주세요. 새 드롭이 곧 올라올 거예요."
+    },
+    "browseAll": "전체 카탈로그",
+    "clearAll": "필터 전부 초기화",
+    "activeHeading": "지금 거는 필터",
+    "removeRow": "풀기 ✕"
+  },
+  "activeFilter": {
+    "query": "검색어 \"{{q}}\"",
+    "type": "타입 · {{value}}",
+    "model": "모델 · {{value}}",
+    "technique": "기법 · {{value}}",
+    "difficulty": "난이도 · {{value}}",
+    "category": "카테고리 · {{value}}",
+    "price": "가격 · {{value}}"
+  }
+}

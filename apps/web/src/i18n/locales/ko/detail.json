@@ -1,1 +1,117 @@
-{}
+{
+  "meta": {
+    "titleSuffix": "{{title}} · PromptMarket",
+    "titleFallback": "PromptMarket"
+  },
+  "notFound": {
+    "message": "해당 리스팅을 찾을 수 없어요.",
+    "backToBrowse": "탐색으로 돌아가기"
+  },
+  "cover": {
+    "categoryBadge": "{{category}} 카테고리"
+  },
+  "hero": {
+    "downloads": "다운로드 {{count}}회"
+  },
+  "tabs": {
+    "aria": "리스팅 섹션",
+    "overview": "개요",
+    "reviews": "리뷰 ({{count}})",
+    "related": "관련"
+  },
+  "body": {
+    "headingFull": "본문",
+    "headingPreview": "미리보기",
+    "copy": "복사",
+    "copied": "복사됨",
+    "downloadMd": ".md 다운로드",
+    "noPreview": "*미리보기를 제공하지 않아요.*"
+  },
+  "paywall": {
+    "unlock": "🔒 전체 본문 잠금 해제",
+    "free": "무료로 받아 전체 본문을 확인하세요.",
+    "paid": "{{price}}에 구매하면 전체 본문이 보여요.",
+    "processing": "처리 중…",
+    "getFree": "무료로 받기",
+    "buyToView": "구매해서 보기"
+  },
+  "reviews": {
+    "writePrompt": "리뷰 남기기",
+    "commentPlaceholder": "어떠셨나요? (선택)",
+    "submitting": "제출 중…",
+    "submit": "리뷰 등록",
+    "empty": "아직 리뷰가 없어요. 첫 번째 리뷰가 되어 보세요!",
+    "anonymous": "anonymous"
+  },
+  "sidebar": {
+    "free": "무료",
+    "price": "가격",
+    "readingModeToggle": "조용한 모드 토글",
+    "readingModeTitle": "조용한 모드",
+    "share": "이 리스팅 공유",
+    "shared": "공유됨",
+    "linkCopied": "링크 복사됨",
+    "shareLabel": "공유",
+    "ownListing": "내가 만든 리스팅",
+    "owned": "보유 중 ✓",
+    "processing": "처리 중…",
+    "getFree": "무료로 받기",
+    "buy": "{{price}}에 구매",
+    "copy": "복사",
+    "copied": "복사됨",
+    "download": "다운로드",
+    "maker": "메이커",
+    "profile": "프로필"
+  },
+  "reopenSidebar": "사이드바 다시 열기",
+  "meta_rows": {
+    "type": "타입",
+    "models": "모델",
+    "technique": "기법",
+    "difficulty": "난이도",
+    "category": "카테고리",
+    "license": "라이선스",
+    "version": "버전",
+    "versionValue": "v{{version}}",
+    "updated": "업데이트"
+  },
+  "bottomRelated": {
+    "title": "이런 것도 좋아할 거예요",
+    "subtitle": "마켓플레이스에서 엄선한 추천."
+  },
+  "mobileBar": {
+    "free": "무료",
+    "price": "가격",
+    "ownListing": "내 리스팅",
+    "owned": "보유 중",
+    "getFree": "받기",
+    "buy": "구매"
+  },
+  "install": {
+    "title": "에디터로 가져오기",
+    "subtitle": "원하는 도구 선택 → 복사 → 붙여넣기",
+    "tabsAria": "설치 대상",
+    "commandAria": "{{label}} 명령",
+    "copyCommand": "명령 복사",
+    "copy": "복사",
+    "copied": "복사됨",
+    "tipLabel": "팁",
+    "tip": "구매 후 본문이 잠금 해제됩니다. CLI는 구매 토큰을 자동으로 사용해요.",
+    "targets": {
+      "mcpClient": "MCP 클라이언트",
+      "curlHint": "리스팅 본문 받기"
+    }
+  },
+  "toc": {
+    "aside": "목차",
+    "label": "목차"
+  },
+  "markdown": {
+    "copyCodeBlock": "코드 블록 복사",
+    "copy": "복사",
+    "copied": "복사됨"
+  },
+  "related": {
+    "empty": "아직 관련 리스팅이 없어요."
+  }
+}

@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as Tabs from '@radix-ui/react-tabs';
-import { z } from 'zod';
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as Tabs from '@radix-ui/react-tabs'
+import { z } from 'zod'
 import {
   CATEGORIES,
   CreateListingSchema,
@@ -18,45 +19,56 @@ import {
   type License,
   type ListingType,
   type PromptTechnique,
-} from '@promptmarket/shared';
-import { Loader2 } from 'lucide-react';
-import { useCreateListing, useListings } from '@features/marketplace/queries';
-import { usePageMeta } from '@hooks/usePageMeta';
-import MarkdownView from '@components/MarkdownView';
-import ModelPicker from '@components/ModelPicker';
-import ListingCard from '@components/ListingCard';
-import { cn } from '@utils/cn';
-import type { ListingCard as ListingCardType } from '@/types';
+} from '@promptmarket/shared'
+import { Loader2 } from 'lucide-react'
+import { useCreateListing, useListings } from '@features/marketplace/queries'
+import { usePageMeta } from '@hooks/usePageMeta'
+import MarkdownView from '@components/MarkdownView'
+import ModelPicker from '@components/ModelPicker'
+import ListingCard from '@components/ListingCard'
+import { cn } from '@utils/cn'
+import type { ListingCard as ListingCardType } from '@/types'
 
-const QUICK_EMOJIS = ['✨', '🤖', '🧠', '🎨', '📝', '🚀', '⚡', '🛠️', '🧩', '🔌'];
-const TYPES = ListingTypeEnum.options;
-const TECHNIQUES = PromptTechniqueEnum.options;
-const DIFFICULTIES: Difficulty[] = DifficultyEnum.options;
-const LICENSES: License[] = LicenseEnum.options;
+const QUICK_EMOJIS = ['✨', '🤖', '🧠', '🎨', '📝', '🚀', '⚡', '🛠️', '🧩', '🔌']
+const TYPES = ListingTypeEnum.options
+const TECHNIQUES = PromptTechniqueEnum.options
+const DIFFICULTIES: Difficulty[] = DifficultyEnum.options
+const LICENSES: License[] = LicenseEnum.options
 
 // Form-only schema: omits priceCents (we accept a dollar string from the user
 // and convert it inside onSubmit) and replaces `models` with an array we
-// manage with the ModelPicker.
-const FormSchema = CreateListingSchema.omit({
-  priceCents: true,
-  models: true,
-}).extend({
-  priceDollars: z
-    .string()
-    .refine((v) => Number.isFinite(Number.parseFloat(v)), '가격을 정확히 입력해 주세요'),
-  modelsArr: z.array(z.string()).min(1, '모델을 한 개 이상 선택해 주세요'),
-});
-type FormShape = z.infer<typeof FormSchema>;
+// manage with the ModelPicker. Validation copy is injected at runtime so it
+// can be localized; the inferred shape is unaffected by the message strings.
+function buildFormSchema(messages: { price: string; models: string }) {
+  return CreateListingSchema.omit({
+    priceCents: true,
+    models: true,
+  }).extend({
+    priceDollars: z.string().refine((v) => Number.isFinite(Number.parseFloat(v)), messages.price),
+    modelsArr: z.array(z.string()).min(1, messages.models),
+  })
+}
+type FormShape = z.infer<ReturnType<typeof buildFormSchema>>
 
 export default function CreateListingPage() {
-  const navigate = useNavigate();
-  const createMut = useCreateListing();
-  const [tab, setTab] = useState<'basics' | 'content' | 'metadata'>('basics');
+  const { t } = useTranslation('create')
+  const navigate = useNavigate()
+  const createMut = useCreateListing()
+  const [tab, setTab] = useState<'basics' | 'content' | 'metadata'>('basics')
 
   usePageMeta({
-    title: '리스팅 게시 · PromptMarket',
-    description: '프롬프트, 스킬, MCP 서버, 서브에이전트, 룰 파일을 카탈로그에 게시하세요.',
-  });
+    title: t('meta.title'),
+    description: t('meta.description'),
+  })
+
+  const FormSchema = useMemo(
+    () =>
+      buildFormSchema({
+        price: t('validation.price'),
+        models: t('validation.models'),
+      }),
+    [t]
+  )
 
   const DEFAULTS: FormShape = {
     title: '',
@@ -72,28 +84,28 @@ export default function CreateListingPage() {
     version: '1.0.0',
     coverEmoji: '✨',
     priceDollars: '0',
-  };
+  }
 
   // Draft is read once at mount and used as the form's defaultValues so
   // each input hydrates with the saved value. After mount the watch()
   // serialiser keeps localStorage in sync (debounced, see effect below).
-  const DRAFT_KEY = 'pm.sellDraft';
+  const DRAFT_KEY = 'pm.sellDraft'
   const initialDraft = (() => {
-    if (typeof window === 'undefined') return DEFAULTS;
+    if (typeof window === 'undefined') return DEFAULTS
     try {
-      const raw = window.localStorage.getItem(DRAFT_KEY);
-      if (!raw) return DEFAULTS;
-      const parsed = JSON.parse(raw);
-      return { ...DEFAULTS, ...parsed } as FormShape;
+      const raw = window.localStorage.getItem(DRAFT_KEY)
+      if (!raw) return DEFAULTS
+      const parsed = JSON.parse(raw)
+      return { ...DEFAULTS, ...parsed } as FormShape
     } catch {
-      return DEFAULTS;
+      return DEFAULTS
     }
-  })();
+  })()
   const [draftHydrated] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return !!window.localStorage.getItem(DRAFT_KEY);
-  });
-  const [draftDismissed, setDraftDismissed] = useState(false);
+    if (typeof window === 'undefined') return false
+    return !!window.localStorage.getItem(DRAFT_KEY)
+  })
+  const [draftDismissed, setDraftDismissed] = useState(false)
 
   const {
     register,
@@ -107,46 +119,44 @@ export default function CreateListingPage() {
     // omit() doesn't fully propagate optionality through the inferred shape.
     resolver: zodResolver(FormSchema) as unknown as import('react-hook-form').Resolver<FormShape>,
     defaultValues: initialDraft,
-  });
+  })
 
-  const v = watch();
+  const v = watch()
 
   // Debounced autosave — write the current form snapshot to localStorage
   // 600ms after the visitor stops typing.
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return
     const id = window.setTimeout(() => {
       try {
-        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(v));
+        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(v))
       } catch {
         /* quota — silently drop */
       }
-    }, 600);
-    return () => window.clearTimeout(id);
-  }, [v]);
+    }, 600)
+    return () => window.clearTimeout(id)
+  }, [v])
 
   function discardDraft() {
     try {
-      window.localStorage.removeItem(DRAFT_KEY);
+      window.localStorage.removeItem(DRAFT_KEY)
     } catch {
       /* ignore */
     }
-    reset(DEFAULTS);
-    setDraftDismissed(true);
+    reset(DEFAULTS)
+    setDraftDismissed(true)
   }
 
   // Auto-clear technique field whenever type leaves PROMPT.
   useEffect(() => {
     if (v.type !== 'PROMPT' && v.technique) {
-      setValue('technique', null);
+      setValue('technique', null)
     }
-  }, [v.type, v.technique, setValue]);
+  }, [v.type, v.technique, setValue])
 
   const onSubmit = handleSubmit(async (values) => {
-    const parsed = Number.parseFloat(values.priceDollars);
-    const priceCents = Number.isFinite(parsed)
-      ? Math.round(Math.max(0, parsed) * 100)
-      : 0;
+    const parsed = Number.parseFloat(values.priceDollars)
+    const priceCents = Number.isFinite(parsed) ? Math.round(Math.max(0, parsed) * 100) : 0
 
     const payload: CreateListingInput = {
       title: values.title.trim(),
@@ -156,60 +166,58 @@ export default function CreateListingPage() {
       category: values.category,
       tags: (values.tags ?? '')
         .split(',')
-        .map((t: string) => t.trim())
+        .map((tag: string) => tag.trim())
         .filter(Boolean)
         .join(','),
       models: values.modelsArr,
-      technique: values.type === 'PROMPT' ? values.technique ?? null : null,
+      technique: values.type === 'PROMPT' ? (values.technique ?? null) : null,
       difficulty: values.difficulty,
       license: values.license,
       version: values.version,
       priceCents,
       coverEmoji: values.coverEmoji || '✨',
-    };
+    }
 
-    const result = CreateListingSchema.safeParse(payload);
+    const result = CreateListingSchema.safeParse(payload)
     if (!result.success) {
       // Should rarely happen since the form schema mirrors the canonical one.
-      return;
+      return
     }
 
     try {
-      const res = await createMut.mutateAsync(result.data);
+      const res = await createMut.mutateAsync(result.data)
       try {
-        window.localStorage.removeItem(DRAFT_KEY);
+        window.localStorage.removeItem(DRAFT_KEY)
       } catch {
         /* ignore */
       }
-      navigate(`/listings/${res.listing.slug}`);
+      navigate(`/listings/${res.listing.slug}`)
     } catch {
       /* toast handled in hook */
     }
-  });
+  })
 
-  const busy = isSubmitting || createMut.isPending;
+  const busy = isSubmitting || createMut.isPending
 
   // Build a preview-shaped listing object reused in the live card.
   const previewListing = useMemo<ListingCardType>(
     () => ({
       id: 'preview',
       slug: 'preview',
-      title: v.title?.trim() || 'Your listing title',
+      title: v.title?.trim() || t('preview.titlePlaceholder'),
       type: v.type as ListingType,
-      description: v.description?.trim() || 'Your description will appear here.',
+      description: v.description?.trim() || t('preview.descriptionPlaceholder'),
       category: v.category,
       tags: (v.tags ?? '')
         .split(',')
-        .map((t: string) => t.trim())
+        .map((tag: string) => tag.trim())
         .filter(Boolean),
       models: v.modelsArr ?? [],
       technique: (v.technique ?? null) as PromptTechnique | null,
       difficulty: v.difficulty as Difficulty,
       license: v.license as License,
       version: v.version,
-      priceCents: Math.round(
-        Math.max(0, Number.parseFloat(v.priceDollars ?? '0') || 0) * 100,
-      ),
+      priceCents: Math.round(Math.max(0, Number.parseFloat(v.priceDollars ?? '0') || 0) * 100),
       coverEmoji: v.coverEmoji || '✨',
       downloads: 0,
       author: { id: 'you', username: 'you' },
@@ -230,25 +238,24 @@ export default function CreateListingPage() {
       v.version,
       v.priceDollars,
       v.coverEmoji,
-    ],
-  );
+      t,
+    ]
+  )
 
   return (
     <div className="mx-auto max-w-[1280px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
       <header className="mb-9 space-y-2">
         <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
           <span aria-hidden className="w-6 h-px bg-volt-500" />
-          새 리스팅
+          {t('header.eyebrow')}
         </p>
         <h1
           className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.035em] display-tight"
           style={{ fontSize: 'var(--text-display-md)' }}
         >
-          드롭 게시하기
+          {t('header.title')}
         </h1>
-        <p className="text-ink-soft dark:text-bone-soft max-w-[58ch]">
-          프롬프트, 스킬, MCP 서버, 서브에이전트, 룰 파일을 카탈로그에 올리세요. 입력하는 동안 오른쪽 미리보기가 함께 갱신됩니다.
-        </p>
+        <p className="text-ink-soft dark:text-bone-soft max-w-[58ch]">{t('header.subtitle')}</p>
       </header>
 
       {draftHydrated && !draftDismissed && (
@@ -258,34 +265,25 @@ export default function CreateListingPage() {
         >
           <p className="text-[0.84rem] text-ink dark:text-bone">
             <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 mr-2">
-              임시저장 복원됨
+              {t('draft.badge')}
             </span>
-            마지막 입력으로 자동 채워졌어요. 새로 시작하려면 아래 버튼을 누르세요.
+            {t('draft.restored')}
           </p>
           <button
             type="button"
             onClick={discardDraft}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition focus-volt"
           >
-            새로 시작
+            {t('draft.restart')}
           </button>
         </div>
       )}
 
-      <form
-        onSubmit={onSubmit}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7"
-      >
+      <form onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7">
         <div className="rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 space-y-5">
           <Tabs.Root value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <Tabs.List className="flex gap-1 mb-5 border-b border-line dark:border-night-line">
-              {(
-                [
-                  ['basics', '기본'],
-                  ['content', '본문'],
-                  ['metadata', '메타데이터'],
-                ] as const
-              ).map(([key, label]) => (
+              {(['basics', 'content', 'metadata'] as const).map((key) => (
                 <Tabs.Trigger
                   key={key}
                   value={key}
@@ -293,38 +291,35 @@ export default function CreateListingPage() {
                     'px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition focus-volt',
                     'border-transparent text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone',
                     'data-[state=active]:border-volt-500 data-[state=active]:text-ink',
-                    'dark:data-[state=active]:border-volt-400 dark:data-[state=active]:text-bone',
+                    'dark:data-[state=active]:border-volt-400 dark:data-[state=active]:text-bone'
                   )}
                 >
-                  {label}
+                  {t(`sectionTabs.${key}`)}
                 </Tabs.Trigger>
               ))}
             </Tabs.List>
 
             <Tabs.Content value="basics" className="space-y-4 focus-visible:outline-none">
-              <Field
-                label="제목"
-                error={errors.title?.message as string | undefined}
-              >
+              <Field label={t('fields.title')} error={errors.title?.message as string | undefined}>
                 <input
                   type="text"
                   {...register('title')}
                   className={inputClass}
-                  placeholder="SaaS 랜딩 페이지를 위한 살벌한 프롬프트"
+                  placeholder={t('fields.titlePlaceholder')}
                 />
               </Field>
 
               <div className="grid grid-cols-2 gap-4">
-                <Field label="타입">
+                <Field label={t('fields.type')}>
                   <select {...register('type')} className={inputClass}>
-                    {TYPES.map((t) => (
-                      <option key={t} value={t}>
-                        {LISTING_TYPE_META[t].emoji} {LISTING_TYPE_META[t].label}
+                    {TYPES.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {LISTING_TYPE_META[opt].emoji} {LISTING_TYPE_META[opt].label}
                       </option>
                     ))}
                   </select>
                 </Field>
-                <Field label="카테고리">
+                <Field label={t('fields.category')}>
                   <select {...register('category')} className={inputClass}>
                     {CATEGORIES.map((c) => (
                       <option key={c} value={c}>
@@ -337,24 +332,22 @@ export default function CreateListingPage() {
 
               <TrendingCategoryHint
                 current={v.category}
-                onPick={(c) =>
-                  setValue('category', c as typeof v.category, { shouldDirty: true })
-                }
+                onPick={(c) => setValue('category', c as typeof v.category, { shouldDirty: true })}
               />
 
               <Field
-                label="설명"
+                label={t('fields.description')}
                 error={errors.description?.message as string | undefined}
               >
                 <textarea
                   rows={3}
                   {...register('description')}
-                  placeholder="카드에 보여줄 짧은 한 줄 소개."
+                  placeholder={t('fields.descriptionPlaceholder')}
                   className={inputClass}
                 />
               </Field>
 
-              <Field label="커버 이모지">
+              <Field label={t('fields.coverEmoji')}>
                 <div className="flex items-center gap-2 flex-wrap">
                   <input
                     type="text"
@@ -372,7 +365,7 @@ export default function CreateListingPage() {
                           'w-8 h-8 rounded-lg border text-lg motion-safe:transition focus-volt',
                           v.coverEmoji === e
                             ? 'border-volt-500 bg-volt-100 dark:bg-volt-900/40 dark:border-volt-400'
-                            : 'border-line dark:border-night-line hover:bg-canvas-deep dark:hover:bg-night-deep',
+                            : 'border-line dark:border-night-line hover:bg-canvas-deep dark:hover:bg-night-deep'
                         )}
                       >
                         {e}
@@ -384,19 +377,16 @@ export default function CreateListingPage() {
             </Tabs.Content>
 
             <Tabs.Content value="content" className="space-y-4 focus-visible:outline-none">
-              <Field
-                label="본문 (Markdown)"
-                error={errors.body?.message as string | undefined}
-              >
+              <Field label={t('fields.body')} error={errors.body?.message as string | undefined}>
                 <textarea
                   rows={16}
                   {...register('body')}
-                  placeholder={'# 내 프롬프트\n\nYou are a helpful assistant…'}
+                  placeholder={t('fields.bodyPlaceholder')}
                   className={cn(inputClass, 'font-mono text-xs leading-relaxed')}
                 />
               </Field>
 
-              <Field label="가격 (USD)">
+              <Field label={t('fields.price')}>
                 <input
                   type="number"
                   min="0"
@@ -405,26 +395,26 @@ export default function CreateListingPage() {
                   className={inputClass}
                 />
                 <p className="mt-1 text-[0.78rem] text-ink-mute dark:text-bone-mute">
-                  무료로 공개하려면 0을 입력하세요.
+                  {t('fields.priceHint')}
                 </p>
               </Field>
             </Tabs.Content>
 
             <Tabs.Content value="metadata" className="space-y-4 focus-visible:outline-none">
-              <Field label="태그">
+              <Field label={t('fields.tags')}>
                 <input
                   type="text"
                   {...register('tags')}
-                  placeholder="saas, copywriting, gpt"
+                  placeholder={t('fields.tagsPlaceholder')}
                   className={inputClass}
                 />
                 <p className="mt-1 text-[0.78rem] text-ink-mute dark:text-bone-mute">
-                  쉼표로 구분합니다.
+                  {t('fields.tagsHint')}
                 </p>
               </Field>
 
               <Field
-                label="모델"
+                label={t('fields.models')}
                 error={errors.modelsArr?.message as string | undefined}
               >
                 <ModelPicker
@@ -434,22 +424,20 @@ export default function CreateListingPage() {
               </Field>
 
               {v.type === 'PROMPT' && (
-                <Field label="프롬프트 기법">
+                <Field label={t('fields.technique')}>
                   <select
                     value={v.technique ?? ''}
                     onChange={(e) =>
-                      setValue(
-                        'technique',
-                        (e.target.value || null) as PromptTechnique | null,
-                        { shouldDirty: true },
-                      )
+                      setValue('technique', (e.target.value || null) as PromptTechnique | null, {
+                        shouldDirty: true,
+                      })
                     }
                     className={inputClass}
                   >
-                    <option value="">— 기법 선택 (선택사항) —</option>
-                    {TECHNIQUES.map((t) => (
-                      <option key={t} value={t}>
-                        {TECHNIQUE_META[t].label}
+                    <option value="">{t('fields.techniqueNone')}</option>
+                    {TECHNIQUES.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {TECHNIQUE_META[opt].label}
                       </option>
                     ))}
                   </select>
@@ -461,10 +449,10 @@ export default function CreateListingPage() {
                 </Field>
               )}
 
-              <Field label="난이도">
+              <Field label={t('fields.difficulty')}>
                 <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep">
                   {DIFFICULTIES.map((d) => {
-                    const active = v.difficulty === d;
+                    const active = v.difficulty === d
                     return (
                       <button
                         key={d}
@@ -474,18 +462,18 @@ export default function CreateListingPage() {
                           'text-[0.78rem] font-medium px-2 py-1.5 rounded-lg capitalize motion-safe:transition focus-volt',
                           active
                             ? 'bg-canvas dark:bg-night text-ink dark:text-bone shadow-[0_8px_24px_-12px_oklch(0.16_0.03_290_/_0.4)]'
-                            : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone',
+                            : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone'
                         )}
                       >
                         {d}
                       </button>
-                    );
+                    )
                   })}
                 </div>
               </Field>
 
               <div className="grid grid-cols-2 gap-4">
-                <Field label="라이선스">
+                <Field label={t('fields.license')}>
                   <select {...register('license')} className={inputClass}>
                     {LICENSES.map((l) => (
                       <option key={l} value={l}>
@@ -495,7 +483,7 @@ export default function CreateListingPage() {
                   </select>
                 </Field>
                 <Field
-                  label="버전 (semver)"
+                  label={t('fields.version')}
                   error={errors.version?.message as string | undefined}
                 >
                   <input
@@ -521,7 +509,7 @@ export default function CreateListingPage() {
               />
               <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
                 {busy && <Loader2 className="w-4 h-4 motion-safe:animate-spin" />}
-                {busy ? '게시 중…' : '리스팅 게시'}
+                {busy ? t('submit.publishing') : t('submit.publish')}
               </span>
             </button>
           </div>
@@ -530,21 +518,21 @@ export default function CreateListingPage() {
         <div className="lg:sticky lg:top-24 h-fit space-y-4">
           <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
             <span aria-hidden className="w-5 h-px bg-volt-500" />
-            라이브 미리보기
+            {t('preview.eyebrow')}
           </p>
           <ListingCard listing={previewListing} />
           <div className="rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5">
             <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute mb-3">
-              본문
+              {t('preview.body')}
             </p>
             <div className="rounded-xl border border-line dark:border-night-line bg-canvas/60 dark:bg-night/60 p-4">
-              <MarkdownView source={v.body || '*입력하면 여기에 본문 미리보기가 보여요…*'} />
+              <MarkdownView source={v.body || t('preview.bodyPlaceholder')} />
             </div>
           </div>
         </div>
       </form>
     </div>
-  );
+  )
 }
 
 const inputClass = cn(
@@ -553,17 +541,17 @@ const inputClass = cn(
   'bg-canvas dark:bg-night text-ink dark:text-bone',
   'placeholder:text-ink-mute dark:placeholder:text-bone-mute',
   'motion-safe:transition',
-  'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500',
-);
+  'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
+)
 
 function Field({
   label,
   children,
   error,
 }: {
-  label: string;
-  children: React.ReactNode;
-  error?: string;
+  label: string
+  children: React.ReactNode
+  error?: string
 }) {
   return (
     <div>
@@ -573,36 +561,37 @@ function Field({
       {children}
       {error && <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">{error}</p>}
     </div>
-  );
+  )
 }
 
 function TrendingCategoryHint({
   current,
   onPick,
 }: {
-  current: string | undefined;
-  onPick: (c: string) => void;
+  current: string | undefined
+  onPick: (c: string) => void
 }) {
-  const { data } = useListings({ sort: 'trending', pageSize: 24 });
-  const items = data?.items ?? [];
-  const counts = new Map<string, number>();
+  const { t } = useTranslation('create')
+  const { data } = useListings({ sort: 'trending', pageSize: 24 })
+  const items = data?.items ?? []
+  const counts = new Map<string, number>()
   for (const l of items) {
-    const c = l.category;
-    if (!c) continue;
-    counts.set(c, (counts.get(c) ?? 0) + 1);
+    const c = l.category
+    if (!c) continue
+    counts.set(c, (counts.get(c) ?? 0) + 1)
   }
   const top = [...counts.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 4)
-    .map(([c]) => c);
-  if (top.length === 0) return null;
+    .map(([c]) => c)
+  if (top.length === 0) return null
   return (
     <div className="-mt-2 flex flex-wrap items-center gap-1.5">
       <span className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-volt-700 dark:text-volt-300 mr-1">
-        이번 주 인기
+        {t('trending.label')}
       </span>
       {top.map((c) => {
-        const active = current === c;
+        const active = current === c
         return (
           <button
             key={c}
@@ -613,13 +602,13 @@ function TrendingCategoryHint({
               'inline-flex items-center px-2.5 py-1 rounded-full text-[0.74rem] motion-safe:transition focus-volt border',
               active
                 ? 'bg-ink text-bone dark:bg-bone dark:text-ink border-ink dark:border-bone'
-                : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60',
+                : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60'
             )}
           >
             {c}
           </button>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

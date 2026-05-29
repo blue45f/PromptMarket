@@ -1,1 +1,117 @@
-{}
+{
+  "meta": {
+    "titleSuffix": "{{title}} · PromptMarket",
+    "titleFallback": "PromptMarket"
+  },
+  "notFound": {
+    "message": "We couldn't find that listing.",
+    "backToBrowse": "Back to browse"
+  },
+  "cover": {
+    "categoryBadge": "{{category}} category"
+  },
+  "hero": {
+    "downloads": "{{count}} downloads"
+  },
+  "tabs": {
+    "aria": "Listing sections",
+    "overview": "Overview",
+    "reviews": "Reviews ({{count}})",
+    "related": "Related"
+  },
+  "body": {
+    "headingFull": "Full text",
+    "headingPreview": "Preview",
+    "copy": "Copy",
+    "copied": "Copied",
+    "downloadMd": "Download .md",
+    "noPreview": "*No preview available.*"
+  },
+  "paywall": {
+    "unlock": "🔒 Unlock the full text",
+    "free": "Grab it free to read the full text.",
+    "paid": "Buy for {{price}} to reveal the full text.",
+    "processing": "Processing…",
+    "getFree": "Get it free",
+    "buyToView": "Buy to read"
+  },
+  "reviews": {
+    "writePrompt": "Leave a review",
+    "commentPlaceholder": "How was it? (optional)",
+    "submitting": "Submitting…",
+    "submit": "Post review",
+    "empty": "No reviews yet. Be the first to leave one!",
+    "anonymous": "anonymous"
+  },
+  "sidebar": {
+    "free": "Free",
+    "price": "Price",
+    "readingModeToggle": "Toggle quiet mode",
+    "readingModeTitle": "Quiet mode",
+    "share": "Share this listing",
+    "shared": "Shared",
+    "linkCopied": "Link copied",
+    "shareLabel": "Share",
+    "ownListing": "Your listing",
+    "owned": "Owned ✓",
+    "processing": "Processing…",
+    "getFree": "Get it free",
+    "buy": "Buy for {{price}}",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download",
+    "maker": "Maker",
+    "profile": "Profile"
+  },
+  "reopenSidebar": "Reopen sidebar",
+  "meta_rows": {
+    "type": "Type",
+    "models": "Models",
+    "technique": "Technique",
+    "difficulty": "Difficulty",
+    "category": "Category",
+    "license": "License",
+    "version": "Version",
+    "versionValue": "v{{version}}",
+    "updated": "Updated"
+  },
+  "bottomRelated": {
+    "title": "You might also like",
+    "subtitle": "A handpicked set from across the marketplace."
+  },
+  "mobileBar": {
+    "free": "Free",
+    "price": "Price",
+    "ownListing": "Your listing",
+    "owned": "Owned",
+    "getFree": "Get",
+    "buy": "Buy"
+  },
+  "install": {
+    "title": "Bring it into your editor",
+    "subtitle": "Pick a tool → copy → paste",
+    "tabsAria": "Install targets",
+    "commandAria": "{{label}} command",
+    "copyCommand": "Copy command",
+    "copy": "Copy",
+    "copied": "Copied",
+    "tipLabel": "Tip",
+    "tip": "The full text unlocks after purchase. The CLI uses your purchase token automatically.",
+    "targets": {
+      "mcpClient": "MCP client",
+      "curlHint": "Fetch listing body"
+    }
+  },
+  "toc": {
+    "aside": "Table of contents",
+    "label": "Contents"
+  },
+  "markdown": {
+    "copyCodeBlock": "Copy code block",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "related": {
+    "empty": "No related listings yet."
+  }
+}

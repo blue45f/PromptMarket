@@ -1,17 +1,18 @@
-import { Link } from 'react-router-dom';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
-import { useSpotlight } from '@hooks/useSpotlight';
-import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { ArrowUpRight, Sparkles } from 'lucide-react'
+import { useSpotlight } from '@hooks/useSpotlight'
+import type { ReactNode } from 'react'
 
 interface AuthLayoutProps {
-  kicker: string;
-  title: ReactNode;
-  highlight: ReactNode;
-  description: ReactNode;
+  kicker: string
+  title: ReactNode
+  highlight: ReactNode
+  description: ReactNode
   /** The form column. */
-  children: ReactNode;
-  /** Footer line, e.g. "이미 가입하셨나요? 로그인" */
-  altPrompt: ReactNode;
+  children: ReactNode
+  /** Footer line, e.g. the switch-to-login / switch-to-register prompt. */
+  altPrompt: ReactNode
 }
 
 /* ---------------------------------------------------------------------------
@@ -28,7 +29,8 @@ export default function AuthLayout({
   children,
   altPrompt,
 }: AuthLayoutProps) {
-  const spotlightRef = useSpotlight<HTMLDivElement>();
+  const { t } = useTranslation('auth')
+  const spotlightRef = useSpotlight<HTMLDivElement>()
 
   return (
     <div className="animate-fade-in min-h-[calc(100vh-4rem)]">
@@ -39,7 +41,7 @@ export default function AuthLayout({
             to="/"
             className="inline-flex items-center gap-2 self-start text-[0.78rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt"
           >
-            <span aria-hidden>←</span> 카탈로그로
+            <span aria-hidden>←</span> {t('common.backToCatalog')}
           </Link>
           <header className="space-y-3">
             <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
@@ -59,9 +61,7 @@ export default function AuthLayout({
           <div className="rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 sm:p-7">
             {children}
           </div>
-          <p className="text-[0.92rem] text-ink-mute dark:text-bone-mute">
-            {altPrompt}
-          </p>
+          <p className="text-[0.92rem] text-ink-mute dark:text-bone-mute">{altPrompt}</p>
         </section>
 
         {/* Brand column */}
@@ -69,7 +69,11 @@ export default function AuthLayout({
           ref={spotlightRef}
           className="spotlight-host relative overflow-hidden rounded-[2rem] surface-card border-line dark:border-night-line min-h-[24rem]"
         >
-          <div className="spotlight" aria-hidden style={{ ['--spot-color' as string]: 'oklch(0.83 0.23 124 / 0.22)' }} />
+          <div
+            className="spotlight"
+            aria-hidden
+            style={{ ['--spot-color' as string]: 'oklch(0.83 0.23 124 / 0.22)' }}
+          />
           <div aria-hidden className="absolute inset-0 -z-0">
             <div className="absolute top-[-20%] left-[-12%] w-[60%] h-[60%] rounded-full bg-volt-200/60 dark:bg-volt-600/25 blur-3xl orb-drift" />
             <div
@@ -93,9 +97,9 @@ export default function AuthLayout({
             </div>
             <ul className="space-y-3 text-[0.95rem]">
               {[
-                ['82%', '크리에이터 정산'],
-                ['8종', '아티팩트 (Prompt · Skill · MCP · Sub-agent · …)'],
-                ['21+', '프론티어 모델 최적화'],
+                [t('panel.stats.payoutValue'), t('panel.stats.payoutLabel')],
+                [t('panel.stats.artifactsValue'), t('panel.stats.artifactsLabel')],
+                [t('panel.stats.modelsValue'), t('panel.stats.modelsLabel')],
               ].map(([n, l]) => (
                 <li key={l} className="flex items-baseline gap-3 text-ink-soft dark:text-bone-soft">
                   <span className="font-mono font-semibold text-volt-700 dark:text-volt-300 w-12 shrink-0">
@@ -107,16 +111,19 @@ export default function AuthLayout({
             </ul>
             <div className="inline-flex items-center gap-2 text-[0.78rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
               <Sparkles className="w-3.5 h-3.5" aria-hidden />
-              자유롭게 둘러보고{' '}
-              <Link to="/browse" className="text-ink dark:text-bone hover:underline inline-flex items-center gap-0.5">
-                바로 카탈로그
+              {t('panel.browsePrefix')}
+              <Link
+                to="/browse"
+                className="text-ink dark:text-bone hover:underline inline-flex items-center gap-0.5"
+              >
+                {t('panel.browseLink')}
                 <ArrowUpRight className="w-3 h-3" />
               </Link>
-              로 가도 좋아요.
+              {t('panel.browseSuffix')}
             </div>
           </div>
         </aside>
       </div>
     </div>
-  );
+  )
 }

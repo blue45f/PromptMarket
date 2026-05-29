@@ -1,1 +1,96 @@
-{}
+{
+  "route": {
+    "eyebrow": "Route error",
+    "title": "Something went wrong",
+    "fallbackMessage": "We couldn't render this page.",
+    "home": "Back home"
+  },
+  "notFound": {
+    "metaTitle": "404 · This page isn't in the catalog — PromptMarket",
+    "metaDescription": "The address is wrong or the page has moved. Browse the catalog or search fast with ⌘K.",
+    "eyebrow": "error 404 · {{path}}",
+    "headlineLine1": "This page isn't",
+    "headlineLine2Prefix": "in the",
+    "headlineHighlight": "catalog",
+    "body": "The address may be wrong, or the listing was moved or removed. Pick a fresh starting point below.",
+    "home": "Back home",
+    "openPalette": "Open search palette",
+    "suggestionsEyebrow": "How about these instead",
+    "suggestions": {
+      "browse": { "label": "Browse the catalog", "hint": "8 artifact types · 14 categories" },
+      "trending": { "label": "Trending", "hint": "Top downloads this week" },
+      "newest": { "label": "Newest drops", "hint": "Fresh out of the workshop" },
+      "free": { "label": "Free listings", "hint": "Grab and go" }
+    }
+  },
+  "palette": {
+    "srTitle": "Command palette",
+    "srDescription": "Search or jump to a quick action. Use arrow keys to move, Enter to select, Esc to close.",
+    "placeholder": "Search or jump to an action…",
+    "inputLabel": "Command palette search",
+    "recentSearches": "Recent searches",
+    "clear": "Clear",
+    "loading": "Loading…",
+    "emptyTitle": "No results",
+    "emptyBody": "Try a different keyword.",
+    "groups": {
+      "actions": "Actions",
+      "quickActions": "Quick actions",
+      "wishlist": "Wishlist",
+      "listings": "Listings",
+      "topListings": "Top listings"
+    },
+    "actions": {
+      "browse": "Browse the catalog",
+      "trending": "Trending",
+      "newest": "Newest",
+      "free": "Free listings",
+      "sell": "Sell a prompt",
+      "dashboard": "Dashboard"
+    },
+    "hints": {
+      "navigate": "Navigate",
+      "select": "Select",
+      "open": "Open"
+    }
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "subtitle": "Get around fast without a mouse.",
+    "close": "Close",
+    "reopenHint": "to reopen this anytime.",
+    "groups": {
+      "global": {
+        "title": "Global",
+        "openPalette": "Open command palette",
+        "openPaletteWin": "Command palette (Win/Linux)",
+        "palette": "Command palette",
+        "help": "This help",
+        "closeDialog": "Close dialog"
+      },
+      "nav": {
+        "title": "Navigation — after g",
+        "home": "Home",
+        "browse": "Browse",
+        "dashboard": "Dashboard",
+        "sell": "Sell page",
+        "login": "Log in"
+      },
+      "catalog": {
+        "title": "Catalog (Browse)",
+        "prevPage": "Previous page",
+        "nextPage": "Next page",
+        "nextCard": "Focus next card",
+        "prevCard": "Focus previous card"
+      },
+      "actions": {
+        "title": "Actions",
+        "create": "Create a new listing (when signed in)",
+        "wishlist": "Toggle wishlist (detail page)"
+      }
+    }
+  },
+  "scrollTop": {
+    "label": "Back to top"
+  }
+}

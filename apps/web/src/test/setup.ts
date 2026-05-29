@@ -1,4 +1,8 @@
 import '@testing-library/jest-dom/vitest'
+// Initialize i18next (default language: ko) so components rendered in tests
+// resolve t() to real strings instead of raw keys. Korean is the default
+// locale, so existing Korean-string assertions keep passing.
+import '@/i18n'
 
 // jsdom doesn't ship matchMedia. Provide a default-false implementation so
 // hooks that probe prefers-reduced-motion / prefers-contrast etc. don't

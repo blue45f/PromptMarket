@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import { ArrowUp } from 'lucide-react';
-import { cn } from '@utils/cn';
+import { useEffect, useState } from 'react'
+import { ArrowUp } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { cn } from '@utils/cn'
 
-const THRESHOLD = 600;
+const THRESHOLD = 600
 
 /**
  * Bottom-right pill that surfaces after the page has scrolled past
@@ -11,35 +12,36 @@ const THRESHOLD = 600;
  * jump when prefers-reduced-motion is set.
  */
 export default function ScrollToTop() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false)
+  const { t } = useTranslation('errors')
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    let raf = 0;
-    const tick = () => setVisible(window.scrollY > THRESHOLD);
+    if (typeof window === 'undefined') return
+    let raf = 0
+    const tick = () => setVisible(window.scrollY > THRESHOLD)
     const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(tick);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    tick();
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(tick)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    tick()
     return () => {
-      window.removeEventListener('scroll', onScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
 
   function jump() {
-    if (typeof window === 'undefined') return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    if (typeof window === 'undefined') return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
   }
 
   return (
     <button
       type="button"
       onClick={jump}
-      aria-label="맨 위로"
+      aria-label={t('scrollTop.label')}
       tabIndex={visible ? 0 : -1}
       aria-hidden={!visible}
       className={cn(
@@ -53,14 +55,14 @@ export default function ScrollToTop() {
         'focus-volt',
         visible
           ? 'opacity-100 translate-y-0 pointer-events-auto'
-          : 'opacity-0 translate-y-3 pointer-events-none',
+          : 'opacity-0 translate-y-3 pointer-events-none'
       )}
       style={{
         bottom: 'max(env(safe-area-inset-bottom, 0px), 1rem)',
       }}
     >
       <ArrowUp className="w-3.5 h-3.5" aria-hidden />
-      맨 위로
+      {t('scrollTop.label')}
     </button>
-  );
+  )
 }

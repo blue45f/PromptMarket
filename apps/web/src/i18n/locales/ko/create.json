@@ -1,1 +1,61 @@
-{}
+{
+  "meta": {
+    "title": "리스팅 게시 · PromptMarket",
+    "description": "프롬프트, 스킬, MCP 서버, 서브에이전트, 룰 파일을 카탈로그에 게시하세요."
+  },
+  "header": {
+    "eyebrow": "새 리스팅",
+    "title": "드롭 게시하기",
+    "subtitle": "프롬프트, 스킬, MCP 서버, 서브에이전트, 룰 파일을 카탈로그에 올리세요. 입력하는 동안 오른쪽 미리보기가 함께 갱신됩니다."
+  },
+  "draft": {
+    "badge": "임시저장 복원됨",
+    "restored": "마지막 입력으로 자동 채워졌어요. 새로 시작하려면 아래 버튼을 누르세요.",
+    "restart": "새로 시작"
+  },
+  "sectionTabs": {
+    "basics": "기본",
+    "content": "본문",
+    "metadata": "메타데이터"
+  },
+  "fields": {
+    "title": "제목",
+    "titlePlaceholder": "SaaS 랜딩 페이지를 위한 살벌한 프롬프트",
+    "type": "타입",
+    "category": "카테고리",
+    "description": "설명",
+    "descriptionPlaceholder": "카드에 보여줄 짧은 한 줄 소개.",
+    "coverEmoji": "커버 이모지",
+    "body": "본문 (Markdown)",
+    "bodyPlaceholder": "# 내 프롬프트\n\nYou are a helpful assistant…",
+    "price": "가격 (USD)",
+    "priceHint": "무료로 공개하려면 0을 입력하세요.",
+    "tags": "태그",
+    "tagsPlaceholder": "saas, copywriting, gpt",
+    "tagsHint": "쉼표로 구분합니다.",
+    "models": "모델",
+    "technique": "프롬프트 기법",
+    "techniqueNone": "— 기법 선택 (선택사항) —",
+    "difficulty": "난이도",
+    "license": "라이선스",
+    "version": "버전 (semver)"
+  },
+  "trending": {
+    "label": "이번 주 인기"
+  },
+  "submit": {
+    "publishing": "게시 중…",
+    "publish": "리스팅 게시"
+  },
+  "preview": {
+    "eyebrow": "라이브 미리보기",
+    "body": "본문",
+    "titlePlaceholder": "리스팅 제목",
+    "descriptionPlaceholder": "여기에 설명이 표시됩니다.",
+    "bodyPlaceholder": "*입력하면 여기에 본문 미리보기가 보여요…*"
+  },
+  "validation": {
+    "price": "가격을 정확히 입력해 주세요",
+    "models": "모델을 한 개 이상 선택해 주세요"
+  }
+}

@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react';
-import * as Tabs from '@radix-ui/react-tabs';
-import { Check, Copy, Terminal } from 'lucide-react';
-import type { ListingType } from '@promptmarket/shared';
-import { cn } from '@utils/cn';
+import { useMemo, useState } from 'react'
+import * as Tabs from '@radix-ui/react-tabs'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
+import { Check, Copy, Terminal } from 'lucide-react'
+import type { ListingType } from '@promptmarket/shared'
+import { cn } from '@utils/cn'
 
 /* ---------------------------------------------------------------------------
  * InstallPanel — Smithery-style "drop this into your editor" panel. The
@@ -15,22 +17,22 @@ import { cn } from '@utils/cn';
  * ------------------------------------------------------------------------- */
 
 interface InstallPanelProps {
-  slug: string;
-  type: ListingType;
+  slug: string
+  type: ListingType
   /** Optional class name on the outer card. */
-  className?: string;
+  className?: string
 }
 
 type Target = {
-  id: string;
-  label: string;
-  hint: string;
-  command: string;
+  id: string
+  label: string
+  hint: string
+  command: string
   /** Whether this target is meaningful for the given listing type. */
-  fits: (t: ListingType) => boolean;
-};
+  fits: (t: ListingType) => boolean
+}
 
-function commands(slug: string): Record<string, Target> {
+function commands(slug: string, t: TFunction<'detail'>): Record<string, Target> {
   return {
     claudeCode: {
       id: 'claude-code',
@@ -61,7 +63,7 @@ function commands(slug: string): Record<string, Target> {
     },
     mcp: {
       id: 'mcp',
-      label: 'MCP 클라이언트',
+      label: t('install.targets.mcpClient'),
       hint: 'JSON config',
       command: `{\n  "mcpServers": {\n    "${slug}": {\n      "command": "npx",\n      "args": ["@promptmarket/mcp", "${slug}"]\n    }\n  }\n}`,
       fits: (t) => t === 'MCP_SERVER',
@@ -69,29 +71,30 @@ function commands(slug: string): Record<string, Target> {
     curl: {
       id: 'curl',
       label: 'cURL',
-      hint: '리스팅 본문 받기',
+      hint: t('install.targets.curlHint'),
       command: `curl -sSL https://promptmarket.dev/api/listings/${slug}/raw -o ${slug}.md`,
       fits: () => true,
     },
-  };
+  }
 }
 
 export default function InstallPanel({ slug, type, className }: InstallPanelProps) {
-  const all = useMemo(() => commands(slug), [slug]);
-  const targets = useMemo(() => Object.values(all).filter((t) => t.fits(type)), [all, type]);
+  const { t } = useTranslation('detail')
+  const all = useMemo(() => commands(slug, t), [slug, t])
+  const targets = useMemo(() => Object.values(all).filter((tg) => tg.fits(type)), [all, type])
 
-  const [current, setCurrent] = useState<string>(targets[0]?.id ?? 'curl');
-  const [copied, setCopied] = useState(false);
+  const [current, setCurrent] = useState<string>(targets[0]?.id ?? 'curl')
+  const [copied, setCopied] = useState(false)
 
-  const active = targets.find((t) => t.id === current) ?? targets[0];
-  if (!active) return null;
+  const active = targets.find((t) => t.id === current) ?? targets[0]
+  if (!active) return null
 
   async function copy() {
-    if (!active) return;
+    if (!active) return
     try {
-      await navigator.clipboard.writeText(active.command);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      await navigator.clipboard.writeText(active.command)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
     } catch {
       /* clipboard denied — keep silent */
     }
@@ -101,7 +104,7 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
     <section
       className={cn(
         'relative overflow-hidden rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub',
-        className,
+        className
       )}
     >
       <header className="flex items-center justify-between gap-3 px-4 py-3 border-b border-line dark:border-night-line">
@@ -114,10 +117,10 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
           </span>
           <div>
             <p className="font-display text-[1rem] font-semibold text-ink dark:text-bone leading-none tracking-tight">
-              에디터로 가져오기
+              {t('install.title')}
             </p>
             <p className="mt-1 text-[0.72rem] font-mono uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute">
-              원하는 도구 선택 → 복사 → 붙여넣기
+              {t('install.subtitle')}
             </p>
           </div>
         </div>
@@ -126,51 +129,49 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
       <Tabs.Root value={current} onValueChange={setCurrent}>
         <Tabs.List
           className="flex gap-1 overflow-x-auto scrollbar-hide px-3 pt-3"
-          aria-label="설치 대상"
+          aria-label={t('install.tabsAria')}
         >
-          {targets.map((t) => (
+          {targets.map((tg) => (
             <Tabs.Trigger
-              key={t.id}
-              value={t.id}
+              key={tg.id}
+              value={tg.id}
               className={cn(
                 'group relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full whitespace-nowrap',
                 'text-[0.78rem] font-medium motion-safe:transition-colors focus-volt',
                 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone',
                 'data-[state=active]:bg-ink data-[state=active]:text-bone',
-                'dark:data-[state=active]:bg-bone dark:data-[state=active]:text-ink',
+                'dark:data-[state=active]:bg-bone dark:data-[state=active]:text-ink'
               )}
             >
-              {t.label}
+              {tg.label}
               <span className="font-mono text-[0.62rem] uppercase tracking-[0.14em] opacity-70">
-                {t.hint}
+                {tg.hint}
               </span>
             </Tabs.Trigger>
           ))}
         </Tabs.List>
 
-        {targets.map((t) => (
-          <Tabs.Content key={t.id} value={t.id} className="p-3">
+        {targets.map((tg) => (
+          <Tabs.Content key={tg.id} value={tg.id} className="p-3">
             <div className="relative">
               <pre
                 className="rounded-xl bg-ink text-bone p-4 pr-12 font-mono text-[0.82rem] leading-[1.6] overflow-x-auto"
                 tabIndex={0}
-                aria-label={`${t.label} 명령`}
+                aria-label={t('install.commandAria', { label: tg.label })}
               >
-                <code>{t.command}</code>
+                <code>{tg.command}</code>
               </pre>
               <button
                 type="button"
                 onClick={copy}
-                aria-label="명령 복사"
+                aria-label={t('install.copyCommand')}
                 className={cn(
                   'absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.7rem] font-mono uppercase tracking-[0.12em] motion-safe:transition focus-volt',
-                  copied
-                    ? 'bg-volt-300 text-ink'
-                    : 'bg-bone/10 text-bone hover:bg-bone/20',
+                  copied ? 'bg-volt-300 text-ink' : 'bg-bone/10 text-bone hover:bg-bone/20'
                 )}
               >
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? '복사됨' : '복사'}
+                {copied ? t('install.copied') : t('install.copy')}
               </button>
             </div>
           </Tabs.Content>
@@ -179,10 +180,12 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
 
       <footer className="px-4 py-3 border-t border-line dark:border-night-line text-[0.72rem] text-ink-mute dark:text-bone-mute">
         <p>
-          <span className="font-mono uppercase tracking-[0.14em] text-volt-700 dark:text-volt-300 mr-2">팁</span>
-          구매 후 본문이 잠금 해제됩니다. CLI는 구매 토큰을 자동으로 사용해요.
+          <span className="font-mono uppercase tracking-[0.14em] text-volt-700 dark:text-volt-300 mr-2">
+            {t('install.tipLabel')}
+          </span>
+          {t('install.tip')}
         </p>
       </footer>
     </section>
-  );
+  )
 }

@@ -1,1 +1,60 @@
-{}
+{
+  "meta": {
+    "title": "Dashboard · PromptMarket",
+    "description": "Manage your listings, library, and wallet."
+  },
+  "header": {
+    "eyebrow": "Dashboard",
+    "title": "@{{username}}'s workshop",
+    "fallbackName": "maker",
+    "subtitle": "Manage your listings, purchased library, and wallet balance all in one place."
+  },
+  "tabs": {
+    "aria": "Dashboard sections",
+    "listings": "My listings",
+    "library": "Library",
+    "wishlist": "Wishlist",
+    "wallet": "Wallet"
+  },
+  "stats": {
+    "listings": "Listings",
+    "totalSales": "Total sales",
+    "earnings": "Earnings"
+  },
+  "listings": {
+    "empty": {
+      "title": "You haven't listed anything yet",
+      "description": "Publish your first listing and start earning.",
+      "action": "Create your first listing"
+    },
+    "salesCount_one": "{{count}} sale",
+    "salesCount_other": "{{count}} sales"
+  },
+  "library": {
+    "copyLink": "Copy link",
+    "copied": "Link copied",
+    "open": "Open",
+    "empty": {
+      "title": "Your library is empty",
+      "description": "Listings you buy show up here. Start with something free.",
+      "action": "Browse the catalog"
+    },
+    "recs": "Start with these · free"
+  },
+  "wishlist": {
+    "empty": {
+      "title": "Nothing saved yet",
+      "description": "Tap the ♡ button in the lower-right of any listing card to add it to your wishlist.",
+      "action": "Browse the catalog"
+    },
+    "count_one": "{{count}} saved",
+    "count_other": "{{count}} saved",
+    "clear": "Clear all"
+  },
+  "wallet": {
+    "balance": "Current balance",
+    "topup": "Top up",
+    "processing": "Processing…",
+    "note": "This is a demo wallet, so top-ups are simulated instantly."
+  }
+}
