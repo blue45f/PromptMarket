@@ -109,11 +109,17 @@ export default function LoginPage() {
             type="email"
             autoComplete="email"
             placeholder={t('common.emailPlaceholder')}
+            aria-invalid={errors.email ? true : undefined}
+            aria-describedby={errors.email ? 'login-email-error' : undefined}
             {...register('email')}
             className={inputClass}
           />
           {errors.email && (
-            <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
+            <p
+              id="login-email-error"
+              role="alert"
+              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
+            >
               {t('validation.email')}
             </p>
           )}
@@ -126,11 +132,17 @@ export default function LoginPage() {
             type="password"
             autoComplete="current-password"
             placeholder="••••••••"
+            aria-invalid={errors.password ? true : undefined}
+            aria-describedby={errors.password ? 'login-password-error' : undefined}
             {...register('password')}
             className={inputClass}
           />
           {errors.password && (
-            <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
+            <p
+              id="login-password-error"
+              role="alert"
+              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
+            >
               {t('validation.passwordRequired')}
             </p>
           )}

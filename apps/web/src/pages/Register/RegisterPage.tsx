@@ -97,11 +97,17 @@ export default function RegisterPage() {
             type="email"
             autoComplete="email"
             placeholder={t('common.emailPlaceholder')}
+            aria-invalid={errors.email ? true : undefined}
+            aria-describedby={errors.email ? 'register-email-error' : undefined}
             {...register('email')}
             className={inputClass}
           />
           {errors.email && (
-            <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
+            <p
+              id="register-email-error"
+              role="alert"
+              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
+            >
               {t('validation.email')}
             </p>
           )}
@@ -114,11 +120,21 @@ export default function RegisterPage() {
             type="text"
             autoComplete="username"
             placeholder={t('register.usernamePlaceholder')}
+            aria-invalid={errors.username ? true : undefined}
+            aria-describedby={
+              errors.username
+                ? 'register-username-error register-username-hint'
+                : 'register-username-hint'
+            }
             {...register('username')}
             className={inputClass}
           />
           {errors.username && (
-            <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
+            <p
+              id="register-username-error"
+              role="alert"
+              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
+            >
               {t(
                 `validation.username.${
                   errors.username.type === 'too_small'
@@ -130,7 +146,10 @@ export default function RegisterPage() {
               )}
             </p>
           )}
-          <p className="mt-1 text-[0.72rem] text-ink-mute dark:text-bone-mute">
+          <p
+            id="register-username-hint"
+            className="mt-1 text-[0.72rem] text-ink-mute dark:text-bone-mute"
+          >
             {t('register.usernameHintPrefix')}
             <span className="font-mono">{t('register.usernameHintToken')}</span>
           </p>
@@ -143,11 +162,17 @@ export default function RegisterPage() {
             type="password"
             autoComplete="new-password"
             placeholder={t('register.passwordPlaceholder')}
+            aria-invalid={errors.password ? true : undefined}
+            aria-describedby={errors.password ? 'register-password-error' : undefined}
             {...register('password')}
             className={inputClass}
           />
           {errors.password && (
-            <p className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
+            <p
+              id="register-password-error"
+              role="alert"
+              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
+            >
               {t(
                 `validation.password.${errors.password.type === 'too_big' ? 'tooLong' : 'tooShort'}`
               )}
