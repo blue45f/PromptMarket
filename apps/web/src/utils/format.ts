@@ -13,7 +13,17 @@ export {
 import { activeIntlLocale } from '@/i18n'
 
 export function formatDollars(cents: number): string {
-  return `$${((cents ?? 0) / 100).toFixed(2)}`
+  const dollars = (cents ?? 0) / 100
+  try {
+    // Locale-grouped (1,234.56) but keep the bare "$" — the wallet is USD and a
+    // localized "US$" prefix would clash with the rest of the UI.
+    return `$${new Intl.NumberFormat(activeIntlLocale(), {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(dollars)}`
+  } catch {
+    return `$${dollars.toFixed(2)}`
+  }
 }
 
 export function formatDate(input: string | Date): string {
