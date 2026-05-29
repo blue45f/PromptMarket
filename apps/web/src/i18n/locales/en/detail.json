@@ -41,7 +41,11 @@
     "submitting": "Submitting…",
     "submit": "Post review",
     "empty": "No reviews yet. Be the first to leave one!",
-    "anonymous": "anonymous"
+    "anonymous": "anonymous",
+    "validation": {
+      "rating": "Please select a rating.",
+      "comment": "Keep your review to 1,000 characters or fewer."
+    }
   },
   "sidebar": {
     "free": "Free",

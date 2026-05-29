@@ -540,6 +540,7 @@ export default function ListingDetailPage() {
                 {isPurchased && !ownReview && (
                   <form
                     onSubmit={onSubmitReview}
+                    noValidate
                     className="mb-6 rounded-xl border border-line dark:border-night-line p-4 bg-canvas-deep/60 dark:bg-night-deep/40"
                   >
                     <p className="text-sm font-medium text-ink dark:text-bone mb-2">
@@ -552,7 +553,7 @@ export default function ListingDetailPage() {
                     />
                     {errors.rating && (
                       <p className="mt-1 text-xs text-coral-deep dark:text-coral">
-                        {errors.rating.message}
+                        {t('reviews.validation.rating')}
                       </p>
                     )}
                     <textarea
@@ -563,7 +564,7 @@ export default function ListingDetailPage() {
                     />
                     {errors.comment && (
                       <p className="mt-1 text-xs text-coral-deep dark:text-coral">
-                        {errors.comment.message}
+                        {t('reviews.validation.comment')}
                       </p>
                     )}
                     <div className="mt-3 flex justify-end">

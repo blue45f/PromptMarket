@@ -41,7 +41,11 @@
     "submitting": "제출 중…",
     "submit": "리뷰 등록",
     "empty": "아직 리뷰가 없어요. 첫 번째 리뷰가 되어 보세요!",
-    "anonymous": "anonymous"
+    "anonymous": "anonymous",
+    "validation": {
+      "rating": "별점을 선택해 주세요.",
+      "comment": "리뷰는 1,000자 이하로 작성해 주세요."
+    }
   },
   "sidebar": {
     "free": "무료",
