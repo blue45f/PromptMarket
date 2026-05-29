@@ -1,20 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import {
-  LogOut,
-  Menu,
-  PlusCircle,
-  ShoppingCart,
-  User as UserIcon,
-  Wallet,
-  X,
-} from 'lucide-react';
-import { useAuthStore } from '@store/auth';
-import SearchBar from '@components/SearchBar';
-import ThemeToggle from '@components/ThemeToggle';
-import { formatDollars } from '@utils/format';
-import { cn } from '@utils/cn';
+import { useEffect, useState } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
+import { LogOut, Menu, PlusCircle, ShoppingCart, User as UserIcon, Wallet, X } from 'lucide-react'
+import { useAuthStore } from '@store/auth'
+import SearchBar from '@components/SearchBar'
+import ThemeToggle from '@components/ThemeToggle'
+import LanguageToggle from '@components/LanguageToggle'
+import { formatDollars } from '@utils/format'
+import { cn } from '@utils/cn'
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
@@ -22,8 +16,8 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     'motion-safe:transition-colors duration-300',
     isActive
       ? 'text-ink dark:text-bone'
-      : 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone',
-  );
+      : 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone'
+  )
 
 function NavLinkInner({ isActive, children }: { isActive: boolean; children: React.ReactNode }) {
   return (
@@ -34,40 +28,41 @@ function NavLinkInner({ isActive, children }: { isActive: boolean; children: Rea
         className={cn(
           'absolute left-3 right-3 -bottom-0.5 h-[2px] rounded-full bg-volt-500',
           'origin-left motion-safe:transition-transform motion-safe:duration-300',
-          isActive ? 'scale-x-100' : 'scale-x-0',
+          isActive ? 'scale-x-100' : 'scale-x-0'
         )}
       />
     </>
-  );
+  )
 }
 
 export default function Navbar() {
-  const navigate = useNavigate();
-  const qc = useQueryClient();
-  const { token, user, logout } = useAuthStore();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate()
+  const qc = useQueryClient()
+  const { t } = useTranslation('nav')
+  const { token, user, logout } = useAuthStore()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   // Close the mobile menu on route changes
   useEffect(() => {
-    if (!mobileOpen) return;
-    document.body.style.overflow = 'hidden';
+    if (!mobileOpen) return
+    document.body.style.overflow = 'hidden'
     return () => {
-      document.body.style.overflow = '';
-    };
-  }, [mobileOpen]);
+      document.body.style.overflow = ''
+    }
+  }, [mobileOpen])
 
   function handleSearch(q: string) {
-    const params = new URLSearchParams();
-    if (q) params.set('q', q);
-    navigate(`/browse${params.toString() ? `?${params.toString()}` : ''}`);
-    setMobileOpen(false);
+    const params = new URLSearchParams()
+    if (q) params.set('q', q)
+    navigate(`/browse${params.toString() ? `?${params.toString()}` : ''}`)
+    setMobileOpen(false)
   }
 
   function handleSignOut() {
-    logout();
-    qc.clear();
-    navigate('/');
-    setMobileOpen(false);
+    logout()
+    qc.clear()
+    navigate('/')
+    setMobileOpen(false)
   }
 
   return (
@@ -96,13 +91,13 @@ export default function Navbar() {
 
         <nav className="ml-auto hidden md:flex items-center gap-1">
           <NavLink to="/browse" className={navLinkClass}>
-            {({ isActive }) => <NavLinkInner isActive={isActive}>둘러보기</NavLinkInner>}
+            {({ isActive }) => <NavLinkInner isActive={isActive}>{t('browse')}</NavLinkInner>}
           </NavLink>
           {token && (
             <NavLink to="/sell" className={navLinkClass}>
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
-                  <PlusCircle className="w-4 h-4" /> 판매
+                  <PlusCircle className="w-4 h-4" /> {t('sell')}
                 </NavLinkInner>
               )}
             </NavLink>
@@ -112,7 +107,7 @@ export default function Navbar() {
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
                   <ShoppingCart className="w-4 h-4" />
-                  <span className="hidden lg:inline">라이브러리</span>
+                  <span className="hidden lg:inline">{t('library')}</span>
                 </NavLinkInner>
               )}
             </NavLink>
@@ -122,14 +117,18 @@ export default function Navbar() {
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
                   <UserIcon className="w-4 h-4" />
-                  <span className="hidden lg:inline">프로필</span>
+                  <span className="hidden lg:inline">{t('profile')}</span>
                 </NavLinkInner>
               )}
             </NavLink>
           )}
 
-          <span className="mx-1.5 hidden lg:inline-block w-px h-5 bg-line dark:bg-night-line" aria-hidden />
+          <span
+            className="mx-1.5 hidden lg:inline-block w-px h-5 bg-line dark:bg-night-line"
+            aria-hidden
+          />
 
+          <LanguageToggle />
           <ThemeToggle />
 
           {token ? (
@@ -145,7 +144,7 @@ export default function Navbar() {
                 className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt"
               >
                 <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">로그아웃</span>
+                <span className="hidden sm:inline">{t('logout')}</span>
               </button>
             </div>
           ) : (
@@ -154,7 +153,7 @@ export default function Navbar() {
                 to="/login"
                 className="text-[0.83rem] font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt"
               >
-                로그인
+                {t('login')}
               </Link>
               <Link
                 to="/register"
@@ -165,7 +164,7 @@ export default function Navbar() {
                   className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
                 />
                 <span className="relative group-hover:text-ink motion-safe:transition-colors motion-safe:duration-300">
-                  회원가입
+                  {t('register')}
                 </span>
               </Link>
             </div>
@@ -174,11 +173,12 @@ export default function Navbar() {
 
         {/* Mobile */}
         <div className="ml-auto md:hidden flex items-center gap-1">
+          <LanguageToggle />
           <ThemeToggle />
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
+            aria-label={mobileOpen ? t('closeMenu') : t('openMenu')}
             className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub focus-volt motion-safe:transition active:scale-95"
           >
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -197,7 +197,7 @@ export default function Navbar() {
                 to="/browse"
                 className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
               >
-                둘러보기 <span aria-hidden>→</span>
+                {t('browse')} <span aria-hidden>→</span>
               </Link>
               {token && (
                 <Link
@@ -205,7 +205,7 @@ export default function Navbar() {
                   to="/sell"
                   className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
                 >
-                  프롬프트 판매 <span aria-hidden>→</span>
+                  {t('sellFull')} <span aria-hidden>→</span>
                 </Link>
               )}
               {token && (
@@ -214,7 +214,7 @@ export default function Navbar() {
                   to="/dashboard"
                   className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
                 >
-                  라이브러리 <span aria-hidden>→</span>
+                  {t('library')} <span aria-hidden>→</span>
                 </Link>
               )}
               {token && user && (
@@ -223,7 +223,7 @@ export default function Navbar() {
                   to={`/users/${user.username}`}
                   className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
                 >
-                  프로필 <span aria-hidden>→</span>
+                  {t('profile')} <span aria-hidden>→</span>
                 </Link>
               )}
               {!token && (
@@ -233,14 +233,14 @@ export default function Navbar() {
                     to="/login"
                     className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
                   >
-                    로그인 <span aria-hidden>→</span>
+                    {t('login')} <span aria-hidden>→</span>
                   </Link>
                   <Link
                     onClick={() => setMobileOpen(false)}
                     to="/register"
                     className="py-3 inline-flex items-center justify-between text-volt-700 dark:text-volt-300"
                   >
-                    회원가입 <span aria-hidden>→</span>
+                    {t('register')} <span aria-hidden>→</span>
                   </Link>
                 </>
               )}
@@ -249,7 +249,7 @@ export default function Navbar() {
                   onClick={handleSignOut}
                   className="py-3 inline-flex items-center justify-between text-coral-deep dark:text-coral"
                 >
-                  로그아웃 <LogOut className="w-4 h-4" />
+                  {t('logout')} <LogOut className="w-4 h-4" />
                 </button>
               )}
             </nav>
@@ -257,5 +257,5 @@ export default function Navbar() {
         </div>
       )}
     </header>
-  );
+  )
 }

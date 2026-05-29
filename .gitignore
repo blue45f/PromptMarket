@@ -14,5 +14,7 @@ packages/shared/dist
 
 # Local dev artifacts — screenshots from browser-driven design verification
 *.png
+*.jpg
+*.jpeg
 .playwright-mcp/
 apps/api/dev.db

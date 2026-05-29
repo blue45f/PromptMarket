@@ -1,0 +1,42 @@
+{
+  "actions": {
+    "copy": "복사",
+    "copied": "복사됨",
+    "download": "다운로드",
+    "retry": "다시 시도",
+    "viewAll": "전체 보기",
+    "close": "닫기",
+    "cancel": "취소",
+    "save": "저장",
+    "submit": "제출",
+    "search": "검색",
+    "clear": "지우기",
+    "share": "공유",
+    "more": "더 보기",
+    "loading": "불러오는 중…"
+  },
+  "labels": {
+    "free": "무료",
+    "by": "by",
+    "downloads": "다운로드",
+    "reviews_one": "리뷰 {{count}}개",
+    "reviews_other": "리뷰 {{count}}개",
+    "ratingCount": "({{count}})",
+    "more": "+{{count}}"
+  },
+  "search": {
+    "placeholder": "프롬프트, 에이전트, 스킬 검색…"
+  },
+  "lang": {
+    "label": "언어",
+    "switchLabel": "언어 전환",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "theme": {
+    "switchLabel": "테마 전환",
+    "light": "라이트",
+    "dark": "다크",
+    "system": "시스템"
+  }
+}

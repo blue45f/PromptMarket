@@ -11,54 +11,54 @@ export type {
   PromptTechnique,
   Difficulty,
   License,
-} from '@promptmarket/shared';
+} from '@promptmarket/shared'
 
-import type { ListingCard, ListingFull } from '@promptmarket/shared';
+import type { ListingCard, ListingFull } from '@promptmarket/shared'
 
 export interface User {
-  id: string;
-  email?: string;
-  username: string;
-  balanceCents?: number;
-  bio?: string | null;
-  avatarUrl?: string | null;
+  id: string
+  email?: string
+  username: string
+  balanceCents?: number
+  bio?: string | null
+  avatarUrl?: string | null
 }
 
 export interface Author {
-  id: string;
-  username: string;
+  id: string
+  username: string
 }
 
 export interface Review {
-  id: string;
-  rating: number;
-  comment?: string | null;
-  createdAt: string;
-  author?: Author;
-  user?: Author;
+  id: string
+  rating: number
+  comment?: string | null
+  createdAt: string
+  author?: Author
+  user?: Author
 }
 
 export interface Purchase {
-  id: string;
-  listingId: string;
-  createdAt: string;
+  id: string
+  listingId: string
+  createdAt: string
 }
 
 export interface ListingDetailResponse {
-  listing: ListingFull;
-  reviews: Review[];
-  isOwner: boolean;
-  isPurchased: boolean;
-  canViewBody: boolean;
+  listing: ListingFull
+  reviews: Review[]
+  isOwner: boolean
+  isPurchased: boolean
+  canViewBody: boolean
 }
 
 export interface MyListingItem extends ListingCard {
-  salesCount: number;
-  earningsCents: number;
+  salesCount: number
+  earningsCents: number
 }
 
 export interface StatsResponse {
-  totalListings: number;
-  totalSales: number;
-  totalUsers: number;
+  totalListings: number
+  totalDownloads: number
+  totalCreators: number
 }
