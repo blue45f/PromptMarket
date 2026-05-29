@@ -18,14 +18,23 @@ export default function Layout() {
   useMe()
   // Two-key navigation sequences (g h, g b, g d, g s, g l)
   useNavShortcuts()
+  const { t } = useTranslation('nav')
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Skip link — first focusable element; lets keyboard users jump past
+          the nav straight to the page content. Hidden until focused. */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:inline-flex focus:items-center focus:px-4 focus:py-2.5 focus:rounded-full focus:bg-ink focus:text-bone focus:dark:bg-bone focus:dark:text-ink focus:font-medium focus:text-sm focus:shadow-xl focus-volt"
+      >
+        {t('skipToContent')}
+      </a>
       <Navbar />
       <CommandPalette />
       <ShortcutsOverlay />
       <ScrollToTop />
-      <main className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
         <Outlet />
       </main>
       <SiteFooter />
