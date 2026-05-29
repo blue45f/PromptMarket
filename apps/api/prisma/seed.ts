@@ -1,10 +1,20 @@
-import { Listing, PrismaClient } from '@prisma/client';
-import * as argon2 from 'argon2';
+import { Listing, PrismaClient } from '@prisma/client'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import * as argon2 from 'argon2'
 
-const prisma = new PrismaClient();
+// Prisma 7 requires an explicit driver adapter — mirror PrismaService so the
+// documented `pnpm seed` flow works against the same SQLite file as the API.
+function resolveUrl(): string {
+  const raw = process.env.DATABASE_URL ?? 'file:./dev.db'
+  return raw.startsWith('file:') ? raw : `file:${raw}`
+}
+
+const prisma = new PrismaClient({
+  adapter: new PrismaBetterSqlite3({ url: resolveUrl() }),
+})
 
 function rand(): string {
-  return Math.random().toString(36).slice(2, 8);
+  return Math.random().toString(36).slice(2, 8)
 }
 
 function slugify(title: string): string {
@@ -12,13 +22,13 @@ function slugify(title: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 60);
-  return `${base || 'listing'}-${rand()}`;
+    .slice(0, 60)
+  return `${base || 'listing'}-${rand()}`
 }
 
 type SeedListing = {
-  authorKey: 'alice' | 'bob' | 'carol' | 'dave' | 'eve' | 'frank';
-  title: string;
+  authorKey: 'alice' | 'bob' | 'carol' | 'dave' | 'eve' | 'frank'
+  title: string
   type:
     | 'PROMPT'
     | 'CLAUDE_MD'
@@ -27,27 +37,27 @@ type SeedListing = {
     | 'MCP_SERVER'
     | 'SLASH_COMMAND'
     | 'SUBAGENT'
-    | 'CURSOR_RULES';
-  description: string;
-  body: string;
-  category: string;
-  tags: string;
-  models: string; // csv of model slugs
-  technique?: string | null;
-  difficulty?: 'beginner' | 'intermediate' | 'advanced';
-  license?: 'MIT' | 'Apache-2.0' | 'CC-BY-4.0' | 'CC0' | 'Proprietary';
-  version?: string;
-  priceCents: number;
-  coverEmoji: string;
-};
+    | 'CURSOR_RULES'
+  description: string
+  body: string
+  category: string
+  tags: string
+  models: string // csv of model slugs
+  technique?: string | null
+  difficulty?: 'beginner' | 'intermediate' | 'advanced'
+  license?: 'MIT' | 'Apache-2.0' | 'CC-BY-4.0' | 'CC0' | 'Proprietary'
+  version?: string
+  priceCents: number
+  coverEmoji: string
+}
 
 async function main() {
-  await prisma.review.deleteMany();
-  await prisma.purchase.deleteMany();
-  await prisma.listing.deleteMany();
-  await prisma.user.deleteMany();
+  await prisma.review.deleteMany()
+  await prisma.purchase.deleteMany()
+  await prisma.listing.deleteMany()
+  await prisma.user.deleteMany()
 
-  const passwordHash = await argon2.hash('password');
+  const passwordHash = await argon2.hash('password')
 
   const alice = await prisma.user.create({
     data: {
@@ -57,7 +67,7 @@ async function main() {
       balanceCents: 10000,
       bio: 'Claude-Code power user. I ship CLAUDE.md files, subagents, and skills that actually work.',
     },
-  });
+  })
   const bob = await prisma.user.create({
     data: {
       email: 'bob@example.com',
@@ -66,7 +76,7 @@ async function main() {
       balanceCents: 10000,
       bio: 'Indie hacker. Mostly buys, occasionally writes the prompt that pays.',
     },
-  });
+  })
   const carol = await prisma.user.create({
     data: {
       email: 'carol@example.com',
@@ -75,7 +85,7 @@ async function main() {
       balanceCents: 10000,
       bio: 'Full-stack dev. Cursor + Claude every day.',
     },
-  });
+  })
   const dave = await prisma.user.create({
     data: {
       email: 'dave@example.com',
@@ -84,7 +94,7 @@ async function main() {
       balanceCents: 10000,
       bio: 'GPT-5 specialist. Cold email, ad copy, and reasoning prompts.',
     },
-  });
+  })
   const eve = await prisma.user.create({
     data: {
       email: 'eve@example.com',
@@ -93,7 +103,7 @@ async function main() {
       balanceCents: 10000,
       bio: 'Gemini fan. Long-context research and multi-modal workflows.',
     },
-  });
+  })
   const frank = await prisma.user.create({
     data: {
       email: 'frank@example.com',
@@ -102,9 +112,9 @@ async function main() {
       balanceCents: 10000,
       bio: 'Polyglot prompt engineer — runs the same task across 4 LLMs and picks the best.',
     },
-  });
+  })
 
-  const userByKey = { alice, bob, carol, dave, eve, frank } as const;
+  const userByKey = { alice, bob, carol, dave, eve, frank } as const
 
   // ===========================================================================
   // Realistic bodies
@@ -140,7 +150,7 @@ The table above. Omit if no findings.
 
 # Style
 Direct. Specific. Never say "consider refactoring" without saying what.
-Never approve a PR with a BLOCKER open.`;
+Never approve a PR with a BLOCKER open.`
 
   const nextjs15ClaudeMd = `# CLAUDE.md — Next.js 15 (App Router) + Tailwind + tRPC
 
@@ -186,7 +196,7 @@ This is a production Next.js 15 monorepo. Read this before touching any file.
 
 ### Commits
 - Conventional commits. One concern per PR. Squash on merge.
-`;
+`
 
   const coldEmailFewShot = `# Cold Email Generator (GPT-5, few-shot)
 
@@ -224,7 +234,7 @@ Inputs:
 - {{painPoint}} — specific, observable pain
 - {{recentSignal}} — a public thing they shipped/posted/hired for
 
-Write the email. Same shape as the examples. Subject ≤ 5 words, lowercase, curiosity-driven. Body 3 sentences. End with a low-friction ask.`;
+Write the email. Same shape as the examples. Subject ≤ 5 words, lowercase, curiosity-driven. Body 3 sentences. End with a low-friction ask.`
 
   const sqlDebuggerCoT = `# Chain-of-Thought SQL Debugger
 
@@ -245,7 +255,7 @@ You are a senior database engineer. The user pastes a slow SQL query. Reason out
 7. **Estimate speedup in plain English** ("from 12 seconds to ~80ms on a 1M-row table").
 
 ## Output contract
-Show your reasoning under \`## Reasoning\`. Then \`## Rewrite\`, \`## Indexes\`, \`## Expected speedup\`. Never end with "it depends".`;
+Show your reasoning under \`## Reasoning\`. Then \`## Rewrite\`, \`## Indexes\`, \`## Expected speedup\`. Never end with "it depends".`
 
   const longContextResearchBrief = `# Long-Context Research Brief (Gemini 2.5 Pro, plan-and-solve)
 
@@ -279,7 +289,7 @@ Produce the final brief in this shape:
 ## Hard rules
 - Never invent a quote. If you can't find evidence, say so.
 - Page-cite every non-obvious claim.
-- Use tables for anything comparing 3+ items.`;
+- Use tables for anything comparing 3+ items.`
 
   const postgresMcpServer = `{
   "name": "postgres",
@@ -334,7 +344,7 @@ Produce the final brief in this shape:
     "Set MAX_ROWS to bound result size; the server pages beyond that.",
     "Logs go to stderr. stdout is the MCP protocol channel — do not write to it."
   ]
-}`;
+}`
 
   const securityReviewSlash = `---
 name: security-review
@@ -381,7 +391,7 @@ Run a focused security review. Default target is \`--staged\`.
 
 ## Constraints
 - Never approve a diff with a HIGH finding.
-- If the diff is empty, exit with "nothing staged".`;
+- If the diff is empty, exit with "nothing staged".`
 
   const cursorRulesMonorepo = `# .cursorrules — TypeScript Monorepo (turborepo + pnpm)
 
@@ -418,7 +428,7 @@ This is a Turborepo with apps/ and packages/. Read this before generating any co
 ## Don't
 - Don't add a dependency without telling me first.
 - Don't write a comment that restates the code. Comments explain *why*.
-- Don't generate TODOs. If it's not done, don't ship it.`;
+- Don't generate TODOs. If it's not done, don't ship it.`
 
   const treeOfThoughtsMathTutor = `# Tree-of-Thoughts Math Tutor
 
@@ -462,7 +472,7 @@ Step 2. ...
 
 ## Takeaway
 The technique is ___. Use it when ___.
-\`\`\``;
+\`\`\``
 
   const reflexionBugHunter = `# Reflexion Bug-Hunting Loop (Claude Code)
 
@@ -494,7 +504,7 @@ Every iteration is a section: \`### Iteration k\` with Hypothesis / Attempt / Te
 ## Hard rules
 - Never edit the test to make it pass.
 - Never claim "fixed" without seeing the test pass.
-- Run the smallest test set that proves the fix; don't run the full suite each iteration.`;
+- Run the smallest test set that proves the fix; don't run the full suite each iteration.`
 
   const llamaRagPrompt = `# Llama 4 RAG Pipeline Prompt (Self-Hosted)
 
@@ -532,7 +542,7 @@ You are the generation step of a retrieval-augmented pipeline running on Llama 4
 
 ## Failure mode
 If retrieval scored < 0.5 average, return:
-> I don't have enough relevant material to answer this confidently. Please rephrase or upload more sources.`;
+> I don't have enough relevant material to answer this confidently. Please rephrase or upload more sources.`
 
   const reactWebBrowsingAgent = `# ReAct Web-Browsing Agent
 
@@ -582,7 +592,7 @@ Thought: I have enough.
 Answer: Vercel's Pro plan offers a 99.99% uptime SLA but does not publish a latency SLA — that's Enterprise-only.
 Sources:
 - https://vercel.com/pricing
-- https://vercel.com/legal/sla`;
+- https://vercel.com/legal/sla`
 
   const polyglotWriter = `# Multi-Model Polyglot Writer
 
@@ -614,7 +624,7 @@ You are a router/editor over multiple LLMs. Given a writing task, you delegate t
 ## Hard rules
 - Never ship a draft scoring <3 on any axis. Re-delegate or rewrite.
 - Always cite which model produced which paragraph (footnote).
-- If two models disagree on a fact, surface both and ask.`;
+- If two models disagree on a fact, surface both and ask.`
 
   const o3ReasoningPlanner = `# o3 Hard-Reasoning Planner
 
@@ -657,7 +667,7 @@ Objective: ...
 \`\`\`
 
 ## When the problem is under-specified
-Ask exactly one clarifying question — the one that most reduces ambiguity. Then stop and wait.`;
+Ask exactly one clarifying question — the one that most reduces ambiguity. Then stop and wait.`
 
   const planAndSolveGeneral = `# Plan-and-Solve General Prompt
 
@@ -691,7 +701,7 @@ If the request is one trivial action ("what's 2+2?"), answer directly. No plan n
 ## Hard rules
 - Never execute without a plan.
 - Never claim completion without verification.
-- The plan must be visible to the user before execution begins.`;
+- The plan must be visible to the user before execution begins.`
 
   const claudeCodeSkill = `---
 name: postgres-schema-doc
@@ -729,7 +739,7 @@ This skill produces a Markdown schema document for a Postgres database, includin
 - If the database has > 100 tables, ask before continuing (large output).
 
 ## Output style
-Markdown only. No fluff. The doc is the deliverable.`;
+Markdown only. No fluff. The doc is the deliverable.`
 
   const aiderClaudeMd = `# CLAUDE.md — Aider workflow
 
@@ -772,7 +782,7 @@ def foo():
 5. **Test in your head** — re-read the new file mentally before emitting the diff.
 
 ## When you don't have the file
-Say \`/add path/to/file\` and stop. Don't guess at the contents.`;
+Say \`/add path/to/file\` and stop. Don't guess at the contents.`
 
   const grokRoleplayPersona = `# Grok 3 Role-Persona: The Caustic Editor
 
@@ -799,7 +809,7 @@ You are "Marcus", a 30-year veteran magazine editor in the vein of Christopher H
 Marcus is harsh but accurate. He never insults the writer, only the writing. If the user's draft is genuinely good, say so once — then keep cutting.
 
 ## Refusal
-You will not soften your edits "to be encouraging". The writer pays you to make the piece better, not to feel good. If the writer pushes back, ask them to point to the specific cut they disagree with.`;
+You will not soften your edits "to be encouraging". The writer pays you to make the piece better, not to feel good. If the writer pushes back, ask them to point to the specific cut they disagree with.`
 
   const deepseekZeroShot = `# DeepSeek V3 Zero-Shot Code Explainer
 
@@ -821,7 +831,7 @@ You explain code with zero examples and no preamble. The user pastes code; you e
 - If the code has a bug, surface it under "Pitfalls" — don't bury it.
 
 ## When the code is genuinely simple
-Skip "Notable choices" and "Pitfalls" if there's nothing real to say. Brevity > theater.`;
+Skip "Notable choices" and "Pitfalls" if there's nothing real to say. Brevity > theater.`
 
   const mistralSelfConsistency = `# Mistral Large 3 Self-Consistency Judge
 
@@ -859,7 +869,7 @@ Chain B and Chain D thought Y because [reason]. I'm overriding because [reason].
 \`\`\`
 
 ## When to skip self-consistency
-If the question is trivially deterministic (lookup, conversion), answer directly. Don't theater 5 chains for 2+2.`;
+If the question is trivially deterministic (lookup, conversion), answer directly. Don't theater 5 chains for 2+2.`
 
   const codexAgentsMd = `# AGENTS.md — Codex Agents (OpenAI)
 
@@ -891,7 +901,7 @@ This is a monorepo with \`apps/\` (deployable services) and \`packages/\` (share
 - Don't disable rules in \`.eslintrc\` to silence a finding.
 
 ## How to ask for help
-If Codex is uncertain, leave a \`// CODEX: question — ...\` comment and stop. A human will pick it up.`;
+If Codex is uncertain, leave a \`// CODEX: question — ...\` comment and stop. A human will pick it up.`
 
   const cursorRulesReact = `# .cursorrules — React + TypeScript Frontend
 
@@ -942,7 +952,7 @@ Read these rules before generating any UI code.
 - Don't use \`any\`. Use \`unknown\` and narrow.
 - Don't write a custom \`<Button>\` — use shadcn.
 - Don't reach for Redux. Don't reach for Context for server data.
-- Don't \`as\` cast unless you can defend it. \`satisfies\` is usually what you want.`;
+- Don't \`as\` cast unless you can defend it. \`satisfies\` is usually what you want.`
 
   const claudeHaikuSummarizer = `# Claude Haiku 4.5 Fast Summarizer
 
@@ -973,7 +983,7 @@ You summarize long text fast. Optimized for Haiku — short context, tight laten
 \`\`\`
 
 ## Failure mode
-If the input is too short to be worth summarizing (<200 words), return it verbatim and say "Already short."`;
+If the input is too short to be worth summarizing (<200 words), return it verbatim and say "Already short."`
 
   const copilotInstructionsMd = `# Copilot Instructions — Backend Python (FastAPI + SQLAlchemy)
 
@@ -1010,7 +1020,7 @@ You are GitHub Copilot generating code in this FastAPI service.
 ## Don't
 - Don't generate sync DB code in this project.
 - Don't catch \`Exception\` to swallow it. Catch specific exceptions or let them bubble.
-- Don't add a dependency without checking \`pyproject.toml\` first.`;
+- Don't add a dependency without checking \`pyproject.toml\` first.`
 
   // ===========================================================================
   // The listings (24 entries spanning all 8 types and all major vendors)
@@ -1092,7 +1102,7 @@ You are GitHub Copilot generating code in this FastAPI service.
       title: 'Gemini 2.5 Pro Long-Context Research Brief',
       type: 'PROMPT',
       description:
-        'Plan-and-solve prompt that turns 50-200 PDFs into an investment-grade brief with page-cited claims. Built for Gemini 2.5 Pro\'s 1M-token window.',
+        "Plan-and-solve prompt that turns 50-200 PDFs into an investment-grade brief with page-cited claims. Built for Gemini 2.5 Pro's 1M-token window.",
       body: longContextResearchBrief,
       category: 'Research',
       tags: 'gemini,long-context,research,plan-and-solve',
@@ -1304,7 +1314,7 @@ You are GitHub Copilot generating code in this FastAPI service.
       title: 'CLAUDE.md for Aider Pair-Programming',
       type: 'CLAUDE_MD',
       description:
-        'Locks the model into Aider\'s diff format. No invented imports, no unrelated reformatting, one file per turn. The CLAUDE.md every Aider user wishes shipped by default.',
+        "Locks the model into Aider's diff format. No invented imports, no unrelated reformatting, one file per turn. The CLAUDE.md every Aider user wishes shipped by default.",
       body: aiderClaudeMd,
       category: 'Coding',
       tags: 'aider,claude-md,pair-programming',
@@ -1357,7 +1367,7 @@ You are GitHub Copilot generating code in this FastAPI service.
       title: 'Mistral Large 3 Self-Consistency Judge',
       type: 'PROMPT',
       description:
-        'Samples 5 independent reasoning chains, majority-votes, surfaces dissent. For hard reasoning where one chain isn\'t enough.',
+        "Samples 5 independent reasoning chains, majority-votes, surfaces dissent. For hard reasoning where one chain isn't enough.",
       body: mistralSelfConsistency,
       category: 'Research',
       tags: 'mistral,self-consistency,reasoning',
@@ -1438,14 +1448,14 @@ You are GitHub Copilot generating code in this FastAPI service.
       priceCents: 299,
       coverEmoji: '🐍',
     },
-  ];
+  ]
 
   // ===========================================================================
   // Persist listings
   // ===========================================================================
-  const createdListings: Listing[] = [];
+  const createdListings: Listing[] = []
   for (const data of listingsData) {
-    const author = userByKey[data.authorKey];
+    const author = userByKey[data.authorKey]
     const listing = await prisma.listing.create({
       data: {
         title: data.title,
@@ -1466,62 +1476,61 @@ You are GitHub Copilot generating code in this FastAPI service.
         authorId: author.id,
         downloads: 5 + Math.floor(Math.random() * 80),
       },
-    });
-    createdListings.push(listing);
+    })
+    createdListings.push(listing)
   }
 
   // ===========================================================================
   // Purchases (10) + balance + downloads adjustment
   // ===========================================================================
-  const byTitle = (t: string) =>
-    createdListings.find((l) => l.title === t)!;
+  const byTitle = (t: string) => createdListings.find((l) => l.title === t)!
 
   const purchases: Array<{ buyer: typeof alice; listing: Listing }> = [
-    { buyer: bob,    listing: byTitle('Ultimate Next.js 15 CLAUDE.md') },
-    { buyer: bob,    listing: byTitle('Claude Opus 4.7 Senior Code-Reviewer Subagent') },
-    { buyer: carol,  listing: byTitle('Chain-of-Thought SQL Debugger (Claude Sonnet)') },
-    { buyer: carol,  listing: byTitle('GPT-5 Cold Email Generator (Few-Shot)') },
-    { buyer: dave,   listing: byTitle('Postgres MCP Server') },
-    { buyer: dave,   listing: byTitle('Reflexion Bug-Hunting Loop') },
-    { buyer: eve,    listing: byTitle('Tree-of-Thoughts Math Tutor') },
-    { buyer: eve,    listing: byTitle('/security-review Slash Command') },
-    { buyer: frank,  listing: byTitle('Gemini 2.5 Pro Long-Context Research Brief') },
-    { buyer: bob,    listing: byTitle('.cursorrules for TypeScript Monorepos') },
-  ];
+    { buyer: bob, listing: byTitle('Ultimate Next.js 15 CLAUDE.md') },
+    { buyer: bob, listing: byTitle('Claude Opus 4.7 Senior Code-Reviewer Subagent') },
+    { buyer: carol, listing: byTitle('Chain-of-Thought SQL Debugger (Claude Sonnet)') },
+    { buyer: carol, listing: byTitle('GPT-5 Cold Email Generator (Few-Shot)') },
+    { buyer: dave, listing: byTitle('Postgres MCP Server') },
+    { buyer: dave, listing: byTitle('Reflexion Bug-Hunting Loop') },
+    { buyer: eve, listing: byTitle('Tree-of-Thoughts Math Tutor') },
+    { buyer: eve, listing: byTitle('/security-review Slash Command') },
+    { buyer: frank, listing: byTitle('Gemini 2.5 Pro Long-Context Research Brief') },
+    { buyer: bob, listing: byTitle('.cursorrules for TypeScript Monorepos') },
+  ]
 
   for (const { buyer, listing } of purchases) {
-    if (buyer.id === listing.authorId) continue; // never buy your own
+    if (buyer.id === listing.authorId) continue // never buy your own
     await prisma.purchase.create({
       data: {
         userId: buyer.id,
         listingId: listing.id,
         pricePaidCents: listing.priceCents,
       },
-    });
+    })
     if (listing.priceCents > 0) {
       await prisma.user.update({
         where: { id: buyer.id },
         data: { balanceCents: { decrement: listing.priceCents } },
-      });
+      })
       await prisma.user.update({
         where: { id: listing.authorId },
         data: { balanceCents: { increment: listing.priceCents } },
-      });
+      })
     }
     await prisma.listing.update({
       where: { id: listing.id },
       data: { downloads: { increment: 1 } },
-    });
+    })
   }
 
   // ===========================================================================
   // Reviews — only from purchasers
   // ===========================================================================
   const reviews: Array<{
-    buyer: typeof alice;
-    listing: Listing;
-    rating: number;
-    comment: string;
+    buyer: typeof alice
+    listing: Listing
+    rating: number
+    comment: string
   }> = [
     {
       buyer: bob,
@@ -1549,7 +1558,7 @@ You are GitHub Copilot generating code in this FastAPI service.
       listing: byTitle('GPT-5 Cold Email Generator (Few-Shot)'),
       rating: 4,
       comment:
-        'Reply rate roughly doubled. The two anchor examples really do the work — don\'t skip them.',
+        "Reply rate roughly doubled. The two anchor examples really do the work — don't skip them.",
     },
     {
       buyer: dave,
@@ -1570,7 +1579,7 @@ You are GitHub Copilot generating code in this FastAPI service.
       listing: byTitle('Tree-of-Thoughts Math Tutor'),
       rating: 5,
       comment:
-        'Use it for my kid\'s algebra homework. The branch-scoring table actually teaches the meta-skill.',
+        "Use it for my kid's algebra homework. The branch-scoring table actually teaches the meta-skill.",
     },
     {
       buyer: eve,
@@ -1584,19 +1593,18 @@ You are GitHub Copilot generating code in this FastAPI service.
       listing: byTitle('Gemini 2.5 Pro Long-Context Research Brief'),
       rating: 5,
       comment:
-        'Fed it 80 PDFs from a deal room. The page-cited brief came back tighter than any analyst I\'ve worked with.',
+        "Fed it 80 PDFs from a deal room. The page-cited brief came back tighter than any analyst I've worked with.",
     },
     {
       buyer: bob,
       listing: byTitle('.cursorrules for TypeScript Monorepos'),
       rating: 4,
-      comment:
-        'Strict but defensible. The "no barrel files" rule alone has saved compile time.',
+      comment: 'Strict but defensible. The "no barrel files" rule alone has saved compile time.',
     },
-  ];
+  ]
 
   for (const r of reviews) {
-    if (r.buyer.id === r.listing.authorId) continue;
+    if (r.buyer.id === r.listing.authorId) continue
     await prisma.review.create({
       data: {
         userId: r.buyer.id,
@@ -1604,27 +1612,27 @@ You are GitHub Copilot generating code in this FastAPI service.
         rating: r.rating,
         comment: r.comment,
       },
-    });
+    })
   }
 
   // ===========================================================================
   // Final summary
   // ===========================================================================
-  const types = new Set(listingsData.map((l) => l.type));
-  const allModels = new Set<string>();
+  const types = new Set(listingsData.map((l) => l.type))
+  const allModels = new Set<string>()
   for (const l of listingsData) {
-    for (const m of l.models.split(',')) allModels.add(m.trim());
+    for (const m of l.models.split(',')) allModels.add(m.trim())
   }
   console.log(
-    `✅ Seeded ${listingsData.length} listings across ${types.size} types, ${allModels.size} models`,
-  );
+    `✅ Seeded ${listingsData.length} listings across ${types.size} types, ${allModels.size} models`
+  )
 }
 
 main()
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.error(e)
+    process.exit(1)
   })
   .finally(async () => {
-    await prisma.$disconnect();
-  });
+    await prisma.$disconnect()
+  })
