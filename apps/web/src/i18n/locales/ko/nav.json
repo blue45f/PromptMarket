@@ -1,0 +1,48 @@
+{
+  "browse": "둘러보기",
+  "sell": "판매",
+  "sellFull": "프롬프트 판매",
+  "library": "라이브러리",
+  "profile": "프로필",
+  "login": "로그인",
+  "register": "회원가입",
+  "logout": "로그아웃",
+  "openMenu": "메뉴 열기",
+  "closeMenu": "메뉴 닫기",
+  "footer": {
+    "anthology": "앤솔로지 · vol.01 · MMVI",
+    "about": "에이전트 시대를 위한 카탈로그. 실제 프로덕션에서 동작하는 모델용으로 검증된 프롬프트, 스킬, 에이전트를 사고팝니다.",
+    "registerCta": "내 작업 등록",
+    "tagline": "에이전트 시대를 위해 · 손맛으로 빚었습니다",
+    "copyright": "© {{year}} PromptMarket",
+    "col": {
+      "marketplace": "마켓플레이스",
+      "sell": "판매",
+      "account": "계정",
+      "models": "모델"
+    },
+    "links": {
+      "browseAll": "전체 보기",
+      "trending": "트렌딩",
+      "newest": "최신순",
+      "free": "무료",
+      "registerPrompt": "프롬프트 등록",
+      "registerSkill": "스킬 등록",
+      "registerMcp": "MCP 등록",
+      "dashboard": "대시보드",
+      "login": "로그인",
+      "register": "회원가입",
+      "library": "라이브러리"
+    }
+  },
+  "stats": {
+    "listings": "리스팅",
+    "downloads": "다운로드",
+    "makers": "메이커",
+    "captions": {
+      "listings": "커뮤니티가 출시한 프롬프트, 스킬, 에이전트, 룰.",
+      "downloads": "실제 코드베이스로 끌어들여진 횟수. 모든 다운로드가 한 표.",
+      "makers": "이번 시즌 플랫폼에 게시 중인 빌더들."
+    }
+  }
+}

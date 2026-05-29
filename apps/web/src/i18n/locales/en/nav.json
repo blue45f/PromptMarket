@@ -1,0 +1,48 @@
+{
+  "browse": "Browse",
+  "sell": "Sell",
+  "sellFull": "Sell a prompt",
+  "library": "Library",
+  "profile": "Profile",
+  "login": "Log in",
+  "register": "Sign up",
+  "logout": "Log out",
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu",
+  "footer": {
+    "anthology": "Anthology · vol.01 · MMVI",
+    "about": "A catalog for the agent era. Buy and sell prompts, skills, and agents proven against the models that ship real production.",
+    "registerCta": "List your work",
+    "tagline": "For the agent era · handcrafted",
+    "copyright": "© {{year}} PromptMarket",
+    "col": {
+      "marketplace": "Marketplace",
+      "sell": "Sell",
+      "account": "Account",
+      "models": "Models"
+    },
+    "links": {
+      "browseAll": "View all",
+      "trending": "Trending",
+      "newest": "Newest",
+      "free": "Free",
+      "registerPrompt": "List a prompt",
+      "registerSkill": "List a skill",
+      "registerMcp": "List an MCP",
+      "dashboard": "Dashboard",
+      "login": "Log in",
+      "register": "Sign up",
+      "library": "Library"
+    }
+  },
+  "stats": {
+    "listings": "Listings",
+    "downloads": "Downloads",
+    "makers": "Makers",
+    "captions": {
+      "listings": "Prompts, skills, agents, and rules shipped by the community.",
+      "downloads": "Times pulled into a real codebase. Every download is a vote.",
+      "makers": "Builders publishing on the platform this season."
+    }
+  }
+}

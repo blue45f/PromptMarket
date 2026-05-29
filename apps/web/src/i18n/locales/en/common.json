@@ -1,0 +1,42 @@
+{
+  "actions": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download",
+    "retry": "Try again",
+    "viewAll": "View all",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "submit": "Submit",
+    "search": "Search",
+    "clear": "Clear",
+    "share": "Share",
+    "more": "More",
+    "loading": "Loading…"
+  },
+  "labels": {
+    "free": "Free",
+    "by": "by",
+    "downloads": "Downloads",
+    "reviews_one": "{{count}} review",
+    "reviews_other": "{{count}} reviews",
+    "ratingCount": "({{count}})",
+    "more": "+{{count}}"
+  },
+  "search": {
+    "placeholder": "Search prompts, agents, skills…"
+  },
+  "lang": {
+    "label": "Language",
+    "switchLabel": "Switch language",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "theme": {
+    "switchLabel": "Switch theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}

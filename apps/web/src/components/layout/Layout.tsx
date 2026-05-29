@@ -1,22 +1,23 @@
-import { Link, Outlet } from 'react-router-dom';
-import { ArrowUpRight } from 'lucide-react';
-import Navbar from './Navbar';
-import CommandPalette from '@components/CommandPalette';
-import ShortcutsOverlay from '@components/ShortcutsOverlay';
-import ScrollToTop from '@components/ScrollToTop';
-import { useMe, useStats } from '@features/marketplace/queries';
-import { useNavShortcuts } from '@hooks/useNavShortcuts';
-import { useSpotlight } from '@hooks/useSpotlight';
-import { useReveal } from '@hooks/useReveal';
-import { useCountUp } from '@hooks/useCountUp';
-import { formatCompact } from '@utils/format';
+import { Link, Outlet } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { ArrowUpRight } from 'lucide-react'
+import Navbar from './Navbar'
+import CommandPalette from '@components/CommandPalette'
+import ShortcutsOverlay from '@components/ShortcutsOverlay'
+import ScrollToTop from '@components/ScrollToTop'
+import { useMe, useStats } from '@features/marketplace/queries'
+import { useNavShortcuts } from '@hooks/useNavShortcuts'
+import { useSpotlight } from '@hooks/useSpotlight'
+import { useReveal } from '@hooks/useReveal'
+import { useCountUp } from '@hooks/useCountUp'
+import { formatCompact } from '@utils/format'
 
 export default function Layout() {
   // Triggers the /auth/me query when a token is present and syncs the user
   // into the zustand store via the queryFn's side-effect.
-  useMe();
+  useMe()
   // Two-key navigation sequences (g h, g b, g d, g s, g l)
-  useNavShortcuts();
+  useNavShortcuts()
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -29,18 +30,23 @@ export default function Layout() {
       </main>
       <SiteFooter />
     </div>
-  );
+  )
 }
 
 function SiteFooter() {
-  const spotlightRef = useSpotlight<HTMLElement>();
-  const { ref: wordmarkRef, revealed } = useReveal<HTMLDivElement>();
+  const { t } = useTranslation('nav')
+  const spotlightRef = useSpotlight<HTMLElement>()
+  const { ref: wordmarkRef, revealed } = useReveal<HTMLDivElement>()
   return (
     <footer
       ref={spotlightRef}
       className="spotlight-host relative isolate mt-[clamp(4rem,8vw,8rem)] bg-ink text-bone overflow-hidden"
     >
-      <div className="spotlight" aria-hidden style={{ ['--spot-color' as string]: 'oklch(0.83 0.23 124 / 0.18)' }} />
+      <div
+        className="spotlight"
+        aria-hidden
+        style={{ ['--spot-color' as string]: 'oklch(0.83 0.23 124 / 0.18)' }}
+      />
       <div
         aria-hidden
         className="absolute inset-0 -z-10"
@@ -58,36 +64,36 @@ function SiteFooter() {
           <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10 text-sm">
             <FooterCol
               chapter="01"
-              title="마켓플레이스"
+              title={t('footer.col.marketplace')}
               links={[
-                { to: '/browse', label: '전체 보기' },
-                { to: '/browse?sort=trending', label: '트렌딩' },
-                { to: '/browse?sort=newest', label: '최신순' },
-                { to: '/browse?free=true', label: '무료' },
+                { to: '/browse', label: t('footer.links.browseAll') },
+                { to: '/browse?sort=trending', label: t('footer.links.trending') },
+                { to: '/browse?sort=newest', label: t('footer.links.newest') },
+                { to: '/browse?free=true', label: t('footer.links.free') },
               ]}
             />
             <FooterCol
               chapter="02"
-              title="판매"
+              title={t('footer.col.sell')}
               links={[
-                { to: '/sell', label: '프롬프트 등록' },
-                { to: '/sell', label: '스킬 등록' },
-                { to: '/sell', label: 'MCP 등록' },
-                { to: '/dashboard', label: '대시보드' },
+                { to: '/sell', label: t('footer.links.registerPrompt') },
+                { to: '/sell', label: t('footer.links.registerSkill') },
+                { to: '/sell', label: t('footer.links.registerMcp') },
+                { to: '/dashboard', label: t('footer.links.dashboard') },
               ]}
             />
             <FooterCol
               chapter="03"
-              title="계정"
+              title={t('footer.col.account')}
               links={[
-                { to: '/login', label: '로그인' },
-                { to: '/register', label: '회원가입' },
-                { to: '/dashboard', label: '라이브러리' },
+                { to: '/login', label: t('footer.links.login') },
+                { to: '/register', label: t('footer.links.register') },
+                { to: '/dashboard', label: t('footer.links.library') },
               ]}
             />
             <FooterCol
               chapter="04"
-              title="모델"
+              title={t('footer.col.models')}
               links={[
                 { to: '/browse?vendor=Anthropic', label: 'Anthropic' },
                 { to: '/browse?vendor=OpenAI', label: 'OpenAI' },
@@ -101,17 +107,16 @@ function SiteFooter() {
           <div className="lg:col-span-5 lg:pl-10 lg:border-l lg:border-bone/15 flex flex-col gap-5">
             <div className="inline-flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-volt-300">
               <span className="w-1.5 h-1.5 rounded-full bg-volt-500 volt-pulse" />
-              앤솔로지 · vol.01 · MMVI
+              {t('footer.anthology')}
             </div>
             <p className="text-bone-soft text-[1.05rem] leading-relaxed max-w-[44ch]">
-              에이전트 시대를 위한 카탈로그. 실제 프로덕션에서 동작하는 모델용으로
-              검증된 프롬프트, 스킬, 에이전트를 사고팝니다.
+              {t('footer.about')}
             </p>
             <Link
               to="/sell"
               className="self-start group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-volt-300 text-ink font-medium tracking-tight lift-on-hover focus-volt"
             >
-              내 작업 등록
+              {t('footer.registerCta')}
               <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
             </Link>
           </div>
@@ -146,30 +151,31 @@ function SiteFooter() {
             >
               P
             </span>
-            <span>© {new Date().getFullYear()} PromptMarket</span>
+            <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
           </div>
-          <p className="text-bone-mute">에이전트 시대를 위해 · 손맛으로 빚었습니다</p>
+          <p className="text-bone-mute">{t('footer.tagline')}</p>
         </div>
       </div>
     </footer>
-  );
+  )
 }
 
 function FooterLiveStats() {
-  const { data } = useStats();
-  const totalListings = data?.totalListings ?? 0;
-  const totalSales = data?.totalSales ?? 0;
-  const totalUsers = data?.totalUsers ?? 0;
-  const a = useCountUp(totalListings);
-  const b = useCountUp(totalSales);
-  const c = useCountUp(totalUsers);
+  const { t } = useTranslation('nav')
+  const { data } = useStats()
+  const totalListings = data?.totalListings ?? 0
+  const totalDownloads = data?.totalDownloads ?? 0
+  const totalCreators = data?.totalCreators ?? 0
+  const a = useCountUp(totalListings)
+  const b = useCountUp(totalDownloads)
+  const c = useCountUp(totalCreators)
   return (
     <div className="mb-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-      <FooterStat refEl={a.ref} value={a.value} label="리스팅" dot="bg-volt-400" />
-      <FooterStat refEl={b.ref} value={b.value} label="다운로드" dot="bg-violet" />
-      <FooterStat refEl={c.ref} value={c.value} label="메이커" dot="bg-coral" />
+      <FooterStat refEl={a.ref} value={a.value} label={t('stats.listings')} dot="bg-volt-400" />
+      <FooterStat refEl={b.ref} value={b.value} label={t('stats.downloads')} dot="bg-violet" />
+      <FooterStat refEl={c.ref} value={c.value} label={t('stats.makers')} dot="bg-coral" />
     </div>
-  );
+  )
 }
 
 function FooterStat({
@@ -178,17 +184,20 @@ function FooterStat({
   label,
   dot,
 }: {
-  refEl: React.RefObject<HTMLElement | null>;
-  value: number;
-  label: string;
-  dot: string;
+  refEl: React.RefObject<HTMLElement | null>
+  value: number
+  label: string
+  dot: string
 }) {
   return (
     <div
       ref={refEl as React.RefObject<HTMLDivElement>}
       className="rounded-2xl border border-bone/10 bg-bone/[0.04] px-5 py-4 flex items-baseline gap-4"
     >
-      <span aria-hidden className={`w-1.5 h-1.5 rounded-full ${dot} volt-pulse shrink-0 translate-y-[-2px]`} />
+      <span
+        aria-hidden
+        className={`w-1.5 h-1.5 rounded-full ${dot} volt-pulse shrink-0 translate-y-[-2px]`}
+      />
       <div className="flex-1 min-w-0">
         <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-bone-mute">
           {label}
@@ -201,7 +210,7 @@ function FooterStat({
         </p>
       </div>
     </div>
-  );
+  )
 }
 
 function FooterCol({
@@ -209,9 +218,9 @@ function FooterCol({
   title,
   links,
 }: {
-  chapter: string;
-  title: string;
-  links: Array<{ to: string; label: string }>;
+  chapter: string
+  title: string
+  links: Array<{ to: string; label: string }>
 }) {
   return (
     <div className="space-y-3.5">
@@ -235,5 +244,5 @@ function FooterCol({
         ))}
       </ul>
     </div>
-  );
+  )
 }
