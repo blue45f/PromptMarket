@@ -39,7 +39,7 @@ export default function AuthLayout({
         <section className="flex flex-col justify-center gap-7">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 self-start text-[0.78rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt"
+            className="inline-flex items-center gap-2 self-start text-[0.78rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
           >
             <span aria-hidden>←</span> {t('common.backToCatalog')}
           </Link>

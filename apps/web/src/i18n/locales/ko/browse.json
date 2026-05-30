@@ -42,7 +42,8 @@
   "pagination": {
     "prev": "이전",
     "next": "다음",
-    "hint": "페이지 이동"
+    "hint": "페이지 이동",
+    "label": "페이지 탐색"
   },
   "describe": {
     "typesCount": "타입 {{count}}종",
@@ -80,6 +81,7 @@
     "close": "필터 닫기",
     "savedLabel": "최근 필터",
     "savedRemove": "이 저장 필터 지우기",
+    "savedApply": "저장된 필터 적용: {{label}}",
     "apply": "필터 적용"
   },
   "empty": {

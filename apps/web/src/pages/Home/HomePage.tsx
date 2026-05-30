@@ -22,7 +22,7 @@ import SkeletonCard from '@components/SkeletonCard'
 import EmptyState from '@components/EmptyState'
 
 export default function HomePage() {
-  const { t } = useTranslation('home')
+  const { t, i18n } = useTranslation('home')
   const featuredQ = useListings({ sort: 'top', pageSize: 6 })
   const trendingQ = useListings({ sort: 'trending', pageSize: 8 })
   // pageSize: 10 matches Hero's DropsMarquee consumption; Hero receives items as a prop
@@ -53,7 +53,7 @@ export default function HomePage() {
             name: 'PromptMarket',
             alternateName: '프롬프트마켓',
             url: origin,
-            inLanguage: 'ko-KR',
+            inLanguage: i18n.resolvedLanguage ?? 'ko',
             potentialAction: {
               '@type': 'SearchAction',
               target: {
@@ -64,7 +64,7 @@ export default function HomePage() {
             },
           }
         : null,
-    [origin]
+    [origin, i18n.resolvedLanguage]
   )
   useStructuredData(structuredData)
 
@@ -462,8 +462,10 @@ function BentoFeatured({ items }: { items: import('@/types').ListingCard[] }) {
 
 function MarqueeStrip() {
   const { t } = useTranslation('home')
-  const words = t('marquee.words', { returnObjects: true }) as string[]
-  const items = useMemo(() => [...words, ...words], [words])
+  const items = useMemo(() => {
+    const w = t('marquee.words', { returnObjects: true }) as string[]
+    return [...w, ...w]
+  }, [t])
   return (
     <div
       aria-hidden="true"

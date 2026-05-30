@@ -178,20 +178,22 @@ export default function DashboardPage() {
                   <div className="flex gap-2">
                     <button
                       type="button"
+                      aria-label={t('library.copyLinkFor', { title: l.title })}
                       onClick={() => {
                         navigator.clipboard
                           .writeText(window.location.origin + `/listings/${l.slug}`)
                           .then(() => toast.success(t('library.copied')))
                           .catch(() => undefined)
                       }}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition focus-volt"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                     >
                       <Copy className="w-3 h-3" />
                       {t('library.copyLink')}
                     </button>
                     <Link
                       to={`/listings/${l.slug}`}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.78rem] motion-safe:transition focus-volt"
+                      aria-label={t('library.openListing', { title: l.title })}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.78rem] motion-safe:transition ease-expo focus-volt"
                     >
                       {t('library.open')}
                       <ArrowUpRight className="w-3 h-3" />
@@ -253,7 +255,7 @@ export default function DashboardPage() {
                       onClick={() => handleTopup(amt)}
                       disabled={topupMut.isPending}
                       className={cn(
-                        'inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[0.86rem] font-semibold tracking-tight motion-safe:transition focus-volt disabled:opacity-60',
+                        'inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[0.86rem] font-semibold tracking-tight motion-safe:transition ease-expo focus-volt disabled:opacity-60',
                         isThis
                           ? 'bg-volt-300 text-ink'
                           : 'bg-canvas dark:bg-night text-ink dark:text-bone border border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60'
@@ -333,11 +335,14 @@ function EmptyLibraryWithRecs() {
         }
       />
       {!isError && (
-        <section>
-          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mb-4">
+        <section aria-labelledby="library-recs-heading">
+          <h3
+            id="library-recs-heading"
+            className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mb-4"
+          >
             <span aria-hidden className="w-5 h-px bg-volt-500" />
             {t('library.recs')}
-          </p>
+          </h3>
           {isPending ? (
             <SkeletonGrid count={4} />
           ) : items.length > 0 ? (
@@ -426,7 +431,7 @@ function WishlistTab() {
             <button
               type="button"
               onClick={() => setClearPending(false)}
-              className="text-[0.78rem] font-medium text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt rounded"
+              className="text-[0.78rem] font-medium text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt rounded"
             >
               {t('wishlist.clearConfirm.cancel')}
             </button>
@@ -435,7 +440,7 @@ function WishlistTab() {
             type="button"
             onClick={handleClearClick}
             className={cn(
-              'text-[0.78rem] font-medium motion-safe:transition focus-volt rounded',
+              'text-[0.78rem] font-medium motion-safe:transition ease-expo focus-volt rounded',
               clearPending
                 ? 'text-coral-deep dark:text-coral hover:underline'
                 : 'text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral'
@@ -453,7 +458,7 @@ function WishlistTab() {
           <button
             type="button"
             onClick={() => deadSlugs.forEach(toggle)}
-            className="text-[0.78rem] font-medium text-coral-deep dark:text-coral hover:underline motion-safe:transition focus-volt rounded"
+            className="text-[0.78rem] font-medium text-coral-deep dark:text-coral hover:underline motion-safe:transition ease-expo focus-volt rounded"
           >
             {t('wishlist.unavailable.remove')}
           </button>

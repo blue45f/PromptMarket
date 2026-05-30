@@ -133,6 +133,7 @@ export default function SearchBar({
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={history.clear}
+              aria-label={t('search.clearHistory', { defaultValue: '최근 검색 기록 전체 삭제' })}
               className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt rounded"
             >
               {t('actions.clear')}

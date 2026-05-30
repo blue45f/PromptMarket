@@ -505,6 +505,7 @@ export default function ListingDetailPage() {
                   {canViewBody && listing.body && (
                     <div className="flex items-center gap-2">
                       <button
+                        type="button"
                         onClick={handleCopy}
                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                       >
@@ -518,6 +519,7 @@ export default function ListingDetailPage() {
                         </span>
                       </button>
                       <button
+                        type="button"
                         onClick={handleDownload}
                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                       >
@@ -555,6 +557,7 @@ export default function ListingDetailPage() {
                             : t('paywall.paid', { price: formatPrice(listing.priceCents) })}
                         </p>
                         <button
+                          type="button"
                           onClick={handlePurchase}
                           disabled={buying}
                           className="mt-3 group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
@@ -588,13 +591,12 @@ export default function ListingDetailPage() {
                     <p className="text-sm font-medium text-ink dark:text-bone mb-2">
                       {t('reviews.writePrompt')}
                     </p>
-                    <div aria-describedby={errors.rating ? 'review-rating-error' : undefined}>
-                      <StarRating
-                        value={rating}
-                        onChange={(v) => setValue('rating', v, { shouldDirty: true })}
-                        size="lg"
-                      />
-                    </div>
+                    <StarRating
+                      value={rating}
+                      onChange={(v) => setValue('rating', v, { shouldDirty: true })}
+                      size="lg"
+                      aria-describedby={errors.rating ? 'review-rating-error' : undefined}
+                    />
                     {errors.rating && (
                       <p
                         id="review-rating-error"
@@ -743,6 +745,7 @@ export default function ListingDetailPage() {
                   </span>
                 ) : (
                   <button
+                    type="button"
                     onClick={handlePurchase}
                     disabled={buying}
                     className="group w-full relative inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover overflow-hidden"
@@ -777,6 +780,7 @@ export default function ListingDetailPage() {
                 {(isPurchased || isOwner) && listing.body && (
                   <div className="grid grid-cols-2 gap-2">
                     <button
+                      type="button"
                       onClick={handleCopy}
                       className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                     >
@@ -790,6 +794,7 @@ export default function ListingDetailPage() {
                       </span>
                     </button>
                     <button
+                      type="button"
                       onClick={handleDownload}
                       className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                     >
@@ -927,6 +932,7 @@ export default function ListingDetailPage() {
               </span>
             ) : (
               <button
+                type="button"
                 onClick={handlePurchase}
                 disabled={buying}
                 className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold text-[0.86rem] tracking-tight motion-safe:transition ease-expo focus-volt disabled:opacity-60"

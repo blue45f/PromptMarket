@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import * as Dialog from '@radix-ui/react-dialog'
@@ -260,7 +260,7 @@ export default function CommandPalette() {
               spellCheck={false}
             />
             <kbd className="hidden sm:inline-flex font-mono text-[0.65rem] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded border border-line dark:border-night-line text-ink-mute dark:text-bone-mute">
-              esc
+              {t('common:keyboard.esc', { defaultValue: 'esc' })}
             </kbd>
           </div>
 
@@ -299,7 +299,9 @@ export default function CommandPalette() {
                   <button
                     type="button"
                     onClick={() => history.clear()}
-                    aria-label={t('history.clearAll', { defaultValue: '검색 기록 전체 삭제' })}
+                    aria-label={t('common:history.clearAll', {
+                      defaultValue: '검색 기록 전체 삭제',
+                    })}
                     className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt rounded"
                   >
                     {t('palette.clear')}
@@ -418,7 +420,13 @@ export default function CommandPalette() {
   )
 }
 
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
+const Section = React.memo(function Section({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
   return (
     <div className="px-1.5 py-1.5">
       <p className="px-2 pb-1.5 pt-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
@@ -429,9 +437,9 @@ function Section({ label, children }: { label: string; children: React.ReactNode
       </div>
     </div>
   )
-}
+})
 
-function Row({
+const Row = React.memo(function Row({
   active,
   onClick,
   onMouseEnter,
@@ -493,9 +501,9 @@ function Row({
       />
     </div>
   )
-}
+})
 
-function Hint({ k, label }: { k: string; label: string }) {
+const Hint = React.memo(function Hint({ k, label }: { k: string; label: string }) {
   return (
     <span className="inline-flex items-center gap-1">
       <kbd className="inline-flex font-mono text-[0.62rem] uppercase px-1 py-0.5 rounded border border-line dark:border-night-line text-ink-soft dark:text-bone-soft">
@@ -504,4 +512,4 @@ function Hint({ k, label }: { k: string; label: string }) {
       {label}
     </span>
   )
-}
+})

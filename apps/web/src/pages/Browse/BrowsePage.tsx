@@ -311,10 +311,7 @@ export default function BrowsePage() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-7 lg:gap-9">
-        <aside
-          className="hidden lg:block lg:w-72 shrink-0"
-          aria-label={t('filters.sidebarLabel', { defaultValue: '필터' })}
-        >
+        <aside className="hidden lg:block lg:w-72 shrink-0" aria-label={t('filters.sidebarLabel')}>
           <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5 shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.35)] dark:shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.65)] scrollbar-hide">
             <FilterPanel
               value={filters}
@@ -366,12 +363,15 @@ export default function BrowsePage() {
                   onRemove={() => updateExtras({ vendor: undefined, page: 1 })}
                 />
               )}
-              {filters.types.map((t) => (
+              {filters.types.map((typeVal) => (
                 <Chip
-                  key={`type-${t}`}
-                  label={LISTING_TYPE_META[t].label}
+                  key={`type-${typeVal}`}
+                  label={t('common:types.' + typeVal, { defaultValue: typeVal })}
                   onRemove={() =>
-                    commit({ ...filters, types: filters.types.filter((x) => x !== t) }, { page: 1 })
+                    commit(
+                      { ...filters, types: filters.types.filter((x) => x !== typeVal) },
+                      { page: 1 }
+                    )
                   }
                 />
               ))}
@@ -389,7 +389,9 @@ export default function BrowsePage() {
               ))}
               {filters.technique && (
                 <Chip
-                  label={TECHNIQUE_META[filters.technique].label}
+                  label={t('common:technique.' + filters.technique + '.label', {
+                    defaultValue: filters.technique,
+                  })}
                   onRemove={() => commit({ ...filters, technique: '' }, { page: 1 })}
                 />
               )}
@@ -464,36 +466,40 @@ export default function BrowsePage() {
               </div>
 
               {effectiveTotalPages > 1 && (
-                <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                  <div className="inline-flex items-center gap-2">
-                    <button
-                      disabled={page <= 1}
-                      onClick={() => updateExtras({ page: page - 1 })}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition ease-expo focus-volt"
-                    >
-                      <span aria-hidden>←</span> {t('pagination.prev')}
-                    </button>
-                    <span className="font-mono text-[0.78rem] tabular-nums text-ink-soft dark:text-bone-soft px-2">
-                      {page} / {effectiveTotalPages}
+                <nav aria-label={t('pagination.label', { defaultValue: '페이지 탐색' })}>
+                  <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                    <div className="inline-flex items-center gap-2">
+                      <button
+                        type="button"
+                        disabled={page <= 1}
+                        onClick={() => updateExtras({ page: page - 1 })}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition ease-expo focus-volt"
+                      >
+                        <span aria-hidden>←</span> {t('pagination.prev')}
+                      </button>
+                      <span className="font-mono text-[0.78rem] tabular-nums text-ink-soft dark:text-bone-soft px-2">
+                        {page} / {effectiveTotalPages}
+                      </span>
+                      <button
+                        type="button"
+                        disabled={page >= effectiveTotalPages}
+                        onClick={() => updateExtras({ page: page + 1 })}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition ease-expo focus-volt"
+                      >
+                        {t('pagination.next')} <span aria-hidden>→</span>
+                      </button>
+                    </div>
+                    <span className="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute inline-flex items-center gap-1.5">
+                      <kbd className="inline-flex items-center justify-center min-w-[1.4rem] h-[1.4rem] px-1 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60">
+                        ←
+                      </kbd>
+                      <kbd className="inline-flex items-center justify-center min-w-[1.4rem] h-[1.4rem] px-1 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60">
+                        →
+                      </kbd>
+                      {t('pagination.hint')}
                     </span>
-                    <button
-                      disabled={page >= effectiveTotalPages}
-                      onClick={() => updateExtras({ page: page + 1 })}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition ease-expo focus-volt"
-                    >
-                      {t('pagination.next')} <span aria-hidden>→</span>
-                    </button>
                   </div>
-                  <span className="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute inline-flex items-center gap-1.5">
-                    <kbd className="inline-flex items-center justify-center min-w-[1.4rem] h-[1.4rem] px-1 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60">
-                      ←
-                    </kbd>
-                    <kbd className="inline-flex items-center justify-center min-w-[1.4rem] h-[1.4rem] px-1 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60">
-                      →
-                    </kbd>
-                    {t('pagination.hint')}
-                  </span>
-                </div>
+                </nav>
               )}
             </>
           ) : (

@@ -9,6 +9,7 @@ interface StarRatingProps {
   onChange?: (value: number) => void
   size?: 'sm' | 'md' | 'lg'
   showLabel?: boolean
+  'aria-describedby'?: string
 }
 
 const starSize: Record<NonNullable<StarRatingProps['size']>, string> = {
@@ -23,6 +24,7 @@ export default function StarRating({
   onChange,
   size = 'sm',
   showLabel = false,
+  'aria-describedby': ariaDescribedBy,
 }: StarRatingProps) {
   const { t } = useTranslation('common')
   const interactive = typeof onChange === 'function'
@@ -39,6 +41,7 @@ export default function StarRating({
             ? t('rating.widgetLabel', { value: Math.round(value), outOf: 5 })
             : t('rating.display', { value: value.toFixed(1), outOf: 5 })
         }
+        aria-describedby={interactive ? ariaDescribedBy : undefined}
         onMouseLeave={() => setHover(null)}
       >
         {[1, 2, 3, 4, 5].map((n) => {

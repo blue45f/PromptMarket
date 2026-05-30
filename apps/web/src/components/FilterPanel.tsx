@@ -132,7 +132,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
                 aria-pressed={active}
                 onClick={() => toggleType(typeKey)}
                 className={cn(
-                  'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.72rem] font-medium border motion-safe:transition focus-volt',
+                  'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.72rem] font-medium border motion-safe:transition ease-expo focus-volt',
                   active
                     ? 'bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200 border-volt-300 dark:border-volt-700'
                     : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/50'
@@ -194,7 +194,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
               <label
                 key={c}
                 className={cn(
-                  'flex items-center gap-2 px-2 py-1.5 rounded-lg text-[0.82rem] cursor-pointer motion-safe:transition',
+                  'flex items-center gap-2 px-2 py-1.5 rounded-lg text-[0.82rem] cursor-pointer motion-safe:transition ease-expo',
                   active
                     ? 'bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200'
                     : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-deep'
@@ -241,7 +241,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
                 tabIndex={active ? 0 : -1}
                 onClick={() => set('difficulty', d as FilterState['difficulty'])}
                 className={cn(
-                  'text-[0.74rem] font-medium px-1 py-1.5 rounded-lg motion-safe:transition focus-volt',
+                  'text-[0.74rem] font-medium px-1 py-1.5 rounded-lg motion-safe:transition ease-expo focus-volt',
                   active
                     ? 'bg-canvas dark:bg-night text-ink dark:text-bone shadow-[0_4px_12px_-6px_oklch(0.16_0.03_290_/_0.4)]'
                     : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone'
@@ -275,7 +275,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
                 tabIndex={active ? 0 : -1}
                 onClick={() => set('price', p)}
                 className={cn(
-                  'text-[0.74rem] font-medium px-2 py-1.5 rounded-lg motion-safe:transition focus-volt',
+                  'text-[0.74rem] font-medium px-2 py-1.5 rounded-lg motion-safe:transition ease-expo focus-volt',
                   active
                     ? 'bg-canvas dark:bg-night text-ink dark:text-bone shadow-[0_4px_12px_-6px_oklch(0.16_0.03_290_/_0.4)]'
                     : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone'

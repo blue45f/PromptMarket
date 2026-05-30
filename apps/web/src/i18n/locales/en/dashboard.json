@@ -32,8 +32,11 @@
   },
   "library": {
     "copyLink": "Copy link",
+    "copyLinkFor": "Copy link for: {{title}}",
     "copied": "Link copied",
     "open": "Open",
+    "openListing": "Open: {{title}}",
+    "recsHeading": "Explore the catalog",
     "empty": {
       "title": "Your library is empty",
       "description": "Listings you buy show up here. Start with something free.",

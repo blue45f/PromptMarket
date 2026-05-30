@@ -20,7 +20,7 @@ export function useCountUp(target: number, duration = 1200) {
       return
     }
 
-    let frame: number
+    let frame: number | undefined
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting || startedRef.current) return
@@ -40,7 +40,7 @@ export function useCountUp(target: number, duration = 1200) {
     obs.observe(node)
     return () => {
       obs.disconnect()
-      cancelAnimationFrame(frame)
+      if (frame !== undefined) cancelAnimationFrame(frame)
     }
   }, [target, duration])
 

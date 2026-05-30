@@ -91,14 +91,14 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
                 clear()
                 setClearPending(false)
               }}
-              className="inline-flex items-center px-3 py-1.5 rounded-full text-[0.78rem] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 motion-safe:transition focus-volt"
+              className="inline-flex items-center px-3 py-1.5 rounded-full text-[0.78rem] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 motion-safe:transition ease-expo focus-volt"
             >
               {t('recentlyViewed.clearConfirmYes')}
             </button>
             <button
               type="button"
               onClick={() => setClearPending(false)}
-              className="inline-flex items-center px-3 py-1.5 rounded-full text-[0.78rem] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub/60 motion-safe:transition focus-volt"
+              className="inline-flex items-center px-3 py-1.5 rounded-full text-[0.78rem] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub/60 motion-safe:transition ease-expo focus-volt"
             >
               {t('recentlyViewed.clearCancel')}
             </button>
@@ -107,7 +107,7 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
           <button
             type="button"
             onClick={() => setClearPending(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.78rem] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub/60 motion-safe:transition focus-volt"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.78rem] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub/60 motion-safe:transition ease-expo focus-volt"
           >
             <X className="w-3.5 h-3.5" aria-hidden />
             {t('recentlyViewed.clear')}

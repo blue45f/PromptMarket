@@ -31,8 +31,11 @@
   },
   "library": {
     "copyLink": "링크 복사",
+    "copyLinkFor": "링크 복사: {{title}}",
     "copied": "링크 복사됨",
     "open": "열기",
+    "openListing": "열기: {{title}}",
+    "recsHeading": "카탈로그 둘러보기",
     "empty": {
       "title": "라이브러리가 비어 있어요",
       "description": "구매한 리스팅이 여기에 보여요. 우선 무료부터 골라 보세요.",

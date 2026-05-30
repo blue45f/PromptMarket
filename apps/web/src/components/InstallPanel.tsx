@@ -102,6 +102,7 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
 
   return (
     <section
+      aria-label={t('install.title')}
       className={cn(
         'relative overflow-hidden rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub',
         className

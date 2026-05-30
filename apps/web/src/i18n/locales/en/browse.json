@@ -44,7 +44,8 @@
   "pagination": {
     "prev": "Previous",
     "next": "Next",
-    "hint": "Page navigation"
+    "hint": "Page navigation",
+    "label": "Pagination"
   },
   "describe": {
     "typesCount": "{{count}} types",
@@ -82,6 +83,7 @@
     "close": "Close filters",
     "savedLabel": "Recent filters",
     "savedRemove": "Clear this saved filter",
+    "savedApply": "Apply saved filter: {{label}}",
     "apply": "Apply filters"
   },
   "empty": {

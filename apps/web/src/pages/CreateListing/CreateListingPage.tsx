@@ -328,14 +328,14 @@ export default function CreateListingPage() {
                   discardDraft()
                   setDraftDiscardPending(false)
                 }}
-                className="inline-flex items-center px-3 py-1.5 rounded-full border border-red-400/40 dark:border-red-500/30 text-red-600 dark:text-red-400 text-[0.78rem] font-medium hover:border-red-500 dark:hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 motion-safe:transition focus-volt"
+                className="inline-flex items-center px-3 py-1.5 rounded-full border border-red-400/40 dark:border-red-500/30 text-red-600 dark:text-red-400 text-[0.78rem] font-medium hover:border-red-500 dark:hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 motion-safe:transition ease-expo focus-volt"
               >
                 {t('draft.discardConfirmYes')}
               </button>
               <button
                 type="button"
                 onClick={() => setDraftDiscardPending(false)}
-                className="inline-flex items-center px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition focus-volt"
+                className="inline-flex items-center px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
               >
                 {t('draft.discardCancel')}
               </button>
@@ -344,7 +344,7 @@ export default function CreateListingPage() {
             <button
               type="button"
               onClick={() => setDraftDiscardPending(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition focus-volt"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
             >
               {t('draft.restart')}
             </button>
@@ -365,7 +365,7 @@ export default function CreateListingPage() {
                   key={key}
                   value={key}
                   className={cn(
-                    'px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition focus-volt',
+                    'px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition ease-expo focus-volt',
                     'border-transparent text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone',
                     'data-[state=active]:border-volt-500 data-[state=active]:text-ink',
                     'dark:data-[state=active]:border-volt-400 dark:data-[state=active]:text-bone'
@@ -431,7 +431,7 @@ export default function CreateListingPage() {
                     type="text"
                     maxLength={4}
                     {...register('coverEmoji')}
-                    className="w-16 text-center rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-2 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500 motion-safe:transition"
+                    className="w-16 text-center rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-2 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500 motion-safe:transition ease-expo"
                   />
                   <div className="flex flex-wrap gap-1">
                     {QUICK_EMOJIS.map((e) => (
@@ -439,9 +439,10 @@ export default function CreateListingPage() {
                         key={e}
                         type="button"
                         aria-label={e}
+                        aria-pressed={v.coverEmoji === e}
                         onClick={() => setValue('coverEmoji', e, { shouldDirty: true })}
                         className={cn(
-                          'w-8 h-8 rounded-lg border text-lg motion-safe:transition focus-volt',
+                          'w-8 h-8 rounded-lg border text-lg motion-safe:transition ease-expo focus-volt',
                           v.coverEmoji === e
                             ? 'border-volt-500 bg-volt-100 dark:bg-volt-900/40 dark:border-volt-400'
                             : 'border-line dark:border-night-line hover:bg-canvas-deep dark:hover:bg-night-deep'
@@ -557,7 +558,7 @@ export default function CreateListingPage() {
                         tabIndex={active ? 0 : -1}
                         onClick={() => setValue('difficulty', d, { shouldDirty: true })}
                         className={cn(
-                          'text-[0.78rem] font-medium px-2 py-1.5 rounded-lg capitalize motion-safe:transition focus-volt',
+                          'text-[0.78rem] font-medium px-2 py-1.5 rounded-lg capitalize motion-safe:transition ease-expo focus-volt',
                           active
                             ? 'bg-canvas dark:bg-night text-ink dark:text-bone shadow-[0_8px_24px_-12px_oklch(0.16_0.03_290_/_0.4)]'
                             : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone'
@@ -599,7 +600,7 @@ export default function CreateListingPage() {
             <button
               type="submit"
               disabled={busy}
-              className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight overflow-hidden motion-safe:transition focus-volt disabled:opacity-60"
+              className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight overflow-hidden motion-safe:transition ease-expo focus-volt disabled:opacity-60"
             >
               <span
                 aria-hidden
@@ -638,7 +639,7 @@ const inputClass = cn(
   'border border-line dark:border-night-line',
   'bg-canvas dark:bg-night text-ink dark:text-bone',
   'placeholder:text-ink-mute dark:placeholder:text-bone-mute',
-  'motion-safe:transition',
+  'motion-safe:transition ease-expo',
   'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
 )
 
@@ -704,16 +705,18 @@ const TrendingCategoryHint = memo(function TrendingCategoryHint({
   const { t } = useTranslation('create')
   const { data } = useListings({ sort: 'trending', pageSize: 12 })
   const items = data?.items ?? []
-  const counts = new Map<string, number>()
-  for (const l of items) {
-    const c = l.category
-    if (!c) continue
-    counts.set(c, (counts.get(c) ?? 0) + 1)
-  }
-  const top = [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4)
-    .map(([c]) => c)
+  const top = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const l of items) {
+      const c = l.category
+      if (!c) continue
+      counts.set(c, (counts.get(c) ?? 0) + 1)
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4)
+      .map(([c]) => c)
+  }, [items])
   if (top.length === 0) return null
   return (
     <div className="-mt-2 flex flex-wrap items-center gap-1.5">
@@ -729,7 +732,7 @@ const TrendingCategoryHint = memo(function TrendingCategoryHint({
             onClick={() => onPick(c)}
             aria-pressed={active}
             className={cn(
-              'inline-flex items-center px-2.5 py-1 rounded-full text-[0.74rem] motion-safe:transition focus-volt border',
+              'inline-flex items-center px-2.5 py-1 rounded-full text-[0.74rem] motion-safe:transition ease-expo focus-volt border',
               active
                 ? 'bg-ink text-bone dark:bg-bone dark:text-ink border-ink dark:border-bone'
                 : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60'

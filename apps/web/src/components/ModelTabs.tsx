@@ -71,7 +71,7 @@ export default function ModelTabs() {
               ? '/browse?model=claude-code'
               : `/browse?vendor=${encodeURIComponent(vendor ?? '')}`
           }
-          className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition focus-volt shrink-0"
+          className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition ease-expo focus-volt shrink-0"
         >
           {t('common.viewAll')}
           <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
@@ -116,7 +116,7 @@ export default function ModelTabs() {
                 key={key}
                 onClick={() => setActive(key)}
                 className={cn(
-                  'relative px-4 py-2 rounded-xl text-[0.83rem] font-medium whitespace-nowrap motion-safe:transition focus-volt',
+                  'relative px-4 py-2 rounded-xl text-[0.83rem] font-medium whitespace-nowrap motion-safe:transition ease-expo focus-volt',
                   isActive
                     ? 'text-bone dark:text-ink'
                     : 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone'
