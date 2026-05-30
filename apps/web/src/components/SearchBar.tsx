@@ -140,37 +140,34 @@ export default function SearchBar({
           </div>
           <ul className="py-1.5">
             {history.entries.map((q, i) => (
-              <li
-                key={q}
-                role="option"
-                aria-selected={i === activeIdx}
-                id={`search-history-option-${i}`}
-              >
+              <li key={q} role="presentation">
                 <div
                   onMouseEnter={() => setActiveIdx(i)}
                   className={cn(
-                    'group/row w-full flex items-center justify-between gap-3 px-3.5 py-1.5 text-[0.86rem] motion-safe:transition',
+                    'group/row w-full flex items-center gap-3 px-3.5 py-1.5 text-[0.86rem] motion-safe:transition',
                     i === activeIdx
                       ? 'bg-volt-100 dark:bg-volt-900/30 text-ink dark:text-bone'
                       : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub'
                   )}
                 >
-                  <button
-                    type="button"
+                  <div
+                    role="option"
+                    id={`search-history-option-${i}`}
+                    aria-selected={i === activeIdx}
                     // mouseDown fires before blur so the option stays clickable.
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
                       setValue(q)
                       commit(q)
                     }}
-                    className="flex items-center gap-2 min-w-0 text-left focus-volt rounded"
+                    className="flex items-center gap-2 min-w-0 flex-1 cursor-pointer focus-volt rounded"
                   >
                     <Search
                       className="w-3.5 h-3.5 text-ink-mute dark:text-bone-mute shrink-0"
                       aria-hidden
                     />
                     <span className="truncate">{q}</span>
-                  </button>
+                  </div>
                   <button
                     type="button"
                     aria-label={t('search.removeFromHistory')}

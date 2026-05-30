@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -108,6 +108,15 @@ export default function ListingDetailPage() {
 
   const [copied, setCopied] = useState(false)
   const [shareState, setShareState] = useState<'idle' | 'shared' | 'copied'>('idle')
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const shareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
+      if (shareTimerRef.current) clearTimeout(shareTimerRef.current)
+    }
+  }, [])
   const [readingMode, setReadingMode] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false
     return window.localStorage.getItem('pm.readingMode') === '1'
@@ -167,7 +176,9 @@ export default function ListingDetailPage() {
             brand: { '@type': 'Brand', name: 'PromptMarket' },
             author: {
               '@type': 'Person',
-              name: listing.author?.username ? `@${listing.author.username}` : 'PromptMarket maker',
+              name: listing.author?.username
+                ? `@${listing.author.username}`
+                : t('jsonLd.makerType', { defaultValue: 'PromptMarket maker' }),
             },
             dateModified: listing.updatedAt ?? listing.createdAt,
             offers: {
@@ -269,7 +280,8 @@ export default function ListingDetailPage() {
     try {
       await navigator.clipboard.writeText(listing.body)
       setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 1500)
     } catch {
       /* ignore */
     }
@@ -280,7 +292,7 @@ export default function ListingDetailPage() {
     const url =
       typeof window !== 'undefined' ? `${window.location.origin}/listings/${listing.slug}` : ''
     const payload = {
-      title: `${listing.title} · PromptMarket`,
+      title: listing.title,
       text: listing.description,
       url,
     }
@@ -289,7 +301,8 @@ export default function ListingDetailPage() {
       try {
         await navigator.share(payload)
         setShareState('shared')
-        setTimeout(() => setShareState('idle'), 1500)
+        if (shareTimerRef.current) clearTimeout(shareTimerRef.current)
+        shareTimerRef.current = setTimeout(() => setShareState('idle'), 1500)
         return
       } catch {
         /* user cancelled or browser refused — fall through to clipboard */
@@ -298,7 +311,8 @@ export default function ListingDetailPage() {
     try {
       await navigator.clipboard.writeText(url)
       setShareState('copied')
-      setTimeout(() => setShareState('idle'), 1500)
+      if (shareTimerRef.current) clearTimeout(shareTimerRef.current)
+      shareTimerRef.current = setTimeout(() => setShareState('idle'), 1500)
     } catch {
       /* clipboard denied — silently ignore */
     }
@@ -379,7 +393,7 @@ export default function ListingDetailPage() {
           <PanelRight className="w-3.5 h-3.5" />
           {t('reopenSidebar')}
           <kbd className="font-mono text-[0.62rem] px-1 py-0.5 rounded border border-line dark:border-night-line">
-            esc
+            {t('keyboard.esc', { defaultValue: 'esc' })}
           </kbd>
         </button>
       )}
@@ -397,7 +411,7 @@ export default function ListingDetailPage() {
             </span>
             <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
               <TypeBadge type={listing.type} overlay />
-              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-canvas/80 dark:bg-night/70 backdrop-blur ring-1 ring-line/60 dark:ring-night-line/60 text-ink dark:text-bone">
+              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-canvas dark:bg-night ring-1 ring-line dark:ring-night-line text-ink dark:text-bone">
                 {t('cover.categoryBadge', {
                   category: t('home:categories.labels.' + listing.category, {
                     defaultValue: listing.category,
@@ -424,19 +438,19 @@ export default function ListingDetailPage() {
             <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
               <StarRating value={listing.avgRating ?? 0} count={listing.reviewCount} showLabel />
               <span className="inline-flex items-center gap-1 text-ink-mute dark:text-bone-mute">
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-3.5 h-3.5" aria-hidden="true" />
                 {t('hero.downloads', { count: listing.downloads ?? 0 })}
               </span>
             </div>
             {listing.tags && listing.tags.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-1.5">
-                {listing.tags.map((t) => (
+                {listing.tags.map((tag) => (
                   <Link
-                    key={t}
-                    to={`/browse?q=${encodeURIComponent(t)}`}
+                    key={tag}
+                    to={`/browse?q=${encodeURIComponent(tag)}`}
                     className="text-xs px-2 py-0.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft hover:bg-volt-300/40 hover:text-ink dark:hover:bg-volt-300/30 dark:hover:text-bone motion-safe:transition-colors focus-volt"
                   >
-                    #{t}
+                    #{tag}
                   </Link>
                 ))}
               </div>
@@ -480,7 +494,7 @@ export default function ListingDetailPage() {
                 className="mb-6"
               />
               <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
-                <p className="text-base text-ink-soft dark:text-bone-soft whitespace-pre-wrap leading-relaxed">
+                <p className="text-base text-ink-soft dark:text-bone-soft whitespace-pre-wrap leading-relaxed max-w-[72ch]">
                   {listing.description}
                 </p>
 
@@ -643,7 +657,7 @@ export default function ListingDetailPage() {
                             </span>
                           </div>
                           {r.comment && (
-                            <p className="mt-2 text-sm text-ink-soft dark:text-bone-soft">
+                            <p className="mt-2 text-sm text-ink-soft dark:text-bone-soft max-w-[72ch]">
                               {r.comment}
                             </p>
                           )}

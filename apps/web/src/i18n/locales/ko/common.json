@@ -47,7 +47,8 @@
   },
   "rating": {
     "starLabel": "{{count}}점",
-    "display": "{{value}}점 / 5점"
+    "display": "{{value}}점 / 5점",
+    "widgetLabel": "별점 선택: {{value}}점 / {{outOf}}점"
   },
   "difficulty": {
     "beginner": "입문",
@@ -166,6 +167,16 @@
     "switchLabel": "언어 전환",
     "ko": "한국어",
     "en": "English"
+  },
+  "license": {
+    "MIT": "MIT",
+    "Apache-2.0": "Apache 2.0",
+    "CC0-1.0": "CC0 (공개 도메인)",
+    "CC-BY-4.0": "CC BY 4.0",
+    "GPL-3.0": "GPL 3.0"
+  },
+  "history": {
+    "clearAll": "검색 기록 전체 삭제"
   },
   "theme": {
     "switchLabel": "테마 전환",

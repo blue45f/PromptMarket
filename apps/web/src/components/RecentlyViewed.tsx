@@ -47,8 +47,21 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
   const items = results.map((r) => r.data).filter((l): l is NonNullable<typeof l> => !!l)
 
   const isPending = results.some((r) => r.isPending)
+  const isError = results.every((r) => r.isError)
 
-  if (visible.length === 0 || (items.length === 0 && !isPending)) {
+  if (visible.length === 0) {
+    return null
+  }
+
+  if (isError && items.length === 0 && !isPending) {
+    return (
+      <p className="text-sm text-ink-mute">
+        {t('recentlyViewed.loadError', { defaultValue: '최근 본 항목을 불러오지 못했어요.' })}
+      </p>
+    )
+  }
+
+  if (items.length === 0 && !isPending) {
     return null
   }
 

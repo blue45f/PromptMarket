@@ -60,7 +60,8 @@
   "validation": {
     "price": "Please enter a valid price",
     "models": "Select at least one model",
-    "fixFields": "Fix {{count}} field(s) to publish",
+    "fixFields_one": "Fix {{count}} field to publish",
+    "fixFields_other": "Fix {{count}} fields to publish",
     "canonicalFailed": "Form data is invalid. Please check your inputs."
   }
 }

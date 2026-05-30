@@ -60,7 +60,8 @@
   "validation": {
     "price": "가격을 정확히 입력해 주세요",
     "models": "모델을 한 개 이상 선택해 주세요",
-    "fixFields": "게시하려면 {{count}}개 항목을 확인해 주세요",
+    "fixFields_one": "{{count}}개 항목을 수정해야 게시할 수 있어요",
+    "fixFields_other": "{{count}}개 항목을 수정해야 게시할 수 있어요",
     "canonicalFailed": "양식 데이터가 유효하지 않아요. 입력 값을 확인해 주세요."
   }
 }

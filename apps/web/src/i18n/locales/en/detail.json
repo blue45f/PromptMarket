@@ -125,5 +125,11 @@
   "related": {
     "empty": "No related listings yet.",
     "error": "Could not load related listings."
+  },
+  "keyboard": {
+    "esc": "esc"
+  },
+  "jsonLd": {
+    "makerType": "PromptMarket maker"
   }
 }

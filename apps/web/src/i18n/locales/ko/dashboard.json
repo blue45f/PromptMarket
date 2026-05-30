@@ -47,6 +47,7 @@
       "action": "카탈로그 둘러보기"
     },
     "count": "담은 항목 {{count}}건",
+    "confirmPrompt": "정말 삭제할까요?",
     "clear": "전부 지우기",
     "clearConfirm": {
       "title": "위시리스트를 비울까요?",
@@ -66,6 +67,7 @@
     "balance": "현재 잔액",
     "topup": "충전",
     "processing": "처리 중…",
+    "loadingTopup": "충전 중...",
     "note": "데모 지갑이라 충전은 즉시 시뮬레이션 처리돼요."
   }
 }

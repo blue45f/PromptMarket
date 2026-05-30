@@ -36,7 +36,7 @@ export default function StarRating({
         role={interactive ? 'group' : 'img'}
         aria-label={
           interactive
-            ? t('rating.starLabel', { count: Math.round(value) })
+            ? t('rating.widgetLabel', { value: Math.round(value), outOf: 5 })
             : t('rating.display', { value: value.toFixed(1), outOf: 5 })
         }
         onMouseLeave={() => setHover(null)}

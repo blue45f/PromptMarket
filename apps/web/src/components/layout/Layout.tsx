@@ -1,8 +1,9 @@
+import { lazy, Suspense } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowUpRight } from 'lucide-react'
 import Navbar from './Navbar'
-import CommandPalette from '@components/CommandPalette'
+const CommandPalette = lazy(() => import('@components/CommandPalette'))
 import ShortcutsOverlay from '@components/ShortcutsOverlay'
 import ScrollToTop from '@components/ScrollToTop'
 import { useMe, useStats } from '@features/marketplace/queries'
@@ -31,7 +32,9 @@ export default function Layout() {
         {t('skipToContent')}
       </a>
       <Navbar />
-      <CommandPalette />
+      <Suspense fallback={null}>
+        <CommandPalette />
+      </Suspense>
       <ShortcutsOverlay />
       <ScrollToTop />
       <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">

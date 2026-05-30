@@ -17,6 +17,9 @@
     "filter": "필터",
     "sortLabel": "정렬"
   },
+  "filters": {
+    "activeCount_other": "{{count}}개 필터 적용됨"
+  },
   "sort": {
     "newest": "최신순",
     "trending": "트렌딩",

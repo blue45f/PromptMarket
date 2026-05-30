@@ -125,5 +125,11 @@
   "related": {
     "empty": "아직 관련 리스팅이 없어요.",
     "error": "관련 리스팅을 불러오지 못했어요."
+  },
+  "keyboard": {
+    "esc": "esc"
+  },
+  "jsonLd": {
+    "makerType": "PromptMarket maker"
   }
 }

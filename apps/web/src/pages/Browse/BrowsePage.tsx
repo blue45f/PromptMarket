@@ -154,28 +154,34 @@ export default function BrowsePage() {
     pageSize: 12,
   })
 
-  let items = data?.items ?? []
-  // Client-side narrowing for the cases the backend doesn't yet support.
-  if (filters.types.length > 1) {
-    items = items.filter((i) => filters.types.includes(i.type))
-  }
-  if (filters.models.length > 1) {
-    items = items.filter((i) => (i.models ?? []).some((m) => filters.models.includes(m)))
-  }
-  if (filters.price === 'free') items = items.filter((i) => (i.priceCents ?? 0) === 0)
-  if (filters.price === 'paid') items = items.filter((i) => (i.priceCents ?? 0) > 0)
+  const { items, effectiveTotal, effectiveTotalPages } = useMemo(() => {
+    let narrowed = data?.items ?? []
+    // Client-side narrowing for the cases the backend doesn't yet support.
+    if (filters.types.length > 1) {
+      narrowed = narrowed.filter((i) => filters.types.includes(i.type))
+    }
+    if (filters.models.length > 1) {
+      narrowed = narrowed.filter((i) => (i.models ?? []).some((m) => filters.models.includes(m)))
+    }
+    if (filters.price === 'free') narrowed = narrowed.filter((i) => (i.priceCents ?? 0) === 0)
+    if (filters.price === 'paid') narrowed = narrowed.filter((i) => (i.priceCents ?? 0) > 0)
 
-  const total = data?.total ?? items.length
-  const totalPages = data?.totalPages ?? 1
-  // When client-side multi-value narrowing is active the server's total/pages
-  // describe the unfiltered set, so they'd overstate the result count and offer
-  // pages whose entire contents get narrowed away. Reflect the narrowed grid
-  // instead and collapse to a single page (the backend can't paginate the
-  // multi-value union today). Price narrowing is handled server-side, so it
-  // doesn't trigger this.
-  const narrowing = narrowTypes || narrowModels
-  const effectiveTotal = narrowing ? items.length : total
-  const effectiveTotalPages = narrowing ? 1 : totalPages
+    const total = data?.total ?? narrowed.length
+    const totalPages = data?.totalPages ?? 1
+    // When client-side multi-value narrowing is active the server's total/pages
+    // describe the unfiltered set, so they'd overstate the result count and offer
+    // pages whose entire contents get narrowed away. Reflect the narrowed grid
+    // instead and collapse to a single page (the backend can't paginate the
+    // multi-value union today). Price narrowing is handled server-side, so it
+    // doesn't trigger this.
+    const narrowing = narrowTypes || narrowModels
+    return {
+      items: narrowed,
+      effectiveTotal: narrowing ? narrowed.length : total,
+      effectiveTotalPages: narrowing ? 1 : totalPages,
+    }
+  }, [data, filters.types, filters.models, filters.price, narrowTypes, narrowModels])
+
   const activeCount = countActive(filters)
   const fmt = useMemo(() => new Intl.NumberFormat(activeIntlLocale()), [i18n.resolvedLanguage])
 
@@ -290,9 +296,15 @@ export default function BrowsePage() {
             <SlidersHorizontal className="w-4 h-4" />
             {t('toolbar.filter')}
             {activeCount > 0 && (
-              <span className="inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] px-1 text-[0.62rem] rounded-full bg-volt-300 text-ink font-mono font-semibold">
+              <span
+                className="inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] px-1 text-[0.62rem] rounded-full bg-volt-300 text-ink font-mono font-semibold"
+                aria-hidden
+              >
                 {activeCount}
               </span>
+            )}
+            {activeCount > 0 && (
+              <span className="sr-only">{t('filters.activeCount', { count: activeCount })}</span>
             )}
           </button>
         </div>

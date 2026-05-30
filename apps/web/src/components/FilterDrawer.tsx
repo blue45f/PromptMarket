@@ -61,6 +61,7 @@ export default function FilterDrawer({
                   >
                     <button
                       type="button"
+                      aria-label={'저장된 필터 적용: ' + f.label}
                       onClick={() => {
                         onOpenChange(false)
                         navigate(`/browse?${f.search}`)

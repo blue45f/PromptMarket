@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
@@ -27,7 +27,7 @@ interface ListingCardProps {
   highlight?: string
 }
 
-export default function ListingCard({
+const ListingCard = memo(function ListingCard({
   listing,
   className,
   variant = 'default',
@@ -234,4 +234,6 @@ export default function ListingCard({
       </Link>
     </div>
   )
-}
+})
+
+export default ListingCard

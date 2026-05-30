@@ -43,7 +43,7 @@ export default function HomePage() {
   // WebSite + SearchAction so Google can render a sitelinks search box.
   // Memoised on [origin] so the effect only re-injects the JSON-LD when the
   // origin changes (never in practice), not on every render.
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const origin = useMemo(() => (typeof window !== 'undefined' ? window.location.origin : ''), [])
   const structuredData = useMemo(
     () =>
       origin
@@ -463,7 +463,7 @@ function BentoFeatured({ items }: { items: import('@/types').ListingCard[] }) {
 function MarqueeStrip() {
   const { t } = useTranslation('home')
   const words = t('marquee.words', { returnObjects: true }) as string[]
-  const items = [...words, ...words]
+  const items = useMemo(() => [...words, ...words], [words])
   return (
     <div
       aria-hidden="true"
@@ -522,7 +522,7 @@ function SellerCallToAction() {
             {t('cta.body')}
           </p>
         </div>
-        <div className="lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 flex flex-col justify-center gap-5">
+        <div className="lg:col-span-5 lg:pl-8 lg:bg-ink/[0.04] dark:lg:bg-bone/[0.04] lg:rounded-2xl lg:p-6 flex flex-col justify-center gap-5">
           <ul className="space-y-2.5 text-ink text-[0.95rem]">
             {stats.map(([n, l]) => (
               <li key={l} className="flex items-baseline gap-3">

@@ -129,7 +129,8 @@
     "clearConfirm": "Clear recently viewed?",
     "clearConfirmYes": "Clear",
     "clearCancel": "Cancel",
-    "aria": "Recently viewed listings"
+    "aria": "Recently viewed listings",
+    "loadError": "Couldn't load your recently viewed items."
   },
   "makerSpotlight": {
     "chapter": "SPOT / Maker of the week",

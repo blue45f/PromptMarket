@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import * as Tabs from '@radix-ui/react-tabs'
@@ -39,8 +39,15 @@ export default function DashboardPage() {
 
   const myListings = Array.isArray(listingsQ.data) ? listingsQ.data : []
   // Purchases come back as wrappers ({ id, pricePaidCents, createdAt, listing });
-  // unwrap to the flat card the grid renders.
-  const library = (Array.isArray(libraryQ.data) ? libraryQ.data : []).map((p) => p.listing)
+  // unwrap to the flat card the grid renders. Filter out any purchase whose
+  // listing is absent (soft-deleted race) to prevent a crash on p.listing.id.
+  const libraryItems = useMemo(
+    () =>
+      (Array.isArray(libraryQ.data) ? libraryQ.data : [])
+        .filter((p) => p.listing != null)
+        .map((p) => p.listing),
+    [libraryQ.data]
+  )
   const error = listingsQ.error ?? libraryQ.error
 
   async function handleTopup(dollars: number) {
@@ -161,11 +168,11 @@ export default function DashboardPage() {
         <Tabs.Content value="library" className="mt-7 focus-visible:outline-none">
           {libraryQ.isPending ? (
             <SkeletonGrid count={6} />
-          ) : library.length === 0 ? (
+          ) : libraryItems.length === 0 ? (
             <EmptyLibraryWithRecs />
           ) : (
             <div className="cards-fluid">
-              {library.map((l) => (
+              {libraryItems.map((l) => (
                 <div key={l.id} className="space-y-2">
                   <ListingCard listing={l} />
                   <div className="flex gap-2">
@@ -227,6 +234,9 @@ export default function DashboardPage() {
               <p className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute mb-3">
                 {t('wallet.topup')}
               </p>
+              <span className="sr-only" role="status" aria-live="polite">
+                {topupMut.isPending ? t('wallet.loadingTopup') : ''}
+              </span>
               <div className="flex flex-wrap gap-2.5">
                 {TOPUP_AMOUNTS.map((amt) => {
                   const isThis = pendingAmount === amt
@@ -247,7 +257,7 @@ export default function DashboardPage() {
                       ) : (
                         <span aria-hidden>＋</span>
                       )}
-                      {isThis ? t('wallet.processing') : `$${amt}`}
+                      {isThis ? t('wallet.processing') : formatDollars(amt * 100)}
                     </button>
                   )
                 })}
@@ -399,9 +409,12 @@ function WishlistTab() {
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute inline-flex items-center gap-2">
           <Heart className="w-3.5 h-3.5 text-coral" aria-hidden />
-          {t('wishlist.count', { count: visibleSlugs.length })}
+          {t('wishlist.count', { count: slugs.length })}
         </p>
         <div className="flex items-center gap-2">
+          <span className="sr-only" role="status" aria-live="polite">
+            {clearPending ? t('wishlist.confirmPrompt') : ''}
+          </span>
           {clearPending && (
             <button
               type="button"

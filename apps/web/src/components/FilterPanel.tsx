@@ -1,3 +1,4 @@
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   CATEGORIES,
@@ -80,16 +81,19 @@ function handleArrowGroupKey<T extends string>(
   nextButton.focus()
 }
 
-function SectionHeader({ children }: { children: string }) {
+function SectionHeader({ id, children }: { id: string; children: string }) {
   return (
-    <h4 className="font-mono text-[0.66rem] font-medium uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute mb-2.5 inline-flex items-center gap-2">
+    <h4
+      id={id}
+      className="font-mono text-[0.66rem] font-medium uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute mb-2.5 inline-flex items-center gap-2"
+    >
       <span aria-hidden className="w-3 h-px bg-volt-500/70" />
       {children}
     </h4>
   )
 }
 
-export default function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
+function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
   const { t } = useTranslation('browse')
   const { t: tc } = useTranslation('common')
   function set<K extends keyof FilterState>(k: K, v: FilterState[K]) {
@@ -115,8 +119,8 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
         </button>
       </div>
 
-      <section>
-        <SectionHeader>{t('panel.sections.type')}</SectionHeader>
+      <section aria-labelledby="filter-section-type">
+        <SectionHeader id="filter-section-type">{t('panel.sections.type')}</SectionHeader>
         <div className="flex flex-wrap gap-1.5">
           {ALL_TYPES.map((typeKey) => {
             const meta = LISTING_TYPE_META[typeKey]
@@ -142,18 +146,21 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
         </div>
       </section>
 
-      <section>
-        <SectionHeader>{t('panel.sections.model')}</SectionHeader>
+      <section aria-labelledby="filter-section-model">
+        <SectionHeader id="filter-section-model">{t('panel.sections.model')}</SectionHeader>
         <ModelPicker value={value.models} onChange={(next) => set('models', next)} />
       </section>
 
       {showTechnique && (
-        <section>
-          <SectionHeader>{t('panel.sections.technique')}</SectionHeader>
+        <section aria-labelledby="filter-section-technique">
+          <SectionHeader id="filter-section-technique">
+            {t('panel.sections.technique')}
+          </SectionHeader>
           <div className="space-y-1">
             <label className="flex items-center gap-2.5 text-[0.86rem] cursor-pointer">
               <input
                 type="radio"
+                name="technique"
                 checked={value.technique === ''}
                 onChange={() => set('technique', '')}
                 className="accent-volt-500"
@@ -164,6 +171,7 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
               <label key={tk} className="flex items-center gap-2.5 text-[0.86rem] cursor-pointer">
                 <input
                   type="radio"
+                  name="technique"
                   checked={value.technique === tk}
                   onChange={() => set('technique', tk)}
                   className="accent-volt-500"
@@ -177,8 +185,8 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
         </section>
       )}
 
-      <section>
-        <SectionHeader>{t('panel.sections.category')}</SectionHeader>
+      <section aria-labelledby="filter-section-category">
+        <SectionHeader id="filter-section-category">{t('panel.sections.category')}</SectionHeader>
         <div className="grid grid-cols-2 gap-1">
           {CATEGORIES.map((c) => {
             const active = value.category === c
@@ -193,7 +201,8 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
                 )}
               >
                 <input
-                  type="checkbox"
+                  type="radio"
+                  name="category"
                   checked={active}
                   onChange={() => set('category', active ? '' : c)}
                   className="accent-volt-500"
@@ -207,8 +216,10 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
         </div>
       </section>
 
-      <section>
-        <SectionHeader>{t('panel.sections.difficulty')}</SectionHeader>
+      <section aria-labelledby="filter-section-difficulty">
+        <SectionHeader id="filter-section-difficulty">
+          {t('panel.sections.difficulty')}
+        </SectionHeader>
         <div
           role="radiogroup"
           aria-label={t('panel.difficultyGroup')}
@@ -243,8 +254,8 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
         </div>
       </section>
 
-      <section>
-        <SectionHeader>{t('panel.sections.price')}</SectionHeader>
+      <section aria-labelledby="filter-section-price">
+        <SectionHeader id="filter-section-price">{t('panel.sections.price')}</SectionHeader>
         <div
           role="radiogroup"
           aria-label={t('panel.priceGroup')}
@@ -279,3 +290,5 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
     </div>
   )
 }
+
+export default React.memo(FilterPanel)

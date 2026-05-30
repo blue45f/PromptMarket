@@ -156,7 +156,6 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
             <div className="relative">
               <pre
                 className="rounded-xl bg-ink text-bone p-4 pr-12 font-mono text-[0.82rem] leading-[1.6] overflow-x-auto"
-                tabIndex={0}
                 aria-label={t('install.commandAria', { label: tg.label })}
               >
                 <code>{tg.command}</code>

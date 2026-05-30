@@ -299,6 +299,7 @@ export default function CommandPalette() {
                   <button
                     type="button"
                     onClick={() => history.clear()}
+                    aria-label={t('history.clearAll', { defaultValue: '검색 기록 전체 삭제' })}
                     className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt rounded"
                   >
                     {t('palette.clear')}
@@ -450,8 +451,7 @@ function Row({
   rowIndex: number
 }) {
   return (
-    <button
-      type="button"
+    <div
       role="option"
       id={`palette-row-${rowIndex}`}
       aria-selected={active}
@@ -459,7 +459,7 @@ function Row({
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       className={cn(
-        'group flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-left motion-safe:transition-colors',
+        'group flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-left motion-safe:transition-colors cursor-default',
         active
           ? 'bg-volt-100 dark:bg-volt-900/40 text-ink dark:text-bone'
           : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub'
@@ -491,7 +491,7 @@ function Row({
         )}
         aria-hidden
       />
-    </button>
+    </div>
   )
 }
 

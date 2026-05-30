@@ -151,19 +151,28 @@ export default function CreateListingPage() {
 
   const v = watch()
 
-  // Debounced autosave — write the current form snapshot to localStorage
-  // 600ms after the visitor stops typing.
+  // Debounced autosave — subscribe to form value changes and write to
+  // localStorage 600ms after the visitor stops typing. Using the subscription
+  // API avoids the new-reference-on-every-render problem of calling watch()
+  // in a dep array.
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const id = window.setTimeout(() => {
-      try {
-        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(v))
-      } catch {
-        /* quota — silently drop */
-      }
-    }, 600)
-    return () => window.clearTimeout(id)
-  }, [v])
+    let timerId: ReturnType<typeof window.setTimeout>
+    const subscription = watch((data) => {
+      window.clearTimeout(timerId)
+      timerId = window.setTimeout(() => {
+        try {
+          window.localStorage.setItem(DRAFT_KEY, JSON.stringify(data))
+        } catch {
+          /* quota — silently drop */
+        }
+      }, 600)
+    })
+    return () => {
+      window.clearTimeout(timerId)
+      subscription.unsubscribe()
+    }
+  }, [watch])
 
   function discardDraft() {
     try {
@@ -429,6 +438,7 @@ export default function CreateListingPage() {
                       <button
                         key={e}
                         type="button"
+                        aria-label={e}
                         onClick={() => setValue('coverEmoji', e, { shouldDirty: true })}
                         className={cn(
                           'w-8 h-8 rounded-lg border text-lg motion-safe:transition focus-volt',
@@ -646,10 +656,17 @@ function Field({
   // `role`, so they instead get aria-labelledby pointing at the label id.
   const fieldId = useId()
   const labelId = `${fieldId}-label`
+  const errorId = `${fieldId}-error`
   const child = isValidElement(children)
     ? cloneElement(children as React.ReactElement<Record<string, unknown>>, {
         id: (children.props as { id?: string }).id ?? fieldId,
         ...((children.props as { role?: string }).role ? { 'aria-labelledby': labelId } : {}),
+        ...(error
+          ? {
+              'aria-invalid': true,
+              'aria-describedby': errorId,
+            }
+          : {}),
       })
     : children
   return (
@@ -663,7 +680,11 @@ function Field({
       </label>
       {child}
       {error && (
-        <p role="alert" className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
+        <p
+          id={errorId}
+          role="alert"
+          className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
+        >
           {error}
         </p>
       )}

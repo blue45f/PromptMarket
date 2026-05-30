@@ -17,6 +17,10 @@
     "filter": "Filters",
     "sortLabel": "Sort"
   },
+  "filters": {
+    "activeCount_one": "{{count}} filter applied",
+    "activeCount_other": "{{count}} filters applied"
+  },
   "sort": {
     "newest": "Newest",
     "trending": "Trending",

@@ -73,7 +73,7 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
           {/* Headline column */}
           <div className="lg:col-span-8 xl:col-span-8 min-w-0">
             <div className="flex items-center gap-3 mb-5 animate-fade-up">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[0.7rem] font-mono uppercase tracking-[0.16em] surface-glass border border-line-strong dark:border-night-line text-ink-soft dark:text-bone-soft">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[0.7rem] font-mono uppercase tracking-[0.16em] bg-canvas-sub dark:bg-night-sub border border-line-strong dark:border-night-line text-ink-soft dark:text-bone-soft">
                 <span className="relative inline-flex w-2 h-2 rounded-full bg-volt-500 volt-pulse" />
                 {t('hero.badge')}
               </span>

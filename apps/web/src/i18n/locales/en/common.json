@@ -47,7 +47,8 @@
   },
   "rating": {
     "starLabel": "{{count}} stars",
-    "display": "{{value}} out of 5 stars"
+    "display": "{{value}} out of 5 stars",
+    "widgetLabel": "Rate: {{value}} out of {{outOf}} stars"
   },
   "difficulty": {
     "beginner": "Beginner",
@@ -166,6 +167,16 @@
     "switchLabel": "Switch language",
     "ko": "한국어",
     "en": "English"
+  },
+  "license": {
+    "MIT": "MIT",
+    "Apache-2.0": "Apache 2.0",
+    "CC0-1.0": "CC0 (Public Domain)",
+    "CC-BY-4.0": "CC BY 4.0",
+    "GPL-3.0": "GPL 3.0"
+  },
+  "history": {
+    "clearAll": "Clear all search history"
   },
   "theme": {
     "switchLabel": "Switch theme",
