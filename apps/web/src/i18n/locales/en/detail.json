@@ -25,7 +25,8 @@
     "copy": "Copy",
     "copied": "Copied",
     "downloadMd": "Download .md",
-    "noPreview": "*No preview available.*"
+    "noPreview": "*No preview available.*",
+    "noBody": "No content yet."
   },
   "paywall": {
     "unlock": "🔒 Unlock the full text",
@@ -43,6 +44,7 @@
   "reviews": {
     "writePrompt": "Leave a review",
     "commentPlaceholder": "How was it? (optional)",
+    "commentLabel": "Write your review",
     "submitting": "Submitting…",
     "submit": "Post review",
     "empty": "No reviews yet. Be the first to leave one!",

@@ -33,24 +33,38 @@ export default function StarRating({
     <div className="inline-flex items-center gap-1">
       <div
         className="flex"
-        role={interactive ? 'group' : undefined}
-        aria-label={interactive ? t('rating.starLabel', { count: Math.round(value) }) : undefined}
+        role={interactive ? 'group' : 'img'}
+        aria-label={
+          interactive
+            ? t('rating.starLabel', { count: Math.round(value) })
+            : t('rating.display', { value: value.toFixed(1), outOf: 5 })
+        }
         onMouseLeave={() => setHover(null)}
       >
         {[1, 2, 3, 4, 5].map((n) => {
           const filled = n <= Math.round(displayed)
+          if (!interactive) {
+            return (
+              <span key={n} aria-hidden="true" className="leading-none">
+                <Star
+                  className={cn(
+                    starSize[size],
+                    filled
+                      ? 'text-volt-600 fill-volt-400'
+                      : 'text-line-strong dark:text-night-line-strong'
+                  )}
+                />
+              </span>
+            )
+          }
           return (
             <button
               key={n}
               type="button"
-              disabled={!interactive}
-              aria-pressed={interactive ? n <= Math.round(value) : undefined}
-              onMouseEnter={() => interactive && setHover(n)}
-              onClick={() => interactive && onChange?.(n)}
-              className={cn(
-                'leading-none',
-                interactive ? 'cursor-pointer focus-volt rounded' : 'cursor-default'
-              )}
+              aria-pressed={n <= Math.round(value)}
+              onMouseEnter={() => setHover(n)}
+              onClick={() => onChange?.(n)}
+              className="leading-none cursor-pointer focus-volt rounded"
               aria-label={t('rating.starLabel', { count: n })}
             >
               <Star

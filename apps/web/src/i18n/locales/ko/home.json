@@ -126,6 +126,9 @@
     "kicker": "최근 본",
     "title": "돌아가서 마저 볼만한",
     "clear": "기록 지우기",
+    "clearConfirm": "정말 삭제할까요?",
+    "clearConfirmYes": "삭제",
+    "clearCancel": "취소",
     "aria": "최근 본 리스팅"
   },
   "makerSpotlight": {

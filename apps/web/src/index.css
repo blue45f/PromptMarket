@@ -450,7 +450,7 @@
     }
   }
   .orb-drift {
-    animation: drift 14s ease-in-out infinite;
+    animation: drift 14s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   }
 
   /* ──────────────────────────────────────────────────────────────
@@ -755,13 +755,17 @@
     color: var(--color-volt-300);
   }
   .prose-md blockquote {
-    border-left: 3px solid var(--color-volt-300);
-    padding-left: 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-line) 40%, transparent);
+    border-radius: 0.375rem;
+    background-color: color-mix(in srgb, var(--color-canvas-sub) 50%, transparent);
+    padding: 0.5rem 1rem;
     color: var(--color-ink-soft);
     margin: 0.9rem 0;
     font-style: italic;
   }
   html.dark .prose-md blockquote {
+    border-color: color-mix(in srgb, var(--color-night-line) 40%, transparent);
+    background-color: color-mix(in srgb, var(--color-night-sub) 50%, transparent);
     color: var(--color-bone-soft);
   }
   .prose-md table {

@@ -11,7 +11,10 @@
   "draft": {
     "badge": "임시저장 복원됨",
     "restored": "마지막 입력으로 자동 채워졌어요. 새로 시작하려면 아래 버튼을 누르세요.",
-    "restart": "새로 시작"
+    "restart": "새로 시작",
+    "discardConfirm": "정말 초안을 삭제할까요?",
+    "discardConfirmYes": "삭제",
+    "discardCancel": "취소"
   },
   "sectionTabs": {
     "basics": "기본",

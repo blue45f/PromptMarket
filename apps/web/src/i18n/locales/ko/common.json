@@ -46,7 +46,8 @@
     "generic": "문제가 발생했어요"
   },
   "rating": {
-    "starLabel": "{{count}}점"
+    "starLabel": "{{count}}점",
+    "display": "{{value}}점 / 5점"
   },
   "difficulty": {
     "beginner": "입문",

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Heart } from 'lucide-react'
-import { useWishlist } from '@hooks/useWishlist'
+import { useIsWishlisted, useWishlistStore } from '@store/wishlist'
 import { cn } from '@utils/cn'
 
 interface WishlistButtonProps {
@@ -18,8 +18,8 @@ interface WishlistButtonProps {
 
 export default function WishlistButton({ slug, variant = 'card', className }: WishlistButtonProps) {
   const { t } = useTranslation('common')
-  const { has, toggle } = useWishlist()
-  const active = has(slug)
+  const active = useIsWishlisted(slug)
+  const toggle = useWishlistStore((s) => s.toggle)
 
   function onClick(e: React.MouseEvent) {
     e.preventDefault()

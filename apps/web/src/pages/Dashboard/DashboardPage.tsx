@@ -173,7 +173,7 @@ export default function DashboardPage() {
                       type="button"
                       onClick={() => {
                         navigator.clipboard
-                          .writeText(`/listings/${l.slug}`)
+                          .writeText(window.location.origin + `/listings/${l.slug}`)
                           .then(() => toast.success(t('library.copied')))
                           .catch(() => undefined)
                       }}
@@ -296,7 +296,7 @@ function StatCard({
 
 function EmptyLibraryWithRecs() {
   const { t } = useTranslation('dashboard')
-  const { data, isPending } = useListings({ free: 'true', sort: 'top', pageSize: 4 })
+  const { data, isPending, isError } = useListings({ free: 'true', sort: 'top', pageSize: 4 })
   const items = data?.items ?? []
 
   return (
@@ -315,21 +315,23 @@ function EmptyLibraryWithRecs() {
           </Link>
         }
       />
-      <section>
-        <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mb-4">
-          <span aria-hidden className="w-5 h-px bg-volt-500" />
-          {t('library.recs')}
-        </p>
-        {isPending ? (
-          <SkeletonGrid count={4} />
-        ) : items.length > 0 ? (
-          <div className="cards-fluid">
-            {items.map((l) => (
-              <ListingCard key={l.id} listing={l} />
-            ))}
-          </div>
-        ) : null}
-      </section>
+      {!isError && (
+        <section>
+          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mb-4">
+            <span aria-hidden className="w-5 h-px bg-volt-500" />
+            {t('library.recs')}
+          </p>
+          {isPending ? (
+            <SkeletonGrid count={4} />
+          ) : items.length > 0 ? (
+            <div className="cards-fluid">
+              {items.map((l) => (
+                <ListingCard key={l.id} listing={l} />
+              ))}
+            </div>
+          ) : null}
+        </section>
+      )}
     </div>
   )
 }

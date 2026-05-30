@@ -124,13 +124,13 @@ export default function ListingCard({
 
           {/* Top labels */}
           <div className="absolute top-3.5 left-3.5 right-3.5 flex items-start justify-between gap-2">
-            <span className="tilt-parallax inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] font-mono uppercase tracking-[0.16em] bg-ink/85 text-bone backdrop-blur-sm">
+            <span className="tilt-parallax inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] font-mono uppercase tracking-[0.16em] bg-ink/85 text-bone">
               <span aria-hidden>{meta.emoji}</span>
               {meta.label}
             </span>
             <span
               className={cn(
-                'tilt-parallax relative overflow-hidden inline-flex items-center text-[0.72rem] font-mono px-2.5 py-1 rounded-full backdrop-blur-sm',
+                'tilt-parallax relative overflow-hidden inline-flex items-center text-[0.72rem] font-mono px-2.5 py-1 rounded-full',
                 free
                   ? 'bg-volt-300 text-ink sheen-overlay'
                   : 'bg-bone/90 text-ink dark:bg-night/85 dark:text-bone'

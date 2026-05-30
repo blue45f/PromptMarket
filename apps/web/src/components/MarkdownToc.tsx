@@ -104,7 +104,7 @@ export default function MarkdownToc({ source, className, scrollOffsetPx = 96 }: 
     <aside
       aria-label={t('toc.aside')}
       className={cn(
-        'relative rounded-2xl border border-line dark:border-night-line bg-canvas-sub/70 dark:bg-night-sub/70 p-5 backdrop-blur-sm',
+        'relative rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5',
         className
       )}
     >

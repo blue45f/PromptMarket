@@ -11,7 +11,10 @@
   "draft": {
     "badge": "Draft restored",
     "restored": "We filled this in from your last edit. To start over, use the button.",
-    "restart": "Start over"
+    "restart": "Start over",
+    "discardConfirm": "Discard draft?",
+    "discardConfirmYes": "Discard",
+    "discardCancel": "Cancel"
   },
   "sectionTabs": {
     "basics": "Basics",

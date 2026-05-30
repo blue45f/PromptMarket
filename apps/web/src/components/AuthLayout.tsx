@@ -86,7 +86,7 @@ export default function AuthLayout({
             <div>
               <p className="font-mono text-[0.68rem] uppercase tracking-[0.22em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mb-4">
                 <span className="w-1.5 h-1.5 rounded-full bg-volt-500 volt-pulse" />
-                Anthology vol.01
+                {t('panel.badge')}
               </p>
               <p
                 className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.035em] display-tight"

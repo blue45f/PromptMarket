@@ -46,7 +46,8 @@
     "generic": "Something went wrong"
   },
   "rating": {
-    "starLabel": "{{count}} stars"
+    "starLabel": "{{count}} stars",
+    "display": "{{value}} out of 5 stars"
   },
   "difficulty": {
     "beginner": "Beginner",

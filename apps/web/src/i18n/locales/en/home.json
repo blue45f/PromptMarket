@@ -126,6 +126,9 @@
     "kicker": "Recently viewed",
     "title": "Worth picking back up",
     "clear": "Clear history",
+    "clearConfirm": "Clear recently viewed?",
+    "clearConfirmYes": "Clear",
+    "clearCancel": "Cancel",
     "aria": "Recently viewed listings"
   },
   "makerSpotlight": {

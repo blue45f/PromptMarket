@@ -58,6 +58,7 @@ export default function ModelPicker({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('modelPicker.searchPlaceholder')}
+            aria-label={t('modelPicker.searchPlaceholder')}
             className="w-full pl-9 pr-3 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas dark:bg-night text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
           />
         </div>

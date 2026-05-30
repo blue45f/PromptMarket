@@ -398,7 +398,11 @@ export default function ListingDetailPage() {
             <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
               <TypeBadge type={listing.type} overlay />
               <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-canvas/80 dark:bg-night/70 backdrop-blur ring-1 ring-line/60 dark:ring-night-line/60 text-ink dark:text-bone">
-                {t('cover.categoryBadge', { category: listing.category })}
+                {t('cover.categoryBadge', {
+                  category: t('home:categories.labels.' + listing.category, {
+                    defaultValue: listing.category,
+                  }),
+                })}
               </span>
             </div>
           </div>
@@ -519,6 +523,10 @@ export default function ListingDetailPage() {
                   )}
                   {canViewBody && listing.body ? (
                     <MarkdownView source={listing.body} />
+                  ) : canViewBody && !listing.body ? (
+                    <p className="text-sm text-ink-mute dark:text-bone-mute italic">
+                      {t('body.noBody')}
+                    </p>
                   ) : (
                     <div className="relative">
                       <MarkdownView source={listing.previewBody || t('body.noPreview')} />
@@ -579,6 +587,7 @@ export default function ListingDetailPage() {
                     <textarea
                       {...register('comment')}
                       placeholder={t('reviews.commentPlaceholder')}
+                      aria-label={t('reviews.commentLabel')}
                       rows={3}
                       aria-invalid={errors.comment ? true : undefined}
                       aria-describedby={errors.comment ? 'review-comment-error' : undefined}

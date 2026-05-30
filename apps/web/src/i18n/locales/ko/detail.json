@@ -25,7 +25,8 @@
     "copy": "복사",
     "copied": "복사됨",
     "downloadMd": ".md 다운로드",
-    "noPreview": "*미리보기를 제공하지 않아요.*"
+    "noPreview": "*미리보기를 제공하지 않아요.*",
+    "noBody": "아직 본문이 없어요."
   },
   "paywall": {
     "unlock": "🔒 전체 본문 잠금 해제",
@@ -43,10 +44,11 @@
   "reviews": {
     "writePrompt": "리뷰 남기기",
     "commentPlaceholder": "어떠셨나요? (선택)",
+    "commentLabel": "리뷰 내용 입력",
     "submitting": "제출 중…",
     "submit": "리뷰 등록",
     "empty": "아직 리뷰가 없어요. 첫 번째 리뷰가 되어 보세요!",
-    "anonymous": "anonymous",
+    "anonymous": "익명",
     "validation": {
       "rating": "별점을 선택해 주세요.",
       "comment": "리뷰는 1,000자 이하로 작성해 주세요."

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Eye, X } from 'lucide-react'
@@ -27,6 +27,7 @@ interface RecentlyViewedProps {
 export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: RecentlyViewedProps) {
   const { t } = useTranslation('home')
   const { slugs, clear } = useRecentlyViewed()
+  const [clearPending, setClearPending] = useState(false)
 
   const visible = useMemo(() => {
     return slugs.filter((s) => s !== excludeSlug).slice(0, limit)
@@ -66,14 +67,39 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
             {t('recentlyViewed.title')}
           </h2>
         </div>
-        <button
-          type="button"
-          onClick={clear}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.78rem] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub/60 motion-safe:transition focus-volt"
-        >
-          <X className="w-3.5 h-3.5" aria-hidden />
-          {t('recentlyViewed.clear')}
-        </button>
+        {clearPending ? (
+          <div className="inline-flex items-center gap-2">
+            <span className="text-[0.78rem] text-ink-mute dark:text-bone-mute">
+              {t('recentlyViewed.clearConfirm')}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                clear()
+                setClearPending(false)
+              }}
+              className="inline-flex items-center px-3 py-1.5 rounded-full text-[0.78rem] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 motion-safe:transition focus-volt"
+            >
+              {t('recentlyViewed.clearConfirmYes')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setClearPending(false)}
+              className="inline-flex items-center px-3 py-1.5 rounded-full text-[0.78rem] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub/60 motion-safe:transition focus-volt"
+            >
+              {t('recentlyViewed.clearCancel')}
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setClearPending(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.78rem] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub/60 motion-safe:transition focus-volt"
+          >
+            <X className="w-3.5 h-3.5" aria-hidden />
+            {t('recentlyViewed.clear')}
+          </button>
+        )}
       </div>
 
       <div className="relative -mx-[clamp(1.25rem,4vw,3rem)] px-[clamp(1.25rem,4vw,3rem)]">

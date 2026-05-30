@@ -336,7 +336,7 @@ function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
 
       {/* Vertical marquee */}
       <div className="absolute inset-0 pt-12 pb-6">
-        <ul className="v-marquee-track flex flex-col gap-2.5">
+        <div className="v-marquee-track flex flex-col gap-2.5">
           {seed.map((drop, idx) => (
             <DropRow key={`${drop.id}-${idx}`} drop={drop} t={t} />
           ))}
@@ -346,7 +346,7 @@ function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
               <DropRow key={`dup-${drop.id}-${idx}`} drop={drop} tabIndex={-1} t={t} />
             ))}
           </div>
-        </ul>
+        </div>
       </div>
     </div>
   )
@@ -377,7 +377,7 @@ function DropRow({
     })
   }
   return (
-    <li className="mx-3.5">
+    <div className="mx-3.5">
       <Link
         to={`/listings/${drop.slug}`}
         onMouseEnter={prefetch}
@@ -412,6 +412,6 @@ function DropRow({
           {formatPrice(drop.priceCents ?? 0)}
         </span>
       </Link>
-    </li>
+    </div>
   )
 }

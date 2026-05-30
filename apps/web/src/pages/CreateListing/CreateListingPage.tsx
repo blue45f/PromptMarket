@@ -133,6 +133,7 @@ export default function CreateListingPage() {
     return !!window.localStorage.getItem(DRAFT_KEY)
   })
   const [draftDismissed, setDraftDismissed] = useState(false)
+  const [draftDiscardPending, setDraftDiscardPending] = useState(false)
 
   const {
     register,
@@ -307,13 +308,38 @@ export default function CreateListingPage() {
             </span>
             {t('draft.restored')}
           </p>
-          <button
-            type="button"
-            onClick={discardDraft}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition focus-volt"
-          >
-            {t('draft.restart')}
-          </button>
+          {draftDiscardPending ? (
+            <div className="inline-flex items-center gap-2">
+              <span className="text-[0.78rem] text-ink-soft dark:text-bone-soft">
+                {t('draft.discardConfirm')}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  discardDraft()
+                  setDraftDiscardPending(false)
+                }}
+                className="inline-flex items-center px-3 py-1.5 rounded-full border border-red-400/40 dark:border-red-500/30 text-red-600 dark:text-red-400 text-[0.78rem] font-medium hover:border-red-500 dark:hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 motion-safe:transition focus-volt"
+              >
+                {t('draft.discardConfirmYes')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setDraftDiscardPending(false)}
+                className="inline-flex items-center px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition focus-volt"
+              >
+                {t('draft.discardCancel')}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setDraftDiscardPending(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.78rem] font-medium hover:border-ink dark:hover:border-bone hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition focus-volt"
+            >
+              {t('draft.restart')}
+            </button>
+          )}
         </div>
       )}
 
