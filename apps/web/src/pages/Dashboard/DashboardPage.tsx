@@ -37,7 +37,9 @@ export default function DashboardPage() {
   const [pendingAmount, setPendingAmount] = useState<number | null>(null)
 
   const myListings = Array.isArray(listingsQ.data) ? listingsQ.data : []
-  const library = Array.isArray(libraryQ.data) ? libraryQ.data : []
+  // Purchases come back as wrappers ({ id, pricePaidCents, createdAt, listing });
+  // unwrap to the flat card the grid renders.
+  const library = (Array.isArray(libraryQ.data) ? libraryQ.data : []).map((p) => p.listing)
   const error = listingsQ.error ?? libraryQ.error
 
   async function handleTopup(dollars: number) {
@@ -342,7 +344,7 @@ function WishlistTab() {
       staleTime: 10 * 60_000,
     })),
   })
-  const items = results.map((r) => r.data?.listing).filter((l): l is NonNullable<typeof l> => !!l)
+  const items = results.map((r) => r.data).filter((l): l is NonNullable<typeof l> => !!l)
   const pending = results.some((r) => r.isPending)
 
   if (slugs.length === 0) {

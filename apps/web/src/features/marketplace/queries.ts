@@ -114,11 +114,20 @@ export function useMyListings(enabled = true) {
   })
 }
 
+/** `GET /me/purchases` returns the purchase wrapper, with the card nested
+ *  under `.listing` — not a flat ListingCard. */
+export interface MyPurchaseItem {
+  id: string
+  pricePaidCents: number
+  createdAt: string
+  listing: ListingCard
+}
+
 export function useMyPurchases(enabled = true) {
   return useQuery({
     queryKey: mePurchasesKey,
     enabled,
-    queryFn: () => api.get<ListingCard[], ListingCard[]>('/me/purchases'),
+    queryFn: () => api.get<MyPurchaseItem[], MyPurchaseItem[]>('/me/purchases'),
   })
 }
 
@@ -174,7 +183,7 @@ export function useCreateListing() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (input: CreateListingInput) =>
-      api.post<{ listing: ListingFull }, { listing: ListingFull }>('/listings', input),
+      api.post<ListingCard, ListingCard>('/listings', input),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['listings'] })
       void qc.invalidateQueries({ queryKey: meListingsKey })

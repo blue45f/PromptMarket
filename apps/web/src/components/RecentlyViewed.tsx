@@ -42,7 +42,7 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
 
   // Quietly drop any that failed (could be deleted listings) so the rail never
   // shows a broken row.
-  const items = results.map((r) => r.data?.listing).filter((l): l is NonNullable<typeof l> => !!l)
+  const items = results.map((r) => r.data).filter((l): l is NonNullable<typeof l> => !!l)
 
   if (visible.length === 0 || (items.length === 0 && !results.some((r) => r.isPending))) {
     return null

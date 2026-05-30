@@ -44,8 +44,10 @@ export interface Purchase {
   createdAt: string
 }
 
-export interface ListingDetailResponse {
-  listing: ListingFull
+// The API returns the listing fields flat (not nested under `listing`), with
+// the relational extras alongside them. Model that shape so consumers reading
+// the response get the real fields instead of an always-undefined `.listing`.
+export interface ListingDetailResponse extends ListingFull {
   reviews: Review[]
   isOwner: boolean
   isPurchased: boolean

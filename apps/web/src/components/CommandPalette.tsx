@@ -137,7 +137,7 @@ export default function CommandPalette() {
         })),
   })
   const wishlistListings = wishlistResults
-    .map((r) => r.data?.listing)
+    .map((r) => r.data)
     .filter((l): l is NonNullable<typeof l> => !!l)
 
   const actions = useMemo(() => {

@@ -191,7 +191,7 @@ export default function CreateListingPage() {
       } catch {
         /* ignore */
       }
-      navigate(`/listings/${res.listing.slug}`)
+      navigate(`/listings/${res.slug}`)
     } catch {
       /* toast handled in hook */
     }
