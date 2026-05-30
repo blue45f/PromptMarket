@@ -10,6 +10,7 @@ export function useCountUp(target: number, duration = 1200) {
   const startedRef = useRef(false)
 
   useEffect(() => {
+    startedRef.current = false
     const node = ref.current
     if (!node || typeof window === 'undefined') return
 

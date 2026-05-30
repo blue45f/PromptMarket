@@ -25,10 +25,13 @@ export default function HomePage() {
   const { t } = useTranslation('home')
   const featuredQ = useListings({ sort: 'top', pageSize: 6 })
   const trendingQ = useListings({ sort: 'trending', pageSize: 8 })
-  const recentQ = useListings({ sort: 'newest', pageSize: 8 })
+  // pageSize: 10 matches Hero's DropsMarquee consumption; Hero receives items as a prop
+  // so React Query dedupes the request (same cache key) — no separate fetch in Hero.
+  const recentQ = useListings({ sort: 'newest', pageSize: 10 })
 
   const featured = featuredQ.data?.items ?? []
   const trending = trendingQ.data?.items ?? []
+  // Carousel shows up to 8; Hero drops marquee uses up to 10 — slice at use-site
   const recent = recentQ.data?.items ?? []
   const error = trendingQ.error ?? recentQ.error ?? featuredQ.error
 
@@ -38,32 +41,37 @@ export default function HomePage() {
   })
 
   // WebSite + SearchAction so Google can render a sitelinks search box.
+  // Memoised on [origin] so the effect only re-injects the JSON-LD when the
+  // origin changes (never in practice), not on every render.
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
-  useStructuredData(
-    origin
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'WebSite',
-          name: 'PromptMarket',
-          alternateName: '프롬프트마켓',
-          url: origin,
-          inLanguage: 'ko-KR',
-          potentialAction: {
-            '@type': 'SearchAction',
-            target: {
-              '@type': 'EntryPoint',
-              urlTemplate: `${origin}/browse?q={search_term_string}`,
+  const structuredData = useMemo(
+    () =>
+      origin
+        ? {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'PromptMarket',
+            alternateName: '프롬프트마켓',
+            url: origin,
+            inLanguage: 'ko-KR',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: `${origin}/browse?q={search_term_string}`,
+              },
+              'query-input': 'required name=search_term_string',
             },
-            'query-input': 'required name=search_term_string',
-          },
-        }
-      : null
+          }
+        : null,
+    [origin]
   )
+  useStructuredData(structuredData)
 
   return (
     <div className="animate-fade-in">
       <ScrollProgress />
-      <Hero />
+      <Hero recentItems={recent} recentPending={recentQ.isPending} />
 
       {/* Marquee strip — horizontal infinite-scrolling section anchor */}
       <MarqueeStrip />
@@ -91,6 +99,12 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          ) : featuredQ.isError ? (
+            <SectionError
+              message={getErrorMessage(featuredQ.error)}
+              onRetry={() => featuredQ.refetch()}
+              retryLabel={t('featured.errorRetry')}
+            />
           ) : featured.length ? (
             <BentoFeatured items={featured} />
           ) : (
@@ -122,6 +136,12 @@ export default function HomePage() {
           />
           {trendingQ.isPending ? (
             <SkeletonGrid count={8} />
+          ) : trendingQ.isError ? (
+            <SectionError
+              message={getErrorMessage(trendingQ.error)}
+              onRetry={() => trendingQ.refetch()}
+              retryLabel={t('trending.errorRetry')}
+            />
           ) : trending.length ? (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-[var(--space-gap-lg)]">
               {/* Lead: oversized — keeps presence on wide viewports, full-width on narrow */}
@@ -152,7 +172,15 @@ export default function HomePage() {
             kicker={t('sections.recent.kicker')}
             href="/browse?sort=newest"
           />
-          <FeaturedCarousel items={recent} loading={recentQ.isPending} />
+          {recentQ.isError ? (
+            <SectionError
+              message={getErrorMessage(recentQ.error)}
+              onRetry={() => recentQ.refetch()}
+              retryLabel={t('recent.errorRetry')}
+            />
+          ) : (
+            <FeaturedCarousel items={recent.slice(0, 8)} loading={recentQ.isPending} />
+          )}
         </section>
 
         {/* RECENTLY VIEWED — only renders when localStorage has entries */}
@@ -196,6 +224,31 @@ function ScrollProgress() {
     }
   }, [])
   return <div className="scroll-progress" style={{ ['--progress' as string]: progress }} />
+}
+
+/* ---------- Section error state ---------------------------------------- */
+
+function SectionError({
+  message,
+  onRetry,
+  retryLabel,
+}: {
+  message: string
+  onRetry: () => void
+  retryLabel: string
+}) {
+  return (
+    <div className="flex items-center gap-3 py-4 text-sm font-mono text-ink-mute dark:text-bone-mute">
+      <span className="truncate">{message}</span>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="shrink-0 px-3 py-1 rounded-full border border-line dark:border-night-line hover:border-ink dark:hover:border-bone text-ink dark:text-bone focus-volt motion-safe:transition"
+      >
+        {retryLabel}
+      </button>
+    </div>
+  )
 }
 
 /* ---------- Section primitives ----------------------------------------- */

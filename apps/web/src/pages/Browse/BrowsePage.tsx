@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { activeIntlLocale } from '@/i18n'
 import type { TFunction } from 'i18next'
 import { useScrollRestore } from '@hooks/useScrollRestore'
 import { useSavedFilters } from '@hooks/useSavedFilters'
@@ -188,6 +189,13 @@ export default function BrowsePage() {
     saveFilter(search, label)
   }, [activeCount, filters, q, params, saveFilter, t])
 
+  // Keep a ref with the latest pagination state so the keyboard handler never
+  // closes over stale values (fixes the arrow-key pagination stale closure).
+  const paginationRef = useRef({ page, effectiveTotalPages, updateExtras })
+  useLayoutEffect(() => {
+    paginationRef.current = { page, effectiveTotalPages, updateExtras }
+  })
+
   // ← / → keyboard pagination + j / k row navigation. Skips when a typing
   // target is focused so the arrow keys keep their default behavior inside
   // the search input.
@@ -201,14 +209,15 @@ export default function BrowsePage() {
           return
         }
       }
-      if (e.key === 'ArrowRight' && page < effectiveTotalPages) {
+      const { page: p, effectiveTotalPages: totalPgs, updateExtras: upd } = paginationRef.current
+      if (e.key === 'ArrowRight' && p < totalPgs) {
         e.preventDefault()
-        updateExtras({ page: page + 1 })
+        upd({ page: p + 1 })
         return
       }
-      if (e.key === 'ArrowLeft' && page > 1) {
+      if (e.key === 'ArrowLeft' && p > 1) {
         e.preventDefault()
-        updateExtras({ page: page - 1 })
+        upd({ page: p - 1 })
         return
       }
       // Vim / Linear-style row navigation: focus the next / previous
@@ -239,8 +248,7 @@ export default function BrowsePage() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, effectiveTotalPages])
+  }, [])
 
   return (
     <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
@@ -256,7 +264,11 @@ export default function BrowsePage() {
           {q
             ? t('heading.search', { q })
             : filters.category
-              ? t('heading.category', { category: filters.category })
+              ? t('heading.category', {
+                  category: t('home:categories.labels.' + filters.category, {
+                    defaultValue: filters.category,
+                  }),
+                })
               : t('heading.default')}
         </h1>
       </header>
@@ -304,33 +316,26 @@ export default function BrowsePage() {
                 {t('saved.label')}
               </span>
               {savedEntries.map((f) => (
-                <button
+                <span
                   key={f.search}
-                  type="button"
-                  onClick={() => navigate(`/browse?${f.search}`)}
-                  className="group inline-flex items-center gap-1.5 rounded-full bg-canvas-sub/70 dark:bg-night-sub/70 border border-line dark:border-night-line px-2.5 py-1 text-[0.74rem] text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+                  className="group inline-flex items-center gap-1.5 rounded-full bg-canvas-sub/70 dark:bg-night-sub/70 border border-line dark:border-night-line text-[0.74rem] text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition"
                 >
-                  {f.label}
-                  <span
-                    role="button"
-                    tabIndex={0}
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/browse?${f.search}`)}
+                    className="pl-2.5 py-1 hover:text-ink dark:hover:text-bone focus-volt rounded-l-full"
+                  >
+                    {f.label}
+                  </button>
+                  <button
+                    type="button"
                     aria-label={t('saved.remove')}
-                    onClick={(ev) => {
-                      ev.stopPropagation()
-                      ev.preventDefault()
-                      removeFilter(f.search)
-                    }}
-                    onKeyDown={(ev) => {
-                      if (ev.key === 'Enter' || ev.key === ' ') {
-                        ev.preventDefault()
-                        removeFilter(f.search)
-                      }
-                    }}
-                    className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral cursor-pointer"
+                    onClick={() => removeFilter(f.search)}
+                    className="pr-2 py-1 inline-flex items-center justify-center w-5 h-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral focus-volt rounded-r-full"
                   >
                     <X className="w-3 h-3" aria-hidden />
-                  </span>
-                </button>
+                  </button>
+                </span>
               ))}
             </div>
           )}
@@ -401,12 +406,17 @@ export default function BrowsePage() {
             </div>
           )}
 
-          <p className="font-mono text-[0.78rem] text-ink-mute dark:text-bone-mute mb-5 tabular-nums">
+          <p
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="font-mono text-[0.78rem] text-ink-mute dark:text-bone-mute mb-5 tabular-nums"
+          >
             {isPending
               ? t('results.loading')
               : t('results.count', {
                   count: effectiveTotal,
-                  formatted: effectiveTotal.toLocaleString(),
+                  formatted: new Intl.NumberFormat(activeIntlLocale()).format(effectiveTotal),
                 })}
             {q && (
               <>

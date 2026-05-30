@@ -88,11 +88,16 @@
   },
   "featured": {
     "emptyTitle": "아직 추천 드롭이 없어요",
-    "emptyDescription": "조금만 기다려 주세요. 에디터가 고르고 있어요."
+    "emptyDescription": "조금만 기다려 주세요. 에디터가 고르고 있어요.",
+    "errorRetry": "다시 시도"
   },
   "trending": {
     "emptyTitle": "아직 트렌딩 리스팅이 없어요",
-    "emptyDescription": "첫 번째 게시자가 되어 보세요."
+    "emptyDescription": "첫 번째 게시자가 되어 보세요.",
+    "errorRetry": "다시 시도"
+  },
+  "recent": {
+    "errorRetry": "다시 시도"
   },
   "categories": {
     "aria": "카테고리",

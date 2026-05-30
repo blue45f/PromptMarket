@@ -7,6 +7,7 @@ import type {
   LoginInput,
   RegisterInput,
 } from '@promptmarket/shared'
+import axios from 'axios'
 import { api, getErrorMessage } from '@services/api'
 import {
   listingKey,
@@ -99,7 +100,7 @@ export function useMe() {
         setUser(u)
         return u
       } catch (err) {
-        logout()
+        if (axios.isAxiosError(err) && err.response?.status === 401) logout()
         throw err
       }
     },

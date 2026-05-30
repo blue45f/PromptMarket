@@ -88,11 +88,16 @@
   },
   "featured": {
     "emptyTitle": "No featured drops yet",
-    "emptyDescription": "Hang tight, our editors are picking them out."
+    "emptyDescription": "Hang tight, our editors are picking them out.",
+    "errorRetry": "Try again"
   },
   "trending": {
     "emptyTitle": "No trending listings yet",
-    "emptyDescription": "Be the first to publish one."
+    "emptyDescription": "Be the first to publish one.",
+    "errorRetry": "Try again"
+  },
+  "recent": {
+    "errorRetry": "Try again"
   },
   "categories": {
     "aria": "Categories",
