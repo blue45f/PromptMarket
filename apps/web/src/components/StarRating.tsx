@@ -35,7 +35,7 @@ export default function StarRating({
     <div className="inline-flex items-center gap-1">
       <div
         className="flex"
-        role={interactive ? 'group' : 'img'}
+        role={interactive ? 'radiogroup' : 'img'}
         aria-label={
           interactive
             ? t('rating.widgetLabel', { value: Math.round(value), outOf: 5 })
@@ -64,7 +64,8 @@ export default function StarRating({
             <button
               key={n}
               type="button"
-              aria-pressed={n <= Math.round(value)}
+              role="radio"
+              aria-checked={n <= Math.round(value ?? 0)}
               onMouseEnter={() => setHover(n)}
               onClick={() => onChange?.(n)}
               className="leading-none cursor-pointer focus-volt rounded"

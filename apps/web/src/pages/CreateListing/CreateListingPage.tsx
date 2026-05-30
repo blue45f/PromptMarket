@@ -483,7 +483,7 @@ export default function CreateListingPage() {
                     type="number"
                     min="0"
                     step="0.5"
-                    aria-label={t('fields.price', { defaultValue: '가격 (달러)' })}
+                    aria-label={t('fields.price', { defaultValue: 'Price (USD)' })}
                     {...register('priceDollars')}
                     className={inputClass}
                   />

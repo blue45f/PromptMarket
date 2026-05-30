@@ -46,7 +46,7 @@ export default function CategoryChips({ active }: CategoryChipsProps) {
           to="/browse"
           className={cn(
             'inline-flex items-center gap-2 px-4 py-2 rounded-full text-[0.85rem] font-medium whitespace-nowrap',
-            'motion-safe:transition focus-volt',
+            'motion-safe:transition ease-expo focus-volt',
             !active
               ? 'bg-ink text-bone dark:bg-bone dark:text-ink shadow-[0_8px_24px_-12px_oklch(0.16_0.03_290_/_0.45)]'
               : 'bg-canvas-sub dark:bg-night-sub text-ink-soft dark:text-bone-soft border border-line dark:border-night-line hover:border-ink/40 dark:hover:border-bone/30 hover:text-ink dark:hover:text-bone'
@@ -63,7 +63,7 @@ export default function CategoryChips({ active }: CategoryChipsProps) {
               to={`/browse?category=${encodeURIComponent(cat)}`}
               className={cn(
                 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-[0.85rem] font-medium whitespace-nowrap',
-                'motion-safe:transition focus-volt',
+                'motion-safe:transition ease-expo focus-volt',
                 isActive
                   ? 'bg-ink text-bone dark:bg-bone dark:text-ink shadow-[0_8px_24px_-12px_oklch(0.16_0.03_290_/_0.45)]'
                   : 'bg-canvas-sub dark:bg-night-sub text-ink-soft dark:text-bone-soft border border-line dark:border-night-line hover:border-volt-500 dark:hover:border-volt-500/70 hover:text-ink dark:hover:text-bone'

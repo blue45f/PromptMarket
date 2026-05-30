@@ -84,6 +84,7 @@ export default function AudienceMatch({
 
   return (
     <section
+      aria-label={t('audience.fitHeading')}
       className={cn(
         'relative overflow-hidden rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5 sm:p-6',
         className

@@ -68,7 +68,7 @@ export default function AuthLayout({
         {/* Brand column */}
         <aside
           ref={spotlightRef}
-          aria-label={t('authLayout.previewLabel', { defaultValue: '미리보기' })}
+          aria-label={t('authLayout.previewLabel', { defaultValue: 'Preview' })}
           className="spotlight-host relative overflow-hidden rounded-[2rem] surface-card border-line dark:border-night-line min-h-[24rem]"
         >
           <div

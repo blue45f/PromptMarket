@@ -55,7 +55,7 @@ export default function WishlistButton({ slug, variant = 'card', className }: Wi
       aria-pressed={active}
       aria-label={active ? t('wishlist.remove') : t('wishlist.add')}
       className={cn(
-        'inline-flex items-center justify-center w-8 h-8 rounded-full backdrop-blur-sm motion-safe:transition focus-volt',
+        'inline-flex items-center justify-center w-11 h-11 rounded-full backdrop-blur-sm motion-safe:transition focus-volt',
         active
           ? 'bg-coral text-bone'
           : 'bg-ink/55 text-bone hover:bg-coral/85 dark:bg-night/65 dark:hover:bg-coral/85',

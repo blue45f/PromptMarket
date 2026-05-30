@@ -80,7 +80,7 @@ export default function SearchBar({
   return (
     <form ref={wrapRef} onSubmit={handleSubmit} className={cn('relative group', className)}>
       <Search
-        className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-mute dark:text-bone-mute pointer-events-none motion-safe:transition-colors group-focus-within:text-volt-700 dark:group-focus-within:text-volt-300"
+        className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-mute dark:text-bone-mute pointer-events-none motion-safe:transition-colors ease-expo group-focus-within:text-volt-700 dark:group-focus-within:text-volt-300"
         aria-hidden
       />
       <input
@@ -107,13 +107,13 @@ export default function SearchBar({
           'bg-canvas/70 dark:bg-night-sub/70 backdrop-blur',
           'text-ink dark:text-bone',
           'placeholder:text-ink-mute dark:placeholder:text-bone-mute',
-          'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500 focus:bg-canvas dark:focus:bg-night-sub motion-safe:transition'
+          'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500 focus:bg-canvas dark:focus:bg-night-sub motion-safe:transition ease-expo'
         )}
       />
       <kbd
         aria-hidden
         title={t('search.commandPaletteHint')}
-        className="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[0.65rem] font-mono text-ink-mute dark:text-bone-mute border border-line/80 dark:border-night-line/80 bg-canvas-deep/60 dark:bg-night-deep/60 group-focus-within:opacity-0 motion-safe:transition"
+        className="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[0.65rem] font-mono text-ink-mute dark:text-bone-mute border border-line/80 dark:border-night-line/80 bg-canvas-deep/60 dark:bg-night-deep/60 group-focus-within:opacity-0 motion-safe:transition ease-expo"
       >
         <span>⌘</span>K
       </kbd>
@@ -133,8 +133,8 @@ export default function SearchBar({
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={history.clear}
-              aria-label={t('search.clearHistory', { defaultValue: '최근 검색 기록 전체 삭제' })}
-              className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt rounded"
+              aria-label={t('history.clearAll')}
+              className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt rounded"
             >
               {t('actions.clear')}
             </button>
@@ -145,7 +145,7 @@ export default function SearchBar({
                 <div
                   onMouseEnter={() => setActiveIdx(i)}
                   className={cn(
-                    'group/row w-full flex items-center gap-3 px-3.5 py-1.5 text-[0.86rem] motion-safe:transition',
+                    'group/row w-full flex items-center gap-3 px-3.5 py-1.5 text-[0.86rem] motion-safe:transition ease-expo',
                     i === activeIdx
                       ? 'bg-volt-100 dark:bg-volt-900/30 text-ink dark:text-bone'
                       : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub'
@@ -174,7 +174,7 @@ export default function SearchBar({
                     aria-label={t('search.removeFromHistory', { query: q })}
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => history.remove(q)}
-                    className="opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100 motion-safe:transition inline-flex items-center justify-center w-5 h-5 shrink-0 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral focus-volt cursor-pointer"
+                    className="opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100 motion-safe:transition ease-expo inline-flex items-center justify-center w-5 h-5 shrink-0 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral focus-volt cursor-pointer"
                   >
                     <X className="w-3 h-3" aria-hidden />
                   </button>

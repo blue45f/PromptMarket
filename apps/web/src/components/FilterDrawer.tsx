@@ -63,7 +63,7 @@ export default function FilterDrawer({
                       type="button"
                       aria-label={t('drawer.savedApply', {
                         label: f.label,
-                        defaultValue: '저장된 필터 적용: {{label}}',
+                        defaultValue: 'Apply saved filter: {{label}}',
                       })}
                       onClick={() => {
                         onOpenChange(false)

@@ -28,7 +28,7 @@ describe('<StarRating />', () => {
 
   it('enables every button when onChange is supplied (interactive)', () => {
     render(<StarRating value={4} onChange={vi.fn()} />)
-    for (const btn of screen.getAllByRole('button')) {
+    for (const btn of screen.getAllByRole('radio')) {
       expect(btn).not.toBeDisabled()
     }
   })
@@ -36,7 +36,7 @@ describe('<StarRating />', () => {
   it('clicking a star fires onChange with its 1-based index', () => {
     const onChange = vi.fn()
     render(<StarRating value={0} onChange={onChange} />)
-    fireEvent.click(screen.getAllByRole('button')[3])
+    fireEvent.click(screen.getAllByRole('radio')[3])
     expect(onChange).toHaveBeenCalledWith(4)
   })
 
@@ -53,7 +53,7 @@ describe('<StarRating />', () => {
 
   it('hovering paints the preview fill independent of the value', () => {
     render(<StarRating value={2} onChange={vi.fn()} />)
-    const buttons = screen.getAllByRole('button')
+    const buttons = screen.getAllByRole('radio')
     fireEvent.mouseEnter(buttons[4])
     // All five stars should now be filled in the preview.
     for (const btn of buttons) {

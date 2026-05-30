@@ -280,7 +280,7 @@ export default function CommandPalette() {
                   type="button"
                   onClick={() => history.clear()}
                   aria-label={t('common:history.clearAll', {
-                    defaultValue: '검색 기록 전체 삭제',
+                    defaultValue: 'Clear all search history',
                   })}
                   className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt rounded"
                 >
