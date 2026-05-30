@@ -366,7 +366,7 @@ export default function ListingDetailPage() {
   return (
     <div
       className={cn(
-        'mx-auto px-[clamp(1.25rem,4vw,3rem)] py-8 animate-fade-in motion-safe:transition-[max-width] motion-safe:duration-500',
+        'mx-auto px-[clamp(1.25rem,4vw,3rem)] py-8 animate-fade-in',
         readingMode ? 'max-w-[820px]' : 'max-w-7xl'
       )}
     >
@@ -506,6 +506,9 @@ export default function ListingDetailPage() {
                         <Download className="w-3.5 h-3.5" />
                         {t('body.downloadMd')}
                       </button>
+                      <span className="sr-only" role="status" aria-live="polite">
+                        {copied ? t('body.copied') : ''}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -694,6 +697,9 @@ export default function ListingDetailPage() {
                           : t('sidebar.shareLabel')}
                     </span>
                   </button>
+                  <span className="sr-only" role="status" aria-live="polite">
+                    {shareState !== 'idle' ? t('sidebar.shared') : ''}
+                  </span>
                 </div>
               </div>
 
@@ -868,43 +874,53 @@ export default function ListingDetailPage() {
         className="lg:hidden fixed inset-x-0 bottom-0 z-30 surface-glass border-t border-line dark:border-night-line"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className="mx-auto max-w-7xl px-4 py-3 flex items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
-              {free ? t('mobileBar.free') : t('mobileBar.price')}
-            </p>
-            <p className="font-display font-bold text-ink dark:text-bone leading-none tabular-nums text-[1.4rem]">
-              {free ? t('common:labels.free') : formatPrice(listing.priceCents)}
-            </p>
-          </div>
-          {isOwner ? (
-            <span className="inline-flex items-center text-[0.82rem] font-medium px-4 py-2.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft">
-              {t('mobileBar.ownListing')}
-            </span>
-          ) : isPurchased ? (
-            <span className="inline-flex items-center gap-1.5 text-[0.82rem] font-semibold px-4 py-2.5 rounded-full bg-volt-300 text-ink">
-              <Check className="w-3.5 h-3.5" />
-              {t('mobileBar.owned')}
-            </span>
-          ) : (
-            <button
-              onClick={handlePurchase}
-              disabled={buying}
-              className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold text-[0.86rem] tracking-tight motion-safe:transition focus-volt disabled:opacity-60"
-            >
-              <span
-                aria-hidden
-                className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
-              />
-              <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
-                {buying ? (
-                  <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
-                ) : (
-                  <ShoppingCart className="w-4 h-4" />
-                )}
-                {free ? t('mobileBar.getFree') : t('mobileBar.buy')}
+        <div className="mx-auto max-w-7xl px-4 py-3 space-y-1.5">
+          <div className="flex items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+                {free ? t('mobileBar.free') : t('mobileBar.price')}
+              </p>
+              <p className="font-display font-bold text-ink dark:text-bone leading-none tabular-nums text-[1.4rem]">
+                {free ? t('common:labels.free') : formatPrice(listing.priceCents)}
+              </p>
+            </div>
+            {isOwner ? (
+              <span className="inline-flex items-center text-[0.82rem] font-medium px-4 py-2.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft">
+                {t('mobileBar.ownListing')}
               </span>
-            </button>
+            ) : isPurchased ? (
+              <span className="inline-flex items-center gap-1.5 text-[0.82rem] font-semibold px-4 py-2.5 rounded-full bg-volt-300 text-ink">
+                <Check className="w-3.5 h-3.5" />
+                {t('mobileBar.owned')}
+              </span>
+            ) : (
+              <button
+                onClick={handlePurchase}
+                disabled={buying}
+                className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold text-[0.86rem] tracking-tight motion-safe:transition focus-volt disabled:opacity-60"
+              >
+                <span
+                  aria-hidden
+                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+                />
+                <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
+                  {buying ? (
+                    <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                  ) : (
+                    <ShoppingCart className="w-4 h-4" />
+                  )}
+                  {free ? t('mobileBar.getFree') : t('mobileBar.buy')}
+                </span>
+              </button>
+            )}
+          </div>
+          {cannotAfford && (
+            <p role="alert" className="text-[0.74rem] text-coral-deep dark:text-coral text-center">
+              {t('purchase.shortBy', { amount: formatPrice(shortfallCents) })}{' '}
+              <Link to="/dashboard" className="underline">
+                {t('purchase.topUp')}
+              </Link>
+            </p>
           )}
         </div>
       </div>

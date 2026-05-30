@@ -105,7 +105,7 @@ export default function ListingCard({
             className="absolute inset-0 mix-blend-overlay opacity-70"
             style={{
               background:
-                'radial-gradient(at 22% 28%, oklch(1 0 0 / 0.35) 0, transparent 55%), radial-gradient(at 78% 82%, oklch(0 0 0 / 0.25) 0, transparent 60%)',
+                'radial-gradient(at 22% 28%, oklch(0.985 0.012 95 / 0.35) 0, transparent 55%), radial-gradient(at 78% 82%, oklch(0.16 0.03 290 / 0.25) 0, transparent 60%)',
             }}
           />
           <div className="grain-layer" aria-hidden style={{ opacity: 0.16 }} />

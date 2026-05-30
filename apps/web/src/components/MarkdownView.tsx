@@ -1,6 +1,8 @@
 import { useState, type ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+
+const REMARK_PLUGINS = [remarkGfm]
 import { useTranslation } from 'react-i18next'
 import { Check, Copy } from 'lucide-react'
 import { cn } from '@utils/cn'
@@ -71,7 +73,7 @@ export default function MarkdownView({ source, className }: MarkdownViewProps) {
       className={cn(
         'prose prose-sm sm:prose-base dark:prose-invert max-w-none',
         'prose-headings:tracking-tight prose-headings:font-display',
-        'prose-p:leading-relaxed prose-li:leading-relaxed',
+        'prose-p:leading-relaxed prose-p:max-w-[72ch] prose-li:leading-relaxed prose-li:max-w-[72ch]',
         'prose-a:text-volt-800 dark:prose-a:text-volt-300 prose-a:underline-offset-4',
         'prose-strong:text-ink dark:prose-strong:text-bone',
         'prose-code:before:hidden prose-code:after:hidden',
@@ -79,7 +81,7 @@ export default function MarkdownView({ source, className }: MarkdownViewProps) {
       )}
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={REMARK_PLUGINS}
         components={{
           pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
         }}

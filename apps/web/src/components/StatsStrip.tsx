@@ -20,12 +20,14 @@ function Stat({
   label,
   caption,
   loading,
+  error,
   accent,
 }: {
   target: number
   label: string
   caption: string
   loading: boolean
+  error: boolean
   accent: 'volt' | 'violet' | 'coral'
 }) {
   const { ref, value } = useCountUp(target)
@@ -47,6 +49,8 @@ function Stat({
       >
         {loading ? (
           <span className="inline-block w-24 h-[1em] rounded bg-canvas-deep dark:bg-night-sub motion-safe:animate-pulse align-middle" />
+        ) : error ? (
+          <span aria-label="-">-</span>
         ) : (
           <span aria-label={String(target)}>{formatCompact(value)}</span>
         )}
@@ -69,7 +73,7 @@ function Stat({
 
 export default function StatsStrip({ className }: StatsStripProps) {
   const { t } = useTranslation('nav')
-  const { data, isPending } = useStats()
+  const { data, isPending, isError } = useStats()
   const totalListings = data?.totalListings ?? 0
   const totalDownloads = data?.totalDownloads ?? 0
   const totalCreators = data?.totalCreators ?? 0
@@ -90,6 +94,7 @@ export default function StatsStrip({ className }: StatsStripProps) {
         label={t('stats.listings')}
         caption={t('stats.captions.listings')}
         loading={isPending}
+        error={isError}
         accent="volt"
       />
       <Stat
@@ -97,6 +102,7 @@ export default function StatsStrip({ className }: StatsStripProps) {
         label={t('stats.downloads')}
         caption={t('stats.captions.downloads')}
         loading={isPending}
+        error={isError}
         accent="violet"
       />
       <Stat
@@ -104,6 +110,7 @@ export default function StatsStrip({ className }: StatsStripProps) {
         label={t('stats.makers')}
         caption={t('stats.captions.makers')}
         loading={isPending}
+        error={isError}
         accent="coral"
       />
     </div>

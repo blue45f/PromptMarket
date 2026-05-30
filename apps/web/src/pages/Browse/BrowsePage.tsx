@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { activeIntlLocale } from '@/i18n'
+import { activeIntlLocale, default as i18n } from '@/i18n'
 import type { TFunction } from 'i18next'
 import { useScrollRestore } from '@hooks/useScrollRestore'
 import { useSavedFilters } from '@hooks/useSavedFilters'
@@ -177,6 +177,7 @@ export default function BrowsePage() {
   const effectiveTotal = narrowing ? items.length : total
   const effectiveTotalPages = narrowing ? 1 : totalPages
   const activeCount = countActive(filters)
+  const fmt = useMemo(() => new Intl.NumberFormat(activeIntlLocale()), [i18n.resolvedLanguage])
 
   // Persist non-trivial filter combinations into the recent-filters store
   // so visitors can jump back without re-applying chip by chip.
@@ -416,7 +417,7 @@ export default function BrowsePage() {
               ? t('results.loading')
               : t('results.count', {
                   count: effectiveTotal,
-                  formatted: new Intl.NumberFormat(activeIntlLocale()).format(effectiveTotal),
+                  formatted: fmt.format(effectiveTotal),
                 })}
             {q && (
               <>

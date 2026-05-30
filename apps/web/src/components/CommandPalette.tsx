@@ -7,6 +7,7 @@ import { LISTING_TYPE_META } from '@promptmarket/shared'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { listingsKey, listingKey } from '@features/marketplace/queryKeys'
 import { api } from '@services/api'
+import { useDebounce } from '@hooks/useDebounce'
 import { useWishlist } from '@hooks/useWishlist'
 import { useSearchHistory } from '@hooks/useSearchHistory'
 import type { ListingDetailResponse, ListingsListResponse } from '@/types'
@@ -88,6 +89,7 @@ export default function CommandPalette() {
   const { t } = useTranslation('errors')
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
+  const submittedRef = useRef(false)
   const token = useAuthStore((s) => s.token)
 
   // Global shortcut: ⌘K / Ctrl+K / "/"
@@ -124,7 +126,8 @@ export default function CommandPalette() {
   }, [open])
 
   const trimmed = q.trim()
-  const listingsParams = trimmed ? { q: trimmed, pageSize: 8 } : { sort: 'top', pageSize: 6 }
+  const debouncedQ = useDebounce(trimmed, 200)
+  const listingsParams = debouncedQ ? { q: debouncedQ, pageSize: 8 } : { sort: 'top', pageSize: 6 }
   const listingsQ = useQuery({
     queryKey: listingsKey(listingsParams),
     queryFn: () =>
@@ -146,7 +149,7 @@ export default function CommandPalette() {
   const showHistory = !trimmed && history.entries.length > 0
   const visibleWishlist = wishlistSlugs.slice(0, 5)
   const wishlistResults = useQueries({
-    queries: trimmed
+    queries: debouncedQ
       ? []
       : visibleWishlist.map((slug) => ({
           queryKey: listingKey(slug),
@@ -184,6 +187,7 @@ export default function CommandPalette() {
 
   const go = useCallback(
     (to: string) => {
+      submittedRef.current = true
       setOpen(false)
       navigate(to)
     },
@@ -237,7 +241,12 @@ export default function CommandPalette() {
                 setQ(e.target.value)
                 setActive(0)
               }}
-              onBlur={() => history.record(trimmed)}
+              onBlur={() => {
+                if (submittedRef.current) {
+                  history.record(trimmed)
+                }
+                submittedRef.current = false
+              }}
               onKeyDown={handleInputKey}
               placeholder={t('palette.placeholder')}
               className="flex-1 bg-transparent outline-none placeholder:text-ink-mute dark:placeholder:text-bone-mute text-ink dark:text-bone"
@@ -327,7 +336,7 @@ export default function CommandPalette() {
                       onClick={() => go(`/listings/${l.slug}`)}
                       icon={<Heart className="w-3.5 h-3.5 fill-current text-coral" aria-hidden />}
                       title={l.title}
-                      subtitle={`${meta.label.toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
+                      subtitle={`${t('common:types.' + l.type, { defaultValue: meta?.label ?? l.type }).toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
                       rowIndex={rowIdx}
                     />
                   )
@@ -362,7 +371,7 @@ export default function CommandPalette() {
                         </span>
                       }
                       title={l.title}
-                      subtitle={`${meta.label.toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
+                      subtitle={`${t('common:types.' + l.type, { defaultValue: meta?.label ?? l.type }).toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
                       trailing={
                         <span
                           className={cn(

@@ -305,7 +305,7 @@
     }
   }
   .volt-pulse {
-    animation: voltPulse 1.9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: voltPulse 1.9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   }
 
   /* Display + variable font helpers */
@@ -593,7 +593,7 @@
     background: linear-gradient(
       90deg,
       transparent 0,
-      oklch(1 0 0 / 0.35) 50%,
+      oklch(0.985 0.012 95 / 0.45) 50%,
       transparent 100%
     );
     transform: translateX(-130%) skewX(-20deg);

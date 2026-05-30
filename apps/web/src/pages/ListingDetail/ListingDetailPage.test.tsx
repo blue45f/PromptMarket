@@ -146,8 +146,10 @@ describe('<ListingDetailPage />', () => {
       error: null,
     })
     renderPage()
-    const topUp = screen.getByRole('link', { name: /충전하기|Top up/i })
-    expect(topUp.getAttribute('href')).toBe('/dashboard')
+    // Both desktop sidebar and mobile bar render a top-up link when short.
+    const topUps = screen.getAllByRole('link', { name: /충전하기|Top up/i })
+    expect(topUps.length).toBeGreaterThanOrEqual(1)
+    expect(topUps[0].getAttribute('href')).toBe('/dashboard')
   })
 
   it('hides the insufficient-balance hint when the wallet covers the price', () => {

@@ -7,6 +7,7 @@ import { listingKey } from '@features/marketplace/queryKeys'
 import type { ListingDetailResponse } from '@/types'
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
 import ListingCard from './ListingCard'
+import SkeletonCard from './SkeletonCard'
 import { cn } from '@utils/cn'
 
 interface RecentlyViewedProps {
@@ -44,7 +45,9 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
   // shows a broken row.
   const items = results.map((r) => r.data).filter((l): l is NonNullable<typeof l> => !!l)
 
-  if (visible.length === 0 || (items.length === 0 && !results.some((r) => r.isPending))) {
+  const isPending = results.some((r) => r.isPending)
+
+  if (visible.length === 0 || (items.length === 0 && !isPending)) {
     return null
   }
 
@@ -87,9 +90,15 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
           role="region"
           aria-label={t('recentlyViewed.aria')}
         >
-          {items.map((l) => (
-            <ListingCard key={l.id} listing={l} fixedWidth />
-          ))}
+          {isPending && items.length === 0
+            ? visible.map((_, i) => (
+                <SkeletonCard
+                  key={i}
+                  seed={i}
+                  className="w-[280px] sm:w-[300px] shrink-0 snap-start"
+                />
+              ))
+            : items.map((l) => <ListingCard key={l.id} listing={l} fixedWidth />)}
         </div>
       </div>
     </section>

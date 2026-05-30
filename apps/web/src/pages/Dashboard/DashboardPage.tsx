@@ -397,7 +397,7 @@ function WishlistTab() {
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute inline-flex items-center gap-2">
           <Heart className="w-3.5 h-3.5 text-coral" aria-hidden />
-          {t('wishlist.count', { count: items.length })}
+          {t('wishlist.count', { count: visibleSlugs.length })}
         </p>
         <div className="flex items-center gap-2">
           {clearPending && (

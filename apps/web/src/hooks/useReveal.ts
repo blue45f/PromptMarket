@@ -23,15 +23,16 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>(
     }
     const node = ref.current
     if (!node) return
+    const currentOptions = { ...DEFAULT_OPTIONS, ...options }
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         setRevealed(true)
         obs.disconnect()
       }
-    }, options)
+    }, currentOptions)
     obs.observe(node)
     return () => obs.disconnect()
-  }, [options])
+  }, [])
 
   return { ref, revealed }
 }
