@@ -181,6 +181,7 @@ export default function Navbar() {
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? t('closeMenu') : t('openMenu')}
             aria-expanded={mobileOpen}
+            aria-controls="mobile-nav-panel"
             className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub focus-volt motion-safe:transition active:scale-95"
           >
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -190,7 +191,10 @@ export default function Navbar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-line dark:border-night-line bg-canvas dark:bg-night animate-fade-in">
+        <div
+          id="mobile-nav-panel"
+          className="md:hidden border-t border-line dark:border-night-line bg-canvas dark:bg-night animate-fade-in"
+        >
           <div className="px-[clamp(1.25rem,4vw,3rem)] py-4 space-y-3">
             <SearchBar onSubmit={handleSearch} />
             <nav

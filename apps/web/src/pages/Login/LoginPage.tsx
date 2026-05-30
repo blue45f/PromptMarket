@@ -165,7 +165,7 @@ export default function LoginPage() {
             aria-hidden
             className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
           />
-          <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
+          <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors ease-expo">
             {busy && <Loader2 className="w-4 h-4 motion-safe:animate-spin" />}
             {busy ? t('login.submitting') : t('login.submit')}
           </span>
@@ -185,7 +185,7 @@ export default function LoginPage() {
                   setValue('email', d.email, { shouldValidate: false })
                   setValue('password', 'password', { shouldValidate: false })
                 }}
-                className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.78rem] border border-line dark:border-night-line bg-canvas dark:bg-night hover:border-volt-400 dark:hover:border-volt-500/60 text-ink-soft dark:text-bone-soft motion-safe:transition focus-volt"
+                className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.78rem] border border-line dark:border-night-line bg-canvas dark:bg-night hover:border-volt-400 dark:hover:border-volt-500/60 text-ink-soft dark:text-bone-soft motion-safe:transition ease-expo focus-volt"
                 title={`${d.email} / password`}
               >
                 <span className="font-mono">@{d.email.split('@')[0]}</span>

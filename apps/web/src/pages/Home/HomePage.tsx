@@ -51,7 +51,7 @@ export default function HomePage() {
             '@context': 'https://schema.org',
             '@type': 'WebSite',
             name: 'PromptMarket',
-            alternateName: '프롬프트마켓',
+            ...(i18n.resolvedLanguage === 'ko' ? { alternateName: '프롬프트마켓' } : {}),
             url: origin,
             inLanguage: i18n.resolvedLanguage ?? 'ko',
             potentialAction: {

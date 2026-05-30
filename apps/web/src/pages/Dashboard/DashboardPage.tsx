@@ -389,13 +389,18 @@ function WishlistTab() {
   // Resolve each saved slug. A 404 means the listing was deleted, so it can be
   // pruned safely; transient errors (500/offline) are NOT treated as gone, to
   // avoid silently dropping saved items the user can still recover.
-  const resolved = results.map((r, i) => ({
-    slug: visibleSlugs[i],
-    listing: r.data,
-    gone: axios.isAxiosError(r.error) && r.error.response?.status === 404,
-  }))
-  const items = resolved.map((x) => x.listing).filter((l): l is NonNullable<typeof l> => !!l)
-  const deadSlugs = resolved.filter((x) => x.gone).map((x) => x.slug)
+  const { resolved, items, deadSlugs } = useMemo(() => {
+    const resolved = results.map((r, i) => ({
+      slug: visibleSlugs[i],
+      listing: r.data,
+      gone: axios.isAxiosError(r.error) && r.error.response?.status === 404,
+    }))
+    return {
+      resolved,
+      items: resolved.map((x) => x.listing).filter((l): l is NonNullable<typeof l> => !!l),
+      deadSlugs: resolved.filter((x) => x.gone).map((x) => x.slug),
+    }
+  }, [results, visibleSlugs])
   const pending = results.some((r) => r.isPending)
 
   function handleClearClick() {
