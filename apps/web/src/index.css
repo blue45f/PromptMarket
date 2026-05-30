@@ -539,7 +539,7 @@
     pointer-events: none;
     background: radial-gradient(
       260px circle at var(--mxp, 50%) var(--myp, 50%),
-      oklch(1 0 0 / 0.18),
+      oklch(0.985 0.012 95 / 0.18),
       transparent 60%
     );
     opacity: 0;
@@ -552,7 +552,7 @@
   html.dark .cursor-sheen {
     background: radial-gradient(
       260px circle at var(--mxp, 50%) var(--myp, 50%),
-      oklch(1 0 0 / 0.08),
+      oklch(0.985 0.012 95 / 0.08),
       transparent 60%
     );
   }

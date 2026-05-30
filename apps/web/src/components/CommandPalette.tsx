@@ -4,13 +4,12 @@ import { useTranslation } from 'react-i18next'
 import * as Dialog from '@radix-ui/react-dialog'
 import { ArrowRight, Compass, PlusCircle, Search, Sparkles, User } from 'lucide-react'
 import { LISTING_TYPE_META } from '@promptmarket/shared'
-import { useQueries } from '@tanstack/react-query'
-import { useListings } from '@features/marketplace/queries'
-import { listingKey } from '@features/marketplace/queryKeys'
+import { useQueries, useQuery } from '@tanstack/react-query'
+import { listingsKey, listingKey } from '@features/marketplace/queryKeys'
 import { api } from '@services/api'
 import { useWishlist } from '@hooks/useWishlist'
 import { useSearchHistory } from '@hooks/useSearchHistory'
-import type { ListingDetailResponse } from '@/types'
+import type { ListingDetailResponse, ListingsListResponse } from '@/types'
 import { Heart } from 'lucide-react'
 import { formatPrice } from '@utils/format'
 import { useAuthStore } from '@store/auth'
@@ -125,9 +124,19 @@ export default function CommandPalette() {
   }, [open])
 
   const trimmed = q.trim()
-  const listingsQ = useListings(
-    trimmed ? { q: trimmed, pageSize: 8 } : { sort: 'top', pageSize: 6 }
-  )
+  const listingsParams = trimmed ? { q: trimmed, pageSize: 8 } : { sort: 'top', pageSize: 6 }
+  const listingsQ = useQuery({
+    queryKey: listingsKey(listingsParams),
+    queryFn: () =>
+      api.get<ListingsListResponse, ListingsListResponse>('/listings', {
+        params: {
+          sort: listingsParams.sort || undefined,
+          q: listingsParams.q || undefined,
+          pageSize: listingsParams.pageSize,
+        },
+      }),
+    enabled: open,
+  })
   const listings = listingsQ.data?.items ?? []
 
   // Wishlist surfacing — hydrate up to 5 saved slugs so visitors can jump
@@ -143,6 +152,7 @@ export default function CommandPalette() {
           queryKey: listingKey(slug),
           queryFn: () => api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${slug}`),
           staleTime: 10 * 60_000,
+          enabled: open,
         })),
   })
   const wishlistListings = wishlistResults

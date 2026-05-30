@@ -1,4 +1,12 @@
-import { cloneElement, isValidElement, useEffect, useId, useMemo, useState } from 'react'
+import React, {
+  cloneElement,
+  isValidElement,
+  memo,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
@@ -357,7 +365,7 @@ export default function CreateListingPage() {
                   <select {...register('category')} className={inputClass}>
                     {CATEGORIES.map((c) => (
                       <option key={c} value={c}>
-                        {c}
+                        {t('home:categories.labels.' + c, { defaultValue: c })}
                       </option>
                     ))}
                   </select>
@@ -633,7 +641,7 @@ function Field({
   )
 }
 
-function TrendingCategoryHint({
+const TrendingCategoryHint = memo(function TrendingCategoryHint({
   current,
   onPick,
 }: {
@@ -641,7 +649,7 @@ function TrendingCategoryHint({
   onPick: (c: string) => void
 }) {
   const { t } = useTranslation('create')
-  const { data } = useListings({ sort: 'trending', pageSize: 24 })
+  const { data } = useListings({ sort: 'trending', pageSize: 12 })
   const items = data?.items ?? []
   const counts = new Map<string, number>()
   for (const l of items) {
@@ -674,10 +682,10 @@ function TrendingCategoryHint({
                 : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60'
             )}
           >
-            {c}
+            {t('home:categories.labels.' + c, { defaultValue: c })}
           </button>
         )
       })}
     </div>
   )
-}
+})
