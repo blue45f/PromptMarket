@@ -15,7 +15,8 @@
   },
   "toolbar": {
     "filter": "Filters",
-    "sortLabel": "Sort"
+    "sortLabel": "Sort",
+    "searchLabel": "Search listings"
   },
   "filters": {
     "activeCount_one": "{{count}} filter applied",

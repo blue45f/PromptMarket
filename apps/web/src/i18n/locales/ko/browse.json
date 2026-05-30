@@ -15,7 +15,8 @@
   },
   "toolbar": {
     "filter": "필터",
-    "sortLabel": "정렬"
+    "sortLabel": "정렬",
+    "searchLabel": "프롬프트 검색"
   },
   "filters": {
     "activeCount_other": "{{count}}개 필터 적용됨",

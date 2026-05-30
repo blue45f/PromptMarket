@@ -430,7 +430,7 @@ const Section = React.memo(function Section({
   children: React.ReactNode
 }) {
   return (
-    <div className="px-1.5 py-1.5">
+    <div role="presentation" className="px-1.5 py-1.5">
       <p
         aria-hidden="true"
         className="px-2 pb-1.5 pt-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute"

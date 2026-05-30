@@ -70,6 +70,7 @@
     }
   },
   "wallet": {
+    "title": "Wallet",
     "balance": "Current balance",
     "topup": "Top up",
     "processing": "Processing…",

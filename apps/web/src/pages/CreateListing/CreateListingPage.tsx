@@ -10,7 +10,7 @@ import React, {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as Tabs from '@radix-ui/react-tabs'
 import toast from 'react-hot-toast'
@@ -148,9 +148,7 @@ export default function CreateListingPage() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormShape>({
-    // Cast: zod's narrowed enum types end up wider than FormShape's because
-    // omit() doesn't fully propagate optionality through the inferred shape.
-    resolver: zodResolver(FormSchema) as unknown as import('react-hook-form').Resolver<FormShape>,
+    resolver: zodResolver(FormSchema) as unknown as Resolver<FormShape>,
     defaultValues: initialDraft,
   })
 

@@ -50,7 +50,11 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
   const spotlightRef = useSpotlight<HTMLDivElement>()
 
   return (
-    <section ref={spotlightRef} className="spotlight-host relative overflow-hidden isolate">
+    <section
+      ref={spotlightRef}
+      aria-labelledby="hero-heading"
+      className="spotlight-host relative overflow-hidden isolate"
+    >
       {/* Cursor-following lime spotlight, behind everything else */}
       <div className="spotlight -z-10" aria-hidden />
 
@@ -155,6 +159,7 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
 function KineticHeadline({ t }: { t: TFunction }) {
   return (
     <h1
+      id="hero-heading"
       className="font-display text-ink dark:text-bone leading-[0.88] tracking-[-0.045em]"
       style={{ fontSize: 'var(--text-display-xl)' }}
     >

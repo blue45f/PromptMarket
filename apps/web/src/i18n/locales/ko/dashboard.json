@@ -67,6 +67,7 @@
     }
   },
   "wallet": {
+    "title": "지갑",
     "balance": "현재 잔액",
     "topup": "충전",
     "processing": "처리 중…",

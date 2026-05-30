@@ -187,7 +187,11 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
 
       <section aria-labelledby="filter-section-category">
         <SectionHeader id="filter-section-category">{t('panel.sections.category')}</SectionHeader>
-        <div className="grid grid-cols-2 gap-1">
+        <div
+          role="radiogroup"
+          aria-labelledby="filter-section-category"
+          className="grid grid-cols-2 gap-1"
+        >
           {CATEGORIES.map((c) => {
             const active = value.category === c
             return (

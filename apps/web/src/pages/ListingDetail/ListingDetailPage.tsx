@@ -493,91 +493,96 @@ export default function ListingDetailPage() {
                 models={listing.models}
                 className="mb-6"
               />
-              <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
-                <p className="text-base text-ink-soft dark:text-bone-soft whitespace-pre-wrap leading-relaxed max-w-[72ch]">
-                  {listing.description}
-                </p>
+              <section aria-labelledby="listing-body-heading">
+                <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
+                  <p className="text-base text-ink-soft dark:text-bone-soft whitespace-pre-wrap leading-relaxed max-w-[72ch]">
+                    {listing.description}
+                  </p>
 
-                <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-lg font-bold tracking-tight text-ink dark:text-bone">
-                    {canViewBody ? t('body.headingFull') : t('body.headingPreview')}
-                  </h2>
-                  {canViewBody && listing.body && (
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={handleCopy}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
-                      >
-                        {copied ? (
-                          <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5" />
-                        )}
-                        <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
-                          {copied ? t('body.copied') : t('body.copy')}
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleDownload}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        {t('body.downloadMd')}
-                      </button>
-                      <span className="sr-only" role="status" aria-live="polite">
-                        {copied ? t('body.copied') : ''}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4">
-                  {readingMode && canViewBody && listing.body && (
-                    <MarkdownToc source={listing.body} className="mb-6" />
-                  )}
-                  {canViewBody && listing.body ? (
-                    <MarkdownView source={listing.body} />
-                  ) : canViewBody && !listing.body ? (
-                    <p className="text-sm text-ink-mute dark:text-bone-mute italic">
-                      {t('body.noBody')}
-                    </p>
-                  ) : (
-                    <div className="relative">
-                      <MarkdownView source={listing.previewBody || t('body.noPreview')} />
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-canvas-sub dark:from-night-sub to-transparent" />
-                      <div className="mt-6 rounded-xl border border-dashed border-volt-400/60 dark:border-volt-500/40 bg-volt-100/60 dark:bg-volt-900/30 p-6 text-center">
-                        <p className="text-sm text-ink dark:text-bone font-medium">
-                          {t('paywall.unlock')}
-                        </p>
-                        <p className="mt-1 text-xs text-ink-soft dark:text-bone-soft">
-                          {free
-                            ? t('paywall.free')
-                            : t('paywall.paid', { price: formatPrice(listing.priceCents) })}
-                        </p>
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+                    <h2
+                      id="listing-body-heading"
+                      className="text-lg font-bold tracking-tight text-ink dark:text-bone"
+                    >
+                      {canViewBody ? t('body.headingFull') : t('body.headingPreview')}
+                    </h2>
+                    {canViewBody && listing.body && (
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
-                          onClick={handlePurchase}
-                          disabled={buying}
-                          className="mt-3 group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
+                          onClick={handleCopy}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                         >
-                          {buying ? (
-                            <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                          {copied ? (
+                            <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
                           ) : (
-                            <ShoppingCart className="w-4 h-4" />
+                            <Copy className="w-3.5 h-3.5" />
                           )}
-                          {buying
-                            ? t('paywall.processing')
-                            : free
-                              ? t('paywall.getFree')
-                              : t('paywall.buyToView')}
+                          <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
+                            {copied ? t('body.copied') : t('body.copy')}
+                          </span>
                         </button>
+                        <button
+                          type="button"
+                          onClick={handleDownload}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          {t('body.downloadMd')}
+                        </button>
+                        <span className="sr-only" role="status" aria-live="polite">
+                          {copied ? t('body.copied') : ''}
+                        </span>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+
+                  <div className="mt-4">
+                    {readingMode && canViewBody && listing.body && (
+                      <MarkdownToc source={listing.body} className="mb-6" />
+                    )}
+                    {canViewBody && listing.body ? (
+                      <MarkdownView source={listing.body} />
+                    ) : canViewBody && !listing.body ? (
+                      <p className="text-sm text-ink-mute dark:text-bone-mute italic">
+                        {t('body.noBody')}
+                      </p>
+                    ) : (
+                      <div className="relative">
+                        <MarkdownView source={listing.previewBody || t('body.noPreview')} />
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-canvas-sub dark:from-night-sub to-transparent" />
+                        <div className="mt-6 rounded-xl border border-dashed border-volt-400/60 dark:border-volt-500/40 bg-volt-100/60 dark:bg-volt-900/30 p-6 text-center">
+                          <p className="text-sm text-ink dark:text-bone font-medium">
+                            {t('paywall.unlock')}
+                          </p>
+                          <p className="mt-1 text-xs text-ink-soft dark:text-bone-soft">
+                            {free
+                              ? t('paywall.free')
+                              : t('paywall.paid', { price: formatPrice(listing.priceCents) })}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={handlePurchase}
+                            disabled={buying}
+                            className="mt-3 group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
+                          >
+                            {buying ? (
+                              <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                            ) : (
+                              <ShoppingCart className="w-4 h-4" />
+                            )}
+                            {buying
+                              ? t('paywall.processing')
+                              : free
+                                ? t('paywall.getFree')
+                                : t('paywall.buyToView')}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </section>
             </Tabs.Content>
 
             <Tabs.Content value="reviews" className="pt-6 focus-visible:outline-none">
@@ -949,7 +954,7 @@ export default function ListingDetailPage() {
                   aria-hidden
                   className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
                 />
-                <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
+                <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors ease-expo">
                   {buying ? (
                     <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
                   ) : (

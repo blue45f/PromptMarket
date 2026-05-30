@@ -132,7 +132,7 @@ export default function DashboardPage() {
                 >
                   <PlusCircle className="w-4 h-4" />
                   {t('listings.empty.action')}
-                  <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
                 </Link>
               }
             />
@@ -232,7 +232,7 @@ export default function DashboardPage() {
             <div className="grain-layer" aria-hidden style={{ opacity: 0.06 }} />
 
             <h2 id="wallet-heading" className="sr-only">
-              {t('wallet.title', { defaultValue: '지갑' })}
+              {t('wallet.title')}
             </h2>
             <p
               aria-hidden

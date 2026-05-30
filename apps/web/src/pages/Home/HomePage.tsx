@@ -555,7 +555,7 @@ function SellerCallToAction() {
               className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-ink text-bone font-medium tracking-tight focus-volt lift-on-hover"
             >
               {t('cta.startListing')}
-              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
             </Link>
             <Link
               to="/dashboard"
