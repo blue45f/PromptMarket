@@ -567,7 +567,10 @@ export default function ListingDetailPage() {
                             className="mt-3 group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
                           >
                             {buying ? (
-                              <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                              <Loader2
+                                aria-hidden="true"
+                                className="w-4 h-4 motion-safe:animate-spin"
+                              />
                             ) : (
                               <ShoppingCart className="w-4 h-4" />
                             )}
@@ -641,7 +644,10 @@ export default function ListingDetailPage() {
                         className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
                       >
                         {reviewSubmitting && (
-                          <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                          <Loader2
+                            aria-hidden="true"
+                            className="w-4 h-4 motion-safe:animate-spin"
+                          />
                         )}
                         {reviewSubmitting ? t('reviews.submitting') : t('reviews.submit')}
                       </button>
@@ -718,7 +724,7 @@ export default function ListingDetailPage() {
                     title={t('sidebar.readingModeTitle')}
                     className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition ease-expo focus-volt"
                   >
-                    <BookOpen className="w-3.5 h-3.5" />
+                    <BookOpen aria-hidden className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
@@ -764,7 +770,7 @@ export default function ListingDetailPage() {
                     className="group w-full relative inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover overflow-hidden"
                   >
                     {buying ? (
-                      <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                      <Loader2 aria-hidden="true" className="w-4 h-4 motion-safe:animate-spin" />
                     ) : (
                       <ShoppingCart className="w-4 h-4" />
                     )}
@@ -952,11 +958,11 @@ export default function ListingDetailPage() {
               >
                 <span
                   aria-hidden
-                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 ease-expo group-hover:translate-y-0"
                 />
                 <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors ease-expo">
                   {buying ? (
-                    <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
+                    <Loader2 aria-hidden="true" className="w-4 h-4 motion-safe:animate-spin" />
                   ) : (
                     <ShoppingCart className="w-4 h-4" />
                   )}

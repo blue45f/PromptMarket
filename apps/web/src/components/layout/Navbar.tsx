@@ -13,7 +13,7 @@ import { cn } from '@utils/cn'
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
     'relative inline-flex items-center gap-1.5 text-[0.83rem] font-medium px-3 py-1.5 rounded-full tracking-tight',
-    'motion-safe:transition-colors duration-300',
+    'motion-safe:transition-colors duration-300 ease-expo',
     isActive
       ? 'text-ink dark:text-bone'
       : 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone'
@@ -135,8 +135,15 @@ export default function Navbar() {
             <div className="flex items-center gap-2 ml-1">
               {user && typeof user.balanceCents === 'number' && (
                 <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.72rem] font-mono font-medium bg-volt-100 text-volt-800 ring-1 ring-volt-200 dark:bg-volt-900/60 dark:text-volt-200 dark:ring-volt-800">
-                  <Wallet className="w-3.5 h-3.5" />
-                  {formatDollars(user.balanceCents)}
+                  <Wallet aria-hidden className="w-3.5 h-3.5" />
+                  <span
+                    aria-label={t('walletBalance', {
+                      amount: formatDollars(user.balanceCents),
+                      defaultValue: 'Wallet balance: {{amount}}',
+                    })}
+                  >
+                    {formatDollars(user.balanceCents)}
+                  </span>
                 </span>
               )}
               <button
@@ -144,7 +151,7 @@ export default function Navbar() {
                 onClick={handleSignOut}
                 className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut aria-hidden className="w-4 h-4" />
                 <span className="hidden sm:inline">{t('logout')}</span>
               </button>
             </div>
@@ -152,7 +159,7 @@ export default function Navbar() {
             <div className="flex items-center gap-1.5 ml-1">
               <Link
                 to="/login"
-                className="text-[0.83rem] font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt"
+                className="text-[0.83rem] font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
               >
                 {t('login')}
               </Link>
@@ -162,9 +169,9 @@ export default function Navbar() {
               >
                 <span
                   aria-hidden
-                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 ease-expo group-hover:translate-y-0"
                 />
-                <span className="relative group-hover:text-ink motion-safe:transition-colors motion-safe:duration-300">
+                <span className="relative group-hover:text-ink motion-safe:transition-colors motion-safe:duration-300 ease-expo">
                   {t('register')}
                 </span>
               </Link>
@@ -182,7 +189,7 @@ export default function Navbar() {
             aria-label={mobileOpen ? t('closeMenu') : t('openMenu')}
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav-panel"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub focus-volt motion-safe:transition active:scale-95"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub focus-volt motion-safe:transition ease-expo active:scale-95"
           >
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
@@ -259,7 +266,7 @@ export default function Navbar() {
                   onClick={handleSignOut}
                   className="py-3 inline-flex items-center justify-between text-coral-deep dark:text-coral"
                 >
-                  {t('logout')} <LogOut className="w-4 h-4" />
+                  {t('logout')} <LogOut aria-hidden className="w-4 h-4" />
                 </button>
               )}
             </nav>

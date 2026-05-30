@@ -32,7 +32,8 @@
     "removeFromHistory": "'{{query}}' 검색 기록 삭제"
   },
   "listing": {
-    "unrated": "아직 리뷰 없음"
+    "unrated": "아직 리뷰 없음",
+    "downloadsLabel": "다운로드 {{count}}개"
   },
   "toasts": {
     "welcomeBack": "@{{name}}님, 다시 오신 걸 환영해요",
@@ -184,5 +185,8 @@
     "light": "라이트",
     "dark": "다크",
     "system": "시스템"
+  },
+  "keyboard": {
+    "esc": "Esc"
   }
 }

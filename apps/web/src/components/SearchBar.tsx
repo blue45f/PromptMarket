@@ -125,7 +125,10 @@ export default function SearchBar({
           aria-label={t('search.recent')}
           className="absolute left-0 right-0 top-full mt-2 z-30 rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night shadow-xl shadow-ink/10 dark:shadow-black/40 overflow-hidden"
         >
-          <div className="flex items-center justify-between px-3.5 py-2 border-b border-line/70 dark:border-night-line/70">
+          <div
+            role="presentation"
+            className="flex items-center justify-between px-3.5 py-2 border-b border-line/70 dark:border-night-line/70"
+          >
             <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute">
               {t('search.recent')}
             </span>
@@ -139,9 +142,9 @@ export default function SearchBar({
               {t('actions.clear')}
             </button>
           </div>
-          <ul className="py-1.5">
+          <div role="presentation" className="py-1.5">
             {history.entries.map((q, i) => (
-              <li key={q} role="presentation">
+              <div key={q} role="presentation">
                 <div
                   onMouseEnter={() => setActiveIdx(i)}
                   className={cn(
@@ -179,9 +182,9 @@ export default function SearchBar({
                     <X className="w-3 h-3" aria-hidden />
                   </button>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </form>

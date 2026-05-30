@@ -30,6 +30,7 @@
     "description": "설명",
     "descriptionPlaceholder": "카드에 보여줄 짧은 한 줄 소개.",
     "coverEmoji": "커버 이모지",
+    "coverEmojiInput": "이모지 문자",
     "body": "본문 (Markdown)",
     "bodyPlaceholder": "# 내 프롬프트\n\nYou are a helpful assistant…",
     "price": "가격 (USD)",

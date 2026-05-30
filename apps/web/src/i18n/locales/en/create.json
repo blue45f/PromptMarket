@@ -30,6 +30,7 @@
     "description": "Description",
     "descriptionPlaceholder": "A short one-liner to show on the card.",
     "coverEmoji": "Cover emoji",
+    "coverEmojiInput": "Emoji character",
     "body": "Body (Markdown)",
     "bodyPlaceholder": "# My prompt\n\nYou are a helpful assistant…",
     "price": "Price (USD)",

@@ -92,13 +92,13 @@ export default function BrowseEmptyState({
             >
               <Compass className="w-4 h-4" />
               {t('empty.browseAll')}
-              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
             </Link>
             {hasFilters && (
               <button
                 type="button"
                 onClick={onClearAll}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.85rem] font-medium tracking-tight hover:border-ink dark:hover:border-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub motion-safe:transition focus-volt"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone text-[0.85rem] font-medium tracking-tight hover:border-ink dark:hover:border-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub motion-safe:transition ease-expo focus-volt"
               >
                 {t('empty.clearAll')}
               </button>
@@ -118,7 +118,7 @@ export default function BrowseEmptyState({
                   <button
                     type="button"
                     onClick={f.onRemove}
-                    className="group w-full flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night hover:border-volt-400 dark:hover:border-volt-500/40 hover:bg-canvas-deep/60 dark:hover:bg-night-deep/60 text-left motion-safe:transition focus-volt"
+                    className="group w-full flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night hover:border-volt-400 dark:hover:border-volt-500/40 hover:bg-canvas-deep/60 dark:hover:bg-night-deep/60 text-left motion-safe:transition ease-expo focus-volt"
                   >
                     <span className="min-w-0 flex-1 text-[0.86rem] text-ink dark:text-bone truncate">
                       {f.label}

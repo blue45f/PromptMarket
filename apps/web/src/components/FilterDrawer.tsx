@@ -101,7 +101,7 @@ export default function FilterDrawer({
             >
               <span
                 aria-hidden
-                className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+                className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 ease-expo group-hover:translate-y-0"
               />
               <span className="relative group-hover:text-ink motion-safe:transition-colors">
                 {t('drawer.apply')}

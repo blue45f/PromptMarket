@@ -17,7 +17,7 @@ const FAMILY_TABS: Array<{ key: string; label: string; labelKey?: string; mono: 
   { key: 'GPT', label: 'GPT', mono: 'openai' },
   { key: 'Gemini', label: 'Gemini', mono: 'google' },
   { key: 'Llama', label: 'Llama', mono: 'meta' },
-  { key: 'Tool', label: '에디터', labelKey: 'models.toolTab', mono: 'tools' },
+  { key: 'Tool', label: 'Editors', labelKey: 'models.toolTab', mono: 'tools' },
 ]
 
 function pickVendorForFamily(family: string): string | undefined {
@@ -74,7 +74,7 @@ export default function ModelTabs() {
           className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition ease-expo focus-volt shrink-0"
         >
           {t('common.viewAll')}
-          <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+          <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
         </Link>
       </div>
       <div

@@ -90,7 +90,12 @@ export default function StarRating({
         </span>
       )}
       {!showLabel && typeof count === 'number' && (
-        <span className="text-ink-mute dark:text-bone-mute text-xs font-mono">({count})</span>
+        <span
+          aria-label={t('rating.reviewCount', { count, defaultValue: '{{count}} reviews' })}
+          className="text-ink-mute dark:text-bone-mute text-xs font-mono"
+        >
+          ({count})
+        </span>
       )}
     </div>
   )

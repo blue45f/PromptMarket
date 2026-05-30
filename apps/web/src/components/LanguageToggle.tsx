@@ -16,9 +16,9 @@ export default function LanguageToggle() {
         <button
           type="button"
           aria-label={t('lang.switchLabel')}
-          className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub border border-transparent hover:border-line/70 dark:hover:border-night-line/60 focus-volt motion-safe:transition active:scale-95"
+          className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub border border-transparent hover:border-line/70 dark:hover:border-night-line/60 focus-volt motion-safe:transition ease-expo active:scale-95"
         >
-          <Languages className="w-4 h-4" />
+          <Languages className="w-4 h-4" aria-hidden />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -34,7 +34,7 @@ export default function LanguageToggle() {
                 void i18n.changeLanguage(lng)
               }}
               className={cn(
-                'flex items-center gap-2.5 px-3 py-2 text-sm rounded-xl cursor-pointer outline-none motion-safe:transition',
+                'flex items-center gap-2.5 px-3 py-2 text-sm rounded-xl cursor-pointer outline-none motion-safe:transition ease-expo',
                 'text-ink-soft dark:text-bone-soft',
                 'data-[highlighted]:bg-volt-100 data-[highlighted]:text-ink',
                 'dark:data-[highlighted]:bg-volt-900 dark:data-[highlighted]:text-volt-100',

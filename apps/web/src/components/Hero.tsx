@@ -100,11 +100,14 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
               >
                 <span
                   aria-hidden
-                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 ease-expo group-hover:translate-y-0"
                 />
                 <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors ease-expo motion-safe:duration-300">
                   {t('hero.browseCta')}
-                  <ArrowRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5" />
+                  <ArrowRight
+                    aria-hidden
+                    className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5"
+                  />
                 </span>
               </Link>
               <Link

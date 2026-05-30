@@ -234,10 +234,7 @@ export default function DashboardPage() {
             <h2 id="wallet-heading" className="sr-only">
               {t('wallet.title')}
             </h2>
-            <p
-              aria-hidden
-              className="inline-flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300"
-            >
+            <p className="inline-flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300">
               <Wallet className="w-3.5 h-3.5" aria-hidden />
               {t('wallet.balance')}
             </p>

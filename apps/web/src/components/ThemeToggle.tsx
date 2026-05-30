@@ -45,7 +45,7 @@ export default function ThemeToggle() {
                 mode === key && 'font-semibold text-ink dark:text-bone'
               )}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4" aria-hidden />
               {t(`theme.${key}`)}
               {mode === key && (
                 <span

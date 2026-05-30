@@ -266,7 +266,7 @@ export default function CommandPalette() {
               spellCheck={false}
             />
             <kbd className="hidden sm:inline-flex font-mono text-[0.65rem] uppercase tracking-[0.14em] px-1.5 py-0.5 rounded border border-line dark:border-night-line text-ink-mute dark:text-bone-mute">
-              {t('common:keyboard.esc', { defaultValue: 'esc' })}
+              {t('common:keyboard.esc', { defaultValue: 'Esc' })}
             </kbd>
           </div>
 

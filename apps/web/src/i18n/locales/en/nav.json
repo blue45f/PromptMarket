@@ -47,5 +47,6 @@
       "downloads": "Times pulled into a real codebase. Every download is a vote.",
       "makers": "Builders publishing on the platform this season."
     }
-  }
+  },
+  "walletBalance": "Wallet balance: {{amount}}"
 }

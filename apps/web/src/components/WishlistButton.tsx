@@ -35,7 +35,7 @@ export default function WishlistButton({ slug, variant = 'card', className }: Wi
         aria-pressed={active}
         aria-label={active ? t('wishlist.remove') : t('wishlist.add')}
         className={cn(
-          'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[0.78rem] font-medium motion-safe:transition focus-volt',
+          'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[0.78rem] font-medium motion-safe:transition ease-expo focus-volt',
           active
             ? 'bg-coral/15 text-coral-deep border-coral/40 dark:bg-coral/20 dark:text-coral dark:border-coral/40'
             : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:text-coral-deep dark:hover:text-coral hover:border-coral/40',
@@ -55,7 +55,7 @@ export default function WishlistButton({ slug, variant = 'card', className }: Wi
       aria-pressed={active}
       aria-label={active ? t('wishlist.remove') : t('wishlist.add')}
       className={cn(
-        'inline-flex items-center justify-center w-11 h-11 rounded-full backdrop-blur-sm motion-safe:transition focus-volt',
+        'inline-flex items-center justify-center w-11 h-11 rounded-full backdrop-blur-sm motion-safe:transition ease-expo focus-volt',
         active
           ? 'bg-coral text-bone'
           : 'bg-ink/55 text-bone hover:bg-coral/85 dark:bg-night/65 dark:hover:bg-coral/85',

@@ -73,10 +73,10 @@ export default function ModelPicker({
                 key={slug}
                 type="button"
                 onClick={() => toggle(slug)}
-                className="inline-flex items-center gap-1 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-xs font-medium px-2.5 py-1 hover:opacity-90 motion-safe:transition focus-volt"
+                className="inline-flex items-center gap-1 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-xs font-medium px-2.5 py-1 hover:opacity-90 motion-safe:transition ease-expo focus-volt"
               >
                 {m?.label ?? slug}
-                <X className="w-3 h-3" />
+                <X className="w-3 h-3" aria-hidden />
               </button>
             )
           })}
@@ -101,7 +101,7 @@ export default function ModelPicker({
                   <li key={m.slug}>
                     <label
                       className={cn(
-                        'flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm cursor-pointer motion-safe:transition',
+                        'flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm cursor-pointer motion-safe:transition ease-expo',
                         'hover:bg-canvas-deep dark:hover:bg-night-deep',
                         checked && 'bg-volt-100 dark:bg-volt-900/30'
                       )}

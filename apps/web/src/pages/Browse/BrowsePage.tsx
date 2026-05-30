@@ -451,7 +451,7 @@ export default function BrowsePage() {
           </p>
 
           {error && (
-            <p className="text-coral-deep dark:text-coral text-sm font-mono mb-4">
+            <p role="alert" className="text-coral-deep dark:text-coral text-sm font-mono mb-4">
               {getErrorMessage(error)}
             </p>
           )}
@@ -572,7 +572,7 @@ function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
         aria-label={t('chips.remove', { label })}
         className="ml-0.5 hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt rounded-full"
       >
-        <X className="w-3 h-3" />
+        <X className="w-3 h-3" aria-hidden />
       </button>
     </span>
   )

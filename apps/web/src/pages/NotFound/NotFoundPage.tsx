@@ -85,14 +85,17 @@ export default function NotFoundPage() {
               className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight lift-on-hover focus-volt"
             >
               {t('notFound.home')}
-              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+              <ArrowUpRight
+                aria-hidden
+                className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+              />
             </Link>
             <button
               type="button"
               onClick={openPalette}
-              className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone font-medium tracking-tight hover:border-ink dark:hover:border-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub motion-safe:transition focus-volt"
+              className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone font-medium tracking-tight hover:border-ink dark:hover:border-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub motion-safe:transition ease-expo focus-volt"
             >
-              <Search className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:scale-110" />
+              <Search className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:scale-110" />
               {t('notFound.openPalette')}
               <kbd className="inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.5 rounded border border-line dark:border-night-line bg-canvas-deep/60 dark:bg-night-deep/60 font-mono text-[0.66rem]">
                 ⌘K
@@ -113,7 +116,7 @@ export default function NotFoundPage() {
               <li key={s.to}>
                 <Link
                   to={s.to}
-                  className="group flex items-center gap-3 p-4 rounded-2xl border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 hover:border-volt-400 dark:hover:border-volt-500/40 hover:bg-canvas-deep/60 dark:hover:bg-night-deep/60 motion-safe:transition focus-volt"
+                  className="group flex items-center gap-3 p-4 rounded-2xl border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 hover:border-volt-400 dark:hover:border-volt-500/40 hover:bg-canvas-deep/60 dark:hover:bg-night-deep/60 motion-safe:transition ease-expo focus-volt"
                 >
                   <span
                     aria-hidden
@@ -129,7 +132,10 @@ export default function NotFoundPage() {
                       {t(`notFound.suggestions.${s.key}.hint`)}
                     </span>
                   </span>
-                  <ArrowUpRight className="w-4 h-4 text-ink-mute dark:text-bone-mute motion-safe:transition motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+                  <ArrowUpRight
+                    aria-hidden
+                    className="w-4 h-4 text-ink-mute dark:text-bone-mute motion-safe:transition ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+                  />
                 </Link>
               </li>
             ))}

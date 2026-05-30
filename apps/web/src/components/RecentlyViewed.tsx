@@ -56,7 +56,9 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
   if (isError && items.length === 0 && !isPending) {
     return (
       <p className="text-sm text-ink-mute">
-        {t('recentlyViewed.loadError', { defaultValue: '최근 본 항목을 불러오지 못했어요.' })}
+        {t('recentlyViewed.loadError', {
+          defaultValue: 'Could not load your recently viewed items.',
+        })}
       </p>
     )
   }

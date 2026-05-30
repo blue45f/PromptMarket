@@ -115,7 +115,7 @@ const ListingCard = memo(function ListingCard({
             aria-hidden
             className={cn(
               'tilt-parallax absolute inset-0 flex items-center justify-center drop-shadow-[0_8px_24px_oklch(0.16_0.03_290/0.18)]',
-              'motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-3 motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]',
+              'motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-3 motion-safe:transition-transform motion-safe:duration-700 ease-expo',
               isFeatured ? 'text-[7rem] lg:text-[10rem]' : 'text-[5.5rem]'
             )}
           >
@@ -182,7 +182,7 @@ const ListingCard = memo(function ListingCard({
           <h3
             className={cn(
               'font-display font-semibold text-ink dark:text-bone tracking-tight leading-[1.15]',
-              'motion-safe:transition-colors group-hover:text-volt-800 dark:group-hover:text-volt-200 group-focus-within:text-volt-800 dark:group-focus-within:text-volt-200',
+              'motion-safe:transition-colors ease-expo group-hover:text-volt-800 dark:group-hover:text-volt-200 group-focus-within:text-volt-800 dark:group-focus-within:text-volt-200',
               isFeatured ? 'text-[1.45rem] lg:text-[1.7rem] line-clamp-3' : 'text-base line-clamp-2'
             )}
           >
