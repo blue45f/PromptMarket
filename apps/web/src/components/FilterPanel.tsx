@@ -156,7 +156,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
           <SectionHeader id="filter-section-technique">
             {t('panel.sections.technique')}
           </SectionHeader>
-          <div className="space-y-1">
+          <div className="space-y-1" role="radiogroup" aria-labelledby="filter-section-technique">
             <label className="flex items-center gap-2.5 text-[0.86rem] cursor-pointer">
               <input
                 type="radio"

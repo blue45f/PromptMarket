@@ -287,11 +287,13 @@ export default function BrowsePage() {
 
       <div className="flex items-center justify-between mb-7 flex-wrap gap-3">
         <div className="flex items-center gap-2 flex-1 sm:flex-initial max-w-xl">
-          <SearchBar
-            initialValue={q}
-            onSubmit={(v) => updateExtras({ q: v || undefined, page: 1 })}
-            className="flex-1"
-          />
+          <div role="search">
+            <SearchBar
+              initialValue={q}
+              onSubmit={(v) => updateExtras({ q: v || undefined, page: 1 })}
+              className="flex-1"
+            />
+          </div>
           <SortSelect value={sort} onChange={(s) => updateExtras({ sort: s, page: 1 })} />
           <button
             type="button"

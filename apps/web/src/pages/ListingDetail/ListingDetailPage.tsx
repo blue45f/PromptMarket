@@ -448,7 +448,7 @@ export default function ListingDetailPage() {
                   <Link
                     key={tag}
                     to={`/browse?q=${encodeURIComponent(tag)}`}
-                    className="text-xs px-2 py-0.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft hover:bg-volt-300/40 hover:text-ink dark:hover:bg-volt-300/30 dark:hover:text-bone motion-safe:transition-colors focus-volt"
+                    className="text-xs px-2 py-0.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft hover:bg-volt-300/40 hover:text-ink dark:hover:bg-volt-300/30 dark:hover:text-bone motion-safe:transition-colors ease-expo focus-volt"
                   >
                     #{tag}
                   </Link>
@@ -582,6 +582,7 @@ export default function ListingDetailPage() {
 
             <Tabs.Content value="reviews" className="pt-6 focus-visible:outline-none">
               <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
+                <h2 className="sr-only">{t('tabs.reviews', { count: reviews?.length ?? 0 })}</h2>
                 {isPurchased && !ownReview && (
                   <form
                     onSubmit={onSubmitReview}
@@ -690,7 +691,7 @@ export default function ListingDetailPage() {
         {/* Sticky sidebar */}
         {!readingMode && (
           <aside
-            aria-label={t('sidebar.ariaLabel', { defaultValue: '상세 정보' })}
+            aria-label={t('sidebar.ariaLabel')}
             className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 lg:self-start"
           >
             <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6">

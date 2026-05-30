@@ -59,6 +59,7 @@
     }
   },
   "sidebar": {
+    "ariaLabel": "Listing details",
     "free": "Free",
     "price": "Price",
     "readingModeToggle": "Toggle quiet mode",

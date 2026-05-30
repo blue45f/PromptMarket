@@ -197,27 +197,30 @@ export default function CommandPalette() {
     [navigate]
   )
 
-  function handleInputKey(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setActive((i) => (i + 1) % Math.max(1, total))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setActive((i) => (i - 1 + Math.max(1, total)) % Math.max(1, total))
-    } else if (e.key === 'Enter') {
-      e.preventDefault()
-      if (active < actions.length) {
-        const a = actions[active]
-        if (a) go(a.to)
-      } else if (active < actions.length + wishlistListings.length) {
-        const w = wishlistListings[active - actions.length]
-        if (w) go(`/listings/${w.slug}`)
-      } else {
-        const l = listings[active - actions.length - wishlistListings.length]
-        if (l) go(`/listings/${l.slug}`)
+  const handleInputKey = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setActive((i) => (i + 1) % Math.max(1, total))
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setActive((i) => (i - 1 + Math.max(1, total)) % Math.max(1, total))
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        if (active < actions.length) {
+          const a = actions[active]
+          if (a) go(a.to)
+        } else if (active < actions.length + wishlistListings.length) {
+          const w = wishlistListings[active - actions.length]
+          if (w) go(`/listings/${w.slug}`)
+        } else {
+          const l = listings[active - actions.length - wishlistListings.length]
+          if (l) go(`/listings/${l.slug}`)
+        }
       }
-    }
-  }
+    },
+    [active, total, actions, wishlistListings, listings, go]
+  )
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -303,6 +306,16 @@ export default function CommandPalette() {
             </div>
           )}
 
+          {listingsQ.isPending && (
+            <div
+              role="status"
+              aria-live="polite"
+              className="px-3 py-6 text-sm text-ink-mute dark:text-bone-mute text-center"
+            >
+              {t('palette.loading')}
+            </div>
+          )}
+
           <div
             ref={listRef}
             id="palette-listbox"
@@ -354,15 +367,10 @@ export default function CommandPalette() {
               </Section>
             )}
 
-            {(listings.length > 0 || listingsQ.isPending) && (
+            {listings.length > 0 && (
               <Section
                 label={trimmed ? t('palette.groups.listings') : t('palette.groups.topListings')}
               >
-                {listingsQ.isPending && (
-                  <div className="px-3 py-6 text-sm text-ink-mute dark:text-bone-mute">
-                    {t('palette.loading')}
-                  </div>
-                )}
                 {listings.map((l, i) => {
                   const meta = LISTING_TYPE_META[l.type]
                   const rowIdx = actions.length + wishlistListings.length + i
@@ -373,44 +381,30 @@ export default function CommandPalette() {
                       href={`/listings/${l.slug}`}
                       go={go}
                       setActive={setActive}
-                      iconNode={
-                        <span
-                          aria-hidden
-                          className="inline-flex w-6 h-6 items-center justify-center rounded-md text-base"
-                        >
-                          {l.coverEmoji || meta.emoji}
-                        </span>
-                      }
+                      emoji={l.coverEmoji || meta.emoji}
                       title={l.title}
                       subtitle={`${t('common:types.' + l.type, { defaultValue: meta?.label ?? l.type }).toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
-                      trailing={
-                        <span
-                          className={cn(
-                            'shrink-0 inline-flex items-center font-mono text-[0.66rem] px-1.5 py-0.5 rounded-md',
-                            (l.priceCents ?? 0) === 0
-                              ? 'bg-volt-300 text-ink'
-                              : 'bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft border border-line dark:border-night-line'
-                          )}
-                        >
-                          {formatPrice(l.priceCents ?? 0)}
-                        </span>
-                      }
+                      trailingPrice={l.priceCents ?? 0}
                       rowIndex={rowIdx}
                     />
                   )
                 })}
               </Section>
             )}
-
-            {!listingsQ.isPending && total === 0 && (
-              <div className="px-4 py-10 text-center text-sm text-ink-mute dark:text-bone-mute">
-                <p className="font-display text-[1.15rem] text-ink dark:text-bone mb-1">
-                  {t('palette.emptyTitle')}
-                </p>
-                <p>{t('palette.emptyBody')}</p>
-              </div>
-            )}
           </div>
+
+          {!listingsQ.isPending && total === 0 && (
+            <div
+              role="status"
+              aria-live="polite"
+              className="px-4 py-10 text-center text-sm text-ink-mute dark:text-bone-mute"
+            >
+              <p className="font-display text-[1.15rem] text-ink dark:text-bone mb-1">
+                {t('palette.emptyTitle')}
+              </p>
+              <p>{t('palette.emptyBody')}</p>
+            </div>
+          )}
 
           <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-t border-line dark:border-night-line text-[0.66rem] font-mono uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute">
             <div className="flex items-center gap-3">
@@ -437,7 +431,10 @@ const Section = React.memo(function Section({
 }) {
   return (
     <div className="px-1.5 py-1.5">
-      <p className="px-2 pb-1.5 pt-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+      <p
+        aria-hidden="true"
+        className="px-2 pb-1.5 pt-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute"
+      >
         {label}
       </p>
       <div role="group" aria-label={label} className="flex flex-col gap-0.5">
@@ -454,10 +451,10 @@ const Row = React.memo(function Row({
   setActive,
   IconComponent,
   iconClassName,
-  iconNode,
+  emoji,
   title,
   subtitle,
-  trailing,
+  trailingPrice,
   rowIndex,
 }: {
   active: boolean
@@ -466,10 +463,10 @@ const Row = React.memo(function Row({
   setActive: (i: number) => void
   IconComponent?: React.ElementType
   iconClassName?: string
-  iconNode?: React.ReactNode
+  emoji?: string
   title: string
   subtitle?: string
-  trailing?: React.ReactNode
+  trailingPrice?: number
   rowIndex: number
 }) {
   return (
@@ -498,7 +495,12 @@ const Row = React.memo(function Row({
         {IconComponent ? (
           <IconComponent className={iconClassName ?? 'w-4 h-4 text-ink-mute'} aria-hidden />
         ) : (
-          iconNode
+          <span
+            aria-hidden
+            className="inline-flex w-6 h-6 items-center justify-center rounded-md text-base"
+          >
+            {emoji}
+          </span>
         )}
       </span>
       <span className="min-w-0 flex-1">
@@ -509,7 +511,18 @@ const Row = React.memo(function Row({
           </span>
         )}
       </span>
-      {trailing}
+      {trailingPrice !== undefined && (
+        <span
+          className={cn(
+            'shrink-0 inline-flex items-center font-mono text-[0.66rem] px-1.5 py-0.5 rounded-md',
+            trailingPrice === 0
+              ? 'bg-volt-300 text-ink'
+              : 'bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft border border-line dark:border-night-line'
+          )}
+        >
+          {formatPrice(trailingPrice)}
+        </span>
+      )}
       <ArrowRight
         className={cn(
           'w-3.5 h-3.5 shrink-0 text-ink-mute dark:text-bone-mute motion-safe:transition ease-expo',

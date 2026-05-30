@@ -194,7 +194,7 @@ export default function HomePage() {
         <MakerSpotlight items={featured} />
 
         {/* MODEL TABS */}
-        <section aria-label={t('sections.models', { defaultValue: '모델 탐색' })}>
+        <section aria-label={t('sections.models')}>
           <ModelTabs />
         </section>
 
@@ -361,13 +361,13 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
         <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-y-8 lg:gap-x-10 p-[clamp(1.75rem,4vw,3.5rem)]">
           {/* Left: maker block */}
           <div className="lg:col-span-5 flex flex-col gap-5">
-            <p
+            <h2
               id="home-maker-heading"
               className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2"
             >
               <span aria-hidden className="w-6 h-px bg-volt-500" />
               {t('makerSpotlight.chapter')}
-            </p>
+            </h2>
             <div className="flex items-center gap-4">
               <span
                 aria-hidden
@@ -404,7 +404,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
             >
               <Sparkles className="w-4 h-4" />
               {t('makerSpotlight.viewMaker')}
-              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
             </Link>
           </div>
 

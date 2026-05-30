@@ -55,6 +55,7 @@
     }
   },
   "sidebar": {
+    "ariaLabel": "상세 정보",
     "free": "무료",
     "price": "가격",
     "readingModeToggle": "조용한 모드 토글",

@@ -121,7 +121,7 @@ export interface MyPurchaseItem {
   id: string
   pricePaidCents: number
   createdAt: string
-  listing: ListingCard
+  listing?: ListingCard | null
 }
 
 export function useMyPurchases(enabled = true) {

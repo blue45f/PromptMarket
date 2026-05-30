@@ -124,7 +124,11 @@ export default function CreateListingPage() {
     try {
       const raw = window.localStorage.getItem(DRAFT_KEY)
       if (!raw) return DEFAULTS
-      return { ...DEFAULTS, ...JSON.parse(raw) } as FormShape
+      const parsed = buildFormSchema({ price: '', models: '' }).safeParse({
+        ...DEFAULTS,
+        ...JSON.parse(raw),
+      })
+      return parsed.success ? parsed.data : DEFAULTS
     } catch {
       return DEFAULTS
     }
@@ -438,6 +442,7 @@ export default function CreateListingPage() {
                   <input
                     type="text"
                     maxLength={4}
+                    aria-label={t('fields.coverEmojiInput', { defaultValue: 'Emoji character' })}
                     {...register('coverEmoji')}
                     className="w-16 text-center rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-2 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500 motion-safe:transition ease-expo"
                   />

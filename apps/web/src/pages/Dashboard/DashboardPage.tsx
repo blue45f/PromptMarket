@@ -44,7 +44,9 @@ export default function DashboardPage() {
   const libraryItems = useMemo(
     () =>
       (Array.isArray(libraryQ.data) ? libraryQ.data : [])
-        .filter((p) => p.listing != null)
+        .filter(
+          (p): p is typeof p & { listing: NonNullable<(typeof p)['listing']> } => p.listing != null
+        )
         .map((p) => p.listing),
     [libraryQ.data]
   )
@@ -229,13 +231,16 @@ export default function DashboardPage() {
             />
             <div className="grain-layer" aria-hidden style={{ opacity: 0.06 }} />
 
-            <h2
-              id="wallet-heading"
+            <h2 id="wallet-heading" className="sr-only">
+              {t('wallet.title', { defaultValue: '지갑' })}
+            </h2>
+            <p
+              aria-hidden
               className="inline-flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300"
             >
               <Wallet className="w-3.5 h-3.5" aria-hidden />
               {t('wallet.balance')}
-            </h2>
+            </p>
             <p
               className="mt-2 font-display font-bold text-ink dark:text-bone tracking-[-0.04em] leading-none tabular-nums"
               style={{ fontSize: 'var(--text-display-md)' }}
@@ -335,7 +340,7 @@ function EmptyLibraryWithRecs() {
             className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.86rem] font-medium tracking-tight focus-volt lift-on-hover"
           >
             {t('library.empty.action')}
-            <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+            <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
           </Link>
         }
       />
