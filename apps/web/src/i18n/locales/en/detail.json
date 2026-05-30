@@ -19,8 +19,6 @@
     "aria": "Listing sections",
     "overview": "Overview",
     "reviews": "Reviews ({{count}})",
-    "reviews_one": "{{count}} review",
-    "reviews_other": "{{count}} reviews",
     "related": "Related"
   },
   "body": {

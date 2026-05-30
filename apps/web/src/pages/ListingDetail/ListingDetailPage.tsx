@@ -511,7 +511,7 @@ export default function ListingDetailPage() {
                         <button
                           type="button"
                           onClick={handleCopy}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                         >
                           {copied ? (
                             <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
@@ -525,7 +525,7 @@ export default function ListingDetailPage() {
                         <button
                           type="button"
                           onClick={handleDownload}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                         >
                           <Download className="w-3.5 h-3.5" />
                           {t('body.downloadMd')}
@@ -795,7 +795,7 @@ export default function ListingDetailPage() {
                     <button
                       type="button"
                       onClick={handleCopy}
-                      className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                     >
                       {copied ? (
                         <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
@@ -809,7 +809,7 @@ export default function ListingDetailPage() {
                     <button
                       type="button"
                       onClick={handleDownload}
-                      className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                     >
                       <Download className="w-3.5 h-3.5" />
                       {t('sidebar.download')}

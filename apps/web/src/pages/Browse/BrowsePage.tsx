@@ -287,10 +287,7 @@ export default function BrowsePage() {
 
       <div className="flex items-center justify-between mb-7 flex-wrap gap-3">
         <div className="flex items-center gap-2 flex-1 sm:flex-initial max-w-xl">
-          <div
-            role="search"
-            aria-label={t('toolbar.searchLabel', { defaultValue: '프롬프트 검색' })}
-          >
+          <div role="search" aria-label={t('toolbar.searchLabel')}>
             <SearchBar
               initialValue={q}
               onSubmit={(v) => updateExtras({ q: v || undefined, page: 1 })}

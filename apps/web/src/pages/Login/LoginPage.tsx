@@ -18,7 +18,7 @@ const inputClass = cn(
   'border border-line dark:border-night-line',
   'bg-canvas dark:bg-night text-ink dark:text-bone',
   'placeholder:text-ink-mute dark:placeholder:text-bone-mute',
-  'motion-safe:transition',
+  'motion-safe:transition ease-expo',
   'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
 )
 
@@ -159,7 +159,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={busy}
-          className="group relative w-full inline-flex items-center justify-center gap-2 py-3 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight overflow-hidden motion-safe:transition focus-volt disabled:opacity-60"
+          className="group relative w-full inline-flex items-center justify-center gap-2 py-3 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight overflow-hidden motion-safe:transition ease-expo focus-volt disabled:opacity-60"
         >
           <span
             aria-hidden

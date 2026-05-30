@@ -255,6 +255,7 @@ export default function Navbar() {
               )}
               {token && (
                 <button
+                  type="button"
                   onClick={handleSignOut}
                   className="py-3 inline-flex items-center justify-between text-coral-deep dark:text-coral"
                 >
