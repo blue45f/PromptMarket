@@ -38,7 +38,11 @@ export default function BrowsePage() {
   const [params, setParams] = useSearchParams()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const navigate = useNavigate()
-  const savedFilters = useSavedFilters()
+  // Destructure the stable useCallback refs — depending on the whole hook
+  // object (a fresh literal each render) made the persist effect below re-run
+  // every commit, writing to localStorage in an infinite loop once 2+ filters
+  // were active.
+  const { entries: savedEntries, save: saveFilter, remove: removeFilter } = useSavedFilters()
 
   const filters = useMemo<FilterState>(() => {
     const typesParam = params
@@ -73,6 +77,9 @@ export default function BrowsePage() {
     return s && (VALID_SORTS as readonly string[]).includes(s) ? (s as Sort) : 'newest'
   })()
   const page = Math.max(1, parseInt(params.get('page') ?? '1', 10) || 1)
+  // Vendor is set by the home ModelTabs + footer "View all" links. It isn't a
+  // FilterPanel control, so carry it as a preserved URL param + chip.
+  const vendor = params.get('vendor') ?? ''
 
   // Reflect the active filters in the document title for clearer browser-tab
   // and history-stack labels.
@@ -95,6 +102,7 @@ export default function BrowsePage() {
     // preserve sort + q + page (page resets on filter changes)
     if (q) merged.set('q', q)
     merged.set('sort', sort)
+    if (vendor) merged.set('vendor', vendor)
     next.types.forEach((t) => merged.append('type', t))
     next.models.forEach((m) => merged.append('model', m))
     if (next.technique) merged.set('technique', next.technique)
@@ -127,6 +135,7 @@ export default function BrowsePage() {
     category: filters.category || undefined,
     technique: filters.technique || undefined,
     difficulty: filters.difficulty || undefined,
+    vendor: vendor || undefined,
     sort,
     q: q || undefined,
     free: filters.price === 'free' ? 'true' : filters.price === 'paid' ? 'false' : undefined,
@@ -157,8 +166,8 @@ export default function BrowsePage() {
     if (!label) return
     const search = params.toString()
     if (!search) return
-    savedFilters.save(search, label)
-  }, [activeCount, filters, q, params, savedFilters, t])
+    saveFilter(search, label)
+  }, [activeCount, filters, q, params, saveFilter, t])
 
   // ← / → keyboard pagination + j / k row navigation. Skips when a typing
   // target is focused so the arrow keys keep their default behavior inside
@@ -269,13 +278,13 @@ export default function BrowsePage() {
         </aside>
 
         <div className="flex-1 min-w-0">
-          {savedFilters.entries.length > 0 && (
+          {savedEntries.length > 0 && (
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mr-1">
                 <span aria-hidden className="w-5 h-px bg-volt-500" />
                 {t('saved.label')}
               </span>
-              {savedFilters.entries.map((f) => (
+              {savedEntries.map((f) => (
                 <button
                   key={f.search}
                   type="button"
@@ -290,12 +299,12 @@ export default function BrowsePage() {
                     onClick={(ev) => {
                       ev.stopPropagation()
                       ev.preventDefault()
-                      savedFilters.remove(f.search)
+                      removeFilter(f.search)
                     }}
                     onKeyDown={(ev) => {
                       if (ev.key === 'Enter' || ev.key === ' ') {
                         ev.preventDefault()
-                        savedFilters.remove(f.search)
+                        removeFilter(f.search)
                       }
                     }}
                     className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral cursor-pointer"
@@ -306,8 +315,14 @@ export default function BrowsePage() {
               ))}
             </div>
           )}
-          {activeCount > 0 && (
+          {(activeCount > 0 || vendor) && (
             <div className="mb-4 flex flex-wrap items-center gap-2">
+              {vendor && (
+                <Chip
+                  label={vendor}
+                  onRemove={() => updateExtras({ vendor: undefined, page: 1 })}
+                />
+              )}
               {filters.types.map((t) => (
                 <Chip
                   key={`type-${t}`}
