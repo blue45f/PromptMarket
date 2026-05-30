@@ -290,7 +290,7 @@ function SectionHeader({
       {href && (
         <Link
           to={href}
-          className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition focus-volt shrink-0"
+          className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition ease-expo focus-volt shrink-0"
         >
           {t('common.viewAll')}
           <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
@@ -374,12 +374,12 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
               {t('makerSpotlight.bio')}
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
-              {['claude', 'mcp', 'workflows', 'agents'].map((t) => (
+              {['claude', 'mcp', 'workflows', 'agents'].map((tag) => (
                 <span
-                  key={t}
+                  key={tag}
                   className="font-mono text-[0.66rem] uppercase tracking-[0.16em] px-2.5 py-1 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft border border-line dark:border-night-line"
                 >
-                  {t}
+                  {tag}
                 </span>
               ))}
             </div>
@@ -400,7 +400,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
                 <li key={l.id}>
                   <Link
                     to={`/listings/${l.slug}`}
-                    className="group flex items-stretch gap-4 p-3 sm:p-4 rounded-2xl border border-line dark:border-night-line bg-canvas/70 dark:bg-night/40 hover:bg-canvas-deep/70 dark:hover:bg-night-deep/70 hover:border-volt-400/60 dark:hover:border-volt-500/40 motion-safe:transition"
+                    className="group flex items-stretch gap-4 p-3 sm:p-4 rounded-2xl border border-line dark:border-night-line bg-canvas/70 dark:bg-night/40 hover:bg-canvas-deep/70 dark:hover:bg-night-deep/70 hover:border-volt-400/60 dark:hover:border-volt-500/40 motion-safe:transition ease-expo"
                   >
                     <div
                       className={cn(
@@ -423,7 +423,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
                         {l.description}
                       </p>
                     </div>
-                    <ArrowUpRight className="self-center w-5 h-5 text-ink-mute dark:text-bone-mute opacity-0 -translate-x-2 motion-safe:transition motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-x-0" />
+                    <ArrowUpRight className="self-center w-5 h-5 text-ink-mute dark:text-bone-mute opacity-0 -translate-x-2 motion-safe:transition ease-expo motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-x-0" />
                   </Link>
                 </li>
               ))
@@ -541,7 +541,7 @@ function SellerCallToAction() {
             </Link>
             <Link
               to="/dashboard"
-              className="inline-flex items-center px-5 py-3 rounded-full border border-ink/20 text-ink font-medium tracking-tight hover:bg-ink/5 focus-volt motion-safe:transition"
+              className="inline-flex items-center px-5 py-3 rounded-full border border-ink/20 text-ink font-medium tracking-tight hover:bg-ink/5 focus-volt motion-safe:transition ease-expo"
             >
               {t('cta.openDashboard')}
             </Link>

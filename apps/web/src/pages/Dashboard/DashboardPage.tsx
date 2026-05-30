@@ -90,14 +90,14 @@ export default function DashboardPage() {
               key={key}
               value={key}
               className={cn(
-                'relative px-4 py-2 rounded-xl text-[0.86rem] font-medium whitespace-nowrap motion-safe:transition focus-volt',
+                'relative px-4 py-2 rounded-xl text-[0.86rem] font-medium whitespace-nowrap motion-safe:transition ease-expo focus-volt',
                 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone',
                 'data-[state=active]:text-bone dark:data-[state=active]:text-ink'
               )}
             >
               <span
                 aria-hidden
-                className="absolute inset-0 bg-ink dark:bg-bone rounded-xl shadow-[0_8px_24px_-12px_oklch(0.16_0.03_290_/_0.45)] opacity-0 data-[state=active]:opacity-100 motion-safe:transition"
+                className="absolute inset-0 bg-ink dark:bg-bone rounded-xl shadow-[0_8px_24px_-12px_oklch(0.16_0.03_290_/_0.45)] opacity-0 data-[state=active]:opacity-100 motion-safe:transition ease-expo"
               />
               <span className="relative">{t(`tabs.${key}`)}</span>
             </Tabs.Trigger>
@@ -208,7 +208,10 @@ export default function DashboardPage() {
         </Tabs.Content>
 
         <Tabs.Content value="wallet" className="mt-7 focus-visible:outline-none max-w-xl">
-          <section className="relative overflow-hidden rounded-3xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-7 sm:p-8">
+          <section
+            aria-labelledby="wallet-heading"
+            className="relative overflow-hidden rounded-3xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-7 sm:p-8"
+          >
             <div
               aria-hidden
               className="absolute inset-0 -z-10 opacity-70"
@@ -219,7 +222,10 @@ export default function DashboardPage() {
             />
             <div className="grain-layer" aria-hidden style={{ opacity: 0.06 }} />
 
-            <div className="inline-flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300">
+            <div
+              id="wallet-heading"
+              className="inline-flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300"
+            >
               <Wallet className="w-3.5 h-3.5" aria-hidden />
               {t('wallet.balance')}
             </div>
@@ -243,6 +249,7 @@ export default function DashboardPage() {
                   return (
                     <button
                       key={amt}
+                      type="button"
                       onClick={() => handleTopup(amt)}
                       disabled={topupMut.isPending}
                       className={cn(

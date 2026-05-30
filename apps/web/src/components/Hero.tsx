@@ -98,16 +98,16 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
                   aria-hidden
                   className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
                 />
-                <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors motion-safe:duration-300">
+                <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors ease-expo motion-safe:duration-300">
                   {t('hero.browseCta')}
-                  <ArrowRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" />
+                  <ArrowRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5" />
                 </span>
               </Link>
               <Link
                 to="/sell"
-                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone font-medium tracking-tight hover:border-ink dark:hover:border-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub focus-volt motion-safe:transition"
+                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone font-medium tracking-tight hover:border-ink dark:hover:border-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub focus-volt motion-safe:transition ease-expo"
               >
-                <Compass className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:-rotate-12" />
+                <Compass className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:-rotate-12" />
                 {t('hero.sellCta')}
               </Link>
               <span className="hidden sm:inline-flex items-center gap-2 ml-2 text-meta text-ink-mute dark:text-bone-mute font-mono">
@@ -383,12 +383,12 @@ function DropRow({
         onMouseEnter={prefetch}
         onFocus={prefetch}
         tabIndex={tabIndex}
-        className="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-line/60 dark:border-night-line/60 bg-canvas/70 dark:bg-night/40 hover:bg-canvas-deep/80 dark:hover:bg-night-deep/80 hover:border-volt-300 dark:hover:border-volt-500/50 motion-safe:transition-colors"
+        className="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-line/60 dark:border-night-line/60 bg-canvas/70 dark:bg-night/40 hover:bg-canvas-deep/80 dark:hover:bg-night-deep/80 hover:border-volt-300 dark:hover:border-volt-500/50 motion-safe:transition-colors ease-expo"
       >
         <span
           aria-hidden
           className={cn(
-            'shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-lg bg-gradient-to-br motion-safe:transition-transform motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-6',
+            'shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-lg bg-gradient-to-br motion-safe:transition-transform ease-expo motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-6',
             meta.gradient
           )}
         >

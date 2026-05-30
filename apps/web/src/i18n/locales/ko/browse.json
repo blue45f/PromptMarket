@@ -18,7 +18,8 @@
     "sortLabel": "정렬"
   },
   "filters": {
-    "activeCount_other": "{{count}}개 필터 적용됨"
+    "activeCount_other": "{{count}}개 필터 적용됨",
+    "sidebarLabel": "필터"
   },
   "sort": {
     "newest": "최신순",
@@ -27,7 +28,8 @@
   },
   "saved": {
     "label": "최근 필터",
-    "remove": "이 저장 필터 지우기"
+    "remove": "이 저장 필터 지우기",
+    "removeNamed": "저장된 검색 삭제: {{label}}"
   },
   "chips": {
     "reset": "전부 초기화",

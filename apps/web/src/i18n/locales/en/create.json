@@ -55,7 +55,8 @@
     "body": "Body",
     "titlePlaceholder": "Your listing title",
     "descriptionPlaceholder": "Your description will appear here.",
-    "bodyPlaceholder": "*Start typing to see a body preview here…*"
+    "bodyPlaceholder": "*Start typing to see a body preview here…*",
+    "authorYou": "you"
   },
   "validation": {
     "price": "Please enter a valid price",

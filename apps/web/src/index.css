@@ -654,6 +654,11 @@
     }
   }
 
+  /* Expo easing — maps to design-system ease-out-expo (DS-007) */
+  .ease-expo {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   /* Reduced motion respects */
   @media (prefers-reduced-motion: reduce) {
     .animate-fade-in,

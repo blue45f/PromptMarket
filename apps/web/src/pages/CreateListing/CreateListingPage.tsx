@@ -268,7 +268,7 @@ export default function CreateListingPage() {
       priceCents: Math.round(Math.max(0, Number.parseFloat(v.priceDollars ?? '0') || 0) * 100),
       coverEmoji: v.coverEmoji || '✨',
       downloads: 0,
-      author: { id: 'you', username: 'you' },
+      author: { id: 'you', username: t('preview.authorYou', { defaultValue: 'you' }) },
       avgRating: 0,
       reviewCount: 0,
       createdAt: new Date().toISOString(),
@@ -523,7 +523,9 @@ export default function CreateListingPage() {
                       <option value="">{t('fields.techniqueNone')}</option>
                       {TECHNIQUES.map((opt) => (
                         <option key={opt} value={opt}>
-                          {TECHNIQUE_META[opt].label}
+                          {t('common:technique.' + opt + '.label', {
+                            defaultValue: TECHNIQUE_META[opt].label,
+                          })}
                         </option>
                       ))}
                     </select>
@@ -561,7 +563,7 @@ export default function CreateListingPage() {
                             : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone'
                         )}
                       >
-                        {d}
+                        {t('common:difficulty.' + d)}
                       </button>
                     )
                   })}
@@ -573,7 +575,7 @@ export default function CreateListingPage() {
                   <select {...register('license')} className={inputClass}>
                     {LICENSES.map((l) => (
                       <option key={l} value={l}>
-                        {l}
+                        {t('common:license.' + l, { defaultValue: l })}
                       </option>
                     ))}
                   </select>

@@ -291,7 +291,7 @@ export default function BrowsePage() {
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
-            className="lg:hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+            className="lg:hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo focus-volt"
           >
             <SlidersHorizontal className="w-4 h-4" />
             {t('toolbar.filter')}
@@ -311,8 +311,11 @@ export default function BrowsePage() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-7 lg:gap-9">
-        <aside className="hidden lg:block lg:w-72 shrink-0">
-          <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl border border-line dark:border-night-line bg-canvas-sub/85 dark:bg-night-sub/85 backdrop-blur-sm p-5 shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.35)] dark:shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.65)] scrollbar-hide">
+        <aside
+          className="hidden lg:block lg:w-72 shrink-0"
+          aria-label={t('filters.sidebarLabel', { defaultValue: '필터' })}
+        >
+          <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5 shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.35)] dark:shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.65)] scrollbar-hide">
             <FilterPanel
               value={filters}
               onChange={(next) => commit(next, { page: 1 })}
@@ -331,7 +334,7 @@ export default function BrowsePage() {
               {savedEntries.map((f) => (
                 <span
                   key={f.search}
-                  className="group inline-flex items-center gap-1.5 rounded-full bg-canvas-sub/70 dark:bg-night-sub/70 border border-line dark:border-night-line text-[0.74rem] text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition"
+                  className="group inline-flex items-center gap-1.5 rounded-full bg-canvas-sub/70 dark:bg-night-sub/70 border border-line dark:border-night-line text-[0.74rem] text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo"
                 >
                   <button
                     type="button"
@@ -342,7 +345,10 @@ export default function BrowsePage() {
                   </button>
                   <button
                     type="button"
-                    aria-label={t('saved.remove')}
+                    aria-label={t('saved.removeNamed', {
+                      label: f.label,
+                      defaultValue: '저장된 검색 삭제: {{label}}',
+                    })}
                     onClick={() => removeFilter(f.search)}
                     className="pr-2 py-1 inline-flex items-center justify-center w-5 h-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral focus-volt rounded-r-full"
                   >
@@ -405,7 +411,7 @@ export default function BrowsePage() {
               )}
               {filters.price !== 'all' && (
                 <Chip
-                  label={filters.price}
+                  label={t('panel.price.' + filters.price)}
                   onRemove={() => commit({ ...filters, price: 'all' }, { page: 1 })}
                 />
               )}
@@ -463,7 +469,7 @@ export default function BrowsePage() {
                     <button
                       disabled={page <= 1}
                       onClick={() => updateExtras({ page: page - 1 })}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition focus-volt"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition ease-expo focus-volt"
                     >
                       <span aria-hidden>←</span> {t('pagination.prev')}
                     </button>
@@ -473,7 +479,7 @@ export default function BrowsePage() {
                     <button
                       disabled={page >= effectiveTotalPages}
                       onClick={() => updateExtras({ page: page + 1 })}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition focus-volt"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition ease-expo focus-volt"
                     >
                       {t('pagination.next')} <span aria-hidden>→</span>
                     </button>
@@ -555,7 +561,7 @@ function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {
         type="button"
         onClick={onRemove}
         aria-label={t('chips.remove', { label })}
-        className="ml-0.5 hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt rounded-full"
+        className="ml-0.5 hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt rounded-full"
       >
         <X className="w-3 h-3" />
       </button>
@@ -571,7 +577,7 @@ function SortSelect({ value, onChange }: { value: Sort; onChange: (s: Sort) => v
         value={value}
         onChange={(e) => onChange(e.target.value as Sort)}
         aria-label={t('toolbar.sortLabel')}
-        className="appearance-none pl-3.5 pr-8 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
+        className="appearance-none pl-3.5 pr-8 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
       >
         <option value="newest">{t('sort.newest')}</option>
         <option value="trending">{t('sort.trending')}</option>

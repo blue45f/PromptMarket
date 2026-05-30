@@ -388,7 +388,7 @@ export default function ListingDetailPage() {
         <button
           type="button"
           onClick={() => setReadingMode(false)}
-          className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] font-medium text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+          className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] font-medium text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo focus-volt"
         >
           <PanelRight className="w-3.5 h-3.5" />
           {t('reopenSidebar')}
@@ -473,7 +473,7 @@ export default function ListingDetailPage() {
                   key={key}
                   value={key}
                   className={cn(
-                    'shrink-0 whitespace-nowrap px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition focus-volt',
+                    'shrink-0 whitespace-nowrap px-4 py-2 -mb-px text-sm font-medium border-b-2 motion-safe:transition ease-expo focus-volt',
                     'border-transparent text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone',
                     'data-[state=active]:border-volt-500 data-[state=active]:text-ink',
                     'dark:data-[state=active]:border-volt-400 dark:data-[state=active]:text-bone'
@@ -506,7 +506,7 @@ export default function ListingDetailPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleCopy}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                       >
                         {copied ? (
                           <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
@@ -519,7 +519,7 @@ export default function ListingDetailPage() {
                       </button>
                       <button
                         onClick={handleDownload}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                       >
                         <Download className="w-3.5 h-3.5" />
                         {t('body.downloadMd')}
@@ -557,7 +557,7 @@ export default function ListingDetailPage() {
                         <button
                           onClick={handlePurchase}
                           disabled={buying}
-                          className="mt-3 group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
+                          className="mt-3 group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
                         >
                           {buying ? (
                             <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
@@ -588,13 +588,19 @@ export default function ListingDetailPage() {
                     <p className="text-sm font-medium text-ink dark:text-bone mb-2">
                       {t('reviews.writePrompt')}
                     </p>
-                    <StarRating
-                      value={rating}
-                      onChange={(v) => setValue('rating', v, { shouldDirty: true })}
-                      size="lg"
-                    />
+                    <div aria-describedby={errors.rating ? 'review-rating-error' : undefined}>
+                      <StarRating
+                        value={rating}
+                        onChange={(v) => setValue('rating', v, { shouldDirty: true })}
+                        size="lg"
+                      />
+                    </div>
                     {errors.rating && (
-                      <p role="alert" className="mt-1 text-xs text-coral-deep dark:text-coral">
+                      <p
+                        id="review-rating-error"
+                        role="alert"
+                        className="mt-1 text-xs text-coral-deep dark:text-coral"
+                      >
                         {t('reviews.validation.rating')}
                       </p>
                     )}
@@ -620,7 +626,7 @@ export default function ListingDetailPage() {
                       <button
                         type="submit"
                         disabled={reviewSubmitting}
-                        className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
+                        className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover"
                       >
                         {reviewSubmitting && (
                           <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
@@ -695,7 +701,7 @@ export default function ListingDetailPage() {
                     aria-label={t('sidebar.readingModeToggle')}
                     aria-pressed={readingMode}
                     title={t('sidebar.readingModeTitle')}
-                    className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt"
+                    className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition ease-expo focus-volt"
                   >
                     <BookOpen className="w-3.5 h-3.5" />
                   </button>
@@ -703,7 +709,7 @@ export default function ListingDetailPage() {
                     type="button"
                     onClick={handleShare}
                     aria-label={t('sidebar.share')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt text-[0.78rem] font-medium"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition ease-expo focus-volt text-[0.78rem] font-medium"
                   >
                     {shareState === 'idle' ? (
                       <Share2 className="w-3.5 h-3.5" />
@@ -739,7 +745,7 @@ export default function ListingDetailPage() {
                   <button
                     onClick={handlePurchase}
                     disabled={buying}
-                    className="group w-full relative inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold motion-safe:transition active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover overflow-hidden"
+                    className="group w-full relative inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold motion-safe:transition ease-expo active:scale-[0.98] disabled:opacity-60 focus-volt lift-on-hover overflow-hidden"
                   >
                     {buying ? (
                       <Loader2 className="w-4 h-4 motion-safe:animate-spin" />
@@ -772,7 +778,7 @@ export default function ListingDetailPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={handleCopy}
-                      className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                     >
                       {copied ? (
                         <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
@@ -785,7 +791,7 @@ export default function ListingDetailPage() {
                     </button>
                     <button
                       onClick={handleDownload}
-                      className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition"
+                      className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo"
                     >
                       <Download className="w-3.5 h-3.5" />
                       {t('sidebar.download')}
@@ -814,7 +820,7 @@ export default function ListingDetailPage() {
                 </div>
                 <Link
                   to={`/users/${listing.author.username}`}
-                  className="inline-flex items-center gap-1 text-sm font-medium px-3 py-1.5 rounded-full border border-line dark:border-night-line text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition focus-volt"
+                  className="inline-flex items-center gap-1 text-sm font-medium px-3 py-1.5 rounded-full border border-line dark:border-night-line text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition ease-expo focus-volt"
                 >
                   {t('sidebar.profile')}
                 </Link>
@@ -876,8 +882,11 @@ export default function ListingDetailPage() {
       </div>
 
       {/* Bottom related */}
-      <section className="mt-16">
-        <h2 className="text-xl font-bold tracking-tight text-ink dark:text-bone mb-1">
+      <section className="mt-16" aria-labelledby="related-section-heading">
+        <h2
+          id="related-section-heading"
+          className="text-xl font-bold tracking-tight text-ink dark:text-bone mb-1"
+        >
           {t('bottomRelated.title')}
         </h2>
         <p className="text-sm text-ink-mute dark:text-bone-mute mb-5">
@@ -894,7 +903,7 @@ export default function ListingDetailPage() {
       {/* Mobile sticky purchase bar — hidden on lg+ where the sticky sidebar
           already handles this. Respects the iOS bottom safe area. */}
       <div
-        className="lg:hidden fixed inset-x-0 bottom-0 z-30 surface-glass border-t border-line dark:border-night-line"
+        className="lg:hidden fixed inset-x-0 bottom-0 z-30 bg-canvas dark:bg-night border-t border-line dark:border-night-line"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="mx-auto max-w-7xl px-4 py-3 space-y-1.5">
@@ -920,7 +929,7 @@ export default function ListingDetailPage() {
               <button
                 onClick={handlePurchase}
                 disabled={buying}
-                className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold text-[0.86rem] tracking-tight motion-safe:transition focus-volt disabled:opacity-60"
+                className="group relative overflow-hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-semibold text-[0.86rem] tracking-tight motion-safe:transition ease-expo focus-volt disabled:opacity-60"
               >
                 <span
                   aria-hidden

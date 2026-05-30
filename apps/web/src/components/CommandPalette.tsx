@@ -300,7 +300,7 @@ export default function CommandPalette() {
                     type="button"
                     onClick={() => history.clear()}
                     aria-label={t('history.clearAll', { defaultValue: '검색 기록 전체 삭제' })}
-                    className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt rounded"
+                    className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt rounded"
                   >
                     {t('palette.clear')}
                   </button>
@@ -315,7 +315,7 @@ export default function CommandPalette() {
                         setActive(0)
                         inputRef.current?.focus()
                       }}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line text-[0.74rem] text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line text-[0.74rem] text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo focus-volt"
                     >
                       {h}
                     </button>
@@ -459,7 +459,7 @@ function Row({
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       className={cn(
-        'group flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-left motion-safe:transition-colors cursor-default',
+        'group flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-left motion-safe:transition-colors ease-expo cursor-default',
         active
           ? 'bg-volt-100 dark:bg-volt-900/40 text-ink dark:text-bone'
           : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub'
@@ -486,7 +486,7 @@ function Row({
       {trailing}
       <ArrowRight
         className={cn(
-          'w-3.5 h-3.5 shrink-0 text-ink-mute dark:text-bone-mute motion-safe:transition',
+          'w-3.5 h-3.5 shrink-0 text-ink-mute dark:text-bone-mute motion-safe:transition ease-expo',
           active ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-1'
         )}
         aria-hidden

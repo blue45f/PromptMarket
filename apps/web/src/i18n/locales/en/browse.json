@@ -19,7 +19,8 @@
   },
   "filters": {
     "activeCount_one": "{{count}} filter applied",
-    "activeCount_other": "{{count}} filters applied"
+    "activeCount_other": "{{count}} filters applied",
+    "sidebarLabel": "Filters"
   },
   "sort": {
     "newest": "Newest",
@@ -28,7 +29,8 @@
   },
   "saved": {
     "label": "Recent filters",
-    "remove": "Clear this saved filter"
+    "remove": "Clear this saved filter",
+    "removeNamed": "Remove saved filter: {{label}}"
   },
   "chips": {
     "reset": "Clear all",

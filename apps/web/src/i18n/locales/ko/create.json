@@ -55,7 +55,8 @@
     "body": "본문",
     "titlePlaceholder": "리스팅 제목",
     "descriptionPlaceholder": "여기에 설명이 표시됩니다.",
-    "bodyPlaceholder": "*입력하면 여기에 본문 미리보기가 보여요…*"
+    "bodyPlaceholder": "*입력하면 여기에 본문 미리보기가 보여요…*",
+    "authorYou": "나"
   },
   "validation": {
     "price": "가격을 정확히 입력해 주세요",
