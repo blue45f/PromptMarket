@@ -171,7 +171,7 @@ export default function SearchBar({
                   </div>
                   <button
                     type="button"
-                    aria-label={t('search.removeFromHistory')}
+                    aria-label={t('search.removeFromHistory', { query: q })}
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => history.remove(q)}
                     className="opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100 motion-safe:transition inline-flex items-center justify-center w-5 h-5 shrink-0 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral focus-volt cursor-pointer"

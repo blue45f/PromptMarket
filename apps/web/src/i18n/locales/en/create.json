@@ -17,6 +17,7 @@
     "discardCancel": "Cancel"
   },
   "sectionTabs": {
+    "aria": "Section tabs",
     "basics": "Basics",
     "content": "Content",
     "metadata": "Metadata"

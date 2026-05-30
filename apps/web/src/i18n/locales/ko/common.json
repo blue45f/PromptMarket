@@ -29,7 +29,7 @@
     "placeholder": "프롬프트, 에이전트, 스킬 검색…",
     "commandPaletteHint": "명령 팔레트 열기",
     "recent": "최근 검색",
-    "removeFromHistory": "기록에서 지우기"
+    "removeFromHistory": "'{{query}}' 검색 기록 삭제"
   },
   "listing": {
     "unrated": "아직 리뷰 없음"
@@ -128,7 +128,8 @@
       "reflexion": "답변 후 스스로 검증·수정 루프",
       "self-consistency": "여러 샘플의 다수결로 안정성 확보",
       "plan-and-solve": "먼저 계획을 세우고 단계 실행",
-      "meta-prompt": "프롬프트를 위한 프롬프트"
+      "meta-prompt": "프롬프트를 위한 프롬프트",
+      "other": "커스텀 또는 혼합 기법"
     },
     "techniqueLine": "프롬프트 기법: {{hint}}",
     "model": {

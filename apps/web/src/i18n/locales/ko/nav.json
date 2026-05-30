@@ -7,6 +7,8 @@
   "login": "로그인",
   "register": "회원가입",
   "logout": "로그아웃",
+  "mainLabel": "주 내비게이션",
+  "mobileLabel": "모바일 내비게이션",
   "openMenu": "메뉴 열기",
   "closeMenu": "메뉴 닫기",
   "skipToContent": "메인 콘텐츠로 건너뛰기",

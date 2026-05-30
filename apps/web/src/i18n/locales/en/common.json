@@ -29,7 +29,7 @@
     "placeholder": "Search prompts, agents, skills…",
     "commandPaletteHint": "Open command palette",
     "recent": "Recent searches",
-    "removeFromHistory": "Remove from history"
+    "removeFromHistory": "Remove '{{query}}' from history"
   },
   "listing": {
     "unrated": "No reviews yet"
@@ -128,7 +128,8 @@
       "reflexion": "A loop that self-checks and revises after answering",
       "self-consistency": "Boosts stability via majority vote across samples",
       "plan-and-solve": "Plans first, then executes step by step",
-      "meta-prompt": "A prompt for prompts"
+      "meta-prompt": "A prompt for prompts",
+      "other": "Custom or hybrid technique"
     },
     "techniqueLine": "Prompt technique: {{hint}}",
     "model": {

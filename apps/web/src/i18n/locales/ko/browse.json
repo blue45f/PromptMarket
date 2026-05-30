@@ -80,7 +80,7 @@
     "title": "필터",
     "close": "필터 닫기",
     "savedLabel": "최근 필터",
-    "savedRemove": "이 저장 필터 지우기",
+    "savedRemove": "이 저장 필터 지우기: {{label}}",
     "savedApply": "저장된 필터 적용: {{label}}",
     "apply": "필터 적용"
   },

@@ -252,7 +252,7 @@ export default function CommandPalette() {
               className="flex-1 bg-transparent outline-none placeholder:text-ink-mute dark:placeholder:text-bone-mute text-ink dark:text-bone"
               aria-label={t('palette.inputLabel')}
               role="combobox"
-              aria-expanded={total > 0}
+              aria-expanded={true}
               aria-controls="palette-listbox"
               aria-autocomplete="list"
               aria-activedescendant={total > 0 ? `palette-row-${active}` : undefined}
@@ -279,8 +279,9 @@ export default function CommandPalette() {
                   <Row
                     key={a.id}
                     active={i === active}
-                    onMouseEnter={() => setActive(i)}
-                    onClick={() => go(a.to)}
+                    href={a.to}
+                    go={go}
+                    setActive={setActive}
                     icon={<a.icon className="w-4 h-4" aria-hidden />}
                     title={t(a.labelKey)}
                     subtitle={a.hint}
@@ -335,8 +336,9 @@ export default function CommandPalette() {
                     <Row
                       key={l.id}
                       active={rowIdx === active}
-                      onMouseEnter={() => setActive(rowIdx)}
-                      onClick={() => go(`/listings/${l.slug}`)}
+                      href={`/listings/${l.slug}`}
+                      go={go}
+                      setActive={setActive}
                       icon={<Heart className="w-3.5 h-3.5 fill-current text-coral" aria-hidden />}
                       title={l.title}
                       subtitle={`${t('common:types.' + l.type, { defaultValue: meta?.label ?? l.type }).toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
@@ -363,8 +365,9 @@ export default function CommandPalette() {
                     <Row
                       key={l.id}
                       active={rowIdx === active}
-                      onMouseEnter={() => setActive(rowIdx)}
-                      onClick={() => go(`/listings/${l.slug}`)}
+                      href={`/listings/${l.slug}`}
+                      go={go}
+                      setActive={setActive}
                       icon={
                         <span
                           aria-hidden
@@ -441,8 +444,9 @@ const Section = React.memo(function Section({
 
 const Row = React.memo(function Row({
   active,
-  onClick,
-  onMouseEnter,
+  href,
+  go,
+  setActive,
   icon,
   title,
   subtitle,
@@ -450,8 +454,9 @@ const Row = React.memo(function Row({
   rowIndex,
 }: {
   active: boolean
-  onClick: () => void
-  onMouseEnter: () => void
+  href: string
+  go: (to: string) => void
+  setActive: (i: number) => void
   icon: React.ReactNode
   title: string
   subtitle?: string
@@ -464,8 +469,8 @@ const Row = React.memo(function Row({
       id={`palette-row-${rowIndex}`}
       aria-selected={active}
       data-row={rowIndex}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
+      onClick={() => go(href)}
+      onMouseEnter={() => setActive(rowIndex)}
       className={cn(
         'group flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-left motion-safe:transition-colors ease-expo cursor-default',
         active

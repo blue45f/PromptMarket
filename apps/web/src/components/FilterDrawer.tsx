@@ -75,7 +75,10 @@ export default function FilterDrawer({
                     </button>
                     <button
                       type="button"
-                      aria-label={t('drawer.savedRemove') + ': ' + f.label}
+                      aria-label={t('drawer.savedRemove', {
+                        label: f.label,
+                        defaultValue: 'Remove saved filter: {{label}}',
+                      })}
                       onClick={() => remove(f.search)}
                       className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt mr-1.5"
                     >

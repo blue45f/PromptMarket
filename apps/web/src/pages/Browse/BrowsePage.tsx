@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { activeIntlLocale, default as i18n } from '@/i18n'
@@ -102,35 +102,40 @@ export default function BrowsePage() {
     description: t('meta.description'),
   })
 
-  function commit(next: FilterState, extra?: Record<string, string | number | null | undefined>) {
-    const merged = new URLSearchParams()
-    // preserve sort + q + page (page resets on filter changes)
-    if (q) merged.set('q', q)
-    merged.set('sort', sort)
-    if (vendor) merged.set('vendor', vendor)
-    next.types.forEach((t) => merged.append('type', t))
-    next.models.forEach((m) => merged.append('model', m))
-    if (next.technique) merged.set('technique', next.technique)
-    if (next.difficulty) merged.set('difficulty', next.difficulty)
-    if (next.category) merged.set('category', next.category)
-    if (next.price !== 'all') merged.set('price', next.price)
-    if (extra) {
-      for (const [k, v] of Object.entries(extra)) {
-        if (v === undefined || v === null || v === '') merged.delete(k)
-        else merged.set(k, String(v))
+  const commit = useCallback(
+    (next: FilterState, extra?: Record<string, string | number | null | undefined>) => {
+      const merged = new URLSearchParams()
+      // preserve sort + q + page (page resets on filter changes)
+      if (q) merged.set('q', q)
+      merged.set('sort', sort)
+      if (vendor) merged.set('vendor', vendor)
+      next.types.forEach((t) => merged.append('type', t))
+      next.models.forEach((m) => merged.append('model', m))
+      if (next.technique) merged.set('technique', next.technique)
+      if (next.difficulty) merged.set('difficulty', next.difficulty)
+      if (next.category) merged.set('category', next.category)
+      if (next.price !== 'all') merged.set('price', next.price)
+      if (extra) {
+        for (const [k, v] of Object.entries(extra)) {
+          if (v === undefined || v === null || v === '') merged.delete(k)
+          else merged.set(k, String(v))
+        }
       }
-    }
-    if (!merged.has('page')) merged.set('page', '1')
-    setParams(merged, { replace: true })
-  }
+      if (!merged.has('page')) merged.set('page', '1')
+      setParams(merged, { replace: true })
+    },
+    [q, sort, vendor, setParams]
+  )
 
   function updateExtras(extra: Record<string, string | number | null | undefined>) {
     commit(filters, extra)
   }
 
-  function reset() {
+  const reset = useCallback(() => {
     setParams(new URLSearchParams(), { replace: true })
-  }
+  }, [setParams])
+
+  const onFilterChange = useCallback((next: FilterState) => commit(next, { page: 1 }), [commit])
 
   // Server-side params: the backend only accepts a single type/model. When the
   // user selects 2+ we must NOT pin the server to the first value — that would
@@ -313,11 +318,7 @@ export default function BrowsePage() {
       <div className="flex flex-col lg:flex-row gap-7 lg:gap-9">
         <aside className="hidden lg:block lg:w-72 shrink-0" aria-label={t('filters.sidebarLabel')}>
           <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5 shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.35)] dark:shadow-[0_10px_30px_-22px_oklch(0.16_0.03_290/0.65)] scrollbar-hide">
-            <FilterPanel
-              value={filters}
-              onChange={(next) => commit(next, { page: 1 })}
-              onReset={reset}
-            />
+            <FilterPanel value={filters} onChange={onFilterChange} onReset={reset} />
           </div>
         </aside>
 
@@ -344,7 +345,7 @@ export default function BrowsePage() {
                     type="button"
                     aria-label={t('saved.removeNamed', {
                       label: f.label,
-                      defaultValue: '저장된 검색 삭제: {{label}}',
+                      defaultValue: 'Remove saved filter: {{label}}',
                     })}
                     onClick={() => removeFilter(f.search)}
                     className="pr-2 py-1 inline-flex items-center justify-center w-5 h-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral focus-volt rounded-r-full"
@@ -466,7 +467,7 @@ export default function BrowsePage() {
               </div>
 
               {effectiveTotalPages > 1 && (
-                <nav aria-label={t('pagination.label', { defaultValue: '페이지 탐색' })}>
+                <nav aria-label={t('pagination.label')}>
                   <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                     <div className="inline-flex items-center gap-2">
                       <button
@@ -536,7 +537,7 @@ export default function BrowsePage() {
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         value={filters}
-        onChange={(next) => commit(next, { page: 1 })}
+        onChange={onFilterChange}
         onReset={reset}
       />
     </div>

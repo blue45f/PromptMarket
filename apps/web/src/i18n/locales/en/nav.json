@@ -7,6 +7,8 @@
   "login": "Log in",
   "register": "Sign up",
   "logout": "Log out",
+  "mainLabel": "Main navigation",
+  "mobileLabel": "Mobile navigation",
   "openMenu": "Open menu",
   "closeMenu": "Close menu",
   "skipToContent": "Skip to content",

@@ -224,13 +224,13 @@ export default function DashboardPage() {
             />
             <div className="grain-layer" aria-hidden style={{ opacity: 0.06 }} />
 
-            <div
+            <h2
               id="wallet-heading"
               className="inline-flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300"
             >
               <Wallet className="w-3.5 h-3.5" aria-hidden />
               {t('wallet.balance')}
-            </div>
+            </h2>
             <p
               className="mt-2 font-display font-bold text-ink dark:text-bone tracking-[-0.04em] leading-none tabular-nums"
               style={{ fontSize: 'var(--text-display-md)' }}

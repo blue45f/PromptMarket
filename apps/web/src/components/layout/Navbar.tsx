@@ -89,7 +89,7 @@ export default function Navbar() {
           <SearchBar onSubmit={handleSearch} />
         </div>
 
-        <nav className="ml-auto hidden md:flex items-center gap-1">
+        <nav aria-label={t('mainLabel')} className="ml-auto hidden md:flex items-center gap-1">
           <NavLink to="/browse" className={navLinkClass}>
             {({ isActive }) => <NavLinkInner isActive={isActive}>{t('browse')}</NavLinkInner>}
           </NavLink>
@@ -191,7 +191,10 @@ export default function Navbar() {
         <div className="md:hidden border-t border-line dark:border-night-line bg-canvas dark:bg-night animate-fade-in">
           <div className="px-[clamp(1.25rem,4vw,3rem)] py-4 space-y-3">
             <SearchBar onSubmit={handleSearch} />
-            <nav className="flex flex-col text-[0.95rem] font-medium font-display divide-y divide-line dark:divide-night-line">
+            <nav
+              aria-label={t('mobileLabel')}
+              className="flex flex-col text-[0.95rem] font-medium font-display divide-y divide-line dark:divide-night-line"
+            >
               <Link
                 onClick={() => setMobileOpen(false)}
                 to="/browse"

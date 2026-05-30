@@ -84,8 +84,9 @@ export default function HomePage() {
         )}
 
         {/* FEATURED — bento grid */}
-        <section>
+        <section aria-labelledby="home-featured-heading">
           <SectionHeader
+            id="home-featured-heading"
             chapter={t('sections.featured.chapter')}
             title={t('sections.featured.title')}
             kicker={t('sections.featured.kicker')}
@@ -117,8 +118,9 @@ export default function HomePage() {
         </section>
 
         {/* CATEGORIES */}
-        <section>
+        <section aria-labelledby="home-categories-heading">
           <SectionHeader
+            id="home-categories-heading"
             chapter={t('sections.categories.chapter')}
             title={t('sections.categories.title')}
             kicker={t('sections.categories.kicker')}
@@ -127,8 +129,9 @@ export default function HomePage() {
         </section>
 
         {/* TRENDING — large left + carousel right on desktop */}
-        <section>
+        <section aria-labelledby="home-trending-heading">
           <SectionHeader
+            id="home-trending-heading"
             chapter={t('sections.trending.chapter')}
             title={t('sections.trending.title')}
             kicker={t('sections.trending.kicker')}
@@ -165,8 +168,9 @@ export default function HomePage() {
         </section>
 
         {/* RECENT — featured carousel keeps horizontal momentum */}
-        <section>
+        <section aria-labelledby="home-recent-heading">
           <SectionHeader
+            id="home-recent-heading"
             chapter={t('sections.recent.chapter')}
             title={t('sections.recent.title')}
             kicker={t('sections.recent.kicker')}
@@ -254,11 +258,13 @@ function SectionError({
 /* ---------- Section primitives ----------------------------------------- */
 
 function SectionHeader({
+  id,
   chapter,
   title,
   kicker,
   href,
 }: {
+  id?: string
   chapter: string
   title: string
   kicker?: string
@@ -278,6 +284,7 @@ function SectionHeader({
           {chapter}
         </p>
         <h2
+          id={id}
           className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.03em] display-tight"
           style={{ fontSize: 'var(--text-display-sm)' }}
         >
@@ -416,7 +423,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
                           defaultValue: LISTING_TYPE_META[l.type]?.label ?? l.type,
                         })}
                       </span>
-                      <h3 className="font-display font-semibold text-ink dark:text-bone text-[1.05rem] leading-tight line-clamp-2 group-hover:text-volt-800 dark:group-hover:text-volt-200 motion-safe:transition-colors">
+                      <h3 className="font-display font-semibold text-ink dark:text-bone text-[1.05rem] leading-tight line-clamp-2 group-hover:text-volt-800 dark:group-hover:text-volt-200 motion-safe:transition-colors ease-expo">
                         {l.title}
                       </h3>
                       <p className="text-[0.83rem] text-ink-mute dark:text-bone-mute line-clamp-1">
@@ -478,10 +485,7 @@ function MarqueeStrip() {
             className="font-display font-bold tracking-[-0.04em] text-[clamp(1.5rem,2.4vw,2.4rem)] inline-flex items-center gap-12"
           >
             {w}
-            <span
-              aria-hidden
-              className="inline-block w-2 h-2 rounded-full bg-volt-500 motion-safe:transition-transform"
-            />
+            <span aria-hidden className="inline-block w-2 h-2 rounded-full bg-volt-500" />
           </span>
         ))}
       </div>
@@ -514,12 +518,12 @@ function SellerCallToAction() {
           <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink-soft mb-3">
             {t('cta.kicker')}
           </p>
-          <h3
+          <h2
             className="font-display font-bold leading-[0.92] tracking-[-0.035em] text-ink display-tight"
             style={{ fontSize: 'var(--text-display-md)' }}
           >
             {t('cta.titleLine1')} <span className="block">{t('cta.titleLine2')}</span>
-          </h3>
+          </h2>
           <p className="mt-5 text-ink-soft text-[1.05rem] leading-relaxed max-w-[44ch]">
             {t('cta.body')}
           </p>

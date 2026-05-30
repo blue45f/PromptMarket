@@ -427,10 +427,10 @@ export default function ListingDetailPage() {
             </h1>
             <p className="mt-2 text-sm text-ink-mute dark:text-bone-mute">
               <Link
-                to={`/users/${listing.author.username}`}
+                to={`/users/${listing.author?.username ?? 'unknown'}`}
                 className="text-volt-700 dark:text-volt-300 hover:underline font-medium"
               >
-                @{listing.author.username}
+                @{listing.author?.username ?? 'unknown'}
               </Link>{' '}
               ·{' '}
               <span title={formatDate(listing.createdAt)}>{formatRelative(listing.createdAt)}</span>
@@ -812,12 +812,12 @@ export default function ListingDetailPage() {
                   aria-hidden
                   className="relative inline-flex w-12 h-12 rounded-xl bg-ink dark:bg-bone text-volt-300 dark:text-ink font-display font-bold text-lg items-center justify-center -rotate-3"
                 >
-                  {listing.author.username[0]?.toUpperCase() ?? '?'}
+                  {listing.author?.username?.[0]?.toUpperCase() ?? '?'}
                   <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-volt-400 ring-2 ring-canvas-sub dark:ring-night-sub" />
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="font-display text-[0.95rem] font-semibold text-ink dark:text-bone truncate tracking-tight">
-                    @{listing.author.username}
+                    @{listing.author?.username ?? 'unknown'}
                   </p>
                   <p className="text-[0.7rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
                     {t('sidebar.maker')}

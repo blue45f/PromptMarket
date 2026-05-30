@@ -82,7 +82,7 @@
     "title": "Filters",
     "close": "Close filters",
     "savedLabel": "Recent filters",
-    "savedRemove": "Clear this saved filter",
+    "savedRemove": "Remove saved filter: {{label}}",
     "savedApply": "Apply saved filter: {{label}}",
     "apply": "Apply filters"
   },

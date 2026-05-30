@@ -2,6 +2,7 @@ import React, {
   cloneElement,
   isValidElement,
   memo,
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -77,6 +78,24 @@ function buildFormSchema(messages: { price: string; models: string }) {
 }
 type FormShape = z.infer<ReturnType<typeof buildFormSchema>>
 
+const DRAFT_KEY = 'pm.sellDraft'
+
+const DEFAULTS: FormShape = {
+  title: '',
+  type: 'PROMPT',
+  description: '',
+  body: '',
+  category: CATEGORIES[0],
+  tags: '',
+  modelsArr: ['claude-sonnet-4-6'],
+  technique: null,
+  difficulty: 'intermediate',
+  license: 'MIT',
+  version: '1.0.0',
+  coverEmoji: '✨',
+  priceDollars: '0',
+}
+
 export default function CreateListingPage() {
   const { t } = useTranslation('create')
   const navigate = useNavigate()
@@ -97,37 +116,19 @@ export default function CreateListingPage() {
     [t]
   )
 
-  const DEFAULTS: FormShape = {
-    title: '',
-    type: 'PROMPT',
-    description: '',
-    body: '',
-    category: CATEGORIES[0],
-    tags: '',
-    modelsArr: ['claude-sonnet-4-6'],
-    technique: null,
-    difficulty: 'intermediate',
-    license: 'MIT',
-    version: '1.0.0',
-    coverEmoji: '✨',
-    priceDollars: '0',
-  }
-
   // Draft is read once at mount and used as the form's defaultValues so
   // each input hydrates with the saved value. After mount the watch()
   // serialiser keeps localStorage in sync (debounced, see effect below).
-  const DRAFT_KEY = 'pm.sellDraft'
-  const initialDraft = (() => {
+  const [initialDraft] = useState<FormShape>(() => {
     if (typeof window === 'undefined') return DEFAULTS
     try {
       const raw = window.localStorage.getItem(DRAFT_KEY)
       if (!raw) return DEFAULTS
-      const parsed = JSON.parse(raw)
-      return { ...DEFAULTS, ...parsed } as FormShape
+      return { ...DEFAULTS, ...JSON.parse(raw) } as FormShape
     } catch {
       return DEFAULTS
     }
-  })()
+  })
   const [draftHydrated] = useState(() => {
     if (typeof window === 'undefined') return false
     return !!window.localStorage.getItem(DRAFT_KEY)
@@ -183,6 +184,11 @@ export default function CreateListingPage() {
     reset(DEFAULTS)
     setDraftDismissed(true)
   }
+
+  const handleCategoryPick = useCallback(
+    (c: string) => setValue('category', c as FormShape['category'], { shouldDirty: true }),
+    [setValue]
+  )
 
   // Auto-clear technique field whenever type leaves PROMPT.
   useEffect(() => {
@@ -359,7 +365,10 @@ export default function CreateListingPage() {
       >
         <div className="rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 space-y-5">
           <Tabs.Root value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
-            <Tabs.List className="flex gap-1 mb-5 border-b border-line dark:border-night-line">
+            <Tabs.List
+              aria-label={t('sectionTabs.aria', { defaultValue: '섹션 탭' })}
+              className="flex gap-1 mb-5 border-b border-line dark:border-night-line"
+            >
               {(['basics', 'content', 'metadata'] as const).map((key) => (
                 <Tabs.Trigger
                   key={key}
@@ -408,10 +417,7 @@ export default function CreateListingPage() {
                 </Field>
               </div>
 
-              <TrendingCategoryHint
-                current={v.category}
-                onPick={(c) => setValue('category', c as typeof v.category, { shouldDirty: true })}
-              />
+              <TrendingCategoryHint current={v.category} onPick={handleCategoryPick} />
 
               <Field
                 label={t('fields.description')}
