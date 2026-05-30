@@ -55,36 +55,29 @@ export default function FilterDrawer({
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {saved.map((f) => (
-                  <button
+                  <span
                     key={f.search}
-                    type="button"
-                    onClick={() => {
-                      onOpenChange(false)
-                      navigate(`/browse?${f.search}`)
-                    }}
-                    className="group inline-flex items-center gap-1.5 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line px-2.5 py-1 text-[0.74rem] text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition focus-volt"
+                    className="group inline-flex items-center gap-1 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition"
                   >
-                    {f.label}
-                    <span
-                      role="button"
-                      tabIndex={0}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onOpenChange(false)
+                        navigate(`/browse?${f.search}`)
+                      }}
+                      className="inline-flex items-center px-2.5 py-1 text-[0.74rem] text-ink-soft dark:text-bone-soft group-hover:text-ink dark:group-hover:text-bone motion-safe:transition focus-volt rounded-full"
+                    >
+                      {f.label}
+                    </button>
+                    <button
+                      type="button"
                       aria-label={t('drawer.savedRemove')}
-                      onClick={(ev) => {
-                        ev.stopPropagation()
-                        ev.preventDefault()
-                        remove(f.search)
-                      }}
-                      onKeyDown={(ev) => {
-                        if (ev.key === 'Enter' || ev.key === ' ') {
-                          ev.preventDefault()
-                          remove(f.search)
-                        }
-                      }}
-                      className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral cursor-pointer"
+                      onClick={() => remove(f.search)}
+                      className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt mr-1.5"
                     >
                       <X className="w-3 h-3" aria-hidden />
-                    </span>
-                  </button>
+                    </button>
+                  </span>
                 ))}
               </div>
             </div>

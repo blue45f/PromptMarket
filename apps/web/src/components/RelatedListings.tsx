@@ -10,7 +10,7 @@ interface RelatedListingsProps {
 
 export default function RelatedListings({ listingId }: RelatedListingsProps) {
   const { t } = useTranslation('detail')
-  const { data, isPending } = useRelated(listingId)
+  const { data, isPending, isError } = useRelated(listingId)
   // The API may return either a bare array (legacy) or { items: [...] }.
   // Normalise both shapes so the component never crashes.
   const items: ListingCardType[] = Array.isArray(data)
@@ -25,6 +25,10 @@ export default function RelatedListings({ listingId }: RelatedListingsProps) {
         ))}
       </div>
     )
+  }
+
+  if (isError) {
+    return <p className="text-sm text-ink-mute dark:text-bone-mute">{t('related.error')}</p>
   }
 
   if (items.length === 0) {

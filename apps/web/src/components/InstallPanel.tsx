@@ -173,6 +173,9 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? t('install.copied') : t('install.copy')}
               </button>
+              <span className="sr-only" role="status" aria-live="polite">
+                {copied ? t('install.copied') : ''}
+              </span>
             </div>
           </Tabs.Content>
         ))}

@@ -135,6 +135,30 @@
     },
     "categoryLine": "{{category}} 카테고리 작업이 잦은 분"
   },
+  "types": {
+    "PROMPT": "프롬프트",
+    "SKILL": "스킬",
+    "MCP_SERVER": "MCP 서버",
+    "SLASH_COMMAND": "슬래시 명령",
+    "SUBAGENT": "서브에이전트",
+    "CLAUDE_MD": "CLAUDE.md",
+    "AGENT_MD": "agent.md",
+    "CURSOR_RULES": ".cursorrules"
+  },
+  "technique": {
+    "zero-shot": { "label": "Zero-shot" },
+    "few-shot": { "label": "Few-shot" },
+    "chain-of-thought": { "label": "Chain-of-Thought" },
+    "tree-of-thoughts": { "label": "Tree-of-Thoughts" },
+    "role-prompt": { "label": "Role / Persona" },
+    "self-consistency": { "label": "Self-consistency" },
+    "react": { "label": "ReAct" },
+    "rag": { "label": "RAG" },
+    "meta-prompt": { "label": "Meta-prompt" },
+    "reflexion": { "label": "Reflexion" },
+    "plan-and-solve": { "label": "Plan-and-Solve" },
+    "other": { "label": "기타" }
+  },
   "lang": {
     "label": "언어",
     "switchLabel": "언어 전환",

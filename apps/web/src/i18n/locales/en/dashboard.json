@@ -50,6 +50,13 @@
     "count_one": "{{count}} saved",
     "count_other": "{{count}} saved",
     "clear": "Clear all",
+    "clearConfirm": {
+      "title": "Clear your wishlist?",
+      "description": "All saved items will be removed. This cannot be undone.",
+      "confirm": "Clear all",
+      "cancel": "Cancel"
+    },
+    "showingCapped": "Showing first 20 of {{total}} saved items",
     "unavailable": {
       "note_one": "{{count}} saved item is no longer available.",
       "note_other": "{{count}} saved items are no longer available.",

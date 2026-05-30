@@ -48,6 +48,13 @@
     },
     "count": "담은 항목 {{count}}건",
     "clear": "전부 지우기",
+    "clearConfirm": {
+      "title": "위시리스트를 비울까요?",
+      "description": "담긴 항목이 모두 삭제돼요. 이 작업은 되돌릴 수 없어요.",
+      "confirm": "모두 삭제",
+      "cancel": "취소"
+    },
+    "showingCapped": "위시리스트의 처음 20개 항목을 표시합니다. (전체 {{total}}개)",
     "unavailable": {
       "note": "담은 항목 {{count}}개를 더 이상 볼 수 없어요.",
       "remove": "사라진 항목 정리",

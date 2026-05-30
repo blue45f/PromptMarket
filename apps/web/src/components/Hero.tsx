@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { ArrowRight, Compass } from 'lucide-react'
-import { useListings } from '@features/marketplace/queries'
 import { useQueryClient } from '@tanstack/react-query'
 import { listingKey } from '@features/marketplace/queryKeys'
 import { api } from '@services/api'
@@ -32,10 +31,22 @@ const HEADLINE_TOKENS: Array<{
   { textKey: 'hero.headline.agents', size: 'wide' },
 ]
 
-export default function Hero() {
+interface HeroProps {
+  recentItems?: Array<{
+    id: string
+    slug: string
+    title: string
+    type: keyof typeof LISTING_TYPE_META
+    priceCents: number | null | undefined
+    coverEmoji?: string | null
+    author?: { username?: string | null } | null
+  }>
+  recentPending?: boolean
+}
+
+export default function Hero({ recentItems, recentPending }: HeroProps) {
   const { t } = useTranslation('home')
-  const recentQ = useListings({ sort: 'newest', pageSize: 10 })
-  const drops = recentQ.data?.items ?? []
+  const drops = recentItems ?? []
   const spotlightRef = useSpotlight<HTMLDivElement>()
 
   return (
@@ -122,7 +133,7 @@ export default function Hero() {
 
           {/* Live drops marquee — right column */}
           <aside className="lg:col-span-4 xl:col-span-4 relative min-w-0 animate-fade-up stagger-3">
-            <DropsMarquee items={drops} loading={recentQ.isPending} t={t} />
+            <DropsMarquee items={drops} loading={recentPending} t={t} />
           </aside>
         </div>
 
@@ -291,7 +302,6 @@ function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
         coverEmoji: ['🧑‍⚖️', '📊', '🗂️', '📘', '🎨', '🦅'][i],
         author: { username: ['alex', 'mira', 'kenji', 'lou', 'pia', 'rin'][i] },
       }))
-  const doubled = [...seed, ...seed]
 
   return (
     <div
@@ -327,16 +337,28 @@ function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
       {/* Vertical marquee */}
       <div className="absolute inset-0 pt-12 pb-6">
         <ul className="v-marquee-track flex flex-col gap-2.5">
-          {doubled.map((drop, idx) => (
+          {seed.map((drop, idx) => (
             <DropRow key={`${drop.id}-${idx}`} drop={drop} />
           ))}
+          {/* Decorative duplicate for seamless scroll — hidden from a11y tree */}
+          <div aria-hidden="true">
+            {seed.map((drop, idx) => (
+              <DropRow key={`dup-${drop.id}-${idx}`} drop={drop} tabIndex={-1} />
+            ))}
+          </div>
         </ul>
       </div>
     </div>
   )
 }
 
-function DropRow({ drop }: { drop: DropsMarqueeProps['items'][number] }) {
+function DropRow({
+  drop,
+  tabIndex,
+}: {
+  drop: DropsMarqueeProps['items'][number]
+  tabIndex?: number
+}) {
   const meta = LISTING_TYPE_META[drop.type]
   const free = (drop.priceCents ?? 0) === 0
   const qc = useQueryClient()
@@ -358,6 +380,7 @@ function DropRow({ drop }: { drop: DropsMarqueeProps['items'][number] }) {
         to={`/listings/${drop.slug}`}
         onMouseEnter={prefetch}
         onFocus={prefetch}
+        tabIndex={tabIndex}
         className="group flex items-center gap-3 px-3 py-2.5 rounded-xl border border-line/60 dark:border-night-line/60 bg-canvas/70 dark:bg-night/40 hover:bg-canvas-deep/80 dark:hover:bg-night-deep/80 hover:border-volt-300 dark:hover:border-volt-500/50 motion-safe:transition-colors"
       >
         <span

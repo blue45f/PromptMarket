@@ -24,6 +24,12 @@ function pickVendorForFamily(family: string): string | undefined {
   return MODELS.find((m) => m.family === family)?.vendor
 }
 
+const TABPANEL_ID = 'tabpanel-model'
+
+function tabId(key: string) {
+  return `tab-model-${key}`
+}
+
 export default function ModelTabs() {
   const { t } = useTranslation('home')
   const [active, setActive] = useState<string>(FAMILY_TABS[0].key)
@@ -71,6 +77,25 @@ export default function ModelTabs() {
         role="tablist"
         aria-label={t('models.tablistAria')}
         className="relative -mx-[clamp(1.25rem,4vw,3rem)] lg:mx-0 px-[clamp(1.25rem,4vw,3rem)] lg:px-0 mb-7 lg:mb-8 overflow-x-auto scrollbar-hide"
+        onKeyDown={(ev) => {
+          const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+          if (!keys.includes(ev.key)) return
+          ev.preventDefault()
+          const currentIndex = FAMILY_TABS.findIndex((tb) => tb.key === active)
+          let nextIndex: number
+          if (ev.key === 'ArrowRight') {
+            nextIndex = (currentIndex + 1) % FAMILY_TABS.length
+          } else if (ev.key === 'ArrowLeft') {
+            nextIndex = (currentIndex - 1 + FAMILY_TABS.length) % FAMILY_TABS.length
+          } else if (ev.key === 'Home') {
+            nextIndex = 0
+          } else {
+            nextIndex = FAMILY_TABS.length - 1
+          }
+          const nextKey = FAMILY_TABS[nextIndex].key
+          setActive(nextKey)
+          document.getElementById(tabId(nextKey))?.focus()
+        }}
       >
         <div className="inline-flex gap-1.5 p-1.5 rounded-2xl bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line">
           {FAMILY_TABS.map(({ key, label, labelKey, mono }) => {
@@ -80,7 +105,10 @@ export default function ModelTabs() {
               <button
                 type="button"
                 role="tab"
+                id={tabId(key)}
                 aria-selected={isActive}
+                aria-controls={TABPANEL_ID}
+                tabIndex={isActive ? 0 : -1}
                 key={key}
                 onClick={() => setActive(key)}
                 className={cn(
@@ -114,25 +142,27 @@ export default function ModelTabs() {
           })}
         </div>
       </div>
-      {isPending ? (
-        <div className="cards-fluid">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      ) : items.length === 0 ? (
-        <EmptyState
-          emoji="🛰️"
-          title={t('models.emptyTitle', { family: activeLabel })}
-          description={t('models.emptyDescription')}
-        />
-      ) : (
-        <div className="cards-fluid">
-          {items.map((l) => (
-            <ListingCard key={l.id} listing={l} />
-          ))}
-        </div>
-      )}
+      <div role="tabpanel" id={TABPANEL_ID} aria-labelledby={tabId(active)}>
+        {isPending ? (
+          <div className="cards-fluid">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : items.length === 0 ? (
+          <EmptyState
+            emoji="🛰️"
+            title={t('models.emptyTitle', { family: activeLabel })}
+            description={t('models.emptyDescription')}
+          />
+        ) : (
+          <div className="cards-fluid">
+            {items.map((l) => (
+              <ListingCard key={l.id} listing={l} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

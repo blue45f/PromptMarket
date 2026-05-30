@@ -41,6 +41,6 @@ describe('<InstallPanel />', () => {
     const copyBtn = screen.getByRole('button', { name: '명령 복사' })
     fireEvent.click(copyBtn)
     expect(writeText).toHaveBeenCalledWith('claude /install my-slug')
-    expect(await screen.findByText('복사됨')).toBeTruthy()
+    expect(await screen.findAllByText('복사됨')).toBeTruthy()
   })
 })

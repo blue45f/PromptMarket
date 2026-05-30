@@ -334,12 +334,19 @@ function EmptyLibraryWithRecs() {
   )
 }
 
+const WISHLIST_PAGE_LIMIT = 20
+
 function WishlistTab() {
   const { t } = useTranslation('dashboard')
   const { slugs, toggle, clear } = useWishlist()
+  const [clearPending, setClearPending] = useState(false)
+
+  // Cap the visible slugs to prevent a 200-request fan-out
+  const visibleSlugs = slugs.slice(0, WISHLIST_PAGE_LIMIT)
+  const isCapped = slugs.length > WISHLIST_PAGE_LIMIT
 
   const results = useQueries({
-    queries: slugs.map((slug) => ({
+    queries: visibleSlugs.map((slug) => ({
       queryKey: listingKey(slug),
       queryFn: () => api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${slug}`),
       staleTime: 10 * 60_000,
@@ -349,13 +356,22 @@ function WishlistTab() {
   // pruned safely; transient errors (500/offline) are NOT treated as gone, to
   // avoid silently dropping saved items the user can still recover.
   const resolved = results.map((r, i) => ({
-    slug: slugs[i],
+    slug: visibleSlugs[i],
     listing: r.data,
     gone: axios.isAxiosError(r.error) && r.error.response?.status === 404,
   }))
   const items = resolved.map((x) => x.listing).filter((l): l is NonNullable<typeof l> => !!l)
   const deadSlugs = resolved.filter((x) => x.gone).map((x) => x.slug)
   const pending = results.some((r) => r.isPending)
+
+  function handleClearClick() {
+    if (!clearPending) {
+      setClearPending(true)
+      return
+    }
+    clear()
+    setClearPending(false)
+  }
 
   if (slugs.length === 0) {
     return (
@@ -383,13 +399,29 @@ function WishlistTab() {
           <Heart className="w-3.5 h-3.5 text-coral" aria-hidden />
           {t('wishlist.count', { count: items.length })}
         </p>
-        <button
-          type="button"
-          onClick={clear}
-          className="text-[0.78rem] font-medium text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt rounded"
-        >
-          {t('wishlist.clear')}
-        </button>
+        <div className="flex items-center gap-2">
+          {clearPending && (
+            <button
+              type="button"
+              onClick={() => setClearPending(false)}
+              className="text-[0.78rem] font-medium text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone motion-safe:transition focus-volt rounded"
+            >
+              {t('wishlist.clearConfirm.cancel')}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handleClearClick}
+            className={cn(
+              'text-[0.78rem] font-medium motion-safe:transition focus-volt rounded',
+              clearPending
+                ? 'text-coral-deep dark:text-coral hover:underline'
+                : 'text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral'
+            )}
+          >
+            {clearPending ? t('wishlist.clearConfirm.confirm') : t('wishlist.clear')}
+          </button>
+        </div>
       </div>
       {deadSlugs.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub px-4 py-3">
@@ -414,11 +446,18 @@ function WishlistTab() {
           description={t('wishlist.unavailable.description')}
         />
       ) : (
-        <div className="cards-fluid">
-          {items.map((l) => (
-            <ListingCard key={l.id} listing={l} />
-          ))}
-        </div>
+        <>
+          <div className="cards-fluid">
+            {items.map((l) => (
+              <ListingCard key={l.id} listing={l} />
+            ))}
+          </div>
+          {isCapped && (
+            <p className="text-center text-[0.78rem] text-ink-mute dark:text-bone-mute mt-2">
+              {t('wishlist.showingCapped', { total: slugs.length })}
+            </p>
+          )}
+        </>
       )}
     </div>
   )

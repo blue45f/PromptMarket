@@ -135,6 +135,30 @@
     },
     "categoryLine": "Often work on {{category}} category tasks"
   },
+  "types": {
+    "PROMPT": "Prompt",
+    "SKILL": "Skill",
+    "MCP_SERVER": "MCP Server",
+    "SLASH_COMMAND": "Slash Command",
+    "SUBAGENT": "Sub-agent",
+    "CLAUDE_MD": "CLAUDE.md",
+    "AGENT_MD": "agent.md",
+    "CURSOR_RULES": ".cursorrules"
+  },
+  "technique": {
+    "zero-shot": { "label": "Zero-shot" },
+    "few-shot": { "label": "Few-shot" },
+    "chain-of-thought": { "label": "Chain-of-Thought" },
+    "tree-of-thoughts": { "label": "Tree-of-Thoughts" },
+    "role-prompt": { "label": "Role / Persona" },
+    "self-consistency": { "label": "Self-consistency" },
+    "react": { "label": "ReAct" },
+    "rag": { "label": "RAG" },
+    "meta-prompt": { "label": "Meta-prompt" },
+    "reflexion": { "label": "Reflexion" },
+    "plan-and-solve": { "label": "Plan-and-Solve" },
+    "other": { "label": "Other" }
+  },
   "lang": {
     "label": "Language",
     "switchLabel": "Switch language",
