@@ -61,8 +61,13 @@ export default function DashboardPage() {
     }
   }
 
-  const totalEarnings = myListings.reduce((sum, l) => sum + (l.earningsCents ?? 0), 0)
-  const totalSales = myListings.reduce((sum, l) => sum + (l.salesCount ?? 0), 0)
+  const { totalEarnings, totalSales } = useMemo(
+    () => ({
+      totalEarnings: myListings.reduce((sum, l) => sum + (l.earningsCents ?? 0), 0),
+      totalSales: myListings.reduce((sum, l) => sum + (l.salesCount ?? 0), 0),
+    }),
+    [myListings]
+  )
 
   return (
     <div className="mx-auto max-w-[1280px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
@@ -336,13 +341,13 @@ function EmptyLibraryWithRecs() {
       />
       {!isError && (
         <section aria-labelledby="library-recs-heading">
-          <h3
+          <h2
             id="library-recs-heading"
             className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mb-4"
           >
             <span aria-hidden className="w-5 h-px bg-volt-500" />
             {t('library.recs')}
-          </h3>
+          </h2>
           {isPending ? (
             <SkeletonGrid count={4} />
           ) : items.length > 0 ? (

@@ -194,7 +194,7 @@ export default function HomePage() {
         <MakerSpotlight items={featured} />
 
         {/* MODEL TABS */}
-        <section>
+        <section aria-label={t('sections.models', { defaultValue: '모델 탐색' })}>
           <ModelTabs />
         </section>
 
@@ -247,7 +247,7 @@ function SectionError({
       <button
         type="button"
         onClick={onRetry}
-        className="shrink-0 px-3 py-1 rounded-full border border-line dark:border-night-line hover:border-ink dark:hover:border-bone text-ink dark:text-bone focus-volt motion-safe:transition"
+        className="shrink-0 px-3 py-1 rounded-full border border-line dark:border-night-line hover:border-ink dark:hover:border-bone text-ink dark:text-bone focus-volt motion-safe:transition ease-expo"
       >
         {retryLabel}
       </button>
@@ -300,7 +300,7 @@ function SectionHeader({
           className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition ease-expo focus-volt shrink-0"
         >
           {t('common.viewAll')}
-          <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+          <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
         </Link>
       )}
     </div>
@@ -340,7 +340,12 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
     }
   }, [items])
   return (
-    <section ref={ref} data-revealed={revealed} className="reveal relative">
+    <section
+      ref={ref}
+      data-revealed={revealed}
+      className="reveal relative"
+      aria-labelledby="home-maker-heading"
+    >
       <div
         ref={spotlightRef}
         className="spotlight-host relative overflow-hidden rounded-[2rem] surface-card border-line dark:border-night-line"
@@ -356,7 +361,10 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
         <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-y-8 lg:gap-x-10 p-[clamp(1.75rem,4vw,3.5rem)]">
           {/* Left: maker block */}
           <div className="lg:col-span-5 flex flex-col gap-5">
-            <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
+            <p
+              id="home-maker-heading"
+              className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2"
+            >
               <span aria-hidden className="w-6 h-px bg-volt-500" />
               {t('makerSpotlight.chapter')}
             </p>
@@ -503,7 +511,10 @@ function SellerCallToAction() {
     [t('cta.stats.costValue'), t('cta.stats.costLabel')],
   ]
   return (
-    <section className="relative isolate overflow-hidden rounded-[2rem] surface-card border-line-strong dark:border-night-line-strong">
+    <section
+      className="relative isolate overflow-hidden rounded-[2rem] surface-card border-line-strong dark:border-night-line-strong"
+      aria-labelledby="home-cta-heading"
+    >
       <div
         aria-hidden
         className="absolute inset-0 -z-10"
@@ -519,6 +530,7 @@ function SellerCallToAction() {
             {t('cta.kicker')}
           </p>
           <h2
+            id="home-cta-heading"
             className="font-display font-bold leading-[0.92] tracking-[-0.035em] text-ink display-tight"
             style={{ fontSize: 'var(--text-display-md)' }}
           >

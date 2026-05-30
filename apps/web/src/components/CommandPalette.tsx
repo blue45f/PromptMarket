@@ -127,7 +127,10 @@ export default function CommandPalette() {
 
   const trimmed = q.trim()
   const debouncedQ = useDebounce(trimmed, 200)
-  const listingsParams = debouncedQ ? { q: debouncedQ, pageSize: 8 } : { sort: 'top', pageSize: 6 }
+  const listingsParams = useMemo(
+    () => (debouncedQ ? { q: debouncedQ, pageSize: 8 } : { sort: 'top', pageSize: 6 }),
+    [debouncedQ]
+  )
   const listingsQ = useQuery({
     queryKey: listingsKey(listingsParams),
     queryFn: () =>
@@ -264,6 +267,42 @@ export default function CommandPalette() {
             </kbd>
           </div>
 
+          {showHistory && (
+            <div className="px-1.5 py-1.5 border-b border-line dark:border-night-line">
+              <div className="flex items-center justify-between gap-3 px-2 pb-1.5 pt-1">
+                <p className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
+                  {t('palette.recentSearches')}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => history.clear()}
+                  aria-label={t('common:history.clearAll', {
+                    defaultValue: '검색 기록 전체 삭제',
+                  })}
+                  className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt rounded"
+                >
+                  {t('palette.clear')}
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-1.5 px-2">
+                {history.entries.map((h) => (
+                  <button
+                    key={h}
+                    type="button"
+                    onClick={() => {
+                      setQ(h)
+                      setActive(0)
+                      inputRef.current?.focus()
+                    }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line text-[0.74rem] text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo focus-volt"
+                  >
+                    {h}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div
             ref={listRef}
             id="palette-listbox"
@@ -282,49 +321,14 @@ export default function CommandPalette() {
                     href={a.to}
                     go={go}
                     setActive={setActive}
-                    icon={<a.icon className="w-4 h-4" aria-hidden />}
+                    IconComponent={a.icon}
+                    iconClassName="w-4 h-4"
                     title={t(a.labelKey)}
                     subtitle={a.hint}
                     rowIndex={i}
                   />
                 ))}
               </Section>
-            )}
-
-            {showHistory && (
-              <div className="px-1.5 py-1.5">
-                <div className="flex items-center justify-between gap-3 px-2 pb-1.5 pt-1">
-                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
-                    {t('palette.recentSearches')}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => history.clear()}
-                    aria-label={t('common:history.clearAll', {
-                      defaultValue: '검색 기록 전체 삭제',
-                    })}
-                    className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt rounded"
-                  >
-                    {t('palette.clear')}
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-1.5 px-2">
-                  {history.entries.map((h) => (
-                    <button
-                      key={h}
-                      type="button"
-                      onClick={() => {
-                        setQ(h)
-                        setActive(0)
-                        inputRef.current?.focus()
-                      }}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line text-[0.74rem] text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo focus-volt"
-                    >
-                      {h}
-                    </button>
-                  ))}
-                </div>
-              </div>
             )}
 
             {!trimmed && wishlistListings.length > 0 && (
@@ -339,7 +343,8 @@ export default function CommandPalette() {
                       href={`/listings/${l.slug}`}
                       go={go}
                       setActive={setActive}
-                      icon={<Heart className="w-3.5 h-3.5 fill-current text-coral" aria-hidden />}
+                      IconComponent={Heart}
+                      iconClassName="w-3.5 h-3.5 fill-current text-coral"
                       title={l.title}
                       subtitle={`${t('common:types.' + l.type, { defaultValue: meta?.label ?? l.type }).toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
                       rowIndex={rowIdx}
@@ -368,7 +373,7 @@ export default function CommandPalette() {
                       href={`/listings/${l.slug}`}
                       go={go}
                       setActive={setActive}
-                      icon={
+                      iconNode={
                         <span
                           aria-hidden
                           className="inline-flex w-6 h-6 items-center justify-center rounded-md text-base"
@@ -447,7 +452,9 @@ const Row = React.memo(function Row({
   href,
   go,
   setActive,
-  icon,
+  IconComponent,
+  iconClassName,
+  iconNode,
   title,
   subtitle,
   trailing,
@@ -457,7 +464,9 @@ const Row = React.memo(function Row({
   href: string
   go: (to: string) => void
   setActive: (i: number) => void
-  icon: React.ReactNode
+  IconComponent?: React.ElementType
+  iconClassName?: string
+  iconNode?: React.ReactNode
   title: string
   subtitle?: string
   trailing?: React.ReactNode
@@ -486,7 +495,11 @@ const Row = React.memo(function Row({
             : 'bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft border-line dark:border-night-line'
         )}
       >
-        {icon}
+        {IconComponent ? (
+          <IconComponent className={iconClassName ?? 'w-4 h-4 text-ink-mute'} aria-hidden />
+        ) : (
+          iconNode
+        )}
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-sm font-medium text-ink dark:text-bone truncate">{title}</span>

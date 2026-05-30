@@ -84,7 +84,8 @@
       "chapter": "04 / New",
       "title": "Fresh off the workbench",
       "kicker": "Drops from the last few days. Grab them, fork them, remix them."
-    }
+    },
+    "models": "Explore models"
   },
   "featured": {
     "emptyTitle": "No featured drops yet",

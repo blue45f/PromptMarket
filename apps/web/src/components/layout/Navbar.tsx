@@ -140,6 +140,7 @@ export default function Navbar() {
                 </span>
               )}
               <button
+                type="button"
                 onClick={handleSignOut}
                 className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt"
               >

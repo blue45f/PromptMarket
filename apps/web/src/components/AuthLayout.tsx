@@ -36,7 +36,7 @@ export default function AuthLayout({
     <div className="animate-fade-in min-h-[calc(100vh-4rem)]">
       <div className="mx-auto max-w-[1280px] grid grid-cols-1 lg:grid-cols-2 gap-y-10 lg:gap-x-14 px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,5vw,4rem)]">
         {/* Form column */}
-        <section className="flex flex-col justify-center gap-7">
+        <section aria-labelledby="auth-page-heading" className="flex flex-col justify-center gap-7">
           <Link
             to="/"
             className="inline-flex items-center gap-2 self-start text-[0.78rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
@@ -49,6 +49,7 @@ export default function AuthLayout({
               {kicker}
             </p>
             <h1
+              id="auth-page-heading"
               className="font-display font-bold text-ink dark:text-bone leading-[0.92] tracking-[-0.035em] display-tight"
               style={{ fontSize: 'var(--text-display-md)' }}
             >
@@ -67,6 +68,7 @@ export default function AuthLayout({
         {/* Brand column */}
         <aside
           ref={spotlightRef}
+          aria-label={t('authLayout.previewLabel', { defaultValue: '미리보기' })}
           className="spotlight-host relative overflow-hidden rounded-[2rem] surface-card border-line dark:border-night-line min-h-[24rem]"
         >
           <div

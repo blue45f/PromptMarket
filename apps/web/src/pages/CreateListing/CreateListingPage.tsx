@@ -304,6 +304,7 @@ export default function CreateListingPage() {
           {t('header.eyebrow')}
         </p>
         <h1
+          id="create-listing-heading"
           className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.035em] display-tight"
           style={{ fontSize: 'var(--text-display-md)' }}
         >
@@ -361,12 +362,13 @@ export default function CreateListingPage() {
       <form
         onSubmit={onSubmit}
         noValidate
+        aria-labelledby="create-listing-heading"
         className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7"
       >
         <div className="rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 space-y-5">
           <Tabs.Root value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <Tabs.List
-              aria-label={t('sectionTabs.aria', { defaultValue: '섹션 탭' })}
+              aria-label={t('sectionTabs.aria', { defaultValue: 'Section tabs' })}
               className="flex gap-1 mb-5 border-b border-line dark:border-night-line"
             >
               {(['basics', 'content', 'metadata'] as const).map((key) => (
@@ -612,7 +614,7 @@ export default function CreateListingPage() {
                 aria-hidden
                 className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
               />
-              <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors">
+              <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors ease-expo">
                 {busy && <Loader2 className="w-4 h-4 motion-safe:animate-spin" />}
                 {busy ? t('submit.publishing') : t('submit.publish')}
               </span>

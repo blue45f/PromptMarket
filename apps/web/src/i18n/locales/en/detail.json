@@ -11,12 +11,16 @@
     "categoryBadge": "{{category}} category"
   },
   "hero": {
-    "downloads": "{{count}} downloads"
+    "downloads": "{{count}} downloads",
+    "downloads_one": "{{count}} download",
+    "downloads_other": "{{count}} downloads"
   },
   "tabs": {
     "aria": "Listing sections",
     "overview": "Overview",
     "reviews": "Reviews ({{count}})",
+    "reviews_one": "{{count}} review",
+    "reviews_other": "{{count}} reviews",
     "related": "Related"
   },
   "body": {

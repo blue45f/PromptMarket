@@ -586,11 +586,15 @@ export default function ListingDetailPage() {
                   <form
                     onSubmit={onSubmitReview}
                     noValidate
+                    aria-labelledby="review-form-label"
                     className="mb-6 rounded-xl border border-line dark:border-night-line p-4 bg-canvas-deep/60 dark:bg-night-deep/40"
                   >
-                    <p className="text-sm font-medium text-ink dark:text-bone mb-2">
+                    <h3
+                      id="review-form-label"
+                      className="text-sm font-medium text-ink dark:text-bone mb-2"
+                    >
                       {t('reviews.writePrompt')}
-                    </p>
+                    </h3>
                     <StarRating
                       value={rating}
                       onChange={(v) => setValue('rating', v, { shouldDirty: true })}
@@ -685,7 +689,10 @@ export default function ListingDetailPage() {
 
         {/* Sticky sidebar */}
         {!readingMode && (
-          <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <aside
+            aria-label={t('sidebar.ariaLabel', { defaultValue: '상세 정보' })}
+            className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 lg:self-start"
+          >
             <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6">
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -824,7 +831,7 @@ export default function ListingDetailPage() {
                   </p>
                 </div>
                 <Link
-                  to={`/users/${listing.author.username}`}
+                  to={`/users/${listing.author?.username ?? 'unknown'}`}
                   className="inline-flex items-center gap-1 text-sm font-medium px-3 py-1.5 rounded-full border border-line dark:border-night-line text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition ease-expo focus-volt"
                 >
                   {t('sidebar.profile')}

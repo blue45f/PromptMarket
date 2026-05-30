@@ -83,13 +83,13 @@ function handleArrowGroupKey<T extends string>(
 
 function SectionHeader({ id, children }: { id: string; children: string }) {
   return (
-    <h4
+    <h3
       id={id}
       className="font-mono text-[0.66rem] font-medium uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute mb-2.5 inline-flex items-center gap-2"
     >
       <span aria-hidden className="w-3 h-px bg-volt-500/70" />
       {children}
-    </h4>
+    </h3>
   )
 }
 
