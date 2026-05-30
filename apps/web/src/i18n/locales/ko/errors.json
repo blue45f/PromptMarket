@@ -33,6 +33,7 @@
     "loading": "불러오는 중…",
     "emptyTitle": "결과 없음",
     "emptyBody": "다른 키워드를 입력해 보세요.",
+    "unknownAuthor": "익명",
     "groups": {
       "actions": "액션",
       "quickActions": "빠른 작업",

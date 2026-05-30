@@ -49,7 +49,14 @@
     },
     "count_one": "{{count}} saved",
     "count_other": "{{count}} saved",
-    "clear": "Clear all"
+    "clear": "Clear all",
+    "unavailable": {
+      "note_one": "{{count}} saved item is no longer available.",
+      "note_other": "{{count}} saved items are no longer available.",
+      "remove": "Remove unavailable",
+      "title": "Saved items are no longer available",
+      "description": "These listings were removed by their makers."
+    }
   },
   "wallet": {
     "balance": "Current balance",

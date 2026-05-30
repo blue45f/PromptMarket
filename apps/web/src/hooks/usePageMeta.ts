@@ -12,12 +12,6 @@ interface PageMeta {
   canonical?: string
 }
 
-const DEFAULTS = {
-  title: 'PromptMarket · 검증된 AI 프롬프트, 스킬, 에이전트',
-  description:
-    '에이전트 시대를 진지하게 다루는 카탈로그. 프롬프트, Claude Code 스킬, MCP 서버, 서브에이전트, .cursorrules를 사고팝니다.',
-}
-
 function setMeta(selector: string, attr: 'content' | 'href', value: string | undefined) {
   if (typeof document === 'undefined') return
   let el = document.head.querySelector<HTMLMetaElement | HTMLLinkElement>(selector)
@@ -56,15 +50,21 @@ export function usePageMeta(meta: PageMeta) {
     const previousTitle = document.title
     if (meta.title) document.title = meta.title
 
+    // Fallback title/description follow the active UI language so an EN-locale
+    // page that passes no description doesn't emit Korean social metadata. The
+    // home:meta.* keys hold the canonical default copy in both locales.
+    const defaultTitle = i18n.t('home:meta.title')
+    const defaultDescription = i18n.t('home:meta.description')
+
     // og:locale follows the active UI language (ko_KR / en_US) so social
     // crawlers and shares declare the right locale.
     setMeta('meta[property="og:locale"]', 'content', activeIntlLocale().replace('-', '_'))
-    setMeta('meta[name="description"]', 'content', meta.description ?? DEFAULTS.description)
-    setMeta('meta[property="og:title"]', 'content', meta.ogTitle ?? meta.title ?? DEFAULTS.title)
+    setMeta('meta[name="description"]', 'content', meta.description ?? defaultDescription)
+    setMeta('meta[property="og:title"]', 'content', meta.ogTitle ?? meta.title ?? defaultTitle)
     setMeta(
       'meta[property="og:description"]',
       'content',
-      meta.ogDescription ?? meta.description ?? DEFAULTS.description
+      meta.ogDescription ?? meta.description ?? defaultDescription
     )
     setMeta('meta[property="og:type"]', 'content', meta.ogType ?? 'website')
     setMeta('meta[property="og:image"]', 'content', meta.ogImage)
@@ -73,11 +73,11 @@ export function usePageMeta(meta: PageMeta) {
       'content',
       meta.ogImage ? 'summary_large_image' : 'summary'
     )
-    setMeta('meta[name="twitter:title"]', 'content', meta.ogTitle ?? meta.title ?? DEFAULTS.title)
+    setMeta('meta[name="twitter:title"]', 'content', meta.ogTitle ?? meta.title ?? defaultTitle)
     setMeta(
       'meta[name="twitter:description"]',
       'content',
-      meta.ogDescription ?? meta.description ?? DEFAULTS.description
+      meta.ogDescription ?? meta.description ?? defaultDescription
     )
     setMeta('meta[name="twitter:image"]', 'content', meta.ogImage)
     setMeta('link[rel="canonical"]', 'href', meta.canonical)

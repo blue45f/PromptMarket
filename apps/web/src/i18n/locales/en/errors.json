@@ -33,6 +33,7 @@
     "loading": "Loading…",
     "emptyTitle": "No results",
     "emptyBody": "Try a different keyword.",
+    "unknownAuthor": "anonymous",
     "groups": {
       "actions": "Actions",
       "quickActions": "Quick actions",

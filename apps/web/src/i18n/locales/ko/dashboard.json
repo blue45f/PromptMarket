@@ -47,7 +47,13 @@
       "action": "카탈로그 둘러보기"
     },
     "count": "담은 항목 {{count}}건",
-    "clear": "전부 지우기"
+    "clear": "전부 지우기",
+    "unavailable": {
+      "note": "담은 항목 {{count}}개를 더 이상 볼 수 없어요.",
+      "remove": "사라진 항목 정리",
+      "title": "담은 항목을 더 이상 볼 수 없어요",
+      "description": "메이커가 해당 리스팅을 삭제했어요."
+    }
   },
   "wallet": {
     "balance": "현재 잔액",

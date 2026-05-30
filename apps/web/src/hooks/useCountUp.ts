@@ -1,45 +1,47 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * Smoothly counts up to `target` once the host element scrolls into view.
  * Uses an exponential ease-out curve. Skips animation under reduced-motion.
  */
 export function useCountUp(target: number, duration = 1200) {
-  const ref = useRef<HTMLElement | null>(null);
-  const [value, setValue] = useState(0);
-  const startedRef = useRef(false);
+  const ref = useRef<HTMLElement | null>(null)
+  const [value, setValue] = useState(0)
+  const startedRef = useRef(false)
 
   useEffect(() => {
-    const node = ref.current;
-    if (!node || typeof window === 'undefined') return;
+    const node = ref.current
+    if (!node || typeof window === 'undefined') return
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) {
-      setValue(target);
-      return;
+      setValue(target)
+      return
     }
 
+    let frame: number
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting || startedRef.current) return;
-        startedRef.current = true;
-        const start = performance.now();
-        let frame: number;
+        if (!entry.isIntersecting || startedRef.current) return
+        startedRef.current = true
+        const start = performance.now()
         const tick = (now: number) => {
-          const t = Math.min(1, (now - start) / duration);
+          const t = Math.min(1, (now - start) / duration)
           // ease-out-quint
-          const eased = 1 - Math.pow(1 - t, 5);
-          setValue(Math.round(target * eased));
-          if (t < 1) frame = requestAnimationFrame(tick);
-        };
-        frame = requestAnimationFrame(tick);
-        return () => cancelAnimationFrame(frame);
+          const eased = 1 - Math.pow(1 - t, 5)
+          setValue(Math.round(target * eased))
+          if (t < 1) frame = requestAnimationFrame(tick)
+        }
+        frame = requestAnimationFrame(tick)
       },
-      { threshold: 0.4 },
-    );
-    obs.observe(node);
-    return () => obs.disconnect();
-  }, [target, duration]);
+      { threshold: 0.4 }
+    )
+    obs.observe(node)
+    return () => {
+      obs.disconnect()
+      cancelAnimationFrame(frame)
+    }
+  }, [target, duration])
 
-  return { ref, value };
+  return { ref, value }
 }

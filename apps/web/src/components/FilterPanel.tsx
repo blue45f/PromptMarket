@@ -196,7 +196,9 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
                   onChange={() => set('category', active ? '' : c)}
                   className="accent-volt-500"
                 />
-                <span className="truncate">{c}</span>
+                <span className="truncate">
+                  {t('home:categories.labels.' + c, { defaultValue: c })}
+                </span>
               </label>
             )
           })}

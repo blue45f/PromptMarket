@@ -146,49 +146,41 @@ export default function SearchBar({
                 aria-selected={i === activeIdx}
                 id={`search-history-option-${i}`}
               >
-                <button
-                  type="button"
-                  // mouseDown fires before blur so the option stays clickable.
-                  onMouseDown={(e) => e.preventDefault()}
+                <div
                   onMouseEnter={() => setActiveIdx(i)}
-                  onClick={() => {
-                    setValue(q)
-                    commit(q)
-                  }}
                   className={cn(
-                    'group/row w-full flex items-center justify-between gap-3 px-3.5 py-1.5 text-left text-[0.86rem] motion-safe:transition',
+                    'group/row w-full flex items-center justify-between gap-3 px-3.5 py-1.5 text-[0.86rem] motion-safe:transition',
                     i === activeIdx
                       ? 'bg-volt-100 dark:bg-volt-900/30 text-ink dark:text-bone'
                       : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub'
                   )}
                 >
-                  <span className="inline-flex items-center gap-2 min-w-0">
+                  <button
+                    type="button"
+                    // mouseDown fires before blur so the option stays clickable.
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setValue(q)
+                      commit(q)
+                    }}
+                    className="flex items-center gap-2 min-w-0 text-left focus-volt rounded"
+                  >
                     <Search
                       className="w-3.5 h-3.5 text-ink-mute dark:text-bone-mute shrink-0"
                       aria-hidden
                     />
                     <span className="truncate">{q}</span>
-                  </span>
-                  <span
-                    role="button"
-                    tabIndex={0}
+                  </button>
+                  <button
+                    type="button"
                     aria-label={t('search.removeFromHistory')}
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={(ev) => {
-                      ev.stopPropagation()
-                      history.remove(q)
-                    }}
-                    onKeyDown={(ev) => {
-                      if (ev.key === 'Enter' || ev.key === ' ') {
-                        ev.preventDefault()
-                        history.remove(q)
-                      }
-                    }}
-                    className="opacity-0 group-hover/row:opacity-100 motion-safe:transition inline-flex items-center justify-center w-5 h-5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral cursor-pointer"
+                    onClick={() => history.remove(q)}
+                    className="opacity-0 group-hover/row:opacity-100 motion-safe:transition inline-flex items-center justify-center w-5 h-5 shrink-0 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral focus-volt cursor-pointer"
                   >
                     <X className="w-3 h-3" aria-hidden />
-                  </span>
-                </button>
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

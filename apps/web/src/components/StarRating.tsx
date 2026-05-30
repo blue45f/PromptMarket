@@ -31,7 +31,12 @@ export default function StarRating({
 
   return (
     <div className="inline-flex items-center gap-1">
-      <div className="flex" onMouseLeave={() => setHover(null)}>
+      <div
+        className="flex"
+        role={interactive ? 'group' : undefined}
+        aria-label={interactive ? t('rating.starLabel', { count: Math.round(value) }) : undefined}
+        onMouseLeave={() => setHover(null)}
+      >
         {[1, 2, 3, 4, 5].map((n) => {
           const filled = n <= Math.round(displayed)
           return (
@@ -39,6 +44,7 @@ export default function StarRating({
               key={n}
               type="button"
               disabled={!interactive}
+              aria-pressed={interactive ? n <= Math.round(value) : undefined}
               onMouseEnter={() => interactive && setHover(n)}
               onClick={() => interactive && onChange?.(n)}
               className={cn(

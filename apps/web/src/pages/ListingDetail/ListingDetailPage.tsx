@@ -659,7 +659,7 @@ export default function ListingDetailPage() {
                     {free ? t('sidebar.free') : t('sidebar.price')}
                   </p>
                   <p className="mt-1 font-display text-[2rem] font-bold text-ink dark:text-bone tracking-[-0.02em] tabular-nums">
-                    {formatPrice(listing.priceCents)}
+                    {free ? t('common:labels.free') : formatPrice(listing.priceCents)}
                   </p>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
@@ -817,7 +817,11 @@ export default function ListingDetailPage() {
               )}
               {listing.category && (
                 <Meta label={t('meta_rows.category')}>
-                  <span className="text-xs text-ink dark:text-bone">{listing.category}</span>
+                  <span className="text-xs text-ink dark:text-bone">
+                    {t('home:categories.labels.' + listing.category, {
+                      defaultValue: listing.category,
+                    })}
+                  </span>
                 </Meta>
               )}
               {listing.license && (
@@ -870,7 +874,7 @@ export default function ListingDetailPage() {
               {free ? t('mobileBar.free') : t('mobileBar.price')}
             </p>
             <p className="font-display font-bold text-ink dark:text-bone leading-none tabular-nums text-[1.4rem]">
-              {formatPrice(listing.priceCents)}
+              {free ? t('common:labels.free') : formatPrice(listing.priceCents)}
             </p>
           </div>
           {isOwner ? (

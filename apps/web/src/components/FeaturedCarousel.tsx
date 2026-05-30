@@ -10,6 +10,10 @@ interface FeaturedCarouselProps {
 
 export default function FeaturedCarousel({ items, loading }: FeaturedCarouselProps) {
   const { t } = useTranslation('home')
+  // Nothing to scroll through yet: skip the region entirely rather than
+  // rendering an empty strip with only the edge-fade overlays. The parent
+  // surface owns any empty-state copy for this slot.
+  if (!loading && items.length === 0) return null
   return (
     <div className="relative -mx-[clamp(1.25rem,4vw,3rem)] px-[clamp(1.25rem,4vw,3rem)]">
       {/* Edge fades for momentum cue */}

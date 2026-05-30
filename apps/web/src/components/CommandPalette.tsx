@@ -31,6 +31,7 @@ interface QuickAction {
   hint: string
   to: string
   icon: typeof Compass
+  requiresAuth?: boolean
 }
 
 const STATIC_ACTIONS: QuickAction[] = [
@@ -62,13 +63,21 @@ const STATIC_ACTIONS: QuickAction[] = [
     to: '/browse?free=true',
     icon: Sparkles,
   },
-  { id: 'sell', labelKey: 'palette.actions.sell', hint: '/sell', to: '/sell', icon: PlusCircle },
+  {
+    id: 'sell',
+    labelKey: 'palette.actions.sell',
+    hint: '/sell',
+    to: '/sell',
+    icon: PlusCircle,
+    requiresAuth: true,
+  },
   {
     id: 'dashboard',
     labelKey: 'palette.actions.dashboard',
     hint: '/dashboard',
     to: '/dashboard',
     icon: User,
+    requiresAuth: true,
   },
 ]
 
@@ -141,11 +150,11 @@ export default function CommandPalette() {
     .filter((l): l is NonNullable<typeof l> => !!l)
 
   const actions = useMemo(() => {
-    const filtered = trimmed
-      ? STATIC_ACTIONS.filter((a) =>
-          (t(a.labelKey) + ' ' + a.hint).toLowerCase().includes(trimmed.toLowerCase())
-        )
-      : STATIC_ACTIONS.filter((a) => (token ? true : a.id !== 'dashboard'))
+    const filtered = STATIC_ACTIONS.filter((a) => {
+      if (a.requiresAuth && !token) return false
+      if (!trimmed) return true
+      return (t(a.labelKey) + ' ' + a.hint).toLowerCase().includes(trimmed.toLowerCase())
+    })
     return filtered
   }, [trimmed, token, t])
 
@@ -223,6 +232,11 @@ export default function CommandPalette() {
               placeholder={t('palette.placeholder')}
               className="flex-1 bg-transparent outline-none placeholder:text-ink-mute dark:placeholder:text-bone-mute text-ink dark:text-bone"
               aria-label={t('palette.inputLabel')}
+              role="combobox"
+              aria-expanded={total > 0}
+              aria-controls="palette-listbox"
+              aria-autocomplete="list"
+              aria-activedescendant={total > 0 ? `palette-row-${active}` : undefined}
               autoComplete="off"
               spellCheck={false}
             />
@@ -231,7 +245,13 @@ export default function CommandPalette() {
             </kbd>
           </div>
 
-          <div ref={listRef} className="max-h-[60vh] overflow-y-auto p-2">
+          <div
+            ref={listRef}
+            id="palette-listbox"
+            role="listbox"
+            aria-label={t('palette.srTitle')}
+            className="max-h-[60vh] overflow-y-auto p-2"
+          >
             {actions.length > 0 && (
               <Section
                 label={trimmed ? t('palette.groups.actions') : t('palette.groups.quickActions')}
@@ -297,7 +317,7 @@ export default function CommandPalette() {
                       onClick={() => go(`/listings/${l.slug}`)}
                       icon={<Heart className="w-3.5 h-3.5 fill-current text-coral" aria-hidden />}
                       title={l.title}
-                      subtitle={`${meta.label.toLowerCase()} · @${l.author?.username ?? '—'}`}
+                      subtitle={`${meta.label.toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
                       rowIndex={rowIdx}
                     />
                   )
@@ -332,7 +352,7 @@ export default function CommandPalette() {
                         </span>
                       }
                       title={l.title}
-                      subtitle={`${meta.label.toLowerCase()} · @${l.author?.username ?? '—'}`}
+                      subtitle={`${meta.label.toLowerCase()} · @${l.author?.username ?? t('palette.unknownAuthor')}`}
                       trailing={
                         <span
                           className={cn(
@@ -384,7 +404,9 @@ function Section({ label, children }: { label: string; children: React.ReactNode
       <p className="px-2 pb-1.5 pt-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
         {label}
       </p>
-      <div className="flex flex-col gap-0.5">{children}</div>
+      <div role="group" aria-label={label} className="flex flex-col gap-0.5">
+        {children}
+      </div>
     </div>
   )
 }
@@ -411,6 +433,9 @@ function Row({
   return (
     <button
       type="button"
+      role="option"
+      id={`palette-row-${rowIndex}`}
+      aria-selected={active}
       data-row={rowIndex}
       onClick={onClick}
       onMouseEnter={onMouseEnter}

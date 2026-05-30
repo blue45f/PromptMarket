@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQueries } from '@tanstack/react-query'
+import axios from 'axios'
 import { ArrowUpRight, Copy, Heart, Loader2, PlusCircle, Wallet } from 'lucide-react'
 import { api, getErrorMessage } from '@services/api'
 import { useMyListings, useMyPurchases, useTopup, useListings } from '@features/marketplace/queries'
@@ -335,7 +336,7 @@ function EmptyLibraryWithRecs() {
 
 function WishlistTab() {
   const { t } = useTranslation('dashboard')
-  const { slugs, clear } = useWishlist()
+  const { slugs, toggle, clear } = useWishlist()
 
   const results = useQueries({
     queries: slugs.map((slug) => ({
@@ -344,7 +345,16 @@ function WishlistTab() {
       staleTime: 10 * 60_000,
     })),
   })
-  const items = results.map((r) => r.data).filter((l): l is NonNullable<typeof l> => !!l)
+  // Resolve each saved slug. A 404 means the listing was deleted, so it can be
+  // pruned safely; transient errors (500/offline) are NOT treated as gone, to
+  // avoid silently dropping saved items the user can still recover.
+  const resolved = results.map((r, i) => ({
+    slug: slugs[i],
+    listing: r.data,
+    gone: axios.isAxiosError(r.error) && r.error.response?.status === 404,
+  }))
+  const items = resolved.map((x) => x.listing).filter((l): l is NonNullable<typeof l> => !!l)
+  const deadSlugs = resolved.filter((x) => x.gone).map((x) => x.slug)
   const pending = results.some((r) => r.isPending)
 
   if (slugs.length === 0) {
@@ -371,7 +381,7 @@ function WishlistTab() {
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute inline-flex items-center gap-2">
           <Heart className="w-3.5 h-3.5 text-coral" aria-hidden />
-          {t('wishlist.count', { count: slugs.length })}
+          {t('wishlist.count', { count: items.length })}
         </p>
         <button
           type="button"
@@ -381,8 +391,28 @@ function WishlistTab() {
           {t('wishlist.clear')}
         </button>
       </div>
+      {deadSlugs.length > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub px-4 py-3">
+          <p className="text-[0.78rem] text-ink-soft dark:text-bone-soft">
+            {t('wishlist.unavailable.note', { count: deadSlugs.length })}
+          </p>
+          <button
+            type="button"
+            onClick={() => deadSlugs.forEach(toggle)}
+            className="text-[0.78rem] font-medium text-coral-deep dark:text-coral hover:underline motion-safe:transition focus-volt rounded"
+          >
+            {t('wishlist.unavailable.remove')}
+          </button>
+        </div>
+      )}
       {pending && items.length === 0 ? (
         <SkeletonGrid count={4} />
+      ) : items.length === 0 ? (
+        <EmptyState
+          emoji="🪹"
+          title={t('wishlist.unavailable.title')}
+          description={t('wishlist.unavailable.description')}
+        />
       ) : (
         <div className="cards-fluid">
           {items.map((l) => (

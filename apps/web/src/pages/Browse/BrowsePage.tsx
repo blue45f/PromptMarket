@@ -86,7 +86,11 @@ export default function BrowsePage() {
   const titleSuffix = q
     ? t('meta.titleSearch', { q })
     : filters.category
-      ? t('meta.titleCategory', { category: filters.category })
+      ? t('meta.titleCategory', {
+          category: t('home:categories.labels.' + filters.category, {
+            defaultValue: filters.category,
+          }),
+        })
       : sort === 'trending'
         ? t('meta.titleTrending')
         : sort === 'top'
@@ -127,11 +131,17 @@ export default function BrowsePage() {
     setParams(new URLSearchParams(), { replace: true })
   }
 
-  // Server-side params: a single type/model is supported by the backend; if
-  // multiple are selected we fall back to the first and filter the rest in JS.
+  // Server-side params: the backend only accepts a single type/model. When the
+  // user selects 2+ we must NOT pin the server to the first value — that would
+  // return only that one type/model and the client union below could never
+  // broaden past it. Instead we leave the param off (fetch the wider set) and
+  // narrow to the selected union client-side. With exactly one selection we
+  // still push it to the server so pagination stays accurate.
+  const narrowTypes = filters.types.length > 1
+  const narrowModels = filters.models.length > 1
   const { data, isPending, error } = useListings({
-    type: filters.types[0],
-    model: filters.models[0],
+    type: narrowTypes ? undefined : filters.types[0],
+    model: narrowModels ? undefined : filters.models[0],
     category: filters.category || undefined,
     technique: filters.technique || undefined,
     difficulty: filters.difficulty || undefined,
@@ -156,6 +166,15 @@ export default function BrowsePage() {
 
   const total = data?.total ?? items.length
   const totalPages = data?.totalPages ?? 1
+  // When client-side multi-value narrowing is active the server's total/pages
+  // describe the unfiltered set, so they'd overstate the result count and offer
+  // pages whose entire contents get narrowed away. Reflect the narrowed grid
+  // instead and collapse to a single page (the backend can't paginate the
+  // multi-value union today). Price narrowing is handled server-side, so it
+  // doesn't trigger this.
+  const narrowing = narrowTypes || narrowModels
+  const effectiveTotal = narrowing ? items.length : total
+  const effectiveTotalPages = narrowing ? 1 : totalPages
   const activeCount = countActive(filters)
 
   // Persist non-trivial filter combinations into the recent-filters store
@@ -182,7 +201,7 @@ export default function BrowsePage() {
           return
         }
       }
-      if (e.key === 'ArrowRight' && page < totalPages) {
+      if (e.key === 'ArrowRight' && page < effectiveTotalPages) {
         e.preventDefault()
         updateExtras({ page: page + 1 })
         return
@@ -221,7 +240,7 @@ export default function BrowsePage() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, totalPages])
+  }, [page, effectiveTotalPages])
 
   return (
     <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
@@ -352,13 +371,17 @@ export default function BrowsePage() {
               )}
               {filters.difficulty && (
                 <Chip
-                  label={filters.difficulty}
+                  label={t('common:difficulty.' + filters.difficulty, {
+                    defaultValue: filters.difficulty,
+                  })}
                   onRemove={() => commit({ ...filters, difficulty: '' }, { page: 1 })}
                 />
               )}
               {filters.category && (
                 <Chip
-                  label={filters.category}
+                  label={t('home:categories.labels.' + filters.category, {
+                    defaultValue: filters.category,
+                  })}
                   onRemove={() => commit({ ...filters, category: '' }, { page: 1 })}
                 />
               )}
@@ -381,7 +404,10 @@ export default function BrowsePage() {
           <p className="font-mono text-[0.78rem] text-ink-mute dark:text-bone-mute mb-5 tabular-nums">
             {isPending
               ? t('results.loading')
-              : t('results.count', { count: total, formatted: total.toLocaleString() })}
+              : t('results.count', {
+                  count: effectiveTotal,
+                  formatted: effectiveTotal.toLocaleString(),
+                })}
             {q && (
               <>
                 {' '}
@@ -408,7 +434,7 @@ export default function BrowsePage() {
                 ))}
               </div>
 
-              {totalPages > 1 && (
+              {effectiveTotalPages > 1 && (
                 <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                   <div className="inline-flex items-center gap-2">
                     <button
@@ -419,10 +445,10 @@ export default function BrowsePage() {
                       <span aria-hidden>←</span> {t('pagination.prev')}
                     </button>
                     <span className="font-mono text-[0.78rem] tabular-nums text-ink-soft dark:text-bone-soft px-2">
-                      {page} / {totalPages}
+                      {page} / {effectiveTotalPages}
                     </span>
                     <button
-                      disabled={page >= totalPages}
+                      disabled={page >= effectiveTotalPages}
                       onClick={() => updateExtras({ page: page + 1 })}
                       className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.86rem] text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep disabled:opacity-40 disabled:cursor-not-allowed motion-safe:transition focus-volt"
                     >
@@ -485,11 +511,13 @@ export default function BrowsePage() {
 function describeFilters(f: FilterState, q: string, t: TFunction<'browse'>): string {
   const parts: string[] = []
   if (q) parts.push(`"${q}"`)
-  if (f.category) parts.push(f.category)
+  if (f.category)
+    parts.push(t('home:categories.labels.' + f.category, { defaultValue: f.category }))
   if (f.types.length === 1) parts.push(LISTING_TYPE_META[f.types[0]].label)
   else if (f.types.length > 1) parts.push(t('describe.typesCount', { count: f.types.length }))
   if (f.technique) parts.push(TECHNIQUE_META[f.technique as PromptTechnique].label)
-  if (f.difficulty) parts.push(`${f.difficulty}`)
+  if (f.difficulty)
+    parts.push(t('common:difficulty.' + f.difficulty, { defaultValue: f.difficulty }))
   if (f.price === 'free') parts.push(t('describe.free'))
   if (f.price === 'paid') parts.push(t('describe.paid'))
   return parts.slice(0, 4).join(' · ')

@@ -51,9 +51,9 @@ describe('<ListingCard />', () => {
     expect(screen.getByText('$1.99')).toBeTruthy()
   })
 
-  it('shows "Free" for priceCents=0', () => {
+  it('shows the localized free label for priceCents=0', () => {
     render(withProviders(<ListingCard listing={{ ...listing, priceCents: 0 }} />))
-    expect(screen.getByText('Free')).toBeTruthy()
+    expect(screen.getByText('무료')).toBeTruthy()
   })
 
   it('wraps in a link to /listings/test-listing', () => {

@@ -114,7 +114,7 @@ export default function ListingCard({
           <span
             aria-hidden
             className={cn(
-              'tilt-parallax absolute inset-0 flex items-center justify-center drop-shadow-[0_8px_24px_rgba(0,0,0,0.18)]',
+              'tilt-parallax absolute inset-0 flex items-center justify-center drop-shadow-[0_8px_24px_oklch(0.16_0.03_290/0.18)]',
               'motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-3 motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]',
               isFeatured ? 'text-[7rem] lg:text-[10rem]' : 'text-[5.5rem]'
             )}
@@ -136,7 +136,7 @@ export default function ListingCard({
                   : 'bg-bone/90 text-ink dark:bg-night/85 dark:text-bone'
               )}
             >
-              {formatPrice(listing.priceCents ?? 0)}
+              {free ? t('labels.free') : formatPrice(listing.priceCents ?? 0)}
             </span>
           </div>
 
