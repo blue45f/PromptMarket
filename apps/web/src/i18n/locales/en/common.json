@@ -33,6 +33,17 @@
   "listing": {
     "unrated": "No reviews yet"
   },
+  "toasts": {
+    "welcomeBack": "Welcome back, @{{name}}",
+    "accountCreated": "Account created",
+    "listingPublished": "Listing published",
+    "purchaseComplete": "Purchase complete",
+    "balanceToppedUp": "Balance topped up",
+    "reviewPosted": "Review posted"
+  },
+  "errors": {
+    "generic": "Something went wrong"
+  },
   "rating": {
     "starLabel": "{{count}} stars"
   },

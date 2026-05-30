@@ -33,6 +33,17 @@
   "listing": {
     "unrated": "아직 리뷰 없음"
   },
+  "toasts": {
+    "welcomeBack": "@{{name}}님, 다시 오신 걸 환영해요",
+    "accountCreated": "계정이 생성됐어요",
+    "listingPublished": "리스팅이 게시됐어요",
+    "purchaseComplete": "구매가 완료됐어요",
+    "balanceToppedUp": "잔액이 충전됐어요",
+    "reviewPosted": "리뷰가 등록됐어요"
+  },
+  "errors": {
+    "generic": "문제가 발생했어요"
+  },
   "rating": {
     "starLabel": "{{count}}점"
   },

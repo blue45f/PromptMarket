@@ -1,12 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
+import i18n from '@/i18n'
 import type {
   CreateListingInput,
   CreateReviewInput,
   LoginInput,
   RegisterInput,
-} from '@promptmarket/shared';
-import { api, getErrorMessage } from '@services/api';
+} from '@promptmarket/shared'
+import { api, getErrorMessage } from '@services/api'
 import {
   listingKey,
   listingsKey,
@@ -18,7 +19,7 @@ import {
   statsKey,
   userKey,
   type ListingsParams,
-} from './queryKeys';
+} from './queryKeys'
 import type {
   AuthResponse,
   ListingCard,
@@ -29,8 +30,8 @@ import type {
   Review,
   StatsResponse,
   User,
-} from '@/types';
-import { useAuthStore } from '@store/auth';
+} from '@/types'
+import { useAuthStore } from '@store/auth'
 
 // --- Queries ---------------------------------------------------------------
 
@@ -53,18 +54,15 @@ export function useListings(params: ListingsParams = {}) {
           pageSize: params.pageSize,
         },
       }),
-  });
+  })
 }
 
 export function useListing(slug: string | undefined) {
   return useQuery({
     queryKey: slug ? listingKey(slug) : ['listing', '__none__'],
     enabled: !!slug,
-    queryFn: () =>
-      api.get<ListingDetailResponse, ListingDetailResponse>(
-        `/listings/${slug}`,
-      ),
-  });
+    queryFn: () => api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${slug}`),
+  })
 }
 
 /** Public site-wide stats — total listings, sales, users — used by the
@@ -74,7 +72,7 @@ export function useStats() {
     queryKey: statsKey,
     queryFn: () => api.get<StatsResponse, StatsResponse>('/listings/stats'),
     staleTime: 5 * 60_000,
-  });
+  })
 }
 
 /** "You might also like" — backend returns an array of ListingCard items. */
@@ -82,173 +80,164 @@ export function useRelated(id: string | undefined) {
   return useQuery({
     queryKey: id ? relatedKey(id) : ['related', '__none__'],
     enabled: !!id,
-    queryFn: () =>
-      api.get<ListingCard[], ListingCard[]>(`/listings/related/${id}`),
-  });
+    queryFn: () => api.get<ListingCard[], ListingCard[]>(`/listings/related/${id}`),
+  })
 }
 
 export function useMe() {
-  const token = useAuthStore((s) => s.token);
-  const setUser = useAuthStore((s) => s.setUser);
-  const logout = useAuthStore((s) => s.logout);
+  const token = useAuthStore((s) => s.token)
+  const setUser = useAuthStore((s) => s.setUser)
+  const logout = useAuthStore((s) => s.logout)
   return useQuery({
     queryKey: meKey,
     enabled: !!token,
     queryFn: async () => {
       try {
-        const data = (await api.get('/auth/me')) as { user?: User } & User;
+        const data = (await api.get('/auth/me')) as { user?: User } & User
         // API returns the user object flat; tolerate either shape.
-        const u = (data?.user ?? data) as User;
-        setUser(u);
-        return u;
+        const u = (data?.user ?? data) as User
+        setUser(u)
+        return u
       } catch (err) {
-        logout();
-        throw err;
+        logout()
+        throw err
       }
     },
-  });
+  })
 }
 
 export function useMyListings(enabled = true) {
   return useQuery({
     queryKey: meListingsKey,
     enabled,
-    queryFn: () =>
-      api.get<MyListingItem[], MyListingItem[]>('/me/listings'),
-  });
+    queryFn: () => api.get<MyListingItem[], MyListingItem[]>('/me/listings'),
+  })
 }
 
 export function useMyPurchases(enabled = true) {
   return useQuery({
     queryKey: mePurchasesKey,
     enabled,
-    queryFn: () =>
-      api.get<ListingCard[], ListingCard[]>('/me/purchases'),
-  });
+    queryFn: () => api.get<ListingCard[], ListingCard[]>('/me/purchases'),
+  })
 }
 
 export interface ProfileResponse {
-  user: User;
-  listings: ListingCard[];
+  user: User
+  listings: ListingCard[]
 }
 
 export function useUserProfile(username: string | undefined) {
   return useQuery({
     queryKey: username ? userKey(username) : ['user', '__none__'],
     enabled: !!username,
-    queryFn: () =>
-      api.get<ProfileResponse, ProfileResponse>(`/users/${username}`),
-  });
+    queryFn: () => api.get<ProfileResponse, ProfileResponse>(`/users/${username}`),
+  })
 }
 
 // --- Mutations -------------------------------------------------------------
 
 export function useLogin() {
-  const login = useAuthStore((s) => s.login);
-  const qc = useQueryClient();
+  const login = useAuthStore((s) => s.login)
+  const qc = useQueryClient()
   return useMutation({
-    mutationFn: (input: LoginInput) =>
-      api.post<AuthResponse, AuthResponse>('/auth/login', input),
+    mutationFn: (input: LoginInput) => api.post<AuthResponse, AuthResponse>('/auth/login', input),
     onSuccess: (res) => {
-      login(res.token, res.user as unknown as User);
-      qc.setQueryData(meKey, res.user);
-      toast.success(`@${res.user.username}님, 다시 오신 걸 환영해요`);
+      login(res.token, res.user as unknown as User)
+      qc.setQueryData(meKey, res.user)
+      toast.success(i18n.t('common:toasts.welcomeBack', { name: res.user.username }))
     },
     onError: (err) => {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err))
     },
-  });
+  })
 }
 
 export function useRegister() {
-  const login = useAuthStore((s) => s.login);
-  const qc = useQueryClient();
+  const login = useAuthStore((s) => s.login)
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: (input: RegisterInput) =>
       api.post<AuthResponse, AuthResponse>('/auth/register', input),
     onSuccess: (res) => {
-      login(res.token, res.user as unknown as User);
-      qc.setQueryData(meKey, res.user);
-      toast.success('계정이 생성됐어요');
+      login(res.token, res.user as unknown as User)
+      qc.setQueryData(meKey, res.user)
+      toast.success(i18n.t('common:toasts.accountCreated'))
     },
     onError: (err) => {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err))
     },
-  });
+  })
 }
 
 export function useCreateListing() {
-  const qc = useQueryClient();
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: (input: CreateListingInput) =>
-      api.post<{ listing: ListingFull }, { listing: ListingFull }>(
-        '/listings',
-        input,
-      ),
+      api.post<{ listing: ListingFull }, { listing: ListingFull }>('/listings', input),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ['listings'] });
-      void qc.invalidateQueries({ queryKey: meListingsKey });
-      void qc.invalidateQueries({ queryKey: statsKey });
-      toast.success('리스팅이 게시됐어요');
+      void qc.invalidateQueries({ queryKey: ['listings'] })
+      void qc.invalidateQueries({ queryKey: meListingsKey })
+      void qc.invalidateQueries({ queryKey: statsKey })
+      toast.success(i18n.t('common:toasts.listingPublished'))
     },
     onError: (err) => {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err))
     },
-  });
+  })
 }
 
 export function usePurchase(listingId: string | undefined, slug?: string) {
-  const qc = useQueryClient();
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: async () => {
-      if (!listingId) throw new Error('리스팅 ID가 비어 있어요');
-      return api.post(`/listings/${listingId}/purchase`);
+      if (!listingId) throw new Error('Listing ID is missing')
+      return api.post(`/listings/${listingId}/purchase`)
     },
     onSuccess: () => {
-      if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) });
-      void qc.invalidateQueries({ queryKey: mePurchasesKey });
-      void qc.invalidateQueries({ queryKey: meKey });
-      void qc.invalidateQueries({ queryKey: ['listings'] });
-      toast.success('구매가 완료됐어요');
+      if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) })
+      void qc.invalidateQueries({ queryKey: mePurchasesKey })
+      void qc.invalidateQueries({ queryKey: meKey })
+      void qc.invalidateQueries({ queryKey: ['listings'] })
+      toast.success(i18n.t('common:toasts.purchaseComplete'))
     },
     onError: (err) => {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err))
     },
-  });
+  })
 }
 
 export function useTopup() {
-  const qc = useQueryClient();
+  const qc = useQueryClient()
   return useMutation({
-    mutationFn: (amountCents: number) =>
-      api.post('/me/topup', { amountCents }),
+    mutationFn: (amountCents: number) => api.post('/me/topup', { amountCents }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: meKey });
-      toast.success('잔액이 충전됐어요');
+      void qc.invalidateQueries({ queryKey: meKey })
+      toast.success(i18n.t('common:toasts.balanceToppedUp'))
     },
     onError: (err) => {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err))
     },
-  });
+  })
 }
 
 export function useCreateReview(listingId: string | undefined, slug?: string) {
-  const qc = useQueryClient();
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: async (input: CreateReviewInput) => {
-      if (!listingId) throw new Error('리스팅 ID가 비어 있어요');
+      if (!listingId) throw new Error('Listing ID is missing')
       return api.post<{ review: Review }, { review: Review }>(
         `/listings/${listingId}/reviews`,
-        input,
-      );
+        input
+      )
     },
     onSuccess: () => {
-      if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) });
-      if (listingId) void qc.invalidateQueries({ queryKey: reviewsKey(listingId) });
-      toast.success('리뷰가 등록됐어요');
+      if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) })
+      if (listingId) void qc.invalidateQueries({ queryKey: reviewsKey(listingId) })
+      toast.success(i18n.t('common:toasts.reviewPosted'))
     },
     onError: (err) => {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err))
     },
-  });
+  })
 }
