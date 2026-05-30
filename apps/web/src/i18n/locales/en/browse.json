@@ -95,6 +95,9 @@
     "activeHeading": "Active filters",
     "removeRow": "Remove ✕"
   },
+  "modelTabs": {
+    "error": "Could not load listings."
+  },
   "activeFilter": {
     "query": "Search \"{{q}}\"",
     "type": "Type · {{value}}",

@@ -94,6 +94,9 @@
     "activeHeading": "지금 거는 필터",
     "removeRow": "풀기 ✕"
   },
+  "modelTabs": {
+    "error": "모델 목록을 불러오지 못했어요."
+  },
   "activeFilter": {
     "query": "검색어 \"{{q}}\"",
     "type": "타입 · {{value}}",

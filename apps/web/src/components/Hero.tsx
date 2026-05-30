@@ -338,12 +338,12 @@ function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
       <div className="absolute inset-0 pt-12 pb-6">
         <ul className="v-marquee-track flex flex-col gap-2.5">
           {seed.map((drop, idx) => (
-            <DropRow key={`${drop.id}-${idx}`} drop={drop} />
+            <DropRow key={`${drop.id}-${idx}`} drop={drop} t={t} />
           ))}
           {/* Decorative duplicate for seamless scroll — hidden from a11y tree */}
           <div aria-hidden="true">
             {seed.map((drop, idx) => (
-              <DropRow key={`dup-${drop.id}-${idx}`} drop={drop} tabIndex={-1} />
+              <DropRow key={`dup-${drop.id}-${idx}`} drop={drop} tabIndex={-1} t={t} />
             ))}
           </div>
         </ul>
@@ -355,9 +355,11 @@ function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
 function DropRow({
   drop,
   tabIndex,
+  t,
 }: {
   drop: DropsMarqueeProps['items'][number]
   tabIndex?: number
+  t: TFunction
 }) {
   const meta = LISTING_TYPE_META[drop.type]
   const free = (drop.priceCents ?? 0) === 0
@@ -397,7 +399,7 @@ function DropRow({
             {drop.title}
           </p>
           <p className="mt-0.5 text-[0.66rem] font-mono uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute truncate">
-            {meta.label.toLowerCase()}
+            {t('common:types.' + drop.type, { defaultValue: meta.label }).toLowerCase()}
             {drop.author?.username && ` · @${drop.author.username}`}
           </p>
         </div>

@@ -412,7 +412,9 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
                     </div>
                     <div className="min-w-0 flex-1 flex flex-col justify-center gap-1">
                       <span className="font-mono text-[0.64rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
-                        {LISTING_TYPE_META[l.type].label}
+                        {t('common:types.' + l.type, {
+                          defaultValue: LISTING_TYPE_META[l.type]?.label ?? l.type,
+                        })}
                       </span>
                       <h3 className="font-display font-semibold text-ink dark:text-bone text-[1.05rem] leading-tight line-clamp-2 group-hover:text-volt-800 dark:group-hover:text-volt-200 motion-safe:transition-colors">
                         {l.title}
@@ -463,7 +465,10 @@ function MarqueeStrip() {
   const words = t('marquee.words', { returnObjects: true }) as string[]
   const items = [...words, ...words]
   return (
-    <div className="border-y border-line dark:border-night-line bg-ink text-bone dark:bg-bone dark:text-ink overflow-hidden">
+    <div
+      aria-hidden="true"
+      className="border-y border-line dark:border-night-line bg-ink text-bone dark:bg-bone dark:text-ink overflow-hidden"
+    >
       <div className="flex items-center gap-12 py-4 marquee-track whitespace-nowrap">
         {items.map((w, i) => (
           <span

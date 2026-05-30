@@ -1,4 +1,5 @@
 {
+  "retry": "Retry",
   "actions": {
     "copy": "Copy",
     "copied": "Copied",

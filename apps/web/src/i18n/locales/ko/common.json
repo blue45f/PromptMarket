@@ -1,4 +1,5 @@
 {
+  "retry": "다시 시도",
   "actions": {
     "copy": "복사",
     "copied": "복사됨",

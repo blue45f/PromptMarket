@@ -1,10 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import FilterPanel, {
-  countActive,
-  emptyFilters,
-  type FilterState,
-} from './FilterPanel';
+import { describe, expect, it, vi } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
+import FilterPanel, { countActive, emptyFilters, type FilterState } from './FilterPanel'
 
 describe('emptyFilters', () => {
   it('returns the zero state', () => {
@@ -15,14 +11,14 @@ describe('emptyFilters', () => {
       difficulty: '',
       category: '',
       price: 'all',
-    });
-  });
-});
+    })
+  })
+})
 
 describe('countActive', () => {
   it('counts zero on the empty state', () => {
-    expect(countActive(emptyFilters())).toBe(0);
-  });
+    expect(countActive(emptyFilters())).toBe(0)
+  })
 
   it('counts every dimension once, ignoring price=all', () => {
     const f: FilterState = {
@@ -32,78 +28,62 @@ describe('countActive', () => {
       difficulty: 'beginner',
       category: 'Coding',
       price: 'all',
-    };
-    expect(countActive(f)).toBe(2 + 1 + 1 + 1 + 1);
-  });
+    }
+    expect(countActive(f)).toBe(2 + 1 + 1 + 1 + 1)
+  })
 
   it('counts price when it is free or paid', () => {
-    expect(countActive({ ...emptyFilters(), price: 'free' })).toBe(1);
-    expect(countActive({ ...emptyFilters(), price: 'paid' })).toBe(1);
-  });
-});
+    expect(countActive({ ...emptyFilters(), price: 'free' })).toBe(1)
+    expect(countActive({ ...emptyFilters(), price: 'paid' })).toBe(1)
+  })
+})
 
 describe('<FilterPanel />', () => {
   it('toggles a type chip on click', () => {
-    const onChange = vi.fn();
-    render(
-      <FilterPanel
-        value={emptyFilters()}
-        onChange={onChange}
-        onReset={vi.fn()}
-      />,
-    );
-    // LISTING_TYPE_META[PROMPT].label is "Prompt".
-    fireEvent.click(screen.getByRole('button', { name: /Prompt/ }));
-    expect(onChange).toHaveBeenCalledTimes(1);
-    const next = onChange.mock.calls[0][0] as FilterState;
-    expect(next.types).toEqual(['PROMPT']);
-  });
+    const onChange = vi.fn()
+    render(<FilterPanel value={emptyFilters()} onChange={onChange} onReset={vi.fn()} />)
+    // TypeBadge + FilterPanel localize PROMPT → '프롬프트' under ko default.
+    fireEvent.click(screen.getByRole('button', { name: /프롬프트/ }))
+    expect(onChange).toHaveBeenCalledTimes(1)
+    const next = onChange.mock.calls[0][0] as FilterState
+    expect(next.types).toEqual(['PROMPT'])
+  })
 
   it('removes the technique section when the active types exclude PROMPT', () => {
-    const onChange = vi.fn();
+    const onChange = vi.fn()
     const { rerender } = render(
-      <FilterPanel
-        value={emptyFilters()}
-        onChange={onChange}
-        onReset={vi.fn()}
-      />,
-    );
+      <FilterPanel value={emptyFilters()} onChange={onChange} onReset={vi.fn()} />
+    )
     // Technique header is visible on the empty state (PROMPT is "default-on").
-    expect(screen.queryByText('프롬프트 기법')).not.toBeNull();
+    expect(screen.queryByText('프롬프트 기법')).not.toBeNull()
     rerender(
       <FilterPanel
         value={{ ...emptyFilters(), types: ['SKILL'] }}
         onChange={onChange}
         onReset={vi.fn()}
-      />,
-    );
-    expect(screen.queryByText('프롬프트 기법')).toBeNull();
-  });
+      />
+    )
+    expect(screen.queryByText('프롬프트 기법')).toBeNull()
+  })
 
   it('fires onReset when the "전부 초기화" button is clicked', () => {
-    const onReset = vi.fn();
+    const onReset = vi.fn()
     render(
       <FilterPanel
         value={{ ...emptyFilters(), category: 'Coding' }}
         onChange={vi.fn()}
         onReset={onReset}
-      />,
-    );
-    fireEvent.click(screen.getByRole('button', { name: '전부 초기화' }));
-    expect(onReset).toHaveBeenCalledTimes(1);
-  });
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: '전부 초기화' }))
+    expect(onReset).toHaveBeenCalledTimes(1)
+  })
 
   it('sets price=free via the radiogroup', () => {
-    const onChange = vi.fn();
-    render(
-      <FilterPanel
-        value={emptyFilters()}
-        onChange={onChange}
-        onReset={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByRole('radio', { name: '무료' }));
-    const next = onChange.mock.calls[0][0] as FilterState;
-    expect(next.price).toBe('free');
-  });
-});
+    const onChange = vi.fn()
+    render(<FilterPanel value={emptyFilters()} onChange={onChange} onReset={vi.fn()} />)
+    fireEvent.click(screen.getByRole('radio', { name: '무료' }))
+    const next = onChange.mock.calls[0][0] as FilterState
+    expect(next.price).toBe('free')
+  })
+})

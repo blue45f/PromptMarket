@@ -91,6 +91,7 @@ function SectionHeader({ children }: { children: string }) {
 
 export default function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
   const { t } = useTranslation('browse')
+  const { t: tc } = useTranslation('common')
   function set<K extends keyof FilterState>(k: K, v: FilterState[K]) {
     onChange({ ...value, [k]: v })
   }
@@ -117,14 +118,15 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
       <section>
         <SectionHeader>{t('panel.sections.type')}</SectionHeader>
         <div className="flex flex-wrap gap-1.5">
-          {ALL_TYPES.map((t) => {
-            const meta = LISTING_TYPE_META[t]
-            const active = value.types.includes(t)
+          {ALL_TYPES.map((typeKey) => {
+            const meta = LISTING_TYPE_META[typeKey]
+            const active = value.types.includes(typeKey)
             return (
               <button
-                key={t}
+                key={typeKey}
                 type="button"
-                onClick={() => toggleType(t)}
+                aria-pressed={active}
+                onClick={() => toggleType(typeKey)}
                 className={cn(
                   'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.72rem] font-medium border motion-safe:transition focus-volt',
                   active
@@ -133,7 +135,7 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
                 )}
               >
                 <span aria-hidden>{meta.emoji}</span>
-                {meta.label}
+                {tc('types.' + typeKey, { defaultValue: meta.label })}
               </button>
             )
           })}
@@ -167,7 +169,7 @@ export default function FilterPanel({ value, onChange, onReset }: FilterPanelPro
                   className="accent-volt-500"
                 />
                 <span className="text-ink-soft dark:text-bone-soft">
-                  {TECHNIQUE_META[tk].label}
+                  {tc('technique.' + tk + '.label', { defaultValue: TECHNIQUE_META[tk].label })}
                 </span>
               </label>
             ))}

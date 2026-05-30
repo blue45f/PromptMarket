@@ -165,7 +165,9 @@ export function buildActiveFilterRows(args: {
   for (const t of args.types) {
     out.push({
       key: `type:${t}`,
-      label: i18n.t('browse:activeFilter.type', { value: t }),
+      label: i18n.t('browse:activeFilter.type', {
+        value: i18n.t('common:types.' + t, { defaultValue: t }),
+      }),
       onRemove: () => args.removeType(t),
     })
   }
@@ -179,13 +181,21 @@ export function buildActiveFilterRows(args: {
   if (args.technique)
     out.push({
       key: 'technique',
-      label: i18n.t('browse:activeFilter.technique', { value: args.technique }),
+      label: i18n.t('browse:activeFilter.technique', {
+        value: i18n.t('common:technique.' + args.technique + '.label', {
+          defaultValue: args.technique,
+        }),
+      }),
       onRemove: args.removeTechnique,
     })
   if (args.difficulty)
     out.push({
       key: 'difficulty',
-      label: i18n.t('browse:activeFilter.difficulty', { value: args.difficulty }),
+      label: i18n.t('browse:activeFilter.difficulty', {
+        value: i18n.t('common:difficulty.' + args.difficulty, {
+          defaultValue: args.difficulty,
+        }),
+      }),
       onRemove: args.removeDifficulty,
     })
   if (args.category)

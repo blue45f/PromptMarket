@@ -208,7 +208,7 @@ export default function CreateListingPage() {
 
       const result = CreateListingSchema.safeParse(payload)
       if (!result.success) {
-        // Should rarely happen since the form schema mirrors the canonical one.
+        toast.error(t('validation.canonicalFailed'))
         return
       }
 
@@ -356,7 +356,8 @@ export default function CreateListingPage() {
                   <select {...register('type')} className={inputClass}>
                     {TYPES.map((opt) => (
                       <option key={opt} value={opt}>
-                        {LISTING_TYPE_META[opt].emoji} {LISTING_TYPE_META[opt].label}
+                        {LISTING_TYPE_META[opt].emoji}{' '}
+                        {t('common:types.' + opt, { defaultValue: LISTING_TYPE_META[opt].label })}
                       </option>
                     ))}
                   </select>
@@ -504,7 +505,7 @@ export default function CreateListingPage() {
 
               <Field label={t('fields.difficulty')}>
                 <div
-                  role="group"
+                  role="radiogroup"
                   className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep"
                 >
                   {DIFFICULTIES.map((d) => {
@@ -513,6 +514,9 @@ export default function CreateListingPage() {
                       <button
                         key={d}
                         type="button"
+                        role="radio"
+                        aria-checked={active}
+                        tabIndex={active ? 0 : -1}
                         onClick={() => setValue('difficulty', d, { shouldDirty: true })}
                         className={cn(
                           'text-[0.78rem] font-medium px-2 py-1.5 rounded-lg capitalize motion-safe:transition focus-volt',

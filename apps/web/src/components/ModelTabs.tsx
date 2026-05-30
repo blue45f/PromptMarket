@@ -34,7 +34,7 @@ export default function ModelTabs() {
   const { t } = useTranslation('home')
   const [active, setActive] = useState<string>(FAMILY_TABS[0].key)
   const vendor = pickVendorForFamily(active)
-  const { data, isPending } = useListings({
+  const { data, isPending, isError, refetch } = useListings({
     vendor: active === 'Tool' ? undefined : vendor,
     model: active === 'Tool' ? 'claude-code' : undefined,
     pageSize: 4,
@@ -66,7 +66,11 @@ export default function ModelTabs() {
           </p>
         </div>
         <Link
-          to={`/browse?vendor=${encodeURIComponent(vendor ?? '')}`}
+          to={
+            active === 'Tool'
+              ? '/browse?model=claude-code'
+              : `/browse?vendor=${encodeURIComponent(vendor ?? '')}`
+          }
           className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition focus-volt shrink-0"
         >
           {t('common.viewAll')}
@@ -143,7 +147,18 @@ export default function ModelTabs() {
         </div>
       </div>
       <div role="tabpanel" id={TABPANEL_ID} aria-labelledby={tabId(active)}>
-        {isPending ? (
+        {isError ? (
+          <div className="py-12 text-center text-sm text-ink-soft dark:text-bone-soft">
+            <p>{t('modelTabs.error')}</p>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="mt-2 text-volt-700 dark:text-volt-400 underline"
+            >
+              {t('common:retry')}
+            </button>
+          </div>
+        ) : isPending ? (
           <div className="cards-fluid">
             {Array.from({ length: 4 }).map((_, i) => (
               <SkeletonCard key={i} />
