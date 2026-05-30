@@ -90,10 +90,14 @@ export default function RegisterPage() {
     >
       <form onSubmit={onSubmit} noValidate className="space-y-5">
         <div>
-          <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+          <label
+            htmlFor="register-email"
+            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
+          >
             {t('common.email')}
           </label>
           <input
+            id="register-email"
             type="email"
             autoComplete="email"
             placeholder={t('common.emailPlaceholder')}
@@ -113,10 +117,14 @@ export default function RegisterPage() {
           )}
         </div>
         <div>
-          <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+          <label
+            htmlFor="register-username"
+            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
+          >
             {t('register.username')}
           </label>
           <input
+            id="register-username"
             type="text"
             autoComplete="username"
             placeholder={t('register.usernamePlaceholder')}
@@ -155,10 +163,14 @@ export default function RegisterPage() {
           </p>
         </div>
         <div>
-          <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+          <label
+            htmlFor="register-password"
+            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
+          >
             {t('common.password')}
           </label>
           <input
+            id="register-password"
             type="password"
             autoComplete="new-password"
             placeholder={t('register.passwordPlaceholder')}

@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { cloneElement, isValidElement, useEffect, useId, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as Tabs from '@radix-ui/react-tabs'
+import toast from 'react-hot-toast'
 import { z } from 'zod'
 import {
   CATEGORIES,
@@ -34,6 +35,24 @@ const TYPES = ListingTypeEnum.options
 const TECHNIQUES = PromptTechniqueEnum.options
 const DIFFICULTIES: Difficulty[] = DifficultyEnum.options
 const LICENSES: License[] = LicenseEnum.options
+
+// Maps each form field to the tab that renders it, so an off-tab validation
+// failure can switch to (and remount) the tab holding the first errored field.
+const FIELD_TAB: Record<string, 'basics' | 'content' | 'metadata'> = {
+  title: 'basics',
+  description: 'basics',
+  coverEmoji: 'basics',
+  type: 'basics',
+  category: 'basics',
+  body: 'content',
+  priceDollars: 'content',
+  modelsArr: 'metadata',
+  version: 'metadata',
+  tags: 'metadata',
+  technique: 'metadata',
+  difficulty: 'metadata',
+  license: 'metadata',
+}
 
 // Form-only schema: omits priceCents (we accept a dollar string from the user
 // and convert it inside onSubmit) and replaces `models` with an array we
@@ -154,48 +173,59 @@ export default function CreateListingPage() {
     }
   }, [v.type, v.technique, setValue])
 
-  const onSubmit = handleSubmit(async (values) => {
-    const parsed = Number.parseFloat(values.priceDollars)
-    const priceCents = Number.isFinite(parsed) ? Math.round(Math.max(0, parsed) * 100) : 0
+  const onSubmit = handleSubmit(
+    async (values) => {
+      const parsed = Number.parseFloat(values.priceDollars)
+      const priceCents = Number.isFinite(parsed) ? Math.round(Math.max(0, parsed) * 100) : 0
 
-    const payload: CreateListingInput = {
-      title: values.title.trim(),
-      type: values.type,
-      description: values.description.trim(),
-      body: values.body,
-      category: values.category,
-      tags: (values.tags ?? '')
-        .split(',')
-        .map((tag: string) => tag.trim())
-        .filter(Boolean)
-        .join(','),
-      models: values.modelsArr,
-      technique: values.type === 'PROMPT' ? (values.technique ?? null) : null,
-      difficulty: values.difficulty,
-      license: values.license,
-      version: values.version,
-      priceCents,
-      coverEmoji: values.coverEmoji || '✨',
-    }
-
-    const result = CreateListingSchema.safeParse(payload)
-    if (!result.success) {
-      // Should rarely happen since the form schema mirrors the canonical one.
-      return
-    }
-
-    try {
-      const res = await createMut.mutateAsync(result.data)
-      try {
-        window.localStorage.removeItem(DRAFT_KEY)
-      } catch {
-        /* ignore */
+      const payload: CreateListingInput = {
+        title: values.title.trim(),
+        type: values.type,
+        description: values.description.trim(),
+        body: values.body,
+        category: values.category,
+        tags: (values.tags ?? '')
+          .split(',')
+          .map((tag: string) => tag.trim())
+          .filter(Boolean)
+          .join(','),
+        models: values.modelsArr,
+        technique: values.type === 'PROMPT' ? (values.technique ?? null) : null,
+        difficulty: values.difficulty,
+        license: values.license,
+        version: values.version,
+        priceCents,
+        coverEmoji: values.coverEmoji || '✨',
       }
-      navigate(`/listings/${res.slug}`)
-    } catch {
-      /* toast handled in hook */
+
+      const result = CreateListingSchema.safeParse(payload)
+      if (!result.success) {
+        // Should rarely happen since the form schema mirrors the canonical one.
+        return
+      }
+
+      try {
+        const res = await createMut.mutateAsync(result.data)
+        try {
+          window.localStorage.removeItem(DRAFT_KEY)
+        } catch {
+          /* ignore */
+        }
+        navigate(`/listings/${res.slug}`)
+      } catch {
+        /* toast handled in hook */
+      }
+    },
+    (formErrors) => {
+      // Validation can fail on an inactive tab whose panel is unmounted, so the
+      // inline error is invisible and RHF can't focus it. Switch to the first
+      // errored field's tab to surface its message and always toast for feedback.
+      const first = Object.keys(formErrors)[0]
+      const target = first ? FIELD_TAB[first] : undefined
+      if (target) setTab(target)
+      toast.error(t('validation.fixFields', { count: Object.keys(formErrors).length }))
     }
-  })
+  )
 
   const busy = isSubmitting || createMut.isPending
 
@@ -352,7 +382,7 @@ export default function CreateListingPage() {
               </Field>
 
               <Field label={t('fields.coverEmoji')}>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div role="group" className="flex items-center gap-2 flex-wrap">
                   <input
                     type="text"
                     maxLength={4}
@@ -391,70 +421,84 @@ export default function CreateListingPage() {
               </Field>
 
               <Field label={t('fields.price')}>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.5"
-                  {...register('priceDollars')}
-                  className={inputClass}
-                />
-                <p className="mt-1 text-[0.78rem] text-ink-mute dark:text-bone-mute">
-                  {t('fields.priceHint')}
-                </p>
+                <div role="group">
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    {...register('priceDollars')}
+                    className={inputClass}
+                  />
+                  <p className="mt-1 text-[0.78rem] text-ink-mute dark:text-bone-mute">
+                    {t('fields.priceHint')}
+                  </p>
+                </div>
               </Field>
             </Tabs.Content>
 
             <Tabs.Content value="metadata" className="space-y-4 focus-visible:outline-none">
               <Field label={t('fields.tags')}>
-                <input
-                  type="text"
-                  {...register('tags')}
-                  placeholder={t('fields.tagsPlaceholder')}
-                  className={inputClass}
-                />
-                <p className="mt-1 text-[0.78rem] text-ink-mute dark:text-bone-mute">
-                  {t('fields.tagsHint')}
-                </p>
+                <div role="group">
+                  <input
+                    type="text"
+                    {...register('tags')}
+                    placeholder={t('fields.tagsPlaceholder')}
+                    className={inputClass}
+                  />
+                  <p className="mt-1 text-[0.78rem] text-ink-mute dark:text-bone-mute">
+                    {t('fields.tagsHint')}
+                  </p>
+                </div>
               </Field>
 
               <Field
                 label={t('fields.models')}
                 error={errors.modelsArr?.message as string | undefined}
               >
-                <ModelPicker
-                  value={v.modelsArr ?? []}
-                  onChange={(next) => setValue('modelsArr', next, { shouldDirty: true })}
-                />
+                <div role="group">
+                  <ModelPicker
+                    value={v.modelsArr ?? []}
+                    onChange={(next) => setValue('modelsArr', next, { shouldDirty: true })}
+                  />
+                </div>
               </Field>
 
               {v.type === 'PROMPT' && (
                 <Field label={t('fields.technique')}>
-                  <select
-                    value={v.technique ?? ''}
-                    onChange={(e) =>
-                      setValue('technique', (e.target.value || null) as PromptTechnique | null, {
-                        shouldDirty: true,
-                      })
-                    }
-                    className={inputClass}
-                  >
-                    <option value="">{t('fields.techniqueNone')}</option>
-                    {TECHNIQUES.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {TECHNIQUE_META[opt].label}
-                      </option>
-                    ))}
-                  </select>
-                  {v.technique && (
-                    <p className="mt-1 text-[0.78rem] text-ink-mute dark:text-bone-mute">
-                      {TECHNIQUE_META[v.technique].hint}
-                    </p>
-                  )}
+                  <div role="group">
+                    <select
+                      value={v.technique ?? ''}
+                      onChange={(e) =>
+                        setValue('technique', (e.target.value || null) as PromptTechnique | null, {
+                          shouldDirty: true,
+                        })
+                      }
+                      className={inputClass}
+                    >
+                      <option value="">{t('fields.techniqueNone')}</option>
+                      {TECHNIQUES.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {TECHNIQUE_META[opt].label}
+                        </option>
+                      ))}
+                    </select>
+                    {v.technique && (
+                      <p className="mt-1 text-[0.78rem] text-ink-mute dark:text-bone-mute">
+                        {t(`audience.technique.${v.technique}`, {
+                          ns: 'common',
+                          defaultValue: TECHNIQUE_META[v.technique].hint,
+                        })}
+                      </p>
+                    )}
+                  </div>
                 </Field>
               )}
 
               <Field label={t('fields.difficulty')}>
-                <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep">
+                <div
+                  role="group"
+                  className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep"
+                >
                   {DIFFICULTIES.map((d) => {
                     const active = v.difficulty === d
                     return (
@@ -557,12 +601,29 @@ function Field({
   children: React.ReactNode
   error?: string
 }) {
+  // React 19 useId gives a stable, collision-free id pair so the visible label
+  // is programmatically associated with its control. Native single controls
+  // (input/select/textarea) get htmlFor -> id. Composite group controls (the
+  // emoji/difficulty/technique wrappers and the ModelPicker wrapper) carry a
+  // `role`, so they instead get aria-labelledby pointing at the label id.
+  const fieldId = useId()
+  const labelId = `${fieldId}-label`
+  const child = isValidElement(children)
+    ? cloneElement(children as React.ReactElement<Record<string, unknown>>, {
+        id: (children.props as { id?: string }).id ?? fieldId,
+        ...((children.props as { role?: string }).role ? { 'aria-labelledby': labelId } : {}),
+      })
+    : children
   return (
     <div>
-      <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+      <label
+        id={labelId}
+        htmlFor={fieldId}
+        className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
+      >
         {label}
       </label>
-      {children}
+      {child}
       {error && (
         <p role="alert" className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral">
           {error}

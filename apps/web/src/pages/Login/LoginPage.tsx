@@ -102,10 +102,14 @@ export default function LoginPage() {
     >
       <form onSubmit={onSubmit} noValidate className="space-y-5">
         <div>
-          <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+          <label
+            htmlFor="login-email"
+            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
+          >
             {t('common.email')}
           </label>
           <input
+            id="login-email"
             type="email"
             autoComplete="email"
             placeholder={t('common.emailPlaceholder')}
@@ -125,10 +129,14 @@ export default function LoginPage() {
           )}
         </div>
         <div>
-          <label className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5">
+          <label
+            htmlFor="login-password"
+            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
+          >
             {t('common.password')}
           </label>
           <input
+            id="login-password"
             type="password"
             autoComplete="current-password"
             placeholder="••••••••"

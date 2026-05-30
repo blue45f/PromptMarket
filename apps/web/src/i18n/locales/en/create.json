@@ -56,6 +56,7 @@
   },
   "validation": {
     "price": "Please enter a valid price",
-    "models": "Select at least one model"
+    "models": "Select at least one model",
+    "fixFields": "Fix {{count}} field(s) to publish"
   }
 }
