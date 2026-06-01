@@ -14,6 +14,8 @@ interface TopCreatorBucket {
 interface RevenuePolicy {
   platformFeeBps: number
   premiumFeeBps: number
+  ultraPremiumFeeBps: number
+  ultraPremiumThresholdCents: number
   premiumThresholdCents: number
   platformFeeFloorCents: number
 }
@@ -28,12 +30,16 @@ interface RevenueSettingHistoryEntry {
 export class AdminService {
   private static readonly PLATFORM_FEE_BPS_KEY = 'platform_fee_bps'
   private static readonly PREMIUM_FEE_BPS_KEY = 'platform_fee_premium_bps'
+  private static readonly ULTRA_PREMIUM_FEE_BPS_KEY = 'platform_fee_ultra_premium_bps'
+  private static readonly ULTRA_PREMIUM_THRESHOLD_KEY = 'platform_fee_ultra_premium_threshold_cents'
   private static readonly PREMIUM_THRESHOLD_KEY = 'platform_fee_premium_threshold_cents'
   private static readonly PLATFORM_FEE_FLOOR_KEY = 'platform_fee_floor_cents'
 
   private static readonly DEFAULT_PLATFORM_FEE_BPS = 1700
   private static readonly DEFAULT_PREMIUM_FEE_BPS = 1400
+  private static readonly DEFAULT_ULTRA_PREMIUM_FEE_BPS = 1200
   private static readonly DEFAULT_PREMIUM_THRESHOLD_CENTS = 3_000
+  private static readonly DEFAULT_ULTRA_PREMIUM_THRESHOLD_CENTS = 10_000_00
   private static readonly DEFAULT_PLATFORM_FEE_FLOOR_CENTS = 0
 
   constructor(private readonly prisma: PrismaService) {}
@@ -57,6 +63,8 @@ export class AdminService {
     const keys = [
       AdminService.PLATFORM_FEE_BPS_KEY,
       AdminService.PREMIUM_FEE_BPS_KEY,
+      AdminService.ULTRA_PREMIUM_FEE_BPS_KEY,
+      AdminService.ULTRA_PREMIUM_THRESHOLD_KEY,
       AdminService.PREMIUM_THRESHOLD_KEY,
       AdminService.PLATFORM_FEE_FLOOR_KEY,
     ]
@@ -72,6 +80,14 @@ export class AdminService {
       ),
       premiumFeeBps: this.normalizeFeeBps(
         byKey.get(AdminService.PREMIUM_FEE_BPS_KEY) ?? AdminService.DEFAULT_PREMIUM_FEE_BPS
+      ),
+      ultraPremiumFeeBps: this.normalizeFeeBps(
+        byKey.get(AdminService.ULTRA_PREMIUM_FEE_BPS_KEY) ??
+          AdminService.DEFAULT_ULTRA_PREMIUM_FEE_BPS
+      ),
+      ultraPremiumThresholdCents: this.normalizeMoneyCents(
+        byKey.get(AdminService.ULTRA_PREMIUM_THRESHOLD_KEY) ??
+          AdminService.DEFAULT_ULTRA_PREMIUM_THRESHOLD_CENTS
       ),
       premiumThresholdCents: this.normalizeMoneyCents(
         byKey.get(AdminService.PREMIUM_THRESHOLD_KEY) ??
@@ -89,6 +105,7 @@ export class AdminService {
       ...policy,
       platformFeePercent: Number((policy.platformFeeBps / 100).toFixed(2)),
       premiumFeePercent: Number((policy.premiumFeeBps / 100).toFixed(2)),
+      ultraPremiumFeePercent: Number((policy.ultraPremiumFeeBps / 100).toFixed(2)),
     }
   }
 
@@ -112,6 +129,8 @@ export class AdminService {
   async updateRevenueSettings(input: {
     platformFeeBps?: number
     premiumFeeBps?: number
+    ultraPremiumFeeBps?: number
+    ultraPremiumThresholdCents?: number
     premiumThresholdCents?: number
     platformFeeFloorCents?: number
   }) {
@@ -126,6 +145,20 @@ export class AdminService {
       await this.upsertSetting(
         AdminService.PREMIUM_FEE_BPS_KEY,
         this.normalizeFeeBps(input.premiumFeeBps)
+      )
+    }
+
+    if (input.ultraPremiumFeeBps !== undefined) {
+      await this.upsertSetting(
+        AdminService.ULTRA_PREMIUM_FEE_BPS_KEY,
+        this.normalizeFeeBps(input.ultraPremiumFeeBps)
+      )
+    }
+
+    if (input.ultraPremiumThresholdCents !== undefined) {
+      await this.upsertSetting(
+        AdminService.ULTRA_PREMIUM_THRESHOLD_KEY,
+        this.normalizeMoneyCents(input.ultraPremiumThresholdCents)
       )
     }
 
@@ -224,6 +257,8 @@ export class AdminService {
     const keys = [
       AdminService.PLATFORM_FEE_BPS_KEY,
       AdminService.PREMIUM_FEE_BPS_KEY,
+      AdminService.ULTRA_PREMIUM_FEE_BPS_KEY,
+      AdminService.ULTRA_PREMIUM_THRESHOLD_KEY,
       AdminService.PREMIUM_THRESHOLD_KEY,
       AdminService.PLATFORM_FEE_FLOOR_KEY,
     ]
@@ -239,6 +274,8 @@ export class AdminService {
     const defaultsByKey: Record<string, number> = {
       [AdminService.PLATFORM_FEE_BPS_KEY]: defaults.platformFeeBps,
       [AdminService.PREMIUM_FEE_BPS_KEY]: defaults.premiumFeeBps,
+      [AdminService.ULTRA_PREMIUM_FEE_BPS_KEY]: defaults.ultraPremiumFeeBps,
+      [AdminService.ULTRA_PREMIUM_THRESHOLD_KEY]: defaults.ultraPremiumThresholdCents,
       [AdminService.PREMIUM_THRESHOLD_KEY]: defaults.premiumThresholdCents,
       [AdminService.PLATFORM_FEE_FLOOR_KEY]: defaults.platformFeeFloorCents,
     }
@@ -248,7 +285,11 @@ export class AdminService {
       let value = defaultsByKey[key] ?? 0
 
       if (row?.intValue !== undefined) {
-        if (key === AdminService.PLATFORM_FEE_BPS_KEY || key === AdminService.PREMIUM_FEE_BPS_KEY) {
+        if (
+          key === AdminService.PLATFORM_FEE_BPS_KEY ||
+          key === AdminService.PREMIUM_FEE_BPS_KEY ||
+          key === AdminService.ULTRA_PREMIUM_FEE_BPS_KEY
+        ) {
           value = this.normalizeFeeBps(row.intValue)
         } else {
           value = this.normalizeMoneyCents(row.intValue)

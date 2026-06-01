@@ -273,6 +273,9 @@ describe('Revenue schemas', () => {
         platformFeePercent: 17,
         premiumFeeBps: 1200,
         premiumFeePercent: 12,
+        ultraPremiumFeeBps: 1000,
+        ultraPremiumFeePercent: 10,
+        ultraPremiumThresholdCents: 7000,
         premiumThresholdCents: 3000,
         platformFeeFloorCents: 0,
       }).success

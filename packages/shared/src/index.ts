@@ -400,6 +400,9 @@ export const RevenueSettingsSchema = z.object({
   platformFeePercent: z.number().min(0).max(100),
   premiumFeeBps: z.number().int().min(0).max(10_000),
   premiumFeePercent: z.number().min(0).max(100),
+  ultraPremiumFeeBps: z.number().int().min(0).max(10_000),
+  ultraPremiumFeePercent: z.number().min(0).max(100),
+  ultraPremiumThresholdCents: z.number().int().nonnegative(),
   premiumThresholdCents: z.number().int().nonnegative(),
   platformFeeFloorCents: z.number().int().nonnegative(),
 })

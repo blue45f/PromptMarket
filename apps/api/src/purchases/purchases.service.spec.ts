@@ -207,6 +207,44 @@ describe('PurchasesService.purchase', () => {
     expect(result.purchase).toEqual(createdPurchase)
   })
 
+  it('uses ultra premium fee when gross amount exceeds ultra threshold', async () => {
+    const createdAt = new Date('2026-05-28T14:00:00Z')
+    const createdPurchase = {
+      id: 'p4',
+      listingId: 'l1',
+      pricePaidCents: 8000,
+      grossAmountCents: 8000,
+      sellerNetCents: 7200,
+      platformFeeCents: 800,
+      createdAt,
+    }
+
+    const prisma = makePrisma({
+      listing: {
+        id: 'l1',
+        authorId: 'author-1',
+        priceCents: 8000,
+        body: 'ULTRA PREMIUM BODY',
+      },
+      buyer: { id: 'u1', balanceCents: 20_000 },
+      platformSetting: [
+        { key: 'platform_fee_bps', intValue: 1700 },
+        { key: 'platform_fee_premium_bps', intValue: 1400 },
+        { key: 'platform_fee_premium_threshold_cents', intValue: 5000 },
+        { key: 'platform_fee_ultra_premium_bps', intValue: 1000 },
+        { key: 'platform_fee_ultra_premium_threshold_cents', intValue: 7000 },
+        { key: 'platform_fee_floor_cents', intValue: 0 },
+      ],
+      createdPurchase,
+    })
+
+    const svc = new PurchasesService(prisma)
+
+    const result = await svc.purchase('u1', 'l1')
+
+    expect(result.purchase).toEqual(createdPurchase)
+  })
+
   it('applies platform fee floor even if computed fee is lower', async () => {
     const createdAt = new Date('2026-05-28T13:00:00Z')
     const createdPurchase = {

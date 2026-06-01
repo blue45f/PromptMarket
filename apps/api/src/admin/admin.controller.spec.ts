@@ -9,7 +9,10 @@ function makeController(overrides: Record<string, unknown> = {}) {
       platformFeePercent: 17,
       premiumFeeBps: 1400,
       premiumFeePercent: 14,
+      ultraPremiumFeeBps: 1200,
+      ultraPremiumFeePercent: 12,
       premiumThresholdCents: 3000,
+      ultraPremiumThresholdCents: 10_000_00,
       platformFeeFloorCents: 0,
     }),
     getRevenueSettingsHistory: vi.fn().mockResolvedValue([
@@ -29,6 +32,16 @@ function makeController(overrides: Record<string, unknown> = {}) {
         updatedAt: null,
       },
       {
+        key: 'platform_fee_ultra_premium_bps',
+        value: 1200,
+        updatedAt: null,
+      },
+      {
+        key: 'platform_fee_ultra_premium_threshold_cents',
+        value: 10_000_00,
+        updatedAt: null,
+      },
+      {
         key: 'platform_fee_floor_cents',
         value: 0,
         updatedAt: null,
@@ -39,7 +52,10 @@ function makeController(overrides: Record<string, unknown> = {}) {
       platformFeePercent: 17,
       premiumFeeBps: 1400,
       premiumFeePercent: 14,
+      ultraPremiumFeeBps: 1200,
+      ultraPremiumFeePercent: 12,
       premiumThresholdCents: 3000,
+      ultraPremiumThresholdCents: 10_000_00,
       platformFeeFloorCents: 0,
     }),
     getRevenueSummary: vi.fn().mockResolvedValue({

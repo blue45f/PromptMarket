@@ -13,11 +13,15 @@ export class PurchasesService {
 
   private static readonly PREMIUM_FEE_BPS_KEY = 'platform_fee_premium_bps'
   private static readonly PREMIUM_THRESHOLD_KEY = 'platform_fee_premium_threshold_cents'
+  private static readonly ULTRA_PREMIUM_FEE_BPS_KEY = 'platform_fee_ultra_premium_bps'
+  private static readonly ULTRA_PREMIUM_THRESHOLD_KEY = 'platform_fee_ultra_premium_threshold_cents'
   private static readonly PLATFORM_FEE_FLOOR_KEY = 'platform_fee_floor_cents'
   private static readonly PLATFORM_FEE_BPS_KEY = 'platform_fee_bps'
   private static readonly DEFAULT_PLATFORM_FEE_BPS = 1700
   private static readonly DEFAULT_PREMIUM_FEE_BPS = 1400
+  private static readonly DEFAULT_ULTRA_PREMIUM_FEE_BPS = 1200
   private static readonly DEFAULT_PREMIUM_THRESHOLD_CENTS = 3_000
+  private static readonly DEFAULT_ULTRA_PREMIUM_THRESHOLD_CENTS = 10_000_00
   private static readonly DEFAULT_PLATFORM_FEE_FLOOR_CENTS = 0
 
   private normalizeFeeBps(value: number): number {
@@ -38,6 +42,8 @@ export class PurchasesService {
     const keys = [
       PurchasesService.PLATFORM_FEE_BPS_KEY,
       PurchasesService.PREMIUM_FEE_BPS_KEY,
+      PurchasesService.ULTRA_PREMIUM_FEE_BPS_KEY,
+      PurchasesService.ULTRA_PREMIUM_THRESHOLD_KEY,
       PurchasesService.PREMIUM_THRESHOLD_KEY,
       PurchasesService.PLATFORM_FEE_FLOOR_KEY,
     ]
@@ -55,6 +61,14 @@ export class PurchasesService {
       premiumFeeBps: this.normalizeFeeBps(
         byKey.get(PurchasesService.PREMIUM_FEE_BPS_KEY) ?? PurchasesService.DEFAULT_PREMIUM_FEE_BPS
       ),
+      ultraPremiumFeeBps: this.normalizeFeeBps(
+        byKey.get(PurchasesService.ULTRA_PREMIUM_FEE_BPS_KEY) ??
+          PurchasesService.DEFAULT_ULTRA_PREMIUM_FEE_BPS
+      ),
+      ultraPremiumThresholdCents: this.normalizeMoneyCents(
+        byKey.get(PurchasesService.ULTRA_PREMIUM_THRESHOLD_KEY) ??
+          PurchasesService.DEFAULT_ULTRA_PREMIUM_THRESHOLD_CENTS
+      ),
       premiumThresholdCents: this.normalizeMoneyCents(
         byKey.get(PurchasesService.PREMIUM_THRESHOLD_KEY) ??
           PurchasesService.DEFAULT_PREMIUM_THRESHOLD_CENTS
@@ -68,10 +82,22 @@ export class PurchasesService {
 
   private selectFeeBps(
     grossAmountCents: number,
-    policy: { platformFeeBps: number; premiumFeeBps: number; premiumThresholdCents: number }
+    policy: {
+      platformFeeBps: number
+      premiumFeeBps: number
+      ultraPremiumFeeBps: number
+      premiumThresholdCents: number
+      ultraPremiumThresholdCents: number
+    }
   ) {
-    if (grossAmountCents >= policy.premiumThresholdCents) {
-      return policy.premiumFeeBps
+    const tiers = [
+      { threshold: policy.ultraPremiumThresholdCents, feeBps: policy.ultraPremiumFeeBps },
+      { threshold: policy.premiumThresholdCents, feeBps: policy.premiumFeeBps },
+      { threshold: 0, feeBps: policy.platformFeeBps },
+    ]
+    const sorted = [...tiers].sort((a, b) => b.threshold - a.threshold)
+    for (const tier of sorted) {
+      if (grossAmountCents >= tier.threshold) return tier.feeBps
     }
     return policy.platformFeeBps
   }
@@ -81,7 +107,9 @@ export class PurchasesService {
     policy: {
       platformFeeBps: number
       premiumFeeBps: number
+      ultraPremiumFeeBps: number
       premiumThresholdCents: number
+      ultraPremiumThresholdCents: number
       platformFeeFloorCents: number
     }
   ) {

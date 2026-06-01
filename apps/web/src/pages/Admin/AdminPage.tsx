@@ -33,7 +33,9 @@ import { cn } from '@utils/cn'
 interface FeePolicy {
   platformFeePercent: number
   premiumFeePercent: number
+  ultraPremiumFeePercent: number
   premiumThresholdCents: number
+  ultraPremiumThresholdCents: number
   platformFeeFloorCents: number
 }
 
@@ -50,16 +52,21 @@ const ZERO_SUMMARY: AdminRevenueSummary = {
 const ZERO_SETTINGS: RevenueSettings = {
   platformFeeBps: 1700,
   premiumFeeBps: 1400,
+  ultraPremiumFeeBps: 1200,
   platformFeePercent: 17,
   premiumFeePercent: 14,
+  ultraPremiumFeePercent: 12,
   premiumThresholdCents: 3000,
+  ultraPremiumThresholdCents: 10_000_00,
   platformFeeFloorCents: 0,
 }
 
 const ZERO_POLICY: FeePolicy = {
   platformFeePercent: 17,
   premiumFeePercent: 14,
+  ultraPremiumFeePercent: 12,
   premiumThresholdCents: 3000,
+  ultraPremiumThresholdCents: 10_000_00,
   platformFeeFloorCents: 0,
 }
 
@@ -67,7 +74,7 @@ interface FeeProjection {
   platformCents: number
   sellerCents: number
   usedFeePercent: number
-  tier: 'base' | 'premium'
+  tier: 'base' | 'premium' | 'ultraPremium'
 }
 
 interface ScenarioProjection {
@@ -88,8 +95,14 @@ const DEFAULT_SCENARIO_ORDER_AMOUNTS = [5, 10, 25, 50, 100]
 const DEFAULT_SCENARIO_ORDER_WEIGHTS = [35, 25, 20, 12, 8]
 
 function toFeeProjection(grossCents: number, policy: FeePolicy): FeeProjection {
-  const usePremium = grossCents >= policy.premiumThresholdCents
-  const usedFeePercent = usePremium ? policy.premiumFeePercent : policy.platformFeePercent
+  const useUltraPremium = grossCents >= policy.ultraPremiumThresholdCents
+  const usePremium = !useUltraPremium && grossCents >= policy.premiumThresholdCents
+
+  const usedFeePercent = useUltraPremium
+    ? policy.ultraPremiumFeePercent
+    : usePremium
+      ? policy.premiumFeePercent
+      : policy.platformFeePercent
   const rawPlatformCents = Math.max(0, Math.round((grossCents * usedFeePercent) / 100))
   const flooredPlatformCents = Math.max(policy.platformFeeFloorCents, rawPlatformCents)
   const boundedPlatformCents = Math.min(grossCents, flooredPlatformCents)
@@ -97,7 +110,7 @@ function toFeeProjection(grossCents: number, policy: FeePolicy): FeeProjection {
     platformCents: boundedPlatformCents,
     sellerCents: Math.max(0, grossCents - boundedPlatformCents),
     usedFeePercent,
-    tier: usePremium ? 'premium' : 'base',
+    tier: useUltraPremium ? 'ultraPremium' : usePremium ? 'premium' : 'base',
   }
 }
 
@@ -175,13 +188,20 @@ function historyLabelFromKey(
 ): string {
   if (key === 'platform_fee_bps') return t('settings.history.labels.platformFee')
   if (key === 'platform_fee_premium_bps') return t('settings.history.labels.premiumFee')
+  if (key === 'platform_fee_ultra_premium_bps') return t('settings.history.labels.ultraPremiumFee')
   if (key === 'platform_fee_premium_threshold_cents')
     return t('settings.history.labels.premiumThreshold')
+  if (key === 'platform_fee_ultra_premium_threshold_cents')
+    return t('settings.history.labels.ultraPremiumThreshold')
   return t('settings.history.labels.feeFloor')
 }
 
 function historyDisplayValue(key: string, value: number): string {
-  if (key === 'platform_fee_bps' || key === 'platform_fee_premium_bps')
+  if (
+    key === 'platform_fee_bps' ||
+    key === 'platform_fee_premium_bps' ||
+    key === 'platform_fee_ultra_premium_bps'
+  )
     return `${(value / 100).toFixed(2)}%`
   return formatDollars(value)
 }
@@ -208,8 +228,14 @@ export default function AdminPage() {
 
   const [platformFeePercent, setPlatformFeePercent] = useState(ZERO_POLICY.platformFeePercent)
   const [premiumFeePercent, setPremiumFeePercent] = useState(ZERO_POLICY.premiumFeePercent)
+  const [ultraPremiumFeePercent, setUltraPremiumFeePercent] = useState(
+    ZERO_POLICY.ultraPremiumFeePercent
+  )
   const [premiumThresholdDollars, setPremiumThresholdDollars] = useState(
     formatMoneyInput(ZERO_POLICY.premiumThresholdCents)
+  )
+  const [ultraPremiumThresholdDollars, setUltraPremiumThresholdDollars] = useState(
+    formatMoneyInput(ZERO_POLICY.ultraPremiumThresholdCents)
   )
   const [platformFeeFloorDollars, setPlatformFeeFloorDollars] = useState(
     formatMoneyInput(ZERO_POLICY.platformFeeFloorCents)
@@ -226,12 +252,16 @@ export default function AdminPage() {
 
     setPlatformFeePercent(settingsQ.data.platformFeePercent)
     setPremiumFeePercent(settingsQ.data.premiumFeePercent)
+    setUltraPremiumFeePercent(settingsQ.data.ultraPremiumFeePercent)
     setPremiumThresholdDollars(formatMoneyInput(settingsQ.data.premiumThresholdCents))
+    setUltraPremiumThresholdDollars(formatMoneyInput(settingsQ.data.ultraPremiumThresholdCents))
     setPlatformFeeFloorDollars(formatMoneyInput(settingsQ.data.platformFeeFloorCents))
   }, [
     settingsQ.data?.platformFeePercent,
     settingsQ.data?.premiumFeePercent,
+    settingsQ.data?.ultraPremiumFeePercent,
     settingsQ.data?.premiumThresholdCents,
+    settingsQ.data?.ultraPremiumThresholdCents,
     settingsQ.data?.platformFeeFloorCents,
   ])
 
@@ -255,13 +285,17 @@ export default function AdminPage() {
     () => ({
       platformFeePercent: settings.platformFeePercent,
       premiumFeePercent: settings.premiumFeePercent,
+      ultraPremiumFeePercent: settings.ultraPremiumFeePercent,
       premiumThresholdCents: settings.premiumThresholdCents,
+      ultraPremiumThresholdCents: settings.ultraPremiumThresholdCents,
       platformFeeFloorCents: settings.platformFeeFloorCents,
     }),
     [
       settings.platformFeePercent,
       settings.premiumFeePercent,
+      settings.ultraPremiumFeePercent,
       settings.premiumThresholdCents,
+      settings.ultraPremiumThresholdCents,
       settings.platformFeeFloorCents,
     ]
   )
@@ -270,10 +304,19 @@ export default function AdminPage() {
     () => ({
       platformFeePercent,
       premiumFeePercent,
+      ultraPremiumFeePercent,
       premiumThresholdCents: Math.round(parseMoneyInput(premiumThresholdDollars) * 100),
+      ultraPremiumThresholdCents: Math.round(parseMoneyInput(ultraPremiumThresholdDollars) * 100),
       platformFeeFloorCents: Math.round(parseMoneyInput(platformFeeFloorDollars) * 100),
     }),
-    [platformFeePercent, premiumFeePercent, premiumThresholdDollars, platformFeeFloorDollars]
+    [
+      platformFeePercent,
+      premiumFeePercent,
+      ultraPremiumFeePercent,
+      premiumThresholdDollars,
+      ultraPremiumThresholdDollars,
+      platformFeeFloorDollars,
+    ]
   )
 
   const projectionCurrent = useMemo(
@@ -375,7 +418,10 @@ export default function AdminPage() {
   const hasDraftChanges =
     Math.abs(platformFeePercent - (settings.platformFeePercent || 0)) > Number.EPSILON ||
     Math.abs(premiumFeePercent - (settings.premiumFeePercent || 0)) > Number.EPSILON ||
+    Math.abs(ultraPremiumFeePercent - (settings.ultraPremiumFeePercent || 0)) > Number.EPSILON ||
     Math.abs(draftPolicy.premiumThresholdCents - (settings.premiumThresholdCents || 0)) >
+      Number.EPSILON ||
+    Math.abs(draftPolicy.ultraPremiumThresholdCents - (settings.ultraPremiumThresholdCents || 0)) >
       Number.EPSILON ||
     Math.abs(draftPolicy.platformFeeFloorCents - (settings.platformFeeFloorCents || 0)) >
       Number.EPSILON
@@ -389,15 +435,24 @@ export default function AdminPage() {
     const patch: {
       platformFeeBps?: number
       premiumFeeBps?: number
+      ultraPremiumFeeBps?: number
+      ultraPremiumThresholdCents?: number
       premiumThresholdCents?: number
       platformFeeFloorCents?: number
     } = {}
 
     const nextPlatformFeeBps = Math.round(Math.min(10000, Math.max(0, platformFeePercent * 100)))
     const nextPremiumFeeBps = Math.round(Math.min(10000, Math.max(0, premiumFeePercent * 100)))
+    const nextUltraPremiumFeeBps = Math.round(
+      Math.min(10000, Math.max(0, ultraPremiumFeePercent * 100))
+    )
     const nextPremiumThresholdCents = Math.max(
       0,
       Math.round(parseMoneyInput(premiumThresholdDollars) * 100)
+    )
+    const nextUltraPremiumThresholdCents = Math.max(
+      0,
+      Math.round(parseMoneyInput(ultraPremiumThresholdDollars) * 100)
     )
     const nextPlatformFeeFloorCents = Math.max(
       0,
@@ -406,6 +461,11 @@ export default function AdminPage() {
 
     if (nextPlatformFeeBps !== settings.platformFeeBps) patch.platformFeeBps = nextPlatformFeeBps
     if (nextPremiumFeeBps !== settings.premiumFeeBps) patch.premiumFeeBps = nextPremiumFeeBps
+    if (nextUltraPremiumFeeBps !== settings.ultraPremiumFeeBps)
+      patch.ultraPremiumFeeBps = nextUltraPremiumFeeBps
+    if (nextUltraPremiumThresholdCents !== settings.ultraPremiumThresholdCents) {
+      patch.ultraPremiumThresholdCents = nextUltraPremiumThresholdCents
+    }
     if (nextPremiumThresholdCents !== settings.premiumThresholdCents)
       patch.premiumThresholdCents = nextPremiumThresholdCents
     if (nextPlatformFeeFloorCents !== settings.platformFeeFloorCents)
@@ -415,6 +475,7 @@ export default function AdminPage() {
   }
 
   const premiumThresholdAmount = formatDollars(settings.premiumThresholdCents)
+  const ultraPremiumThresholdAmount = formatDollars(settings.ultraPremiumThresholdCents)
   const platformFeeFloorAmount = formatDollars(settings.platformFeeFloorCents)
 
   const hasDraftChangesAffectingPayouts = projectionDelta !== 0
@@ -465,7 +526,9 @@ export default function AdminPage() {
               {t('settings.current', {
                 basePercent: settings.platformFeePercent.toFixed(2),
                 premiumPercent: settings.premiumFeePercent.toFixed(2),
+                ultraPremiumPercent: settings.ultraPremiumFeePercent.toFixed(2),
                 threshold: premiumThresholdAmount,
+                ultraThreshold: ultraPremiumThresholdAmount,
                 floor: platformFeeFloorAmount,
               })}
             </h2>
@@ -533,6 +596,39 @@ export default function AdminPage() {
               />
             </label>
 
+            <label className="block">
+              <span className="text-xs font-mono uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute block mb-2">
+                {t('settings.ultraPremiumFeeLabel')}
+              </span>
+              <input
+                type="range"
+                aria-label={t('settings.ultraPremiumFeeLabel')}
+                min={0}
+                max={100}
+                step={0.01}
+                value={ultraPremiumFeePercent}
+                onChange={(event) =>
+                  setUltraPremiumFeePercent(parsePercentInput(event.target.value))
+                }
+                className="w-full accent-volt-600"
+              />
+              <input
+                type="number"
+                min={0}
+                max={100}
+                step={0.01}
+                aria-label={t('settings.ultraPremiumPercentInputLabel')}
+                value={ultraPremiumFeePercent.toFixed(2)}
+                onChange={(event) =>
+                  setUltraPremiumFeePercent(parsePercentInput(event.target.value))
+                }
+                className={cn(
+                  'mt-3 w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2.5',
+                  'text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt'
+                )}
+              />
+            </label>
+
             <div className="grid grid-cols-2 gap-3">
               <label className="block">
                 <span className="text-xs font-mono uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute block mb-2">
@@ -554,6 +650,29 @@ export default function AdminPage() {
                 </div>
                 <p className="mt-1 text-[0.72rem] text-ink-soft dark:text-bone-soft">
                   {t('settings.thresholdHelp')}
+                </p>
+              </label>
+
+              <label className="block">
+                <span className="text-xs font-mono uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute block mb-2">
+                  {t('settings.ultraPremiumThresholdLabel')}
+                </span>
+                <div className="relative">
+                  <span className="absolute left-3 top-2.5 text-sm text-ink-mute dark:text-bone-mute">
+                    $
+                  </span>
+                  <input
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    aria-label={t('settings.ultraPremiumThresholdInputLabel')}
+                    value={ultraPremiumThresholdDollars}
+                    onChange={(event) => setUltraPremiumThresholdDollars(event.target.value)}
+                    className="w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2.5 pl-7 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt"
+                  />
+                </div>
+                <p className="mt-1 text-[0.72rem] text-ink-soft dark:text-bone-soft">
+                  {t('settings.ultraPremiumThresholdHelp')}
                 </p>
               </label>
 
@@ -1047,11 +1166,15 @@ function ProjectionRow({
         {projection.usedFeePercent.toFixed(2)}%
       </p>
       <p className="mt-1 text-xs text-ink-soft dark:text-bone-soft">
-        {projection.tier === 'premium'
-          ? t('simulation.premium', {
-              threshold: formatDollars(policy.premiumThresholdCents),
+        {projection.tier === 'ultraPremium'
+          ? t('simulation.ultra', {
+              threshold: formatDollars(policy.ultraPremiumThresholdCents),
             })
-          : t('simulation.base')}
+          : projection.tier === 'premium'
+            ? t('simulation.premium', {
+                threshold: formatDollars(policy.premiumThresholdCents),
+              })
+            : t('simulation.base')}
       </p>
       <p className="mt-2 text-[0.87rem] text-ink dark:text-bone">
         {`↳ ${formatDollars(projection.platformCents)} / ${formatDollars(projection.sellerCents)}`}

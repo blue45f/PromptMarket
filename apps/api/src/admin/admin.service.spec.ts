@@ -58,6 +58,9 @@ describe('AdminService.getPlatform settings', () => {
       platformFeePercent: 17,
       premiumFeeBps: 1400,
       premiumFeePercent: 14,
+      ultraPremiumFeeBps: 1200,
+      ultraPremiumFeePercent: 12,
+      ultraPremiumThresholdCents: 10_000_00,
       premiumThresholdCents: 3000,
       platformFeeFloorCents: 0,
     })
@@ -82,6 +85,9 @@ describe('AdminService.getPlatform settings', () => {
       platformFeePercent: 100,
       premiumFeeBps: 100,
       premiumFeePercent: 1,
+      ultraPremiumFeeBps: 1200,
+      ultraPremiumFeePercent: 12,
+      ultraPremiumThresholdCents: 10_000_00,
       premiumThresholdCents: 0,
       platformFeeFloorCents: 0,
     })
@@ -100,6 +106,8 @@ describe('AdminService.getPlatform settings', () => {
           { key: 'platform_fee_bps', intValue: 1700 },
           { key: 'platform_fee_premium_bps', intValue: 1300 },
           { key: 'platform_fee_premium_threshold_cents', intValue: 5000 },
+          { key: 'platform_fee_ultra_premium_bps', intValue: 1200 },
+          { key: 'platform_fee_ultra_premium_threshold_cents', intValue: 10_000_00 },
           { key: 'platform_fee_floor_cents', intValue: 12 },
         ]),
         upsert: vi.fn().mockResolvedValue({}),
@@ -118,6 +126,9 @@ describe('AdminService.getPlatform settings', () => {
       platformFeePercent: 17,
       premiumFeeBps: 1300,
       premiumFeePercent: 13,
+      ultraPremiumFeeBps: 1200,
+      ultraPremiumFeePercent: 12,
+      ultraPremiumThresholdCents: 10_000_00,
       premiumThresholdCents: 5000,
       platformFeeFloorCents: 12,
     })
@@ -136,6 +147,63 @@ describe('AdminService.getPlatform settings', () => {
       where: { key: 'platform_fee_floor_cents' },
       create: { key: 'platform_fee_floor_cents', intValue: 12 },
       update: { intValue: 12 },
+    })
+  })
+
+  it('updates ultra premium policy values when explicitly provided', async () => {
+    const rows: Array<{ key: string; intValue: number; updatedAt?: Date }> = [
+      { key: 'platform_fee_bps', intValue: 1700 },
+      { key: 'platform_fee_premium_bps', intValue: 1400 },
+      { key: 'platform_fee_premium_threshold_cents', intValue: 3000 },
+      { key: 'platform_fee_ultra_premium_bps', intValue: 1200 },
+      { key: 'platform_fee_ultra_premium_threshold_cents', intValue: 10_000_00 },
+      { key: 'platform_fee_floor_cents', intValue: 0 },
+    ]
+
+    const prisma = makePrisma({
+      platformSetting: {
+        findMany: vi.fn().mockImplementation(() => Promise.resolve(rows)),
+        upsert: vi.fn().mockImplementation(({ where, create, update }) => {
+          const key = where.key
+          const intValue = update.intValue ?? create.intValue
+          const next = rows.find((row) => row.key === key)
+          if (next) {
+            next.intValue = intValue
+          } else {
+            rows.push({ key, intValue, updatedAt: new Date() })
+          }
+          return Promise.resolve({})
+        }),
+      },
+    })
+    const svc = new AdminService(prisma)
+
+    await expect(
+      svc.updateRevenueSettings({
+        ultraPremiumFeeBps: 1000,
+        ultraPremiumThresholdCents: 20000,
+      })
+    ).resolves.toEqual({
+      platformFeeBps: 1700,
+      platformFeePercent: 17,
+      premiumFeeBps: 1400,
+      premiumFeePercent: 14,
+      ultraPremiumFeeBps: 1000,
+      ultraPremiumFeePercent: 10,
+      ultraPremiumThresholdCents: 20000,
+      premiumThresholdCents: 3000,
+      platformFeeFloorCents: 0,
+    })
+
+    expect(prisma.platformSetting.upsert as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({
+      where: { key: 'platform_fee_ultra_premium_bps' },
+      create: { key: 'platform_fee_ultra_premium_bps', intValue: 1000 },
+      update: { intValue: 1000 },
+    })
+    expect(prisma.platformSetting.upsert as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({
+      where: { key: 'platform_fee_ultra_premium_threshold_cents' },
+      create: { key: 'platform_fee_ultra_premium_threshold_cents', intValue: 20000 },
+      update: { intValue: 20000 },
     })
   })
 
@@ -159,6 +227,16 @@ describe('AdminService.getPlatform settings', () => {
       {
         key: 'platform_fee_premium_bps',
         value: 1400,
+        updatedAt: null,
+      },
+      {
+        key: 'platform_fee_ultra_premium_bps',
+        value: 1200,
+        updatedAt: null,
+      },
+      {
+        key: 'platform_fee_ultra_premium_threshold_cents',
+        value: 10_000_00,
         updatedAt: null,
       },
       {

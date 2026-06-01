@@ -24,7 +24,10 @@ const settings = {
   platformFeePercent: 17,
   premiumFeeBps: 1400,
   premiumFeePercent: 14,
+  ultraPremiumFeeBps: 1200,
+  ultraPremiumFeePercent: 12,
   premiumThresholdCents: 3000,
+  ultraPremiumThresholdCents: 10_000_00,
   platformFeeFloorCents: 0,
 }
 
@@ -62,6 +65,16 @@ const settingsHistory = [
   {
     key: 'platform_fee_premium_threshold_cents',
     value: 3000,
+    updatedAt: null,
+  },
+  {
+    key: 'platform_fee_ultra_premium_bps',
+    value: 1200,
+    updatedAt: null,
+  },
+  {
+    key: 'platform_fee_ultra_premium_threshold_cents',
+    value: 10_000_00,
     updatedAt: null,
   },
   {
@@ -195,6 +208,30 @@ describe('<AdminPage />', () => {
     expect(updateSpy).toHaveBeenCalledOnce()
     expect(updateSpy).toHaveBeenCalledWith({
       platformFeeBps: 2000,
+    })
+  })
+
+  it('saves ultra premium fee settings when ultra values change', () => {
+    updateSpy.mockResolvedValue({
+      ...settings,
+      ultraPremiumFeePercent: 11,
+      ultraPremiumFeeBps: 1100,
+      ultraPremiumThresholdCents: 300_00,
+    })
+
+    render(withProviders(<AdminPage />))
+
+    fireEvent.change(screen.getByLabelText('초고급 수수료 퍼센트 입력'), {
+      target: { value: '11' },
+    })
+    fireEvent.change(screen.getByLabelText('초고급 임계 금액 입력'), {
+      target: { value: '300' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: '저장' }))
+
+    expect(updateSpy).toHaveBeenCalledWith({
+      ultraPremiumFeeBps: 1100,
+      ultraPremiumThresholdCents: 30000,
     })
   })
 
