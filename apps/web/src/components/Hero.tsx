@@ -115,7 +115,10 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
                 to="/sell"
                 className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone font-medium tracking-tight hover:border-ink dark:hover:border-bone hover:bg-canvas-deep/60 dark:hover:bg-night-sub focus-volt motion-safe:transition ease-expo"
               >
-                <Compass className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:-rotate-12" />
+                <Compass
+                  aria-hidden
+                  className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:-rotate-12"
+                />
                 {t('hero.sellCta')}
               </Link>
               <span className="hidden sm:inline-flex items-center gap-2 ml-2 text-meta text-ink-mute dark:text-bone-mute font-mono">

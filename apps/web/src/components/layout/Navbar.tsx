@@ -107,16 +107,20 @@ export default function Navbar() {
             <NavLink to="/sell" className={navLinkClass}>
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
-                  <PlusCircle className="w-4 h-4" /> {t('sell')}
+                  <PlusCircle aria-hidden className="w-4 h-4" /> {t('sell')}
                 </NavLinkInner>
               )}
             </NavLink>
           )}
           {token && (
-            <NavLink to="/dashboard" className={navLinkClass}>
+            <NavLink
+              to="/dashboard"
+              className={navLinkClass}
+              aria-label={t('library', { defaultValue: 'My Library' })}
+            >
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
-                  <ShoppingCart className="w-4 h-4" />
+                  <ShoppingCart aria-hidden className="w-4 h-4" />
                   <span className="hidden lg:inline">{t('library')}</span>
                 </NavLinkInner>
               )}
@@ -133,10 +137,14 @@ export default function Navbar() {
             </NavLink>
           )}
           {token && user && (
-            <NavLink to={`/users/${user.username}`} className={navLinkClass}>
+            <NavLink
+              to={`/users/${user.username}`}
+              className={navLinkClass}
+              aria-label={t('profile', { defaultValue: 'Profile' })}
+            >
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
-                  <UserIcon className="w-4 h-4" />
+                  <UserIcon aria-hidden className="w-4 h-4" />
                   <span className="hidden lg:inline">{t('profile')}</span>
                 </NavLinkInner>
               )}

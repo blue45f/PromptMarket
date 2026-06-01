@@ -378,7 +378,7 @@ export default function BrowsePage() {
             onClick={() => setDrawerOpen(true)}
             className="lg:hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-ink dark:text-bone hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo focus-volt"
           >
-            <SlidersHorizontal className="w-4 h-4" />
+            <SlidersHorizontal aria-hidden className="w-4 h-4" />
             {t('toolbar.filter')}
             {appliedCount > 0 && (
               <span

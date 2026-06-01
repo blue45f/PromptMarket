@@ -90,7 +90,7 @@ export default function BrowseEmptyState({
               to="/browse"
               className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-[0.85rem] font-medium tracking-tight focus-volt lift-on-hover"
             >
-              <Compass className="w-4 h-4" />
+              <Compass aria-hidden className="w-4 h-4" />
               {t('empty.browseAll')}
               <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
             </Link>

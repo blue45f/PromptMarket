@@ -392,7 +392,7 @@ export default function ListingDetailPage() {
           onClick={() => setReadingMode(false)}
           className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] font-medium text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo focus-volt"
         >
-          <PanelRight className="w-3.5 h-3.5" />
+          <PanelRight aria-hidden="true" className="w-3.5 h-3.5" />
           {t('reopenSidebar')}
           <kbd className="font-mono text-[0.62rem] px-1 py-0.5 rounded border border-line dark:border-night-line">
             {t('keyboard.esc', { defaultValue: 'esc' })}
@@ -524,9 +524,12 @@ export default function ListingDetailPage() {
                           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                         >
                           {copied ? (
-                            <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
+                            <Check
+                              aria-hidden="true"
+                              className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300"
+                            />
                           ) : (
-                            <Copy className="w-3.5 h-3.5" />
+                            <Copy aria-hidden="true" className="w-3.5 h-3.5" />
                           )}
                           <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
                             {copied ? t('body.copied') : t('body.copy')}
@@ -537,7 +540,7 @@ export default function ListingDetailPage() {
                           onClick={handleDownload}
                           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                         >
-                          <Download className="w-3.5 h-3.5" />
+                          <Download aria-hidden="true" className="w-3.5 h-3.5" />
                           {t('body.downloadMd')}
                         </button>
                         <span className="sr-only" role="status" aria-live="polite">
@@ -582,7 +585,7 @@ export default function ListingDetailPage() {
                                 className="w-4 h-4 motion-safe:animate-spin"
                               />
                             ) : (
-                              <ShoppingCart className="w-4 h-4" />
+                              <ShoppingCart aria-hidden="true" className="w-4 h-4" />
                             )}
                             {buying
                               ? t('paywall.processing')
@@ -782,7 +785,7 @@ export default function ListingDetailPage() {
                     {buying ? (
                       <Loader2 aria-hidden="true" className="w-4 h-4 motion-safe:animate-spin" />
                     ) : (
-                      <ShoppingCart className="w-4 h-4" />
+                      <ShoppingCart aria-hidden="true" className="w-4 h-4" />
                     )}
                     {buying
                       ? t('sidebar.processing')
@@ -814,9 +817,12 @@ export default function ListingDetailPage() {
                       className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                     >
                       {copied ? (
-                        <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
+                        <Check
+                          aria-hidden="true"
+                          className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300"
+                        />
                       ) : (
-                        <Copy className="w-3.5 h-3.5" />
+                        <Copy aria-hidden="true" className="w-3.5 h-3.5" />
                       )}
                       <span className={copied ? 'text-volt-700 dark:text-volt-300' : ''}>
                         {copied ? t('sidebar.copied') : t('sidebar.copy')}
@@ -827,7 +833,7 @@ export default function ListingDetailPage() {
                       onClick={handleDownload}
                       className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg border border-line dark:border-night-line text-sm hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                     >
-                      <Download className="w-3.5 h-3.5" />
+                      <Download aria-hidden="true" className="w-3.5 h-3.5" />
                       {t('sidebar.download')}
                     </button>
                   </div>
@@ -958,7 +964,7 @@ export default function ListingDetailPage() {
               </span>
             ) : isPurchased ? (
               <span className="inline-flex items-center gap-1.5 text-[0.82rem] font-semibold px-4 py-2.5 rounded-full bg-volt-300 text-ink">
-                <Check className="w-3.5 h-3.5" />
+                <Check aria-hidden="true" className="w-3.5 h-3.5" />
                 {t('mobileBar.owned')}
               </span>
             ) : (
@@ -976,7 +982,7 @@ export default function ListingDetailPage() {
                   {buying ? (
                     <Loader2 aria-hidden="true" className="w-4 h-4 motion-safe:animate-spin" />
                   ) : (
-                    <ShoppingCart className="w-4 h-4" />
+                    <ShoppingCart aria-hidden="true" className="w-4 h-4" />
                   )}
                   {free ? t('mobileBar.getFree') : t('mobileBar.buy')}
                 </span>
