@@ -42,6 +42,8 @@ type SeedListing = {
     | 'leo'
     | 'maya'
     | 'noah'
+    | 'oliver'
+    | 'quinn'
   title: string
   type:
     | 'PROMPT'
@@ -201,6 +203,24 @@ async function main() {
       bio: 'Founder-advisor who scales recurring tasks with small, composable AI workflows.',
     },
   })
+  const oliver = await prisma.user.create({
+    data: {
+      email: 'oliver@example.com',
+      username: 'oliver',
+      passwordHash,
+      balanceCents: 2_500_000,
+      bio: 'Ops-focused creator who ships automation templates for teams that care about reliability and cost control.',
+    },
+  })
+  const quinn = await prisma.user.create({
+    data: {
+      email: 'quinn@example.com',
+      username: 'quinn',
+      passwordHash,
+      balanceCents: 30_000,
+      bio: 'Technical writer and PM who turns complex operations playbooks into implementation-ready assets.',
+    },
+  })
 
   const userByKey = {
     alice,
@@ -217,6 +237,8 @@ async function main() {
     leo,
     maya,
     noah,
+    oliver,
+    quinn,
   } as const
   type SeedUser =
     | typeof alice
@@ -233,6 +255,8 @@ async function main() {
     | typeof leo
     | typeof maya
     | typeof noah
+    | typeof oliver
+    | typeof quinn
 
   await prisma.platformSetting.createMany({
     data: [
