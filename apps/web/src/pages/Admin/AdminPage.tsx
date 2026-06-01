@@ -70,6 +70,23 @@ interface FeeProjection {
   tier: 'base' | 'premium'
 }
 
+interface ScenarioProjection {
+  amount: number
+  amountCents: number
+  current: FeeProjection
+  draft: FeeProjection
+  sellerDelta: number
+  orderCount: number
+  weightPercent: number
+  currentSellerCents: number
+  draftSellerCents: number
+  currentPlatformCents: number
+  draftPlatformCents: number
+}
+
+const DEFAULT_SCENARIO_ORDER_AMOUNTS = [5, 10, 25, 50, 100]
+const DEFAULT_SCENARIO_ORDER_WEIGHTS = [35, 25, 20, 12, 8]
+
 function toFeeProjection(grossCents: number, policy: FeePolicy): FeeProjection {
   const usePremium = grossCents >= policy.premiumThresholdCents
   const usedFeePercent = usePremium ? policy.premiumFeePercent : policy.platformFeePercent
@@ -89,6 +106,10 @@ function formatSignedDelta(delta: number): string {
   return `${prefix}${formatDollars(delta)}`
 }
 
+function formatRate(rate: number): string {
+  return `${rate.toFixed(1)}%`
+}
+
 function parsePercentInput(value: string): number {
   const parsed = Number.parseFloat(value)
   if (!Number.isFinite(parsed)) return 0
@@ -101,9 +122,51 @@ function parseMoneyInput(value: string): number {
   return Math.max(0, parsed)
 }
 
+function parseIntegerInput(value: string): number {
+  const parsed = Number.parseInt(value, 10)
+  if (!Number.isFinite(parsed)) return 0
+  return Math.max(0, parsed)
+}
+
+function parsePositiveFloatInput(value: string): number {
+  const parsed = Number.parseFloat(value)
+  if (!Number.isFinite(parsed)) return 0
+  return Math.max(0, parsed)
+}
+
 function formatMoneyInput(cents: number): string {
   const normalized = Math.max(0, Math.round(cents)) / 100
   return normalized.toString()
+}
+
+function buildScenarioOrderCounts(totalOrders: number, weights: number[]) {
+  const safeTotal = Math.max(0, Math.round(totalOrders))
+  if (safeTotal <= 0 || weights.length === 0) return Array(weights.length).fill(0)
+
+  const totalWeight = weights.reduce((sum, value) => sum + Math.max(0, value), 0)
+  if (!Number.isFinite(totalWeight) || totalWeight <= 0) return Array(weights.length).fill(0)
+
+  const normalizedWeights = weights.map((value) => Math.max(0, value) / totalWeight)
+  const raw = normalizedWeights.map((weight) => weight * safeTotal)
+  const floor = raw.map((value) => Math.floor(value))
+  let remainder = safeTotal - floor.reduce((sum, value) => sum + value, 0)
+
+  const ranked = raw
+    .map((value, index) => ({
+      index,
+      remainder: value - Math.floor(value),
+    }))
+    .sort((a, b) => b.remainder - a.remainder)
+
+  let idx = 0
+  while (remainder > 0 && ranked.length > 0) {
+    const target = ranked[idx % ranked.length].index
+    floor[target] += 1
+    remainder -= 1
+    idx += 1
+  }
+
+  return floor
 }
 
 function historyLabelFromKey(
@@ -221,9 +284,93 @@ export default function AdminPage() {
     () => toFeeProjection(grossCents, draftPolicy),
     [grossCents, draftPolicy]
   )
+  const [monthlyOrderInput, setMonthlyOrderInput] = useState('1000')
+  const [monthlyPaidRatioInput, setMonthlyPaidRatioInput] = useState('')
+  const [hasMonthlyPaidRatioTouched, setHasMonthlyPaidRatioTouched] = useState(false)
+  const [scenarioOrderAmounts, setScenarioOrderAmounts] = useState(
+    DEFAULT_SCENARIO_ORDER_AMOUNTS.map((amount) => String(amount))
+  )
+  const [scenarioOrderWeights, setScenarioOrderWeights] = useState(
+    DEFAULT_SCENARIO_ORDER_WEIGHTS.map((weight) => String(weight))
+  )
+  const monthlyOrderCount = parseIntegerInput(monthlyOrderInput)
+  const monthlyPaidRatio = parsePercentInput(monthlyPaidRatioInput)
+  const monthlyPaidOrderCount = Math.max(
+    0,
+    Math.round((monthlyOrderCount * monthlyPaidRatio) / 100)
+  )
+  const scenarioOrderAmountsParsed = scenarioOrderAmounts.map(parseIntegerInput)
+  const scenarioOrderWeightsParsed = scenarioOrderWeights.map(parsePositiveFloatInput)
+
+  const scenarioRows = useMemo(() => {
+    return scenarioOrderAmountsParsed.map((amount) => {
+      const amountCents = Math.round(amount * 100)
+      const current = toFeeProjection(amountCents, currentPolicy)
+      const draft = toFeeProjection(amountCents, draftPolicy)
+      return {
+        amount,
+        amountCents,
+        current,
+        draft,
+        sellerDelta: draft.sellerCents - current.sellerCents,
+      }
+    })
+  }, [currentPolicy, draftPolicy, scenarioOrderAmountsParsed])
+
+  const scenarioRowsProjected = useMemo(() => {
+    const normalizedWeights = scenarioOrderWeightsParsed.map((value) => Math.max(0, value))
+    const orderCounts = buildScenarioOrderCounts(monthlyPaidOrderCount, normalizedWeights)
+    const totalWeight = normalizedWeights.reduce((sum, value) => sum + Math.max(0, value), 0) || 1
+
+    const rows: ScenarioProjection[] = scenarioRows.map((row, index) => {
+      const orderCount = orderCounts[index] ?? 0
+      const weightPercent =
+        totalWeight > 0 ? Math.round((normalizedWeights[index] / totalWeight) * 1000) / 10 : 0
+      const currentSellerCents = orderCount * row.current.sellerCents
+      const draftSellerCents = orderCount * row.draft.sellerCents
+      const currentPlatformCents = orderCount * row.current.platformCents
+      const draftPlatformCents = orderCount * row.draft.platformCents
+
+      return {
+        ...row,
+        orderCount,
+        weightPercent,
+        currentSellerCents,
+        draftSellerCents,
+        currentPlatformCents,
+        draftPlatformCents,
+      }
+    })
+
+    return rows
+  }, [monthlyPaidOrderCount, scenarioRows, scenarioOrderWeightsParsed])
+
+  const scenarioProjectionSummary = useMemo(() => {
+    return scenarioRowsProjected.reduce(
+      (summary, row) => {
+        summary.estimatedGrossCents += row.amountCents * row.orderCount
+        summary.currentPlatformCents += row.currentPlatformCents
+        summary.draftPlatformCents += row.draftPlatformCents
+        summary.currentSellerCents += row.currentSellerCents
+        summary.draftSellerCents += row.draftSellerCents
+        return summary
+      },
+      {
+        estimatedGrossCents: 0,
+        currentPlatformCents: 0,
+        draftPlatformCents: 0,
+        currentSellerCents: 0,
+        draftSellerCents: 0,
+      }
+    )
+  }, [scenarioRowsProjected])
 
   const projectionDelta = projectionDraft.platformCents - projectionCurrent.platformCents
   const sellerDelta = projectionDraft.sellerCents - projectionCurrent.sellerCents
+  const projectedSellerDelta =
+    scenarioProjectionSummary.draftSellerCents - scenarioProjectionSummary.currentSellerCents
+  const projectedPlatformDelta =
+    scenarioProjectionSummary.draftPlatformCents - scenarioProjectionSummary.currentPlatformCents
 
   const hasDraftChanges =
     Math.abs(platformFeePercent - (settings.platformFeePercent || 0)) > Number.EPSILON ||
@@ -271,6 +418,19 @@ export default function AdminPage() {
   const platformFeeFloorAmount = formatDollars(settings.platformFeeFloorCents)
 
   const hasDraftChangesAffectingPayouts = projectionDelta !== 0
+  const platformRate =
+    summary.totalGrossCents > 0
+      ? (summary.totalPlatformFeeCents / summary.totalGrossCents) * 100
+      : 0
+  const sellerRate =
+    summary.totalGrossCents > 0 ? (summary.totalSellerNetCents / summary.totalGrossCents) * 100 : 0
+  const avgPaidOrderValue =
+    summary.paidPurchases > 0 ? summary.totalGrossCents / summary.paidPurchases : 0
+  useEffect(() => {
+    if (!hasMonthlyPaidRatioTouched) {
+      setMonthlyPaidRatioInput(String(paidRate))
+    }
+  }, [paidRate, hasMonthlyPaidRatioTouched])
 
   return (
     <div className="pb-20 mx-auto max-w-[1280px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
@@ -464,6 +624,13 @@ export default function AdminPage() {
               value={`${paidRate}% (${summary.paidPurchases}/${summary.totalPurchases})`}
               muted
             />
+            <StatCard label={t('summary.metrics.platformTake')} value={formatRate(platformRate)} />
+            <StatCard label={t('summary.metrics.sellerTake')} value={formatRate(sellerRate)} />
+            <StatCard
+              label={t('summary.metrics.avgOrder')}
+              value={formatDollars(avgPaidOrderValue)}
+              muted
+            />
           </div>
         </article>
 
@@ -542,6 +709,207 @@ export default function AdminPage() {
               projection={projectionDraft}
               policy={draftPolicy}
             />
+            <div className="rounded-2xl px-4 py-3 border border-line dark:border-night-line bg-canvas dark:bg-night">
+              <p className="text-[0.65rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
+                {t('simulation.scenarioTitle')}
+              </p>
+              <div className="mt-3 space-y-2">
+                {scenarioRows.map((row, index) => (
+                  <div
+                    key={`scenario-config-${index}`}
+                    className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+                  >
+                    <label className="block">
+                      <span className="text-xs font-mono uppercase tracking-[0.15em] text-ink-mute dark:text-bone-mute">
+                        {`${t('simulation.scenarioAmount')} #${index + 1}`}
+                      </span>
+                      <input
+                        type="number"
+                        min={0}
+                        step={1}
+                        aria-label={`${t('simulation.scenarioAmount')} #${index + 1}`}
+                        value={scenarioOrderAmounts[index] ?? ''}
+                        onChange={(event) =>
+                          setScenarioOrderAmounts((prev) => {
+                            const next = [...prev]
+                            next[index] = event.target.value
+                            return next
+                          })
+                        }
+                        className="w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-mono uppercase tracking-[0.15em] text-ink-mute dark:text-bone-mute">
+                        {`${t('simulation.scenarioWeight')} #${index + 1}`}
+                      </span>
+                      <input
+                        type="number"
+                        min={0}
+                        step={0.1}
+                        aria-label={`${t('simulation.scenarioWeight')} #${index + 1}`}
+                        value={scenarioOrderWeights[index] ?? ''}
+                        onChange={(event) =>
+                          setScenarioOrderWeights((prev) => {
+                            const next = [...prev]
+                            next[index] = event.target.value
+                            return next
+                          })
+                        }
+                        className="w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt"
+                      />
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full text-xs sm:text-sm">
+                  <thead className="text-[0.62rem] uppercase tracking-[0.15em] text-ink-mute dark:text-bone-mute">
+                    <tr>
+                      <th className="pb-2 text-left">{t('simulation.scenarioAmount')}</th>
+                      <th className="pb-2 text-left">{t('simulation.scenarioCurrent')}</th>
+                      <th className="pb-2 text-left">{t('simulation.scenarioNext')}</th>
+                      <th className="pb-2 text-left">{t('simulation.scenarioSellerDelta')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scenarioRows.map((row) => (
+                      <tr
+                        key={row.amount}
+                        className="border-t border-line/70 dark:border-night-line/70 text-ink dark:text-bone"
+                      >
+                        <td className="py-2">{formatDollars(row.amountCents)}</td>
+                        <td className="py-2 tabular-nums">{`${formatDollars(
+                          row.current.platformCents
+                        )} / ${formatDollars(row.current.sellerCents)}`}</td>
+                        <td className="py-2 tabular-nums">{`${formatDollars(
+                          row.draft.platformCents
+                        )} / ${formatDollars(row.draft.sellerCents)}`}</td>
+                        <td
+                          className={cn(
+                            'py-2 font-mono tabular-nums',
+                            row.sellerDelta > 0
+                              ? 'text-green-900 dark:text-green-300'
+                              : row.sellerDelta < 0
+                                ? 'text-coral-deep dark:text-coral'
+                                : 'text-ink-soft dark:text-bone-soft'
+                          )}
+                        >
+                          {formatSignedDelta(row.sellerDelta)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="rounded-2xl px-4 py-3 border border-line dark:border-night-line bg-canvas dark:bg-night">
+              <p className="text-[0.65rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
+                {t('simulation.forecastTitle')}
+              </p>
+              <div className="mt-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="text-xs font-mono uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute block mb-2">
+                      {t('simulation.monthlyOrdersLabel')}
+                    </span>
+                    <input
+                      type="number"
+                      min={0}
+                      step={1}
+                      aria-label={t('simulation.monthlyOrdersLabel')}
+                      value={monthlyOrderInput}
+                      onChange={(event) => setMonthlyOrderInput(event.target.value)}
+                      className="w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2.5 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-xs font-mono uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute block mb-2">
+                      {t('simulation.monthlyPaidRatioLabel')}
+                    </span>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      step={0.1}
+                      aria-label={t('simulation.monthlyPaidRatioLabel')}
+                      value={monthlyPaidRatioInput}
+                      onChange={(event) => {
+                        setHasMonthlyPaidRatioTouched(true)
+                        setMonthlyPaidRatioInput(event.target.value)
+                      }}
+                      className="w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2.5 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt"
+                    />
+                    <p className="mt-1 text-[0.72rem] text-ink-soft dark:text-bone-soft">
+                      {t('simulation.monthlyPaidRatioHelp', {
+                        percentage: `${monthlyPaidRatio}%`,
+                        paidRate: `${paidRate}%`,
+                      })}
+                    </p>
+                  </label>
+                </div>
+              </div>
+              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <StatCard
+                  label={t('simulation.forecastGross')}
+                  value={formatDollars(scenarioProjectionSummary.estimatedGrossCents)}
+                />
+                <StatCard
+                  label={t('simulation.forecastPlatform')}
+                  value={formatDollars(scenarioProjectionSummary.currentPlatformCents)}
+                  muted
+                />
+                <StatCard
+                  label={t('simulation.forecastPlatformDelta')}
+                  value={formatSignedDelta(projectedPlatformDelta)}
+                  muted
+                />
+                <StatCard
+                  label={t('simulation.forecastSeller')}
+                  value={formatDollars(scenarioProjectionSummary.currentSellerCents)}
+                  muted
+                />
+                <StatCard
+                  label={t('simulation.forecastDelta')}
+                  value={formatSignedDelta(projectedSellerDelta)}
+                  muted
+                />
+              </div>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full text-xs sm:text-sm">
+                  <thead className="text-[0.62rem] uppercase tracking-[0.15em] text-ink-mute dark:text-bone-mute">
+                    <tr>
+                      <th className="pb-2 text-left">{t('simulation.scenarioAmount')}</th>
+                      <th className="pb-2 text-left">{t('simulation.forecastShare')}</th>
+                      <th className="pb-2 text-left">{t('simulation.forecastCount')}</th>
+                      <th className="pb-2 text-left">{t('simulation.forecastSeller')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scenarioRowsProjected.map((row) => (
+                      <tr
+                        key={`forecast-${row.amount}`}
+                        className="border-t border-line/70 dark:border-night-line/70 text-ink dark:text-bone"
+                      >
+                        <td className="py-2">{formatDollars(row.amountCents)}</td>
+                        <td className="py-2 tabular-nums">{`${
+                          Number.isInteger(row.weightPercent)
+                            ? `${row.weightPercent}%`
+                            : `${row.weightPercent.toFixed(1)}%`
+                        }`}</td>
+                        <td className="py-2 tabular-nums">{row.orderCount}</td>
+                        <td className="py-2 tabular-nums">
+                          {t('simulation.forecastCurrentSellerDiff', {
+                            current: formatDollars(row.currentSellerCents),
+                            draft: formatDollars(row.draftSellerCents),
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             <div
               className={cn(

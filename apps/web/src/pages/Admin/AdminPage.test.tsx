@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
@@ -112,11 +112,70 @@ describe('<AdminPage />', () => {
 
     expect(screen.getByText('PromptMarket 수익 운영')).toBeTruthy()
     expect(screen.getByText('총 매출액')).toBeTruthy()
+    expect(screen.getByText('플랫폼 수익률')).toBeTruthy()
+    expect(screen.getByText('건당 평균 주문')).toBeTruthy()
     expect(screen.getAllByText('$150.00').length).toBeGreaterThanOrEqual(2)
+    expect(screen.getByText('가격대별 영향도')).toBeTruthy()
+    expect(screen.getByText('월간 정책 영향 예측')).toBeTruthy()
     expect(screen.getByText('상위 판매자')).toBeTruthy()
     expect(screen.getByRole('link', { name: '@alice' })).toBeTruthy()
     expect(screen.getByText('판매량')).toBeTruthy()
     expect(screen.getByText('설정 이력')).toBeTruthy()
+  })
+
+  it('updates monthly forecast from order volume input', () => {
+    render(withProviders(<AdminPage />))
+
+    const monthlyInput = screen.getByLabelText('월 주문 수')
+    const paidRatioInput = screen.getByLabelText('월간 유료 전환율 (%)')
+    fireEvent.change(monthlyInput, { target: { value: '2' } })
+    fireEvent.change(paidRatioInput, { target: { value: '100' } })
+
+    const grossCard = screen.getByText('월간 총 매출').closest('div')
+    expect(grossCard).toBeTruthy()
+    expect(within(grossCard as HTMLElement).getByText('$15.00')).toBeTruthy()
+
+    fireEvent.change(paidRatioInput, { target: { value: '0' } })
+    expect(within(grossCard as HTMLElement).getByText('$0.00')).toBeTruthy()
+  })
+
+  it('recalculates forecast when scenario bucket amount and weight are edited', () => {
+    render(withProviders(<AdminPage />))
+
+    const monthlyInput = screen.getByLabelText('월 주문 수')
+    const paidRatioInput = screen.getByLabelText('월간 유료 전환율 (%)')
+    const firstAmountInput = screen.getByLabelText('구매금액 #1')
+    const firstWeightInput = screen.getByLabelText('비중 #1')
+
+    fireEvent.change(monthlyInput, { target: { value: '10' } })
+    fireEvent.change(paidRatioInput, { target: { value: '100' } })
+
+    const grossCard = screen.getByText('월간 총 매출').closest('div')
+    expect(grossCard).toBeTruthy()
+    const initialGross = within(grossCard as HTMLElement).getByText(/^\$\d+\.\d{2}$/).textContent
+    expect(initialGross).toBe('$240.00')
+
+    fireEvent.change(firstAmountInput, { target: { value: '10' } })
+    fireEvent.change(firstWeightInput, { target: { value: '80' } })
+
+    const updatedGross = within(grossCard as HTMLElement).getByText(/^\$\d+\.\d{2}$/).textContent
+    expect(updatedGross).not.toBe(initialGross)
+  })
+
+  it('updates monthly platform delta when draft fee is changed', () => {
+    render(withProviders(<AdminPage />))
+
+    const baseFeeInput = screen.getByLabelText('기본 수수료 퍼센트 입력')
+    const monthlyInput = screen.getByLabelText('월 주문 수')
+    const paidRatioInput = screen.getByLabelText('월간 유료 전환율 (%)')
+
+    fireEvent.change(baseFeeInput, { target: { value: '20' } })
+    fireEvent.change(monthlyInput, { target: { value: '10' } })
+    fireEvent.change(paidRatioInput, { target: { value: '100' } })
+
+    const platformDeltaCard = screen.getByText('월간 플랫폼 수익 변동').closest('div')
+    expect(platformDeltaCard).toBeTruthy()
+    expect(within(platformDeltaCard as HTMLElement).getByText('+$2.70')).toBeTruthy()
   })
 
   it('calls mutateAsync when fee changes and Save is clicked', () => {
