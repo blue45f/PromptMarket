@@ -12,6 +12,7 @@ export function useCountUp(
   const ref = useRef<HTMLElement | null>(null)
   const [value, setValue] = useState(0)
   const startedRef = useRef(false)
+  const valueRef = useRef(0)
 
   useEffect(() => {
     startedRef.current = false
@@ -21,6 +22,7 @@ export function useCountUp(
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) {
       setValue(target)
+      valueRef.current = target
       return
     }
 
@@ -29,12 +31,16 @@ export function useCountUp(
       ([entry]) => {
         if (!entry.isIntersecting || startedRef.current) return
         startedRef.current = true
+        const from = valueRef.current
+        const delta = target - from
         const start = performance.now()
         const tick = (now: number) => {
           const t = Math.min(1, (now - start) / duration)
           // ease-out-quint
           const eased = 1 - Math.pow(1 - t, 5)
-          setValue(Math.round(target * eased))
+          const next = Math.round(from + delta * eased)
+          setValue(next)
+          valueRef.current = next
           if (t < 1) frame = requestAnimationFrame(tick)
         }
         frame = requestAnimationFrame(tick)

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 import { useCountUp } from './useCountUp'
 
 class MockIntersectionObserver {
@@ -109,5 +109,43 @@ describe('useCountUp', () => {
     rerender({ target: 10, replay: 1 })
     expect(result.current.value).toBe(10)
     expect(rafSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('replays from the current value instead of resetting to zero', () => {
+    globalThis.IntersectionObserver = MockIntersectionObserver as never
+    const callbacks: Parameters<typeof window.requestAnimationFrame>[0][] = []
+    const rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((tick) => {
+      callbacks.push(tick)
+      return callbacks.length
+    })
+    vi.spyOn(window.performance, 'now').mockReturnValue(0)
+    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => undefined)
+
+    const { result, rerender } = renderHook(
+      ({ target, replay }) => useCountUp(target, 1_000, replay),
+      {
+        initialProps: { target: 0, replay: 'init' as string },
+      }
+    )
+
+    const node = document.createElement('div')
+    result.current.ref.current = node
+    rerender({ target: 100, replay: 'init' as string })
+
+    expect(callbacks).toHaveLength(1)
+
+    act(() => {
+      callbacks.at(0)?.(10_000)
+    })
+    expect(result.current.value).toBe(100)
+
+    callbacks.length = 0
+    rerender({ target: 100, replay: 'next' as string })
+
+    act(() => {
+      callbacks.at(0)?.(500)
+    })
+    expect(result.current.value).toBe(100)
+    expect(rafSpy).toHaveBeenCalledTimes(3)
   })
 })
