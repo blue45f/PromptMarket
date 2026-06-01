@@ -125,7 +125,7 @@ const ListingCard = memo(function ListingCard({
             aria-hidden
             className={cn(
               'tilt-parallax absolute inset-0 flex items-center justify-center drop-shadow-[0_8px_24px_oklch(0.16_0.03_290/0.18)]',
-              'motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-3 motion-safe:group-focus-visible:scale-110 motion-safe:group-focus-visible:-rotate-3 motion-safe:transition-transform motion-safe:duration-700 ease-expo',
+              'motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-3 motion-safe:group-focus-visible:scale-110 motion-safe:group-focus-visible:-rotate-3 motion-safe:transition-transform ease-expo motion-safe:duration-700',
               isFeatured ? 'text-[7rem] lg:text-[10rem]' : 'text-[5.5rem]'
             )}
           >

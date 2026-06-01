@@ -44,6 +44,7 @@ export default function CategoryChips({ active }: CategoryChipsProps) {
       >
         <Link
           to="/browse"
+          aria-current={!active ? 'page' : undefined}
           className={cn(
             'inline-flex items-center gap-2 px-4 py-2 rounded-full text-[0.85rem] font-medium whitespace-nowrap',
             'motion-safe:transition ease-expo focus-volt',
@@ -61,6 +62,7 @@ export default function CategoryChips({ active }: CategoryChipsProps) {
             <Link
               key={cat}
               to={`/browse?category=${encodeURIComponent(cat)}`}
+              aria-current={isActive ? 'page' : undefined}
               className={cn(
                 'inline-flex items-center gap-2 px-4 py-2 rounded-full text-[0.85rem] font-medium whitespace-nowrap',
                 'motion-safe:transition ease-expo focus-volt',
