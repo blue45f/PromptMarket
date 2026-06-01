@@ -1,54 +1,32 @@
-<!-- 제목은 Conventional Commits 규칙을 따릅니다. 예: feat(web): add listing filters -->
+## 요약
 
-## 변경 사항 요약
+- 변경 범위:
+- 사용자 영향:
+- 관련 이슈/참고:
 
-<!-- 무엇을, 왜 바꿨는지 1~3줄 -->
+## 변경 내역
 
-## 변경 종류
+- [ ] 기능/행동 변경
+- [ ] API 변경
+- [ ] 스타일/문안/번역 변경
+- [ ] 테스트/안정성 강화
 
-- [ ] feat
-- [ ] fix
-- [ ] docs
-- [ ] refactor
-- [ ] test
-- [ ] chore
+## 검증
 
-## 영향 범위
+- [ ] 웹: `pnpm --filter @promptmarket/web test:run`
+- [ ] API: `pnpm --filter @promptmarket/api test`
+- [ ] 공통: `pnpm typecheck`
+- [ ] 빌드: `pnpm build` (필요 시)
+- [ ] Playwright / E2E: 실행 로그 첨부
 
-- [ ] apps/api
-- [ ] apps/web
-- [ ] packages/shared
-- [ ] 루트 인프라(CI, scripts, config)
-- [ ] 문서
+## 위험도 및 롤백
+
+- 영향도 추정:
+- 롤백 방법:
 
 ## 체크리스트
 
-- [ ] `pnpm run verify` 통과
-- [ ] `CodeRabbit review gate` 통과
-- [ ] API 계약 변경 시 shared schema 갱신
-- [ ] 사용자 흐름 변경 시 테스트 또는 수동 확인 기록
-- [ ] 문서 업데이트 필요 여부 확인
-
-## 디자인 시스템 가드레일
-
-- [ ] OKLCH 토큰만 사용 (라임 / 잉크 / 캔버스 / 코랄 / 바이올렛)
-- [ ] 새 폰트 도입 없음 (Bricolage Grotesque / Hanken Grotesk / Pretendard Variable / JetBrains Mono)
-- [ ] 그라디언트 텍스트, 사이드 스트라이프 보더, glassmorphism 남용, 동일 크기 카드 그리드만 반복 없음
-- [ ] 한글 카피는 `word-break: keep-all` 유지
-
-## CodeRabbit 메모
-
-<!-- 자동 리뷰가 짚을 만한 부분에 미리 답을 달면 라운드가 한 번 줄어든다.
-     - 의도적으로 표면을 깨는 곳이 있다면 사유
-     - 의존성 변경이 있다면 마이그레이션 노트
-     - 디자인 토큰을 추가했다면 어디서 재사용 가능한지 -->
-
-## 스크린샷 / 데모
-
-<!-- UI 변경 시 라이트/다크 + 375/768/1440 첨부 -->
-
-<!--
-머지 게이트:
-1. `quality` CI 워크플로 통과
-2. `CodeRabbit` 자동 리뷰가 Request changes를 남기지 않음
--->
+- [ ] Feature flag 또는 조건부 처리 필요성 확인
+- [ ] i18n/복수 언어 대응
+- [ ] 접근성 영향 최소화
+- [ ] 코드 리뷰 포인트 공유 (`Diff 핵심`, `예외 케이스`, `후속 작업`)

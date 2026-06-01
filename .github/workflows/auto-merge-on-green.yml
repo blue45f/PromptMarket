@@ -25,6 +25,25 @@ jobs:
         contains(github.event.pull_request.labels.*.name, 'auto-merge')
       )
     steps:
+      - name: Enforce CodeRabbit gate result before merge
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          checks='["Quality gate","CodeRabbit review gate"]'
+
+          while IFS= read -r check; do
+            status=$(gh pr checks "$PR_NUMBER" --json name,state -q "$(printf '.[] | select(.name == "%s") | .state' "$check")")
+            if [ -z "$status" ] || [ "$status" != "success" ]; then
+              echo "::notice title=Auto-merge skipped::Required check '$check' has not passed yet (state=$status)."
+              exit 0
+            fi
+          done < <(echo "$checks" | jq -r '.[]')
+
+          echo "All required checks passed. Continuing with auto-merge."
+
       - name: Enable squash auto-merge
         run: gh pr merge --auto --squash --delete-branch "$PR_URL"
         env:
