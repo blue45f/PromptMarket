@@ -49,6 +49,16 @@ function SiteFooter() {
   const { t } = useTranslation('nav')
   const spotlightRef = useSpotlight<HTMLElement>()
   const { ref: wordmarkRef, revealed } = useReveal<HTMLDivElement>()
+  const miniSitemapLinks = [
+    { to: '/', label: t('footer.sitemap.home') },
+    { to: '/browse', label: t('footer.sitemap.browse') },
+    { to: '/sell', label: t('footer.sitemap.sell') },
+    { to: '/dashboard', label: t('footer.sitemap.dashboard') },
+    { to: '/login', label: t('footer.sitemap.login') },
+    { to: '/robots.txt', label: t('footer.sitemap.robots'), external: true },
+    { to: '/sitemap.xml', label: t('footer.sitemap.sitemap'), external: true },
+  ]
+
   return (
     <footer
       ref={spotlightRef}
@@ -155,17 +165,43 @@ function SiteFooter() {
         </div>
 
         {/* Bottom strip */}
-        <div className="mt-8 pt-6 border-t border-bone/15 flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center text-[0.78rem] font-mono uppercase tracking-[0.14em] text-bone-mute">
-          <div className="flex items-center gap-2">
-            <span
-              aria-hidden
-              className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-volt-300 text-ink font-display font-bold -rotate-3 text-xs"
-            >
-              P
-            </span>
-            <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
+        <div className="mt-8 pt-6 border-t border-bone/15 flex flex-col gap-5 text-[0.78rem] font-mono uppercase tracking-[0.14em] text-bone-mute">
+          <nav
+            aria-label={t('footer.sitemap.label')}
+            className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.74rem]"
+          >
+            {miniSitemapLinks.map((link) =>
+              link.external ? (
+                <a
+                  key={link.to}
+                  href={link.to}
+                  className="text-bone-mute hover:text-volt-300 motion-safe:transition ease-expo"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-bone-mute hover:text-volt-300 motion-safe:transition ease-expo"
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
+          </nav>
+          <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
+            <div className="flex items-center gap-2">
+              <span
+                aria-hidden
+                className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-volt-300 text-ink font-display font-bold -rotate-3 text-xs"
+              >
+                P
+              </span>
+              <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
+            </div>
+            <p className="text-bone-mute">{t('footer.tagline')}</p>
           </div>
-          <p className="text-bone-mute">{t('footer.tagline')}</p>
         </div>
       </div>
     </footer>

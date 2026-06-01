@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Layout from './Layout'
@@ -84,6 +84,28 @@ describe('Layout', () => {
   it('renders the footer copyright', () => {
     render(<TestLayout />)
     expect(screen.getByText(`© ${new Date().getFullYear()} PromptMarket`)).toBeTruthy()
+  })
+
+  it('renders a mini sitemap in the footer with key routes', () => {
+    render(<TestLayout />)
+    const footer = screen.getByRole('contentinfo')
+    const miniSitemap = within(footer).getByRole('navigation', {
+      name: 'footer.sitemap.label',
+    })
+    const links = within(miniSitemap).getAllByRole('link')
+
+    expect(links).toHaveLength(7)
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(
+      expect.arrayContaining([
+        '/browse',
+        '/sell',
+        '/dashboard',
+        '/login',
+        '/',
+        '/robots.txt',
+        '/sitemap.xml',
+      ])
+    )
   })
 
   it('replays FooterLiveStats count-up when hovered', () => {
