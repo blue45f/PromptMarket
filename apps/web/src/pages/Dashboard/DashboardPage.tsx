@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQueries } from '@tanstack/react-query'
@@ -22,10 +22,22 @@ import toast from 'react-hot-toast'
 const TOPUP_AMOUNTS = [10, 50, 100]
 
 const TAB_KEYS = ['listings', 'library', 'wishlist', 'wallet'] as const
+type DashboardTab = (typeof TAB_KEYS)[number]
+
+function tabFromSearchParam(value: string | null): DashboardTab {
+  return TAB_KEYS.includes(value as DashboardTab) ? (value as DashboardTab) : 'listings'
+}
 
 export default function DashboardPage() {
   const { t } = useTranslation('dashboard')
   const { user } = useAuthStore()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = tabFromSearchParam(searchParams.get('tab'))
+  const [activeTab, setActiveTab] = useState<DashboardTab>(tabParam)
+
+  useEffect(() => {
+    setActiveTab(tabParam)
+  }, [tabParam])
 
   usePageMeta({
     title: t('meta.title'),
@@ -63,6 +75,23 @@ export default function DashboardPage() {
     }
   }
 
+  function handleTabChange(value: string) {
+    const next = tabFromSearchParam(value)
+    setActiveTab(next)
+    setSearchParams(
+      (current) => {
+        const params = new URLSearchParams(current)
+        if (next === 'listings') {
+          params.delete('tab')
+        } else {
+          params.set('tab', next)
+        }
+        return params
+      },
+      { replace: true }
+    )
+  }
+
   const { totalEarnings, totalSales } = useMemo(
     () => ({
       totalEarnings: myListings.reduce((sum, l) => sum + (l.earningsCents ?? 0), 0),
@@ -87,7 +116,7 @@ export default function DashboardPage() {
         <p className="text-ink-soft dark:text-bone-soft max-w-[44ch]">{t('header.subtitle')}</p>
       </header>
 
-      <Tabs.Root defaultValue="listings">
+      <Tabs.Root value={activeTab} onValueChange={handleTabChange}>
         <Tabs.List
           aria-label={t('tabs.aria')}
           className="inline-flex gap-1 p-1.5 rounded-2xl bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line"

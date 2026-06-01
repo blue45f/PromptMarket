@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-01T16:19 (UTC) — Round 141
+
+- **Benchmark**: 자체 — 알림 벨은 stub 상태로 남으면 사용자가 클릭해도 다음 행동이 없다. product register에서는 작은 글로벌 컨트롤일수록 읽음 상태, 접근성 라벨, 모바일 폭, 실제 이동 링크가 모두 맞아야 신뢰가 생긴다.
+- **Shipped**: `NotificationBell`을 브라우저 저장 기반 알림 센터로 확장. 읽지 않은 개수 배지/스크린리더 라벨, Escape 및 바깥 클릭 닫기, 전체 읽음 처리, 항목별 읽음 처리, `/dashboard?tab=wishlist` 및 최신 Browse 링크 액션을 추가했다. 대시보드는 `?tab=wishlist` deep link를 받아 위시리스트 탭을 바로 열도록 연결했다.
+- **Design**: product register 기준으로 작은 popover 안에서 헤더, 상태 문구, 액션 링크, 읽음/새 알림 상태를 판독 가능한 밀도로 정리했다. 긴 한국어/영어 액션은 truncate와 `max-w-[90vw]`로 모바일 오버플로를 막고, "다음 작업에서 연결" 카피를 실제 저장 동작 안내로 교체했다.
+- **Tests**: TDD로 `NotificationBell.test.tsx`와 `DashboardPage.test.tsx`를 먼저 실패시킨 뒤 구현. `pnpm --filter @promptmarket/web test:run NotificationBell.test.tsx DashboardPage.test.tsx`, `pnpm --filter @promptmarket/web test:run`, `pnpm --filter @promptmarket/web build`, `pnpm typecheck`, `pnpm test:run`, `pnpm build` 모두 통과.
+- **Visual check**: Playwright Python smoke로 포트 5175에서 로그인 플로우를 거쳐 데스크톱(1440x900)과 모바일(390x844) 모두 확인. 알림 패널, 위시리스트/최신 Browse 링크, 모두 읽음 비활성화, `pm.notificationReadIds` 저장을 검증했다.
+
 ## 2026-06-01T06:59 (UTC) — Round 140
 
 - **Benchmark**: 품질 점프는 실제 로그인 상태에서 검증되어야 한다. `/sell`은 인증 라우트이므로, `/login` 리다이렉트 경로를 제거하고 실제 사용자 토큰 상태에서 동작해야 기능 완결도를 확정할 수 있다.

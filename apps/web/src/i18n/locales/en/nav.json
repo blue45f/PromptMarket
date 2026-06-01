@@ -10,8 +10,27 @@
   "admin": "Admin",
   "notifications": {
     "label": "Notifications",
+    "labelWithCount": "Notifications, {{count}} unread",
+    "labelNoUnread": "Notifications, none unread",
     "panelTitle": "Notifications",
-    "panelBody": "Notification center will be connected in the next iteration."
+    "panelBody": "{{count}} new updates waiting",
+    "empty": "All clear. No new updates.",
+    "panelFooter": "Read state is saved on this browser.",
+    "markAllRead": "Mark all as read",
+    "read": "Read",
+    "unread": "New",
+    "items": {
+      "wishlist": {
+        "title": "Wishlist watch is active",
+        "body": "Saved listings are ready to revisit from your dashboard.",
+        "action": "Open wishlist"
+      },
+      "release": {
+        "title": "Product update available",
+        "body": "A new marketplace polish cycle is now active.",
+        "action": "See what's changed"
+      }
+    }
   },
   "mainLabel": "Main navigation",
   "mobileLabel": "Mobile navigation",
