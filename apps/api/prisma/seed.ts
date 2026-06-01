@@ -27,7 +27,21 @@ function slugify(title: string): string {
 }
 
 type SeedListing = {
-  authorKey: 'alice' | 'bob' | 'carol' | 'dave' | 'eve' | 'frank' | 'grace' | 'heidi'
+  authorKey:
+    | 'alice'
+    | 'bob'
+    | 'carol'
+    | 'dave'
+    | 'eve'
+    | 'frank'
+    | 'grace'
+    | 'heidi'
+    | 'ivy'
+    | 'jack'
+    | 'kate'
+    | 'leo'
+    | 'maya'
+    | 'noah'
   title: string
   type:
     | 'PROMPT'
@@ -133,8 +147,92 @@ async function main() {
       bio: 'Research-heavy founder. Uses prompt tooling and publishes practical templates.',
     },
   })
+  const ivy = await prisma.user.create({
+    data: {
+      email: 'ivy@example.com',
+      username: 'ivy',
+      passwordHash,
+      balanceCents: 20_000,
+      bio: 'Delivery coach and product ops lead. I buy templates to train teams on AI workflow quality.',
+    },
+  })
+  const jack = await prisma.user.create({
+    data: {
+      email: 'jack@example.com',
+      username: 'jack',
+      passwordHash,
+      balanceCents: 50_000,
+      bio: 'Creator who ships practical operations and PM playbooks for small teams.',
+    },
+  })
+  const kate = await prisma.user.create({
+    data: {
+      email: 'kate@example.com',
+      username: 'kate',
+      passwordHash,
+      balanceCents: 80_000,
+      bio: 'Product designer with a prompt economy mindset. Tests copy quality, not just model output.',
+    },
+  })
+  const leo = await prisma.user.create({
+    data: {
+      email: 'leo@example.com',
+      username: 'leo',
+      passwordHash,
+      balanceCents: 120_000,
+      bio: 'AI content operator for mid-size teams. Loves reusable playbooks and practical checklists.',
+    },
+  })
+  const maya = await prisma.user.create({
+    data: {
+      email: 'maya@example.com',
+      username: 'maya',
+      passwordHash,
+      balanceCents: 60_000,
+      bio: 'PM focused on experimentation. Buys assets before shipping to reduce decision fatigue.',
+    },
+  })
+  const noah = await prisma.user.create({
+    data: {
+      email: 'noah@example.com',
+      username: 'noah',
+      passwordHash,
+      balanceCents: 150_000,
+      bio: 'Founder-advisor who scales recurring tasks with small, composable AI workflows.',
+    },
+  })
 
-  const userByKey = { alice, bob, carol, dave, eve, frank, grace, heidi } as const
+  const userByKey = {
+    alice,
+    bob,
+    carol,
+    dave,
+    eve,
+    frank,
+    grace,
+    heidi,
+    ivy,
+    jack,
+    kate,
+    leo,
+    maya,
+    noah,
+  } as const
+  type SeedUser =
+    | typeof alice
+    | typeof bob
+    | typeof carol
+    | typeof dave
+    | typeof eve
+    | typeof frank
+    | typeof grace
+    | typeof heidi
+    | typeof ivy
+    | typeof jack
+    | typeof kate
+    | typeof leo
+    | typeof maya
+    | typeof noah
 
   await prisma.platformSetting.createMany({
     data: [
@@ -1158,8 +1256,278 @@ You are a senior SRE agent generating a concise triage prompt for a fresh incide
 
 Tone: blunt, actionable, no fluff.`
 
+  const issueIntakePrompt = `# GitHub Issue Intake Triage Prompt
+
+You are an operations triage agent for a small engineering team.
+
+Given a raw issue or bug report, output:
+- one-line severity
+- an owning role
+- a confidence score (0-100)
+- a 24-hour action plan
+
+Rules:
+1. Keep each step to one sentence.
+2. Anything touching security, data loss, or outage is automatically Sev 1.
+3. Convert vague requests into a concrete acceptance checklist.
+4. If impact is missing, assume low until evidence is provided.
+
+Return JSON with keys:
+- severity
+- owner
+- confidence
+- actionPlan
+- notes
+Use clear, short Korean or English without slang.`
+
+  const productSpecPrompt = `# Product Spec Snapshot Generator
+
+You are a product manager assistant.
+
+Input:
+- feature idea
+- target user
+- constraints
+
+Output:
+- one paragraph problem statement
+- 3 measurable success metrics
+- 5-sprint delivery plan
+- scope risks with mitigations
+
+Constraints:
+- each metric must be objectively testable
+- output must be prioritized as must / should / optional
+- skip recommendations that cannot be validated by telemetry
+
+Keep output concise and copy-ready for Slack/Notion.`
+
+  const jiraAnalyticsMcp = `{
+  "name": "jira-analytics",
+  "version": "1.0.0",
+  "description": "MCP server that exposes read-only JIRA KPI queries for cycle time, blocker aging, and release leakage.",
+  "command": "node",
+  "args": ["./dist/server.js"],
+  "env": {
+    "JIRA_BASE_URL": "https://jira.example.com",
+    "JIRA_TOKEN": "***",
+    "READ_ONLY": "true"
+  },
+  "tools": [
+    {
+      "name": "jira_kpi_snapshot",
+      "description": "Return weekly issue churn, age by status, and top blockers.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "weeks": { "type": "number", "minimum": 1, "maximum": 12 }
+        },
+        "required": ["project"]
+      }
+    },
+    {
+      "name": "jira_blockers",
+      "description": "Return blocker issues and current owner with due-date risk.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "severity": { "type": "string", "enum": ["critical", "high", "medium"] }
+        },
+        "required": ["project"]
+      }
+    }
+  ]
+}`
+
+  const releaseRiskScoringPrompt = `# Release Risk Scoring Prompt
+
+You are a release-risk assessor.
+
+Given release notes, test status, and incident history, output:
+- aggregate risk score (0.0 - 10.0)
+- top 3 high-impact risks
+- one-line mitigation for each risk
+- release decision: proceed / delay / hold
+
+Rules:
+- Delay if any unresolved Sev1 or Sev2 blocker exists.
+- Score is weighted by: test failures (40), open blockers (30), rollback complexity (20), support impact (10).
+- Write concrete assumptions, not generic language.`
+
+  const mcpOpsBlueprint = `{
+  "name": "ops-observability-mcp",
+  "version": "1.0.0",
+  "description": "Read-only MCP server for operational dashboards: latency, deploy status, and SLO burn alerts.",
+  "command": "node",
+  "args": ["./dist/ops-observability-server.js"],
+  "env": {
+    "METRICS_URL": "http://localhost:9090/api/v1/query",
+    "LOGGING_TOKEN": "replace-in-env",
+    "ALERT_WEBHOOK_URL": "https://example.com/webhook/ops"
+  },
+  "tools": [
+    {
+      "name": "ops_query",
+      "description": "Run a read-only query against metrics endpoints.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "expression": { "type": "string", "description": "PromQL-like expression" }
+        },
+        "required": ["expression"]
+      }
+    },
+    {
+      "name": "incident_summary",
+      "description": "Return recent high severity incidents and their ownership matrix.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hours": { "type": "number", "minimum": 1, "maximum": 168 }
+        }
+      }
+    }
+  ]
+}`
+
+  const saasCopyAuditPrompt = `# SaaS Growth Copy Audit Prompt
+
+You audit landing page and outreach copy for SaaS pages before publish.
+
+## Input
+- 'pageCopy': markdown/plain text
+- 'audience': ICP name
+- 'goal': desired action
+
+## Output
+- Clarity score (1-10) for headline, CTA, benefit statement
+- Top 5 copy risks
+- Rewritten first fold (headline/subheadline/CTA)
+- A/B test suggestion (1 primary metric, 2 variants)
+
+## Constraints
+- No jargon unless target audience explicitly requested it.
+- Every change must retain brand-safe tone.
+- Keep edits under 30% of word count by default.`
+
+  const promptOpsChecklist = `# Prompt Ops Checklist (for production prompts)
+
+Before shipping a prompt to production, answer:
+1. Input constraints (size, format, language)
+2. Safety policy (PII, secrets, harmful requests)
+3. Failure mode and fallback copy
+4. Logging policy (what to capture, where to mask)
+5. Rollback trigger (quality drop threshold)
+
+Return:
+- 5 concrete acceptance criteria
+- 1-line owner and verification window
+- 1-line go/no-go recommendation`
+
+  const claudeMdDataProduct = `# CLAUDE.md — Data Product + Prisma
+
+## Scope
+You are generating and maintaining a data-product service.
+
+### Rules
+- Keep Prisma writes behind repositories and service methods only.
+- Every migration follows a migration plan with rollback + test.
+- If you add a query, add/extend tests.
+- Never persist unbounded unfiltered user input in logs.
+- Reject prompts that request secrets unless they include explicit allowlist.
+`
+
+  const skillReleasePostmortem = `---
+name: release-postmortem
+description: Convert incident notes into a structured postmortem with blameless framing and remediation actions.
+allowed-tools: Bash(ls:*), Read, Write
+---
+
+# release-postmortem
+
+You draft a postmortem from raw incident notes.
+
+## Inputs
+- incident_timeline
+- impact_scope
+- decisions
+
+## Output
+1. What happened (timeline + impact)
+2. Root cause with evidence
+3. What improved response quality
+4. What we will change in the next release
+5. 3 action owners with dates
+
+## Hard rules
+- No finger-pointing.
+- Use measurable dates and owners.
+- End with a one-line prevention rule.`
+
+  const mcpJiraEscalation = `{
+  "name": "jira-escalation-assistant",
+  "version": "1.1.0",
+  "description": "Read-only JIRA helper for escalation paths and SLA checks.",
+  "command": "node",
+  "args": ["./dist/jira-escalation.js"],
+  "env": {
+    "JIRA_BASE_URL": "https://jira.company.internal",
+    "READ_ONLY": "true",
+    "SLA_HOURS": "12"
+  },
+  "tools": [
+    {
+      "name": "jira_issue_timeline",
+      "description": "Return issue timeline grouped by status transitions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "status": { "type": "string" }
+        },
+        "required": ["project"]
+      }
+    },
+    {
+      "name": "jira_sla_risk",
+      "description": "Score open issues by breach risk.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": { "type": "string" },
+          "team": { "type": "string" }
+        },
+        "required": ["project"]
+      }
+    }
+  ]
+}`
+
+  const agileRetrospectivePrompt = `# Agile Retrospective Synthesizer (Team)
+
+You analyze a sprint retrospective and produce a next-sprint action set.
+
+## Inputs
+- raw_retrospective_notes
+- blockers
+- experiments_run
+
+## Output
+1) What improved
+2) What blocked
+3) What to start/stop/continue
+4) Top 3 hypotheses with leading indicators
+5) Concrete owners and due dates
+
+## Rules
+- Keep recommendations to one pager.
+- Every action needs owner + deadline.
+- Include one metric to check success within 2 weeks.`
+
   // ===========================================================================
-  // The listings (30 entries spanning all 8 types and all major vendors)
+  // The listings (41 entries spanning all 8 types and all major vendors)
   // ===========================================================================
   const listingsData: SeedListing[] = [
     // 1. SUBAGENT — Claude Opus 4.7 senior reviewer
@@ -1688,6 +2056,196 @@ Tone: blunt, actionable, no fluff.`
       priceCents: 0,
       coverEmoji: '🛎️',
     },
+    // 31. PROMPT — Issue intake triage
+    {
+      authorKey: 'ivy',
+      title: 'GitHub Issue Intake Triage Prompt',
+      type: 'PROMPT',
+      description:
+        'A practical triage assistant for bug reports and support tickets: assign owner, severity, and a short 24h action plan.',
+      body: issueIntakePrompt,
+      category: 'Operations',
+      tags: 'issue-triage,product-ops,incident-handling',
+      models: 'claude-code,claude-sonnet-4-6,gpt-5',
+      technique: 'chain-of-thought',
+      difficulty: 'beginner',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 0,
+      coverEmoji: '🧭',
+    },
+    // 32. PROMPT — Product spec snapshot
+    {
+      authorKey: 'jack',
+      title: 'Product Spec Snapshot Generator',
+      type: 'PROMPT',
+      description:
+        'Turns a raw feature idea into a measurable spec with metrics, milestones, and scope/risk gates.',
+      body: productSpecPrompt,
+      category: 'Product Management',
+      tags: 'product,roadmap,spec,planning',
+      models: 'gpt-5,claude-sonnet-4-6,gemini-2-5-pro',
+      technique: 'chain-of-thought',
+      difficulty: 'intermediate',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 1299,
+      coverEmoji: '🗂',
+    },
+    // 33. MCP_SERVER — Jira KPI bridge
+    {
+      authorKey: 'ivy',
+      title: 'Jira KPI Analytics MCP Server',
+      type: 'MCP_SERVER',
+      description:
+        'Read-only Jira MCP that summarizes cycle time, blocker aging, and release leakage for engineering reviews.',
+      body: jiraAnalyticsMcp,
+      category: 'MCP',
+      tags: 'mcp,jira,analytics,engineering',
+      models: 'claude-code,cursor,copilot',
+      difficulty: 'intermediate',
+      license: 'Apache-2.0',
+      version: '1.0.0',
+      priceCents: 3499,
+      coverEmoji: '📈',
+    },
+    // 34. AGENT_MD — Release risk scoring
+    {
+      authorKey: 'jack',
+      title: 'Release Risk Scoring Agent',
+      type: 'AGENT_MD',
+      description:
+        'A scoring prompt for release decisions with clear rules for proceed, delay, or hold based on evidence and risk weights.',
+      body: releaseRiskScoringPrompt,
+      category: 'Operations',
+      tags: 'release-risk,go/no-go,risk,postmortem',
+      models: 'claude-opus-4-7,gpt-5,claude-sonnet-4-6',
+      difficulty: 'advanced',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 7999,
+      coverEmoji: '📉',
+    },
+    // 35. MCP_SERVER — Ops observability
+    {
+      authorKey: 'kate',
+      title: 'Ops Observability MCP Server',
+      type: 'MCP_SERVER',
+      description:
+        'Read-only MCP server template for querying metrics and incident summaries with bounded alert-surface in SRE workflows.',
+      body: mcpOpsBlueprint,
+      category: 'MCP',
+      tags: 'mcp,observability,ops,read-only',
+      models: 'claude-code,cursor,gpt-5',
+      difficulty: 'advanced',
+      license: 'Apache-2.0',
+      version: '1.0.0',
+      priceCents: 1299,
+      coverEmoji: '🛡️',
+    },
+    // 36. PROMPT — SaaS copy audit
+    {
+      authorKey: 'leo',
+      title: 'SaaS Growth Copy Audit Prompt',
+      type: 'PROMPT',
+      description:
+        'A practical audit prompt for headline, CTA, and value messaging with structured revisions and A/B test ideas.',
+      body: saasCopyAuditPrompt,
+      category: 'Marketing',
+      tags: 'copywriting,a-b-test,saas,growth',
+      models: 'gpt-5,claude-opus-4-7',
+      technique: 'checklist',
+      difficulty: 'intermediate',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 399,
+      coverEmoji: '📣',
+    },
+    // 37. AGENT_MD — Prompt ops checklist
+    {
+      authorKey: 'maya',
+      title: 'Prompt Ops Checklist',
+      type: 'AGENT_MD',
+      description:
+        'A production-safe rollout template for prompts covering safety constraints, failure modes, and rollback thresholds.',
+      body: promptOpsChecklist,
+      category: 'Operations',
+      tags: 'prompt-ops,checklist,production,security',
+      models: 'claude-opus-4-7,claude-sonnet-4-6',
+      difficulty: 'intermediate',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 299,
+      coverEmoji: '✅',
+    },
+    // 38. CLAUDE_MD — Data + Prisma
+    {
+      authorKey: 'noah',
+      title: 'CLAUDE.md for Data Product + Prisma',
+      type: 'CLAUDE_MD',
+      description:
+        'A data-product rulebook for Prisma-first development: repository boundaries, migrations, tests, and safety checks.',
+      body: claudeMdDataProduct,
+      category: 'Coding',
+      tags: 'prisma,practices,data-product,claude-md',
+      models: 'claude-opus-4-7,claude-sonnet-4-6,cursor',
+      difficulty: 'intermediate',
+      license: 'MIT',
+      version: '1.1.0',
+      priceCents: 499,
+      coverEmoji: '🧠',
+    },
+    // 39. SKILL — Release postmortem
+    {
+      authorKey: 'jack',
+      title: 'Release Postmortem Skill',
+      type: 'SKILL',
+      description:
+        'Structured postmortem generator for incidents with owner-based remediation and prevention rule outputs.',
+      body: skillReleasePostmortem,
+      category: 'Operations',
+      tags: 'skill,postmortem,incident,process',
+      models: 'claude-opus-4-7,gpt-5,claude-sonnet-4-6',
+      difficulty: 'advanced',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 599,
+      coverEmoji: '📝',
+    },
+    // 40. MCP_SERVER — Jira escalation
+    {
+      authorKey: 'leo',
+      title: 'Jira Escalation MCP',
+      type: 'MCP_SERVER',
+      description:
+        'Escalation-focused Jira read-only MCP with timeline and SLA risk helpers for engineering managers.',
+      body: mcpJiraEscalation,
+      category: 'MCP',
+      tags: 'jira,mcp,sla,risk',
+      models: 'claude-code,cursor,any',
+      difficulty: 'intermediate',
+      license: 'Apache-2.0',
+      version: '1.0.0',
+      priceCents: 899,
+      coverEmoji: '📊',
+    },
+    // 41. AGENT_MD — Sprint retrospective
+    {
+      authorKey: 'maya',
+      title: 'Agile Retrospective Synthesizer',
+      type: 'AGENT_MD',
+      description:
+        'Turns retrospective notes into prioritized next-sprint experiments and accountable owners.',
+      body: agileRetrospectivePrompt,
+      category: 'Operations',
+      tags: 'agile,retrospective,owners,experiment',
+      models: 'claude-opus-4-7,gpt-5,claude-sonnet-4-6',
+      difficulty: 'beginner',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 199,
+      coverEmoji: '🧩',
+    },
   ]
 
   // ===========================================================================
@@ -1721,11 +2279,11 @@ Tone: blunt, actionable, no fluff.`
   }
 
   // ===========================================================================
-  // Purchases (17) + balance + downloads adjustment
+  // Purchases (29 attempts) + balance + downloads adjustment
   // ===========================================================================
   const byTitle = (t: string) => createdListings.find((l) => l.title === t)!
 
-  const purchases: Array<{ buyer: typeof alice; listing: Listing }> = [
+  const purchases: Array<{ buyer: SeedUser; listing: Listing }> = [
     { buyer: bob, listing: byTitle('Ultimate Next.js 15 CLAUDE.md') },
     { buyer: bob, listing: byTitle('Claude Opus 4.7 Senior Code-Reviewer Subagent') },
     { buyer: carol, listing: byTitle('Chain-of-Thought SQL Debugger (Claude Sonnet)') },
@@ -1743,6 +2301,17 @@ Tone: blunt, actionable, no fluff.`
     { buyer: frank, listing: byTitle('Redis MCP Server') },
     { buyer: grace, listing: byTitle('SRE Incident Response Skill') },
     { buyer: frank, listing: byTitle('SRE Incident Oncall Cheat-Sheet') },
+    { buyer: bob, listing: byTitle('GitHub Issue Intake Triage Prompt') },
+    { buyer: ivy, listing: byTitle('Product Spec Snapshot Generator') },
+    { buyer: jack, listing: byTitle('Jira KPI Analytics MCP Server') },
+    { buyer: dave, listing: byTitle('Release Risk Scoring Agent') },
+    { buyer: kate, listing: byTitle('Ops Observability MCP Server') },
+    { buyer: maya, listing: byTitle('SaaS Growth Copy Audit Prompt') },
+    { buyer: leo, listing: byTitle('Prompt Ops Checklist') },
+    { buyer: noah, listing: byTitle('CLAUDE.md for Data Product + Prisma') },
+    { buyer: jack, listing: byTitle('Release Postmortem Skill') },
+    { buyer: leo, listing: byTitle('Jira Escalation MCP') },
+    { buyer: maya, listing: byTitle('Agile Retrospective Synthesizer') },
   ]
   const defaultPlatformFeeBps = 1700
   const defaultPlatformFeeFloorCents = 0
@@ -1787,7 +2356,7 @@ Tone: blunt, actionable, no fluff.`
   // Reviews — only from purchasers
   // ===========================================================================
   const reviews: Array<{
-    buyer: typeof alice
+    buyer: SeedUser
     listing: Listing
     rating: number
     comment: string
@@ -1902,6 +2471,76 @@ Tone: blunt, actionable, no fluff.`
       rating: 5,
       comment:
         'Makes incident triage responses coherent and reproducible, even at 3 a.m. shift change.',
+    },
+    {
+      buyer: bob,
+      listing: byTitle('GitHub Issue Intake Triage Prompt'),
+      rating: 5,
+      comment:
+        'Our support requests are triaged in 3 minutes now instead of 20. The owner assignment quality is very practical.',
+    },
+    {
+      buyer: ivy,
+      listing: byTitle('Product Spec Snapshot Generator'),
+      rating: 4,
+      comment:
+        'Good structure for turning long meeting notes into clear spec outcomes and measurable success criteria.',
+    },
+    {
+      buyer: jack,
+      listing: byTitle('Jira KPI Analytics MCP Server'),
+      rating: 4,
+      comment:
+        'Solid foundation for engineering standups. Outputs blocker heat quickly and is easy to wire into a weekly ritual.',
+    },
+    {
+      buyer: dave,
+      listing: byTitle('Release Risk Scoring Agent'),
+      rating: 5,
+      comment:
+        'I like the strict go/no-go rule. It made release risk conversations much less emotional and more data-driven.',
+    },
+    {
+      buyer: kate,
+      listing: byTitle('Ops Observability MCP Server'),
+      rating: 5,
+      comment:
+        'The tool boundaries are practical. It gave us a cleaner split between metrics reading and incident summary actions.',
+    },
+    {
+      buyer: maya,
+      listing: byTitle('SaaS Growth Copy Audit Prompt'),
+      rating: 4,
+      comment:
+        'The first-fold rewrite output was immediately useful and the A/B suggestions were realistic.',
+    },
+    {
+      buyer: leo,
+      listing: byTitle('Prompt Ops Checklist'),
+      rating: 5,
+      comment:
+        'Great safety and rollout checklist before exposing prompt automations to real users.',
+    },
+    {
+      buyer: noah,
+      listing: byTitle('CLAUDE.md for Data Product + Prisma'),
+      rating: 5,
+      comment:
+        'Very close to what our team needed for onboarding a fresh engineer into data+backend work.',
+    },
+    {
+      buyer: jack,
+      listing: byTitle('Release Postmortem Skill'),
+      rating: 5,
+      comment:
+        'The owner-based action list has improved our postmortem quality and prevented vague takeaways.',
+    },
+    {
+      buyer: maya,
+      listing: byTitle('Agile Retrospective Synthesizer'),
+      rating: 4,
+      comment:
+        'Turns dry retrospectives into a clean set of owners and hypotheses, without overengineering the meeting notes.',
     },
   ]
 
