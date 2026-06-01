@@ -182,7 +182,7 @@ const ListingCard = memo(function ListingCard({
 
           {/* Bottom-right wishlist + arrow stack */}
           <div className="absolute bottom-3.5 right-3.5 flex items-center gap-2">
-            <span className="motion-safe:transition-all motion-safe:duration-500 opacity-0 motion-safe:group-hover:opacity-100 motion-safe:group-focus-within:opacity-100">
+            <span className="motion-safe:transition-all ease-expo motion-safe:duration-500 opacity-0 motion-safe:group-hover:opacity-100 motion-safe:group-focus-within:opacity-100">
               <WishlistButton slug={listing.slug} />
             </span>
             <span

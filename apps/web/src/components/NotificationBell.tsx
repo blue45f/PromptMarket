@@ -146,6 +146,7 @@ export default function NotificationBell() {
         <div
           id="notification-bell-panel"
           role="dialog"
+          aria-modal="true"
           className="absolute right-0 top-full z-20 mt-2 w-[21rem] max-w-[90vw] rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night-sub shadow-2xl shadow-ink/15 dark:shadow-black/35 overflow-hidden"
           aria-label={t('notifications.panelTitle', { defaultValue: 'Notifications' })}
         >

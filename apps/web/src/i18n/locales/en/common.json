@@ -85,7 +85,9 @@
     "starLabel_one": "{{count}} star",
     "starLabel_other": "{{count}} stars",
     "display": "{{value}} out of 5 stars",
-    "widgetLabel": "Rate: {{value}} out of {{outOf}} stars"
+    "widgetLabel": "Rate: {{value}} out of {{outOf}} stars",
+    "reviewCount_one": "{{count}} review",
+    "reviewCount_other": "{{count}} reviews"
   },
   "difficulty": {
     "beginner": "Beginner",

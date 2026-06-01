@@ -113,7 +113,7 @@ export default function ShortcutsOverlay() {
               <button
                 type="button"
                 aria-label={t('shortcuts.close')}
-                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub motion-safe:transition focus-volt"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub motion-safe:transition ease-expo focus-volt"
               >
                 <X aria-hidden className="w-4 h-4" />
               </button>

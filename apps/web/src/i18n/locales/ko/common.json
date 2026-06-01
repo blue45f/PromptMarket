@@ -80,7 +80,8 @@
   "rating": {
     "starLabel": "{{count}}점",
     "display": "{{value}}점 / 5점",
-    "widgetLabel": "별점 선택: {{value}}점 / {{outOf}}점"
+    "widgetLabel": "별점 선택: {{value}}점 / {{outOf}}점",
+    "reviewCount": "리뷰 {{count}}개"
   },
   "difficulty": {
     "beginner": "입문",

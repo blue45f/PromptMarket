@@ -157,7 +157,7 @@ function SiteFooter() {
           </p>
           <span
             aria-hidden
-            className="absolute left-0 right-0 bottom-[6%] h-[clamp(0.4rem,1vw,1rem)] bg-volt-400 origin-left scale-x-0 motion-safe:[transition:transform_1.2s_cubic-bezier(0.16,1,0.3,1)]"
+            className="absolute left-0 right-0 bottom-[6%] h-[clamp(0.4rem,1vw,1rem)] bg-volt-400 origin-left scale-x-0 motion-safe:transition-transform motion-safe:duration-[1200ms] ease-expo"
             data-bar
           />
           <span

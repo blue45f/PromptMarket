@@ -42,7 +42,7 @@ export default function WishlistButton({ slug, variant = 'card', className }: Wi
           className
         )}
       >
-        <Heart className={cn('w-3.5 h-3.5', active && 'fill-current')} />
+        <Heart aria-hidden className={cn('w-3.5 h-3.5', active && 'fill-current')} />
         {active ? t('wishlist.saved') : t('wishlist.label')}
       </button>
     )

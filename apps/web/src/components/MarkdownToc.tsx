@@ -121,7 +121,7 @@ export default function MarkdownToc({ source, className, scrollOffsetPx = 96 }: 
                 href={`#${e.id}`}
                 onClick={(ev) => jump(ev, e.id)}
                 className={cn(
-                  'block py-1 text-[0.83rem] leading-snug motion-safe:transition-colors focus-volt rounded',
+                  'block py-1 text-[0.83rem] leading-snug motion-safe:transition-colors ease-expo focus-volt rounded',
                   isActive
                     ? 'text-ink dark:text-bone font-semibold'
                     : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone',
@@ -131,7 +131,7 @@ export default function MarkdownToc({ source, className, scrollOffsetPx = 96 }: 
                 <span
                   aria-hidden
                   className={cn(
-                    'inline-block w-1 h-1 rounded-full mr-2 align-middle motion-safe:transition',
+                    'inline-block w-1 h-1 rounded-full mr-2 align-middle motion-safe:transition ease-expo',
                     isActive ? 'bg-volt-500 scale-150' : 'bg-line dark:bg-night-line'
                   )}
                 />

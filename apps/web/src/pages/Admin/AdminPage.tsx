@@ -224,7 +224,7 @@ function historyLabelFromKey(
     return t('settings.history.labels.premiumThreshold')
   if (key === 'platform_fee_ultra_premium_threshold_cents')
     return t('settings.history.labels.ultraPremiumThreshold')
-  return t('settings.history.labels.feeFloor')
+  return t('settings.history.labels.platformFeeFloor')
 }
 
 function historyDisplayValue(key: string, value: number): string {
@@ -615,7 +615,7 @@ export default function AdminPage() {
         <article className="xl:col-span-1 space-y-6 rounded-3xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 lg:p-8">
           <div className="space-y-2">
             <p className="inline-flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 font-mono">
-              <Settings className="w-3.5 h-3.5" />
+              <Settings className="w-3.5 h-3.5" aria-hidden="true" />
               {t('settings.title')}
             </p>
             <h2 className="font-display text-[1.5rem] leading-tight font-semibold text-ink dark:text-bone">
@@ -814,7 +814,7 @@ export default function AdminPage() {
                 role="alert"
               >
                 <p className="inline-flex items-center gap-2">
-                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
                   {validationErrors.thresholdOrder}
                 </p>
               </div>
@@ -834,6 +834,7 @@ export default function AdminPage() {
               {updateFeeMutation.isPending ? t('settings.saving') : t('settings.save')}
               <RefreshCcw
                 className={cn('w-4 h-4', updateFeeMutation.isPending && 'motion-safe:animate-spin')}
+                aria-hidden="true"
               />
             </button>
           </form>
@@ -841,7 +842,7 @@ export default function AdminPage() {
 
         <article className="xl:col-span-1 rounded-3xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 lg:p-8">
           <p className="inline-flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 font-mono">
-            <LineChart className="w-3.5 h-3.5" />
+            <LineChart className="w-3.5 h-3.5" aria-hidden="true" />
             {t('summary.title')}
           </p>
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -932,7 +933,7 @@ export default function AdminPage() {
 
         <article className="xl:col-span-1 rounded-3xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 lg:p-8">
           <p className="inline-flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 font-mono">
-            <Clock className="w-3.5 h-3.5" />
+            <Clock className="w-3.5 h-3.5" aria-hidden="true" />
             {t('settings.history.title')}
           </p>
           <p className="mt-2 text-[0.88rem] text-ink-soft dark:text-bone-soft">
@@ -969,7 +970,7 @@ export default function AdminPage() {
 
         <article className="xl:col-span-1 rounded-3xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 lg:p-8">
           <p className="inline-flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 font-mono">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
             {t('simulation.title')}
           </p>
           <p className="mt-2 text-[0.88rem] text-ink-soft dark:text-bone-soft">
@@ -1235,9 +1236,9 @@ export default function AdminPage() {
               >
                 <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.16em]">
                   {sellerDelta >= 0 ? (
-                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
                   ) : (
-                    <AlertTriangle className="w-3.5 h-3.5" />
+                    <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
                   )}
                   {sellerDelta >= 0
                     ? t('simulation.impactTitlePositive')
@@ -1258,7 +1259,7 @@ export default function AdminPage() {
         <div className="flex items-end justify-between gap-3">
           <div>
             <p className="inline-flex items-center gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 font-mono">
-              <UserRoundCheck className="w-3.5 h-3.5" />
+              <UserRoundCheck className="w-3.5 h-3.5" aria-hidden="true" />
               {t('creators.title')}
             </p>
             <p className="mt-2 text-ink-soft dark:text-bone-soft">{t('creators.subtitle')}</p>

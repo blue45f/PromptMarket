@@ -159,7 +159,7 @@ export default function DashboardPage() {
                   to="/sell"
                   className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.86rem] font-medium tracking-tight focus-volt lift-on-hover"
                 >
-                  <PlusCircle className="w-4 h-4" />
+                  <PlusCircle aria-hidden className="w-4 h-4" />
                   {t('listings.empty.action')}
                   <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
                 </Link>
@@ -450,7 +450,7 @@ function WishlistTab() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.85rem] font-medium focus-volt lift-on-hover"
           >
             {t('wishlist.empty.action')}
-            <ArrowUpRight className="w-4 h-4" />
+            <ArrowUpRight aria-hidden className="w-4 h-4" />
           </Link>
         }
       />

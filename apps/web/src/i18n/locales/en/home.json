@@ -150,6 +150,9 @@
     "emptyTitle": "No listings in the {{family}} category yet",
     "emptyDescription": "Be the first to publish one."
   },
+  "modelTabs": {
+    "error": "Could not load listings."
+  },
   "modelPicker": {
     "searchPlaceholder": "Search models / vendors…",
     "noResults": "No models match \"{{query}}\"."

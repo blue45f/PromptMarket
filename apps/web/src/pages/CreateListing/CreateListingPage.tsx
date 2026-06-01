@@ -588,6 +588,7 @@ export default function CreateListingPage() {
                 <div role="group">
                   <input
                     type="text"
+                    aria-label={t('fields.tags', { defaultValue: 'Tags' })}
                     {...register('tags')}
                     placeholder={t('fields.tagsPlaceholder')}
                     className={inputClass}
@@ -614,6 +615,7 @@ export default function CreateListingPage() {
                 <Field label={t('fields.technique')}>
                   <div role="group">
                     <select
+                      aria-label={t('fields.technique', { defaultValue: 'Technique' })}
                       value={v.technique ?? ''}
                       onChange={(e) =>
                         setValue('technique', (e.target.value || null) as PromptTechnique | null, {

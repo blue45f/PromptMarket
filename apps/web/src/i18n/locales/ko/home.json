@@ -150,6 +150,9 @@
     "emptyTitle": "{{family}} 카테고리에 아직 리스팅이 없어요",
     "emptyDescription": "첫 번째 게시자가 되어 보세요."
   },
+  "modelTabs": {
+    "error": "목록을 불러오지 못했어요."
+  },
   "modelPicker": {
     "searchPlaceholder": "모델 / 벤더 검색…",
     "noResults": "\"{{query}}\"에 맞는 모델이 없어요."

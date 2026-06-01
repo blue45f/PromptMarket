@@ -166,11 +166,15 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
                 onClick={copy}
                 aria-label={t('install.copyCommand')}
                 className={cn(
-                  'absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.7rem] font-mono uppercase tracking-[0.12em] motion-safe:transition focus-volt',
+                  'absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.7rem] font-mono uppercase tracking-[0.12em] motion-safe:transition ease-expo focus-volt',
                   copied ? 'bg-volt-300 text-ink' : 'bg-bone/10 text-bone hover:bg-bone/20'
                 )}
               >
-                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? (
+                  <Check aria-hidden className="w-3.5 h-3.5" />
+                ) : (
+                  <Copy aria-hidden className="w-3.5 h-3.5" />
+                )}
                 {copied ? t('install.copied') : t('install.copy')}
               </button>
               <span className="sr-only" role="status" aria-live="polite">

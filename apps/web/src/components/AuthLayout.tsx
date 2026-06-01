@@ -119,7 +119,7 @@ export default function AuthLayout({
                 className="text-ink dark:text-bone hover:underline inline-flex items-center gap-0.5"
               >
                 {t('panel.browseLink')}
-                <ArrowUpRight className="w-3 h-3" />
+                <ArrowUpRight aria-hidden className="w-3 h-3" />
               </Link>
               {t('panel.browseSuffix')}
             </div>

@@ -40,7 +40,7 @@ export default function FilterDrawer({
               <button
                 type="button"
                 aria-label={t('drawer.close')}
-                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub motion-safe:transition focus-volt"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub motion-safe:transition ease-expo focus-volt"
               >
                 <X aria-hidden className="w-4 h-4" />
               </button>
@@ -57,7 +57,7 @@ export default function FilterDrawer({
                 {saved.map((f) => (
                   <span
                     key={f.search}
-                    className="group inline-flex items-center gap-1 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition"
+                    className="group inline-flex items-center gap-1 rounded-full bg-canvas-sub dark:bg-night-sub border border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/60 motion-safe:transition ease-expo"
                   >
                     <button
                       type="button"
@@ -69,7 +69,7 @@ export default function FilterDrawer({
                         onOpenChange(false)
                         navigate(`/browse?${f.search}`)
                       }}
-                      className="inline-flex items-center px-2.5 py-1 text-[0.74rem] text-ink-soft dark:text-bone-soft group-hover:text-ink dark:group-hover:text-bone motion-safe:transition focus-volt rounded-full"
+                      className="inline-flex items-center px-2.5 py-1 text-[0.74rem] text-ink-soft dark:text-bone-soft group-hover:text-ink dark:group-hover:text-bone motion-safe:transition ease-expo focus-volt rounded-full"
                     >
                       {f.label}
                     </button>
@@ -80,7 +80,7 @@ export default function FilterDrawer({
                         defaultValue: 'Remove saved filter: {{label}}',
                       })}
                       onClick={() => remove(f.search)}
-                      className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt mr-1.5"
+                      className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-ink-mute dark:text-bone-mute hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt mr-1.5"
                     >
                       <X className="w-3 h-3" aria-hidden />
                     </button>
@@ -103,7 +103,7 @@ export default function FilterDrawer({
                 aria-hidden
                 className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 ease-expo group-hover:translate-y-0"
               />
-              <span className="relative group-hover:text-ink motion-safe:transition-colors">
+              <span className="relative group-hover:text-ink motion-safe:transition-colors ease-expo">
                 {t('drawer.apply')}
               </span>
             </button>

@@ -37,7 +37,7 @@ function NavLinkInner({ isActive, children }: { isActive: boolean; children: Rea
         aria-hidden
         className={cn(
           'absolute left-3 right-3 -bottom-0.5 h-[2px] rounded-full bg-volt-500',
-          'origin-left motion-safe:transition-transform motion-safe:duration-300',
+          'origin-left motion-safe:transition-transform motion-safe:duration-300 ease-expo',
           isActive ? 'scale-x-100' : 'scale-x-0'
         )}
       />
@@ -127,10 +127,14 @@ export default function Navbar() {
             </NavLink>
           )}
           {token && user?.isAdmin && (
-            <NavLink to="/admin" className={navLinkClass}>
+            <NavLink
+              to="/admin"
+              className={navLinkClass}
+              aria-label={t('admin', { defaultValue: 'Admin' })}
+            >
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
-                  <ShieldCheck className="w-4 h-4" />
+                  <ShieldCheck aria-hidden className="w-4 h-4" />
                   <span className="hidden lg:inline">{t('admin')}</span>
                 </NavLinkInner>
               )}
@@ -178,7 +182,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-coral-deep dark:hover:text-coral motion-safe:transition focus-volt"
+                className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt"
               >
                 <LogOut aria-hidden className="w-4 h-4" />
                 <span className="hidden sm:inline">{t('logout')}</span>
