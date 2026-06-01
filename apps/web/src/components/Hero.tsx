@@ -412,13 +412,19 @@ function DropRow({
             {drop.author?.username && ` · @${drop.author.username}`}
           </p>
         </div>
-        <span
-          className={cn(
-            'shrink-0 text-[0.68rem] font-mono px-2 py-0.5 rounded-full',
-            free ? 'bg-volt-300 text-ink' : 'bg-ink text-bone dark:bg-bone dark:text-ink'
-          )}
-        >
-          {formatPrice(drop.priceCents ?? 0)}
+        <span className="shrink-0 flex flex-col items-end gap-1.5">
+          <span
+            className={cn(
+              'text-[0.68rem] font-mono px-2 py-0.5 rounded-full',
+              free ? 'bg-volt-300 text-ink' : 'bg-ink text-bone dark:bg-bone dark:text-ink'
+            )}
+          >
+            {formatPrice(drop.priceCents ?? 0)}
+          </span>
+          <span className="inline-flex items-center gap-1 text-[0.64rem] font-medium text-ink-mute dark:text-bone-mute opacity-75 motion-safe:transition ease-expo group-hover:text-volt-700 group-hover:opacity-100 dark:group-hover:text-volt-300 group-focus-visible:text-volt-700 group-focus-visible:opacity-100 dark:group-focus-visible:text-volt-300">
+            {t('hero.drops.detailCta')}
+            <ArrowRight className="w-3 h-3" aria-hidden />
+          </span>
         </span>
       </Link>
     </div>

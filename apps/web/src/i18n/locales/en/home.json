@@ -25,7 +25,8 @@
     "drops": {
       "title": "New drops",
       "syncing": "Syncing…",
-      "live": "live"
+      "live": "live",
+      "detailCta": "View details"
     },
     "seed": {
       "codeReviewer": "Senior Code Reviewer",

@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-01T18:37 (UTC) — Round 147
+
+- **Benchmark**: 자체 — Home hero의 실시간 드롭 행은 움직임과 가격 정보가 있어 눈에 띄지만, 일반 사용자는 행 전체가 상세 페이지 링크인지 즉시 알기 어렵다. 가격 옆에 짧은 액션 라벨을 붙여 다음 행동을 더 명확히 한다.
+- **Shipped**: `DropRow`의 가격 배지를 세로 액션 묶음으로 바꾸고 `자세히 보기`/`View details` 보조 CTA와 화살표를 추가했다. hover/focus-visible 상태에서는 액션 라벨이 volt 역할색으로 반응해 클릭 가능성이 선명해진다.
+- **Design**: 기존 hero marquee, surface border, type hierarchy는 유지했다. 새 카드나 모달을 추가하지 않고, 장식보다 길 찾기 신호를 보강해 첫 방문자도 새 드롭을 상품 목록으로 이해하도록 정리했다.
+- **Tests**: TDD로 `Hero.test.tsx`에 pauseable drops marquee 안의 상세 액션 회귀 테스트를 추가했다. `pnpm --filter @promptmarket/web test:run Hero.test.tsx` 통과.
+- **Visual check**: PromptMarket dev 서버 포트 5176에서 Playwright Python smoke로 Home desktop 1440x900과 mobile 390x844를 확인했다. `자세히 보기` 노출, hover 시 marquee pause, 모바일 오버플로 없음을 확인했고 스크린샷은 `/private/tmp/promptmarket-hero-drops`에 저장했다.
+
 ## 2026-06-01T18:17 (UTC) — Round 146
 
 - **Benchmark**: 자체 — Home hero의 `StatsStrip`은 신뢰 신호지만 모바일에서 세로 3칸으로 쌓이면 CTA 이후 화면 밀도가 불필요하게 커진다. 보조 지표는 한 줄 가로 스냅으로 훑게 하고, 데스크톱의 3열 비교 구조는 유지한다.

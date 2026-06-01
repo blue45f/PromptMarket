@@ -25,7 +25,8 @@
     "drops": {
       "title": "새 드롭",
       "syncing": "동기화 중…",
-      "live": "live"
+      "live": "live",
+      "detailCta": "자세히 보기"
     },
     "seed": {
       "codeReviewer": "시니어 코드 리뷰어",
