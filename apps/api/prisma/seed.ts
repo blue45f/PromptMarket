@@ -27,7 +27,7 @@ function slugify(title: string): string {
 }
 
 type SeedListing = {
-  authorKey: 'alice' | 'bob' | 'carol' | 'dave' | 'eve' | 'frank'
+  authorKey: 'alice' | 'bob' | 'carol' | 'dave' | 'eve' | 'frank' | 'grace' | 'heidi'
   title: string
   type:
     | 'PROMPT'
@@ -115,8 +115,26 @@ async function main() {
       bio: 'Polyglot prompt engineer — runs the same task across 4 LLMs and picks the best.',
     },
   })
+  const grace = await prisma.user.create({
+    data: {
+      email: 'grace@example.com',
+      username: 'grace',
+      passwordHash,
+      balanceCents: 2_000_000,
+      bio: 'Infra lead and data engineer. I buy premium marketplace assets to test pricing and payouts.',
+    },
+  })
+  const heidi = await prisma.user.create({
+    data: {
+      email: 'heidi@example.com',
+      username: 'heidi',
+      passwordHash,
+      balanceCents: 50000,
+      bio: 'Research-heavy founder. Uses prompt tooling and publishes practical templates.',
+    },
+  })
 
-  const userByKey = { alice, bob, carol, dave, eve, frank } as const
+  const userByKey = { alice, bob, carol, dave, eve, frank, grace, heidi } as const
 
   await prisma.platformSetting.createMany({
     data: [
@@ -1035,8 +1053,113 @@ You are GitHub Copilot generating code in this FastAPI service.
 - Don't catch \`Exception\` to swallow it. Catch specific exceptions or let them bubble.
 - Don't add a dependency without checking \`pyproject.toml\` first.`
 
+  const githubPrReviewerClaudeMd = `# CLAUDE.md for GitHub PR Reviews
+
+Review every pull request as if it's for production.
+
+## Hard constraints
+- Never invent failing tests; if a test is flaky, report the reproduction steps.
+- For any behavioral claim, link to a file path and line number.
+- Do not merge when secrets, SQL injection, auth bypass, or authorization holes remain.
+- Reject style-only PRs when there is no user-facing or behavioral value.
+
+## PR shape
+1. Read title + summary.
+2. Inspect changed files and identify architectural impact.
+3. Run the smallest safe check set (lint/test subset if touched files are known).
+4. Confirm migrations, schema changes, API contracts, and permissions.
+5. Return one concise verdict:
+   - Approve
+   - Request changes with concrete, reproducible issues
+   - Block with risk rationale
+`
+
+  const releaseReadinessSubagent = `You are a Release Readiness Subagent for product teams.
+
+# Role
+You review a release candidate for launch risk. You do not gate if issues are cosmetic only.
+
+# Inputs
+- diff summary
+- impacted service(s)
+- rollout date
+
+# Procedure
+1. Look for regressions and unrecoverable failure modes.
+2. Validate migration and rollback assumptions.
+3. Identify runtime risk in auth, billing, data writes, and jobs.
+4. Check release checklist completion.
+5. Assign risk by impact (P0/P1/P2/P3) with one evidence line each.
+6. Return a single summary with owner + due date.
+`
+
+  const featureFlagPrompt = `# Feature Flag Rollout Planner
+
+Given a feature idea, create a launch plan.
+
+## Output
+- Risk checklist (top 5)
+- Rollout phases (Dark Launch → Beta → GA)
+- Success metrics + rollback criteria
+- Owner and communication plan
+
+## Constraints
+- Keep rollout phases under 4
+- Keep copy short and explicit
+- Include a "do not ship" clause
+`
+
+  const redisMcpSpec = `{
+  "name": "redis",
+  "version": "1.0.0",
+  "description": "Read-only Redis MCP server for Claude/Codex/Cursor",
+  "command": "node",
+  "args": ["./redis.js"],
+  "env": {
+    "REDIS_URL": "redis://localhost:6379",
+    "REDIS_DB": "0"
+  },
+  "tools": [
+    {
+      "name": "redis_get",
+      "description": "Read value with JSON-aware parsing when possible.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string" }
+        },
+        "required": ["key"]
+      }
+    },
+    {
+      "name": "redis_ttl",
+      "description": "Read TTL for a key and return stale/expiry status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string" }
+        },
+        "required": ["key"]
+      }
+    }
+  ]
+}`
+
+  const sreAgentNote = `# SRE Incident Oncall Cheat-Sheet
+
+You are a senior SRE agent generating a concise triage prompt for a fresh incident.
+
+## Required output
+- Likely blast radius
+- Immediate containment action
+- Required data sources (logs, metrics, trace IDs)
+- One-line owner escalation ladder
+- Recovery ETA and postmortem kickoff template
+
+Tone: blunt, actionable, no fluff.`
+
   // ===========================================================================
-  // The listings (24 entries spanning all 8 types and all major vendors)
+  // The listings (30 entries spanning all 8 types and all major vendors)
   // ===========================================================================
   const listingsData: SeedListing[] = [
     // 1. SUBAGENT — Claude Opus 4.7 senior reviewer
@@ -1461,6 +1584,110 @@ You are GitHub Copilot generating code in this FastAPI service.
       priceCents: 299,
       coverEmoji: '🐍',
     },
+    // 25. PROMPT — Feature flag rollout planner
+    {
+      authorKey: 'heidi',
+      title: 'Feature Flag Rollout Planner Prompt',
+      type: 'PROMPT',
+      description:
+        'Generates a concrete rollout plan with dark launch, beta, GA phases, rollback criteria, and a clear owner matrix.',
+      body: featureFlagPrompt,
+      category: 'Product Management',
+      tags: 'feature-flags,release,rollout,planning',
+      models: 'gpt-5,claude-opus-4-7,gemini-2-5-pro',
+      technique: 'chain-of-thought',
+      difficulty: 'intermediate',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 499,
+      coverEmoji: '🚩',
+    },
+    // 26. AGENT_MD — SRE incident cheat-sheet
+    {
+      authorKey: 'grace',
+      title: 'SRE Incident Oncall Cheat-Sheet',
+      type: 'AGENT_MD',
+      description:
+        'A concise escalation-first triage template for fresh incidents: blast radius, containment, escalation ladder, and recovery ETA.',
+      body: sreAgentNote,
+      category: 'Operations',
+      tags: 'sre,incidents,oncall,runbook',
+      models: 'claude-opus-4-7,claude-sonnet-4-6',
+      difficulty: 'advanced',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 199,
+      coverEmoji: '🚨',
+    },
+    // 27. SUBAGENT — Release readiness reviewer
+    {
+      authorKey: 'heidi',
+      title: 'Release Readiness Subagent',
+      type: 'SUBAGENT',
+      description:
+        'Checks migration assumptions, rollback paths, and release checklist gaps before shipping. Outputs P0/P1/P2/P3 risks with owners.',
+      body: releaseReadinessSubagent,
+      category: 'Product Management',
+      tags: 'release-readiness,risk,subagent',
+      models: 'claude-opus-4-7,claude-code,gpt-5',
+      difficulty: 'advanced',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 1_200_000,
+      coverEmoji: '✅',
+    },
+    // 28. CLAUDE_MD — GitHub PR reviewer guide
+    {
+      authorKey: 'grace',
+      title: 'CLAUDE.md for GitHub PR Reviews',
+      type: 'CLAUDE_MD',
+      description:
+        'Guides PR-level review behavior: evidence-first triage, security-first rejection, and concrete request-changes language.',
+      body: githubPrReviewerClaudeMd,
+      category: 'Coding',
+      tags: 'claude-md,github,review,pr-quality',
+      models: 'claude-opus-4-7,claude-sonnet-4-6',
+      technique: 'checklist',
+      difficulty: 'intermediate',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 399,
+      coverEmoji: '🧑‍💻',
+    },
+    // 29. MCP_SERVER — Redis read-only tools
+    {
+      authorKey: 'grace',
+      title: 'Redis MCP Server',
+      type: 'MCP_SERVER',
+      description:
+        'Read-only Redis MCP server with key read, TTL, and bounded-safe guardrails for inspection workflows.',
+      body: redisMcpSpec,
+      category: 'MCP',
+      tags: 'mcp,redis,read-only,operations',
+      models: 'claude-code,cursor,copilot,any',
+      difficulty: 'intermediate',
+      license: 'Apache-2.0',
+      version: '1.0.0',
+      priceCents: 650,
+      coverEmoji: '🟥',
+    },
+    // 30. SKILL — SRE incident skill
+    {
+      authorKey: 'grace',
+      title: 'SRE Incident Response Skill',
+      type: 'SKILL',
+      description:
+        'A lightweight prompt bundle for codex-style oncall workflows: detect impact, triage fast, and produce deterministic remediation summaries.',
+      body: sreAgentNote,
+      category: 'Operations',
+      tags: 'sre,incident-response,skill',
+      models: 'claude-opus-4-7,claude-sonnet-4-6,gpt-5',
+      difficulty: 'advanced',
+      license: 'MIT',
+      version: '1.0.0',
+      priceCents: 0,
+      coverEmoji: '🛎️',
+    },
   ]
 
   // ===========================================================================
@@ -1494,7 +1721,7 @@ You are GitHub Copilot generating code in this FastAPI service.
   }
 
   // ===========================================================================
-  // Purchases (10) + balance + downloads adjustment
+  // Purchases (17) + balance + downloads adjustment
   // ===========================================================================
   const byTitle = (t: string) => createdListings.find((l) => l.title === t)!
 
@@ -1509,6 +1736,13 @@ You are GitHub Copilot generating code in this FastAPI service.
     { buyer: eve, listing: byTitle('/security-review Slash Command') },
     { buyer: frank, listing: byTitle('Gemini 2.5 Pro Long-Context Research Brief') },
     { buyer: bob, listing: byTitle('.cursorrules for TypeScript Monorepos') },
+    { buyer: bob, listing: byTitle('Postgres Schema Doc Skill') },
+    { buyer: heidi, listing: byTitle('Feature Flag Rollout Planner Prompt') },
+    { buyer: grace, listing: byTitle('Release Readiness Subagent') },
+    { buyer: dave, listing: byTitle('CLAUDE.md for GitHub PR Reviews') },
+    { buyer: frank, listing: byTitle('Redis MCP Server') },
+    { buyer: grace, listing: byTitle('SRE Incident Response Skill') },
+    { buyer: frank, listing: byTitle('SRE Incident Oncall Cheat-Sheet') },
   ]
   const defaultPlatformFeeBps = 1700
   const defaultPlatformFeeFloorCents = 0
@@ -1626,6 +1860,48 @@ You are GitHub Copilot generating code in this FastAPI service.
       listing: byTitle('.cursorrules for TypeScript Monorepos'),
       rating: 4,
       comment: 'Strict but defensible. The "no barrel files" rule alone has saved compile time.',
+    },
+    {
+      buyer: bob,
+      listing: byTitle('Postgres Schema Doc Skill'),
+      rating: 5,
+      comment:
+        'Great onboarding aid. The Mermaid ER and FK dump alone cut our onboarding time in half.',
+    },
+    {
+      buyer: heidi,
+      listing: byTitle('Feature Flag Rollout Planner Prompt'),
+      rating: 4,
+      comment:
+        'Exactly the plan shape we needed for controlled rollout. Very practical at the PM/eng sync boundary.',
+    },
+    {
+      buyer: grace,
+      listing: byTitle('Release Readiness Subagent'),
+      rating: 5,
+      comment:
+        'The P0/P1/P2/P3 output format is immediately useful for release meetings and release manager handoff.',
+    },
+    {
+      buyer: dave,
+      listing: byTitle('CLAUDE.md for GitHub PR Reviews'),
+      rating: 4,
+      comment:
+        'Good structure for review comments. Great to force evidence-first PR feedback and prevent hand-wavy rejections.',
+    },
+    {
+      buyer: frank,
+      listing: byTitle('Redis MCP Server'),
+      rating: 5,
+      comment:
+        'Simple schema and clean read-only operations. I can drop this into our ops runbook with zero tweaks.',
+    },
+    {
+      buyer: grace,
+      listing: byTitle('SRE Incident Response Skill'),
+      rating: 5,
+      comment:
+        'Makes incident triage responses coherent and reproducible, even at 3 a.m. shift change.',
     },
   ]
 
