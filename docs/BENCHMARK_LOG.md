@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-01T16:25 (UTC) — Round 142
+
+- **Benchmark**: 자체 — footer의 Anthology 라벨은 브랜드 장치이지만 정적인 텍스트라 사용자가 발견할 수 있는 작은 반응이 없었다. 이전 제안의 `vol.01 → vol.02` cycle을 접근 가능한 micro-interaction으로 마감한다.
+- **Shipped**: `FooterAnthologyLabel` 추가. hover, focus, click에서 `vol.01`과 `vol.02`가 순환하고 `aria-live`로 현재 라벨을 알린다. 한국어/영어 locale에 `anthologyVolumes`와 `anthologyCycleLabel`을 추가했다.
+- **Design**: footer의 기존 dark surface와 volt accent를 유지하면서 라벨을 작은 pill 컨트롤로 바꿨다. 레이아웃을 흔들지 않는 텍스트 교체만 사용하고, focus ring과 hover border로 조작 가능성을 명확히 했다.
+- **Tests**: `Layout.test.tsx`에 hover/click cycle 회귀 테스트 추가. `pnpm --filter @promptmarket/web test:run Layout.test.tsx`, `pnpm --filter @promptmarket/web typecheck`, `pnpm --filter @promptmarket/web test:run`, `pnpm --filter @promptmarket/web build` 통과.
+- **Visual check**: Playwright Python smoke로 포트 5175에서 footer까지 스크롤한 뒤 Anthology label hover 시 `vol.02`로 전환되는 것을 데스크톱 1440x900에서 확인했다.
+
 ## 2026-06-01T16:19 (UTC) — Round 141
 
 - **Benchmark**: 자체 — 알림 벨은 stub 상태로 남으면 사용자가 클릭해도 다음 행동이 없다. product register에서는 작은 글로벌 컨트롤일수록 읽음 상태, 접근성 라벨, 모바일 폭, 실제 이동 링크가 모두 맞아야 신뢰가 생긴다.

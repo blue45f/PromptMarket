@@ -15,6 +15,12 @@ vi.mock('react-i18next', () => ({
       if (key === 'footer.copyright' && options?.year) {
         return `© ${options.year} PromptMarket`
       }
+      if (key === 'footer.anthologyVolumes') {
+        return ['앤솔로지 · vol.01 · MMVI', '앤솔로지 · vol.02 · TOOLKIT']
+      }
+      if (key === 'footer.anthologyCycleLabel') {
+        return '앤솔로지 라벨 전환'
+      }
       return key.replace(/^[^:]*:/, '')
     },
     ready: true,
@@ -132,5 +138,18 @@ describe('Layout', () => {
     expect(thirdArg(6)).toBe(2)
     expect(thirdArg(7)).toBe(2)
     expect(thirdArg(8)).toBe(2)
+  })
+
+  it('cycles the footer anthology volume on hover and click', () => {
+    render(<TestLayout />)
+    const cycle = screen.getByRole('button', { name: '앤솔로지 라벨 전환' })
+
+    expect(cycle.textContent).toContain('vol.01')
+
+    fireEvent.mouseEnter(cycle)
+    expect(cycle.textContent).toContain('vol.02')
+
+    fireEvent.click(cycle)
+    expect(cycle.textContent).toContain('vol.01')
   })
 })

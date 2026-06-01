@@ -39,6 +39,8 @@
   "skipToContent": "Skip to content",
   "footer": {
     "anthology": "Anthology · vol.01 · MMVI",
+    "anthologyCycleLabel": "Cycle anthology label",
+    "anthologyVolumes": ["Anthology · vol.01 · MMVI", "Anthology · vol.02 · TOOLKIT"],
     "about": "A catalog for the agent era. Buy and sell prompts, skills, and agents proven against the models that ship real production.",
     "registerCta": "List your work",
     "tagline": "For the agent era · handcrafted",

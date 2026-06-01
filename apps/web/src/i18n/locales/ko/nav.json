@@ -39,6 +39,8 @@
   "skipToContent": "메인 콘텐츠로 건너뛰기",
   "footer": {
     "anthology": "앤솔로지 · vol.01 · MMVI",
+    "anthologyCycleLabel": "앤솔로지 라벨 전환",
+    "anthologyVolumes": ["앤솔로지 · vol.01 · MMVI", "앤솔로지 · vol.02 · TOOLKIT"],
     "about": "에이전트 시대를 위한 카탈로그. 실제 프로덕션에서 동작하는 모델용으로 검증된 프롬프트, 스킬, 에이전트를 사고팝니다.",
     "registerCta": "내 작업 등록",
     "tagline": "에이전트 시대를 위해 · 손맛으로 빚었습니다",

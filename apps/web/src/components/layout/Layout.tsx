@@ -127,10 +127,7 @@ function SiteFooter() {
 
           {/* Right: subscribe / about */}
           <div className="lg:col-span-5 lg:pl-10 lg:border-l lg:border-bone/15 flex flex-col gap-5">
-            <div className="inline-flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-volt-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-volt-500 volt-pulse" />
-              {t('footer.anthology')}
-            </div>
+            <FooterAnthologyLabel />
             <p className="text-bone-soft text-[1.05rem] leading-relaxed max-w-[44ch]">
               {t('footer.about')}
             </p>
@@ -205,6 +202,35 @@ function SiteFooter() {
         </div>
       </div>
     </footer>
+  )
+}
+
+function FooterAnthologyLabel() {
+  const { t } = useTranslation('nav')
+  const [index, setIndex] = useState(0)
+  const rawLabels = t('footer.anthologyVolumes', { returnObjects: true }) as unknown
+  const labels =
+    Array.isArray(rawLabels) && rawLabels.every((label) => typeof label === 'string')
+      ? rawLabels
+      : [t('footer.anthology')]
+  const current = labels[index % labels.length] ?? t('footer.anthology')
+
+  function cycle() {
+    setIndex((currentIndex) => (currentIndex + 1) % labels.length)
+  }
+
+  return (
+    <button
+      type="button"
+      onMouseEnter={cycle}
+      onFocus={cycle}
+      onClick={cycle}
+      aria-label={t('footer.anthologyCycleLabel')}
+      className="group self-start inline-flex items-center gap-2 rounded-full border border-bone/10 bg-bone/[0.04] px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-volt-300 hover:border-volt-300/40 hover:bg-bone/[0.07] motion-safe:transition ease-expo focus-volt"
+    >
+      <span className="w-1.5 h-1.5 rounded-full bg-volt-500 volt-pulse" aria-hidden />
+      <span aria-live="polite">{current}</span>
+    </button>
   )
 }
 
