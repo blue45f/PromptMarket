@@ -91,7 +91,7 @@
     "hint": "원하는 유형, 모델, 가격만 골라 결과를 빠르게 좁혀보세요.",
     "summary": {
       "empty": "조건 없음",
-      "active": "조건 {{count}}개"
+      "active_other": "조건 {{count}}개"
     },
     "sections": {
       "type": "타입",

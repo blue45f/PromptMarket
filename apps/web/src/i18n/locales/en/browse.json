@@ -94,7 +94,8 @@
     "hint": "Choose a type, model, or price to narrow the catalog quickly.",
     "summary": {
       "empty": "No filters",
-      "active": "{{count}} selected"
+      "active_one": "{{count}} filter selected",
+      "active_other": "{{count}} filters selected"
     },
     "sections": {
       "type": "Type",

@@ -369,7 +369,10 @@ function EmptyLibraryWithRecs() {
             className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.86rem] font-medium tracking-tight focus-volt lift-on-hover"
           >
             {t('library.empty.action')}
-            <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+            <ArrowUpRight
+              aria-hidden
+              className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+            />
           </Link>
         }
       />
