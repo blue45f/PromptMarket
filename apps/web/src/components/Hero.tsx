@@ -271,7 +271,7 @@ function RotatingPhrase({ phrases }: { phrases: string[] }) {
       <span aria-hidden className="w-3 h-px bg-ink-mute dark:bg-bone-mute" />
       <span
         key={idx}
-        className="inline-block motion-safe:[animation:fadeUp_0.6s_cubic-bezier(0.22,1,0.36,1)_both]"
+        className="inline-block motion-safe:[animation:fadeUp_0.6s_var(--ease-smooth)_both]"
       >
         {phrases[idx]}
       </span>

@@ -662,6 +662,7 @@
   /* Expo easing — maps to design-system ease-out-expo (DS-007) */
   :root {
     --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
   }
   .ease-expo {
     transition-timing-function: var(--ease-expo);

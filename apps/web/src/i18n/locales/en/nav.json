@@ -10,7 +10,8 @@
   "admin": "Admin",
   "notifications": {
     "label": "Notifications",
-    "labelWithCount": "Notifications, {{count}} unread",
+    "labelWithCount_one": "Notifications, {{count}} unread",
+    "labelWithCount_other": "Notifications, {{count}} unread",
     "labelNoUnread": "Notifications, none unread",
     "panelTitle": "Notifications",
     "panelBody_one": "{{count}} new update waiting",

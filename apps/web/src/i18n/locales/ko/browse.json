@@ -62,8 +62,8 @@
     "anyModel": "모델 비종속",
     "modelsPlus_one": "{{models}} 외 {{count}}개",
     "modelsPlus_other": "{{models}} 외 {{count}}개",
-    "downloads": "다운로드 {{count}}회",
-    "reviews": "리뷰 {{count}}개",
+    "downloads_other": "다운로드 {{count}}회",
+    "reviews_other": "리뷰 {{count}}개",
     "rows": {
       "item": "항목",
       "price": "가격",
@@ -81,7 +81,7 @@
     "label": "페이지 탐색"
   },
   "describe": {
-    "typesCount": "타입 {{count}}종",
+    "typesCount_other": "타입 {{count}}종",
     "free": "무료",
     "paid": "유료"
   },

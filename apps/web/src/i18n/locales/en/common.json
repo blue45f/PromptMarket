@@ -181,7 +181,8 @@
     "model": {
       "any": "Model-agnostic, works wherever you use it",
       "single": "Tuned specifically for {{model}}",
-      "multi": "Optimized for {{count}} models, great for comparison experiments"
+      "multi_one": "Optimized for {{count}} model",
+      "multi_other": "Optimized for {{count}} models, great for comparison experiments"
     },
     "categoryLine": "Often work on {{category}} category tasks"
   },

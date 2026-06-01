@@ -10,7 +10,7 @@
   "admin": "관리자",
   "notifications": {
     "label": "알림",
-    "labelWithCount": "알림, {{count}}건 새 알림",
+    "labelWithCount_other": "알림, {{count}}건 새 알림",
     "labelNoUnread": "알림, 새 알림 없음",
     "panelTitle": "알림",
     "panelBody_other": "{{count}}건의 새 알림",

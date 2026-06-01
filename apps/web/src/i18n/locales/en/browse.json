@@ -84,7 +84,8 @@
     "label": "Pagination"
   },
   "describe": {
-    "typesCount": "{{count}} types",
+    "typesCount_one": "{{count}} type",
+    "typesCount_other": "{{count}} types",
     "free": "Free",
     "paid": "Paid"
   },
