@@ -8,6 +8,11 @@
   "register": "회원가입",
   "logout": "로그아웃",
   "admin": "관리자",
+  "notifications": {
+    "label": "알림",
+    "panelTitle": "알림",
+    "panelBody": "알림 센터는 다음 작업에서 연결됩니다."
+  },
   "mainLabel": "주 내비게이션",
   "mobileLabel": "모바일 내비게이션",
   "openMenu": "메뉴 열기",

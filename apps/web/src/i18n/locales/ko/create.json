@@ -52,6 +52,10 @@
     "publishing": "게시 중…",
     "publish": "리스팅 게시"
   },
+  "toast": {
+    "title": "게시 완료 — 미리보기",
+    "viewListing": "리스팅 보기"
+  },
   "preview": {
     "eyebrow": "라이브 미리보기",
     "body": "본문",

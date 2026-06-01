@@ -40,6 +40,7 @@ import ListingQualityChecklist, {
   evaluateListingQuality,
 } from '@components/ListingQualityChecklist'
 import { cn } from '@utils/cn'
+import { formatPrice, modelLabel } from '@utils/format'
 import type { ListingCard as ListingCardType } from '@/types'
 
 const QUICK_EMOJIS = ['✨', '🤖', '🧠', '🎨', '📝', '🚀', '⚡', '🛠️', '🧩', '🔌']
@@ -101,8 +102,9 @@ const DEFAULTS: FormShape = {
 
 export default function CreateListingPage() {
   const { t } = useTranslation('create')
+  const { t: tCommon } = useTranslation('common')
   const navigate = useNavigate()
-  const createMut = useCreateListing()
+  const createMut = useCreateListing({ showSuccessToast: false })
   const [tab, setTab] = useState<'basics' | 'content' | 'metadata'>('basics')
 
   usePageMeta({
@@ -235,6 +237,18 @@ export default function CreateListingPage() {
 
       try {
         const res = await createMut.mutateAsync(result.data)
+        const meta = LISTING_TYPE_META[res.type]
+        toast.custom(() => (
+          <PublishListingPreviewToast
+            listing={res}
+            heading={t('toast.title')}
+            actionLabel={t('toast.viewListing')}
+            priceLabel={
+              res.priceCents === 0 ? tCommon('labels.free') : formatPrice(res.priceCents ?? 0)
+            }
+            typeLabel={`${meta.emoji} ${meta.label}`}
+          />
+        ))
         try {
           window.localStorage.removeItem(DRAFT_KEY)
         } catch {
@@ -809,3 +823,55 @@ const TrendingCategoryHint = memo(function TrendingCategoryHint({
     </div>
   )
 })
+
+function PublishListingPreviewToast({
+  listing,
+  heading,
+  actionLabel,
+  priceLabel,
+  typeLabel,
+}: {
+  listing: ListingCardType
+  heading: string
+  actionLabel: string
+  priceLabel: string
+  typeLabel: string
+}) {
+  const previewModels = listing.models ?? []
+  const previewLabel =
+    previewModels.length > 0
+      ? `${previewModels
+          .slice(0, 2)
+          .map((m) => modelLabel(m))
+          .join(', ')}${previewModels.length > 2 ? ` +${previewModels.length - 2}` : ''}`
+      : listing.category
+
+  return (
+    <article className="w-[min(92vw,24rem)] max-h-[20rem] overflow-hidden rounded-xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub shadow-[0_16px_40px_-24px_oklch(0.16_0.03_290_/_0.45)]">
+      <header className="px-3.5 py-2 border-b border-line dark:border-night-line flex items-center justify-between gap-2 text-[0.72rem]">
+        <span className="font-medium text-ink dark:text-bone">{heading}</span>
+        <span className="font-mono text-[0.66rem] text-ink-mute dark:text-bone-mute">
+          {typeLabel}
+        </span>
+      </header>
+      <div className="px-3.5 py-3 space-y-2">
+        <p className="text-[0.94rem] leading-tight font-semibold text-ink dark:text-bone line-clamp-2">
+          {listing.title}
+        </p>
+        <p className="text-[0.76rem] leading-relaxed text-ink-soft dark:text-bone-soft line-clamp-2">
+          {listing.description}
+        </p>
+        <p className="text-[0.7rem] font-mono text-ink-mute dark:text-bone-mute">{previewLabel}</p>
+      </div>
+      <footer className="px-3.5 pb-3 pt-2 flex items-center justify-between gap-2 text-[0.74rem]">
+        <span className="font-mono font-medium text-volt-700 dark:text-volt-300">{priceLabel}</span>
+        <a
+          href={`/listings/${listing.slug}`}
+          className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-volt-500 text-ink text-[0.72rem] font-medium motion-safe:transition ease-expo hover:bg-volt-400"
+        >
+          {actionLabel}
+        </a>
+      </footer>
+    </article>
+  )
+}

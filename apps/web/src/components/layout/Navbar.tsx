@@ -16,6 +16,7 @@ import { useAuthStore } from '@store/auth'
 import SearchBar from '@components/SearchBar'
 import ThemeToggle from '@components/ThemeToggle'
 import LanguageToggle from '@components/LanguageToggle'
+import NotificationBell from '@components/NotificationBell'
 import { formatDollars } from '@utils/format'
 import { cn } from '@utils/cn'
 
@@ -147,6 +148,7 @@ export default function Navbar() {
             aria-hidden
           />
 
+          {token && <NotificationBell />}
           <LanguageToggle />
           <ThemeToggle />
 
@@ -200,6 +202,7 @@ export default function Navbar() {
 
         {/* Mobile */}
         <div className="ml-auto md:hidden flex items-center gap-1">
+          {token && <NotificationBell />}
           <LanguageToggle />
           <ThemeToggle />
           <button

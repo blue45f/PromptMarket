@@ -51,6 +51,26 @@ describe('Navbar', () => {
     expect(screen.getByRole('button', { name: /로그아웃/i })).toBeTruthy()
   })
 
+  it('shows notification bell when authenticated', () => {
+    ;(useAuthStore as unknown as Mock).mockReturnValue({
+      token: 'tok',
+      user: { id: 'u1', username: 'alice', balanceCents: 5000 },
+      logout: vi.fn(),
+    })
+    render(withProviders(<Navbar />))
+    expect(screen.getAllByRole('button', { name: /알림|notifications/i }).length).toBeGreaterThan(0)
+  })
+
+  it('does not show notification bell when unauthenticated', () => {
+    ;(useAuthStore as unknown as Mock).mockReturnValue({
+      token: null,
+      user: null,
+      logout: vi.fn(),
+    })
+    render(withProviders(<Navbar />))
+    expect(screen.queryByRole('button', { name: /알림|notifications/i })).toBeNull()
+  })
+
   it('shows user balance formatted as currency when authenticated', () => {
     ;(useAuthStore as unknown as Mock).mockReturnValue({
       token: 'tok',

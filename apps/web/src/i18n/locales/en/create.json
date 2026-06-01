@@ -52,6 +52,10 @@
     "publishing": "Publishing…",
     "publish": "Publish listing"
   },
+  "toast": {
+    "title": "Published — quick preview",
+    "viewListing": "View listing"
+  },
   "preview": {
     "eyebrow": "Live preview",
     "body": "Body",

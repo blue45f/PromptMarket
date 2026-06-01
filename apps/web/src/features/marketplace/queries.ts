@@ -212,7 +212,8 @@ export function useRegister() {
   })
 }
 
-export function useCreateListing() {
+export function useCreateListing(options: { showSuccessToast?: boolean } = {}) {
+  const { showSuccessToast = true } = options
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (input: CreateListingInput) =>
@@ -221,7 +222,7 @@ export function useCreateListing() {
       void qc.invalidateQueries({ queryKey: ['listings'] })
       void qc.invalidateQueries({ queryKey: meListingsKey })
       void qc.invalidateQueries({ queryKey: statsKey })
-      toast.success(i18n.t('common:toasts.listingPublished'))
+      if (showSuccessToast) toast.success(i18n.t('common:toasts.listingPublished'))
     },
     onError: (err) => {
       toast.error(getErrorMessage(err))

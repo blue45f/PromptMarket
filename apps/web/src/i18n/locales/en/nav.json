@@ -8,6 +8,11 @@
   "register": "Sign up",
   "logout": "Log out",
   "admin": "Admin",
+  "notifications": {
+    "label": "Notifications",
+    "panelTitle": "Notifications",
+    "panelBody": "Notification center will be connected in the next iteration."
+  },
   "mainLabel": "Main navigation",
   "mobileLabel": "Mobile navigation",
   "openMenu": "Open menu",
