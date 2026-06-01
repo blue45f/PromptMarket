@@ -57,6 +57,11 @@
     "viewListing": "리스팅 보기"
   },
   "preview": {
+    "layoutLabel": "미리보기 배치",
+    "layout": {
+      "sidebar": "사이드바",
+      "full": "전체 너비"
+    },
     "eyebrow": "라이브 미리보기",
     "body": "본문",
     "titlePlaceholder": "리스팅 제목",

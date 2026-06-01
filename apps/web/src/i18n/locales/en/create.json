@@ -57,6 +57,11 @@
     "viewListing": "View listing"
   },
   "preview": {
+    "layoutLabel": "Preview layout",
+    "layout": {
+      "sidebar": "Sidebar",
+      "full": "Full width"
+    },
     "eyebrow": "Live preview",
     "body": "Body",
     "titlePlaceholder": "Your listing title",

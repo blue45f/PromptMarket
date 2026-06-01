@@ -89,6 +89,27 @@ describe('CreateListingPage', () => {
     expect(screen.getByRole('tab', { name: '메타데이터' })).toBeTruthy()
   })
 
+  it('toggles the preview panel between sidebar and full-width layout', () => {
+    renderPage()
+    const sidebarLabel = i18n.t('preview.layout.sidebar', { ns: 'create' })
+    const fullLabel = i18n.t('preview.layout.full', { ns: 'create' })
+
+    const sidebarButton = screen.getByRole('button', { name: sidebarLabel })
+    const fullButton = screen.getByRole('button', { name: fullLabel })
+
+    expect(sidebarButton.getAttribute('aria-pressed')).toBe('true')
+    expect(fullButton.getAttribute('aria-pressed')).toBe('false')
+
+    const form = screen.getByRole('form')
+    expect(form.getAttribute('data-preview-layout')).toBe('sidebar')
+
+    fireEvent.click(fullButton)
+
+    expect(sidebarButton.getAttribute('aria-pressed')).toBe('false')
+    expect(fullButton.getAttribute('aria-pressed')).toBe('true')
+    expect(form.getAttribute('data-preview-layout')).toBe('full')
+  })
+
   it('shows the title input on the basics tab', () => {
     renderPage()
     const input = document.querySelector('input[name="title"]') as HTMLInputElement | null

@@ -106,6 +106,8 @@ export default function CreateListingPage() {
   const navigate = useNavigate()
   const createMut = useCreateListing({ showSuccessToast: false })
   const [tab, setTab] = useState<'basics' | 'content' | 'metadata'>('basics')
+  const [previewLayout, setPreviewLayout] = useState<'sidebar' | 'full'>('sidebar')
+  const isSidebarPreview = previewLayout === 'sidebar'
 
   usePageMeta({
     title: t('meta.title'),
@@ -362,6 +364,42 @@ export default function CreateListingPage() {
         <p className="text-ink-soft dark:text-bone-soft max-w-[58ch]">{t('header.subtitle')}</p>
       </header>
 
+      <div className="mb-5 flex items-center justify-end gap-2">
+        <span className="sr-only">{t('preview.layoutLabel')}</span>
+        <div
+          role="group"
+          aria-label={t('preview.layoutLabel')}
+          className="inline-flex gap-1 p-1 rounded-full bg-canvas-sub border border-line dark:border-night-line"
+        >
+          <button
+            type="button"
+            onClick={() => setPreviewLayout('sidebar')}
+            aria-pressed={isSidebarPreview}
+            className={cn(
+              'px-3 py-1.5 rounded-full text-xs sm:text-[0.75rem] font-medium motion-safe:transition ease-expo',
+              isSidebarPreview
+                ? 'bg-ink text-bone dark:bg-bone dark:text-ink'
+                : 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone'
+            )}
+          >
+            {t('preview.layout.sidebar')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setPreviewLayout('full')}
+            aria-pressed={!isSidebarPreview}
+            className={cn(
+              'px-3 py-1.5 rounded-full text-xs sm:text-[0.75rem] font-medium motion-safe:transition ease-expo',
+              !isSidebarPreview
+                ? 'bg-ink text-bone dark:bg-bone dark:text-ink'
+                : 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone'
+            )}
+          >
+            {t('preview.layout.full')}
+          </button>
+        </div>
+      </div>
+
       {draftHydrated && !draftDismissed && (
         <div
           role="status"
@@ -412,7 +450,11 @@ export default function CreateListingPage() {
         onSubmit={onSubmit}
         noValidate
         aria-labelledby="create-listing-heading"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7"
+        data-preview-layout={previewLayout}
+        className={cn(
+          'grid grid-cols-1 gap-6',
+          isSidebarPreview ? 'lg:grid-cols-2 lg:gap-7' : 'lg:gap-6'
+        )}
       >
         <div className="rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-6 space-y-5">
           <Tabs.Root value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
@@ -682,7 +724,9 @@ export default function CreateListingPage() {
           </div>
         </div>
 
-        <div className="lg:sticky lg:top-24 h-fit space-y-4">
+        <div
+          className={cn('h-fit space-y-4', isSidebarPreview ? 'lg:sticky lg:top-24' : 'lg:mt-0')}
+        >
           <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
             <span aria-hidden className="w-5 h-px bg-volt-500" />
             {t('preview.eyebrow')}
