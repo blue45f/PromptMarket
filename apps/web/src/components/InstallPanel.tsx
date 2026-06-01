@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useRef, useEffect } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -85,6 +85,13 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
 
   const [current, setCurrent] = useState<string>(targets[0]?.id ?? 'curl')
   const [copied, setCopied] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    },
+    []
+  )
 
   const active = targets.find((t) => t.id === current) ?? targets[0]
   if (!active) return null
@@ -94,7 +101,8 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
     try {
       await navigator.clipboard.writeText(active.command)
       setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
+      if (timerRef.current) clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => setCopied(false), 1500)
     } catch {
       /* clipboard denied — keep silent */
     }
