@@ -2,16 +2,26 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import * as Dialog from '@radix-ui/react-dialog'
-import { ArrowRight, Compass, PlusCircle, Search, ShieldCheck, Sparkles, User } from 'lucide-react'
+import {
+  ArrowRight,
+  Compass,
+  Filter,
+  Heart,
+  PlusCircle,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  User,
+} from 'lucide-react'
 import { LISTING_TYPE_META } from '@promptmarket/shared'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { listingsKey, listingKey } from '@features/marketplace/queryKeys'
 import { api } from '@services/api'
 import { useDebounce } from '@hooks/useDebounce'
 import { useWishlist } from '@hooks/useWishlist'
+import { useSavedFilters } from '@hooks/useSavedFilters'
 import { useSearchHistory } from '@hooks/useSearchHistory'
 import type { ListingDetailResponse, ListingsListResponse } from '@/types'
-import { Heart } from 'lucide-react'
 import { formatPrice } from '@utils/format'
 import { useAuthStore } from '@store/auth'
 import { cn } from '@utils/cn'
@@ -159,9 +169,11 @@ export default function CommandPalette() {
   // Wishlist surfacing — hydrate up to 5 saved slugs so visitors can jump
   // from the palette into a previously saved listing.
   const { slugs: wishlistSlugs } = useWishlist()
+  const { entries: savedFilterEntries } = useSavedFilters()
   const history = useSearchHistory()
   const showHistory = !trimmed && history.entries.length > 0
   const visibleWishlist = wishlistSlugs.slice(0, 5)
+  const visibleSavedFilters = trimmed ? [] : savedFilterEntries
   const wishlistResults = useQueries({
     queries: debouncedQ
       ? []
@@ -187,7 +199,8 @@ export default function CommandPalette() {
   }, [trimmed, token, user?.isAdmin, t])
 
   // Flat-index navigation across all sections.
-  const total = actions.length + wishlistListings.length + listings.length
+  const total =
+    actions.length + wishlistListings.length + visibleSavedFilters.length + listings.length
 
   useEffect(() => {
     if (active >= total) setActive(Math.max(0, total - 1))
@@ -225,13 +238,17 @@ export default function CommandPalette() {
         } else if (active < actions.length + wishlistListings.length) {
           const w = wishlistListings[active - actions.length]
           if (w) go(`/listings/${w.slug}`)
+        } else if (active < actions.length + wishlistListings.length + visibleSavedFilters.length) {
+          const f = visibleSavedFilters[active - actions.length - wishlistListings.length]
+          if (f) go(`/browse?${f.search}`)
         } else {
-          const l = listings[active - actions.length - wishlistListings.length]
+          const l =
+            listings[active - actions.length - wishlistListings.length - visibleSavedFilters.length]
           if (l) go(`/listings/${l.slug}`)
         }
       }
     },
-    [active, total, actions, wishlistListings, listings, go]
+    [active, total, actions, wishlistListings, visibleSavedFilters, listings, go]
   )
 
   return (
@@ -379,13 +396,36 @@ export default function CommandPalette() {
               </Section>
             )}
 
+            {!trimmed && visibleSavedFilters.length > 0 && (
+              <Section label={t('palette.groups.savedFilters')}>
+                {visibleSavedFilters.map((f, i) => {
+                  const rowIdx = actions.length + wishlistListings.length + i
+                  return (
+                    <Row
+                      key={f.search}
+                      active={rowIdx === active}
+                      href={`/browse?${f.search}`}
+                      go={go}
+                      setActive={setActive}
+                      IconComponent={Filter}
+                      iconClassName="w-3.5 h-3.5"
+                      title={f.label}
+                      subtitle={`?${f.search}`}
+                      rowIndex={rowIdx}
+                    />
+                  )
+                })}
+              </Section>
+            )}
+
             {listings.length > 0 && (
               <Section
                 label={trimmed ? t('palette.groups.listings') : t('palette.groups.topListings')}
               >
                 {listings.map((l, i) => {
                   const meta = LISTING_TYPE_META[l.type]
-                  const rowIdx = actions.length + wishlistListings.length + i
+                  const rowIdx =
+                    actions.length + wishlistListings.length + visibleSavedFilters.length + i
                   return (
                     <Row
                       key={l.id}
