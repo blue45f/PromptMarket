@@ -269,7 +269,6 @@ const ListingCard = memo(function ListingCard({
                 className="inline-flex items-center gap-0.5"
                 aria-label={t('listing.downloadsLabel', {
                   count: listing.downloads ?? 0,
-                  defaultValue: '{{count}} downloads',
                 })}
               >
                 <Download className="w-3.5 h-3.5" aria-hidden />

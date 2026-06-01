@@ -26,6 +26,7 @@ export default function FeaturedCarousel({ items, loading }: FeaturedCarouselPro
         className="pointer-events-none absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-canvas dark:from-night to-transparent z-10"
       />
       <div
+        tabIndex={0}
         className="flex gap-4 lg:gap-5 overflow-x-auto snap-x snap-mandatory pb-5 scrollbar-hide"
         role="region"
         aria-label={t('carousel.aria')}

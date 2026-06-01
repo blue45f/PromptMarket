@@ -61,7 +61,6 @@
     "remove": "Remove from compare: {{title}}",
     "none": "No signals",
     "anyModel": "Model agnostic",
-    "modelsPlus": "{{models}} + {{count}} more",
     "modelsPlus_one": "{{models}} + {{count}} more",
     "modelsPlus_other": "{{models}} + {{count}} more",
     "downloads_one": "{{count}} download",
@@ -92,6 +91,11 @@
   "panel": {
     "title": "Filters",
     "reset": "Clear all",
+    "hint": "Choose a type, model, or price to narrow the catalog quickly.",
+    "summary": {
+      "empty": "No filters",
+      "active": "{{count}} selected"
+    },
     "sections": {
       "type": "Type",
       "model": "Model",

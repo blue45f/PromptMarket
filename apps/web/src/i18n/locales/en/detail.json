@@ -141,13 +141,11 @@
       "locked": "Needs body access"
     },
     "models": {
-      "count": "{{count}} models",
       "count_one": "{{count}} model",
       "count_other": "{{count}} models",
       "any": "Model agnostic"
     },
     "variables": {
-      "count": "{{count}} slots",
       "count_one": "{{count}} slot",
       "count_other": "{{count}} slots",
       "empty": "No extra inputs"

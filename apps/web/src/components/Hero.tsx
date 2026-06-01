@@ -143,7 +143,10 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
           </div>
 
           {/* Live drops marquee — right column */}
-          <aside className="lg:col-span-4 xl:col-span-4 relative min-w-0 animate-fade-up stagger-3">
+          <aside
+            aria-label={t('hero.drops.title')}
+            className="lg:col-span-4 xl:col-span-4 relative min-w-0 animate-fade-up stagger-3"
+          >
             <DropsMarquee items={drops} loading={recentPending} t={t} />
           </aside>
         </div>

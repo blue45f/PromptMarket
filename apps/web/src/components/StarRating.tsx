@@ -91,7 +91,7 @@ export default function StarRating({
       )}
       {!showLabel && typeof count === 'number' && (
         <span
-          aria-label={t('rating.reviewCount', { count, defaultValue: '{{count}} reviews' })}
+          aria-label={t('rating.reviewCount', { count })}
           className="text-ink-mute dark:text-bone-mute text-xs font-mono"
         >
           ({count})
