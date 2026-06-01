@@ -227,8 +227,8 @@ export class AdminService {
     }
   }
 
-  private async upsertSetting(key: string, intValue: number) {
-    await this.prisma.platformSetting.upsert({
+  private upsertSetting(key: string, intValue: number) {
+    return this.prisma.platformSetting.upsert({
       where: { key },
       create: { key, intValue },
       update: { intValue },
@@ -290,31 +290,42 @@ export class AdminService {
       )
     }
 
+    const pendingWrites: Array<ReturnType<AdminService['upsertSetting']>> = []
+
     if (input.platformFeeBps !== undefined) {
-      await this.upsertSetting(AdminService.PLATFORM_FEE_BPS_KEY, nextPlatformFeeBps)
+      pendingWrites.push(this.upsertSetting(AdminService.PLATFORM_FEE_BPS_KEY, nextPlatformFeeBps))
     }
 
     if (input.premiumFeeBps !== undefined) {
-      await this.upsertSetting(AdminService.PREMIUM_FEE_BPS_KEY, nextPremiumFeeBps)
+      pendingWrites.push(this.upsertSetting(AdminService.PREMIUM_FEE_BPS_KEY, nextPremiumFeeBps))
     }
 
     if (input.ultraPremiumFeeBps !== undefined) {
-      await this.upsertSetting(AdminService.ULTRA_PREMIUM_FEE_BPS_KEY, nextUltraPremiumFeeBps)
+      pendingWrites.push(
+        this.upsertSetting(AdminService.ULTRA_PREMIUM_FEE_BPS_KEY, nextUltraPremiumFeeBps)
+      )
     }
 
     if (input.ultraPremiumThresholdCents !== undefined) {
-      await this.upsertSetting(
-        AdminService.ULTRA_PREMIUM_THRESHOLD_KEY,
-        nextUltraPremiumThresholdCents
+      pendingWrites.push(
+        this.upsertSetting(AdminService.ULTRA_PREMIUM_THRESHOLD_KEY, nextUltraPremiumThresholdCents)
       )
     }
 
     if (input.premiumThresholdCents !== undefined) {
-      await this.upsertSetting(AdminService.PREMIUM_THRESHOLD_KEY, nextPremiumThresholdCents)
+      pendingWrites.push(
+        this.upsertSetting(AdminService.PREMIUM_THRESHOLD_KEY, nextPremiumThresholdCents)
+      )
     }
 
     if (input.platformFeeFloorCents !== undefined) {
-      await this.upsertSetting(AdminService.PLATFORM_FEE_FLOOR_KEY, nextPlatformFeeFloorCents)
+      pendingWrites.push(
+        this.upsertSetting(AdminService.PLATFORM_FEE_FLOOR_KEY, nextPlatformFeeFloorCents)
+      )
+    }
+
+    if (pendingWrites.length > 0) {
+      await this.prisma.$transaction(pendingWrites)
     }
 
     return this.getPlatformFeeSetting()

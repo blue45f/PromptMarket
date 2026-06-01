@@ -5,6 +5,7 @@ import { AdminService } from './admin.service'
 type PrismaMock = ConstructorParameters<typeof AdminService>[0]
 
 type AdminPrismaOverrides = Partial<{
+  $transaction: ReturnType<typeof vi.fn>
   platformSetting: Partial<{
     findMany: ReturnType<typeof vi.fn>
     upsert: ReturnType<typeof vi.fn>
@@ -32,8 +33,12 @@ function makePrisma(overrides: AdminPrismaOverrides = {}) {
   const defaultListing = {
     findMany: vi.fn().mockResolvedValue([]),
   }
+  const defaultTransaction = vi
+    .fn()
+    .mockImplementation((operations: Array<Promise<unknown>>) => Promise.all(operations))
 
   return {
+    $transaction: defaultTransaction,
     platformSetting: {
       ...defaultPlatformSetting,
       ...overrides.platformSetting,
@@ -179,6 +184,57 @@ describe('AdminService.getPlatform settings', () => {
     ).rejects.toBeInstanceOf(BadRequestException)
 
     expect(upsertSpy).not.toHaveBeenCalled()
+  })
+
+  it('writes multiple revenue settings in one transaction', async () => {
+    const rows = [
+      { key: 'platform_fee_bps', intValue: 1700 },
+      { key: 'platform_fee_premium_bps', intValue: 1400 },
+      { key: 'platform_fee_premium_threshold_cents', intValue: 3_000 },
+      { key: 'platform_fee_ultra_premium_bps', intValue: 1200 },
+      { key: 'platform_fee_ultra_premium_threshold_cents', intValue: 10_000_00 },
+      { key: 'platform_fee_floor_cents', intValue: 0 },
+    ]
+    const upsertSpy = vi.fn().mockResolvedValue({})
+    const transactionSpy = vi.fn((operations: Array<Promise<unknown>>) => Promise.all(operations))
+
+    const prisma = makePrisma({
+      platformSetting: {
+        findMany: vi.fn().mockResolvedValue(rows),
+        upsert: upsertSpy,
+      },
+      $transaction: transactionSpy,
+    })
+
+    const svc = new AdminService(prisma)
+
+    await svc.updateRevenueSettings({
+      platformFeeBps: 900,
+      ultraPremiumFeeBps: 1100,
+      premiumThresholdCents: 8000,
+    })
+
+    expect(transactionSpy).toHaveBeenCalledTimes(1)
+    const [operations] = transactionSpy.mock.calls[0] as [Array<Promise<unknown>>]
+    expect(Array.isArray(operations)).toBe(true)
+    expect(operations).toHaveLength(3)
+
+    expect(upsertSpy).toHaveBeenCalledTimes(3)
+    expect(upsertSpy).toHaveBeenNthCalledWith(1, {
+      where: { key: 'platform_fee_bps' },
+      create: { key: 'platform_fee_bps', intValue: 900 },
+      update: { intValue: 900 },
+    })
+    expect(upsertSpy).toHaveBeenNthCalledWith(2, {
+      where: { key: 'platform_fee_ultra_premium_bps' },
+      create: { key: 'platform_fee_ultra_premium_bps', intValue: 1100 },
+      update: { intValue: 1100 },
+    })
+    expect(upsertSpy).toHaveBeenNthCalledWith(3, {
+      where: { key: 'platform_fee_premium_threshold_cents' },
+      create: { key: 'platform_fee_premium_threshold_cents', intValue: 8000 },
+      update: { intValue: 8000 },
+    })
   })
 
   it('updates ultra premium policy values when explicitly provided', async () => {
