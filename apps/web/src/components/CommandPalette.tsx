@@ -256,6 +256,7 @@ export default function CommandPalette() {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/50 dark:bg-night/70 backdrop-blur-md data-[state=open]:motion-safe:animate-in data-[state=open]:fade-in data-[state=closed]:motion-safe:animate-out data-[state=closed]:fade-out" />
         <Dialog.Content
+          aria-modal="true"
           className={cn(
             'fixed left-1/2 top-[14vh] -translate-x-1/2 z-50 w-[min(640px,calc(100vw-2rem))]',
             'rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night shadow-2xl shadow-ink/40',

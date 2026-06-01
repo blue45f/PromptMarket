@@ -23,7 +23,7 @@ import { cn } from '@utils/cn'
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
     'relative inline-flex items-center gap-1.5 text-[0.83rem] font-medium px-3 py-1.5 rounded-full tracking-tight',
-    'motion-safe:transition-colors duration-300 ease-expo',
+    'motion-safe:transition-colors ease-expo motion-safe:duration-300',
     isActive
       ? 'text-ink dark:text-bone'
       : 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone'

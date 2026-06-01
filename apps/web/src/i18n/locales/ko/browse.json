@@ -28,7 +28,7 @@
     }
   },
   "filters": {
-    "activeCount_other": "{{count}}개 필터 적용됨",
+    "activeCount": "{{count}}개 필터 적용됨",
     "sidebarLabel": "필터"
   },
   "sort": {
@@ -85,6 +85,11 @@
   "panel": {
     "title": "필터",
     "reset": "전부 초기화",
+    "hint": "원하는 유형, 모델, 가격만 골라 결과를 빠르게 좁혀보세요.",
+    "summary": {
+      "empty": "조건 없음",
+      "active": "조건 {{count}}개"
+    },
     "sections": {
       "type": "타입",
       "model": "모델",
