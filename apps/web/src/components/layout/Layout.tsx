@@ -136,7 +136,10 @@ function SiteFooter() {
               className="self-start group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-volt-300 text-ink font-medium tracking-tight lift-on-hover focus-volt"
             >
               {t('footer.registerCta')}
-              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+              <ArrowUpRight
+                aria-hidden
+                className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+              />
             </Link>
           </div>
         </div>
@@ -328,7 +331,10 @@ function FooterCol({
               className="group inline-flex items-center gap-1 text-bone-soft hover:text-volt-300 motion-safe:transition ease-expo"
             >
               {l.label}
-              <ArrowUpRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 motion-safe:transition ease-expo motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-x-0" />
+              <ArrowUpRight
+                aria-hidden
+                className="w-3.5 h-3.5 opacity-0 -translate-x-1 motion-safe:transition ease-expo motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-x-0"
+              />
             </Link>
           </li>
         ))}

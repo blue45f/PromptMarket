@@ -116,7 +116,7 @@ export default function Navbar() {
             <NavLink
               to="/dashboard"
               className={navLinkClass}
-              aria-label={t('library', { defaultValue: 'My Library' })}
+              aria-label={t('library', { defaultValue: 'Library' })}
             >
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
@@ -225,7 +225,11 @@ export default function Navbar() {
             aria-controls="mobile-nav-panel"
             className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub focus-volt motion-safe:transition ease-expo active:scale-95"
           >
-            {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            {mobileOpen ? (
+              <X aria-hidden className="w-4 h-4" />
+            ) : (
+              <Menu aria-hidden className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>

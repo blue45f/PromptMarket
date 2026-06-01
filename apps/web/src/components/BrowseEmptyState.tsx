@@ -92,7 +92,10 @@ export default function BrowseEmptyState({
             >
               <Compass aria-hidden className="w-4 h-4" />
               {t('empty.browseAll')}
-              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+              <ArrowUpRight
+                aria-hidden
+                className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+              />
             </Link>
             {hasFilters && (
               <button

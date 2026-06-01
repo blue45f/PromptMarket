@@ -226,7 +226,7 @@ export default function DashboardPage() {
                       }}
                       className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                     >
-                      <Copy className="w-3 h-3" />
+                      <Copy aria-hidden className="w-3 h-3" />
                       {t('library.copyLink')}
                     </button>
                     <Link

@@ -313,7 +313,10 @@ function SectionHeader({
           className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line bg-canvas/60 dark:bg-night-sub/40 hover:border-ink dark:hover:border-bone text-ink dark:text-bone text-[0.83rem] font-medium motion-safe:transition ease-expo focus-volt shrink-0"
         >
           {t('common.viewAll')}
-          <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+          <ArrowUpRight
+            aria-hidden
+            className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+          />
         </Link>
       )}
     </div>
@@ -415,9 +418,12 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
               to={`/users/${maker.username}`}
               className="self-start group inline-flex items-center gap-2 mt-2 px-5 py-2.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink font-medium text-[0.85rem] tracking-tight focus-volt lift-on-hover"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles aria-hidden className="w-4 h-4" />
               {t('makerSpotlight.viewMaker')}
-              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+              <ArrowUpRight
+                aria-hidden
+                className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+              />
             </Link>
           </div>
 
@@ -451,7 +457,10 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
                         {l.description}
                       </p>
                     </div>
-                    <ArrowUpRight className="self-center w-5 h-5 text-ink-mute dark:text-bone-mute opacity-0 -translate-x-2 motion-safe:transition ease-expo motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-x-0" />
+                    <ArrowUpRight
+                      aria-hidden
+                      className="self-center w-5 h-5 text-ink-mute dark:text-bone-mute opacity-0 -translate-x-2 motion-safe:transition ease-expo motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-x-0"
+                    />
                   </Link>
                 </li>
               ))
@@ -568,7 +577,10 @@ function SellerCallToAction() {
               className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-ink text-bone font-medium tracking-tight focus-volt lift-on-hover"
             >
               {t('cta.startListing')}
-              <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+              <ArrowUpRight
+                aria-hidden
+                className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+              />
             </Link>
             <Link
               to="/dashboard"

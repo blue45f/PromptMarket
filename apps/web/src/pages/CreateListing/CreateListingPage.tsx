@@ -615,7 +615,7 @@ export default function CreateListingPage() {
                 <Field label={t('fields.technique')}>
                   <div role="group">
                     <select
-                      aria-label={t('fields.technique', { defaultValue: 'Technique' })}
+                      aria-label={t('fields.technique', { defaultValue: 'Prompt technique' })}
                       value={v.technique ?? ''}
                       onChange={(e) =>
                         setValue('technique', (e.target.value || null) as PromptTechnique | null, {

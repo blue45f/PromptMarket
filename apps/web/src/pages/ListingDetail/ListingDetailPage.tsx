@@ -746,9 +746,9 @@ export default function ListingDetailPage() {
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:border-volt-400 dark:hover:border-volt-500/50 motion-safe:transition ease-expo focus-volt text-[0.78rem] font-medium"
                   >
                     {shareState === 'idle' ? (
-                      <Share2 className="w-3.5 h-3.5" />
+                      <Share2 aria-hidden className="w-3.5 h-3.5" />
                     ) : (
-                      <Check className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
+                      <Check aria-hidden className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
                     )}
                     <span
                       className={shareState === 'idle' ? '' : 'text-volt-700 dark:text-volt-300'}

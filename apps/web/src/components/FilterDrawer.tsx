@@ -29,6 +29,7 @@ export default function FilterDrawer({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-ink/50 dark:bg-night/70 backdrop-blur-md data-[state=open]:motion-safe:animate-in data-[state=open]:fade-in" />
         <Dialog.Content
+          aria-modal="true"
           className="fixed inset-y-0 left-0 z-50 w-80 max-w-[88vw] bg-canvas dark:bg-night border-r border-line dark:border-night-line shadow-xl shadow-ink/30 flex flex-col"
           aria-describedby={undefined}
         >
@@ -97,7 +98,7 @@ export default function FilterDrawer({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="group relative overflow-hidden w-full inline-flex justify-center items-center gap-2 px-4 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-medium tracking-tight motion-safe:transition focus-volt"
+              className="group relative overflow-hidden w-full inline-flex justify-center items-center gap-2 px-4 py-2.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-sm font-medium tracking-tight motion-safe:transition ease-expo focus-volt"
             >
               <span
                 aria-hidden
