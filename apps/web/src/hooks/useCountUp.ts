@@ -6,7 +6,8 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
  */
 export function useCountUp(
   target: number,
-  duration = 1200
+  duration = 1200,
+  replayToken?: unknown
 ): { ref: RefObject<HTMLElement | null>; value: number } {
   const ref = useRef<HTMLElement | null>(null)
   const [value, setValue] = useState(0)
@@ -45,7 +46,7 @@ export function useCountUp(
       obs.disconnect()
       if (frame !== undefined) cancelAnimationFrame(frame)
     }
-  }, [target, duration])
+  }, [target, duration, replayToken])
 
   return { ref, value }
 }

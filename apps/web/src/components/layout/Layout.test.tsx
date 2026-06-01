@@ -1,8 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Layout from './Layout'
+
+const { mockUseCountUp } = vi.hoisted(() => ({
+  mockUseCountUp: vi.fn(() => ({ ref: { current: null }, value: 0 })),
+}))
 
 vi.mock('react-i18next', () => ({
   ...vi.importActual('react-i18next'),
@@ -39,7 +43,7 @@ vi.mock('@hooks/useReveal', () => ({
   useReveal: vi.fn(() => ({ ref: { current: null }, revealed: false })),
 }))
 vi.mock('@hooks/useCountUp', () => ({
-  useCountUp: vi.fn(() => ({ ref: { current: null }, value: 0 })),
+  useCountUp: mockUseCountUp,
 }))
 
 function TestLayout() {
@@ -58,6 +62,8 @@ function TestLayout() {
 }
 
 describe('Layout', () => {
+  const thirdArg = (index: number) => (mockUseCountUp.mock.calls[index] as unknown[])[2]
+
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -78,5 +84,31 @@ describe('Layout', () => {
   it('renders the footer copyright', () => {
     render(<TestLayout />)
     expect(screen.getByText(`© ${new Date().getFullYear()} PromptMarket`)).toBeTruthy()
+  })
+
+  it('replays FooterLiveStats count-up when hovered', () => {
+    const { container } = render(<TestLayout />)
+    const footer = screen.getByRole('contentinfo')
+    const stats = container.querySelector('.mb-12.grid')
+    expect(footer).toBeTruthy()
+    expect(stats).toBeTruthy()
+
+    expect(mockUseCountUp).toHaveBeenCalledTimes(3)
+    const firstReplayArg = thirdArg(0)
+    expect(firstReplayArg).toBeUndefined()
+
+    fireEvent.mouseEnter(stats as Element)
+
+    expect(mockUseCountUp).toHaveBeenCalledTimes(6)
+    expect(thirdArg(3)).toBe(1)
+    expect(thirdArg(4)).toBe(1)
+    expect(thirdArg(5)).toBe(1)
+
+    fireEvent.mouseEnter(stats as Element)
+
+    expect(mockUseCountUp).toHaveBeenCalledTimes(9)
+    expect(thirdArg(6)).toBe(2)
+    expect(thirdArg(7)).toBe(2)
+    expect(thirdArg(8)).toBe(2)
   })
 })

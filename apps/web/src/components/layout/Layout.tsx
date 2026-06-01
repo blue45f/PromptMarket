@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowUpRight } from 'lucide-react'
@@ -178,11 +178,21 @@ function FooterLiveStats() {
   const totalListings = data?.totalListings ?? 0
   const totalDownloads = data?.totalDownloads ?? 0
   const totalCreators = data?.totalCreators ?? 0
-  const a = useCountUp(totalListings)
-  const b = useCountUp(totalDownloads)
-  const c = useCountUp(totalCreators)
+  const [replayToken, setReplayToken] = useState(0)
+
+  const handleMouseEnter = () => {
+    setReplayToken((current) => current + 1)
+  }
+
+  const activeReplayToken = replayToken > 0 ? replayToken : undefined
+  const a = useCountUp(totalListings, 1200, activeReplayToken)
+  const b = useCountUp(totalDownloads, 1200, activeReplayToken)
+  const c = useCountUp(totalCreators, 1200, activeReplayToken)
   return (
-    <div className="mb-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+    <div
+      onMouseEnter={handleMouseEnter}
+      className="mb-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
+    >
       <FooterStat refEl={a.ref} value={a.value} label={t('stats.listings')} dot="bg-volt-400" />
       <FooterStat refEl={b.ref} value={b.value} label={t('stats.downloads')} dot="bg-violet" />
       <FooterStat refEl={c.ref} value={c.value} label={t('stats.makers')} dot="bg-coral" />
