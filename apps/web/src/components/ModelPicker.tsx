@@ -72,10 +72,11 @@ export default function ModelPicker({
               <button
                 key={slug}
                 type="button"
+                aria-label={t('modelPicker.removeModel', { label: m?.label ?? slug })}
                 onClick={() => toggle(slug)}
                 className="inline-flex min-h-8 items-center gap-1 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-xs font-medium px-2.5 py-1 hover:opacity-90 motion-safe:transition ease-expo focus-volt"
               >
-                {m?.label ?? slug}
+                <span aria-hidden>{m?.label ?? slug}</span>
                 <X className="w-3 h-3" aria-hidden />
               </button>
             )

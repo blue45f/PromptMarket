@@ -155,7 +155,8 @@
   },
   "modelPicker": {
     "searchPlaceholder": "Search models / vendors…",
-    "noResults": "No models match \"{{query}}\"."
+    "noResults": "No models match \"{{query}}\".",
+    "removeModel": "Remove {{label}}"
   },
   "cta": {
     "kicker": "For builders",
