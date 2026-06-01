@@ -262,7 +262,7 @@ function RotatingPhrase({ phrases }: { phrases: string[] }) {
     if (reduced) return
     const id = setInterval(() => setIdx((i) => (i + 1) % phrases.length), 2600)
     return () => clearInterval(id)
-  }, [phrases.length])
+  }, [phrases])
   return (
     <span
       aria-live="polite"

@@ -23,11 +23,12 @@ export default function SearchBar({
   const [focused, setFocused] = useState(false)
   const [activeIdx, setActiveIdx] = useState(-1)
   const wrapRef = useRef<HTMLFormElement>(null)
-  const history = useSearchHistory()
-
-  useEffect(() => {
+  const prevInitialRef = useRef(initialValue)
+  if (prevInitialRef.current !== initialValue) {
+    prevInitialRef.current = initialValue
     setValue(initialValue)
-  }, [initialValue])
+  }
+  const history = useSearchHistory()
 
   // Close history when clicking anywhere outside the form.
   useEffect(() => {

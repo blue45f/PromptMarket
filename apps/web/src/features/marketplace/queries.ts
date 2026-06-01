@@ -4,6 +4,7 @@ import i18n from '@/i18n'
 import type {
   CreateListingInput,
   CreateReviewInput,
+  CreateReviewReplyInput,
   LoginInput,
   RegisterInput,
   RevenueSettings,
@@ -35,6 +36,7 @@ import type {
   ListingsListResponse,
   MyListingItem,
   Review,
+  ReviewReply,
   StatsResponse,
   User,
 } from '@/types'
@@ -126,9 +128,10 @@ export function useMe() {
     enabled: !!token,
     queryFn: async () => {
       try {
-        const data = (await api.get('/auth/me')) as { user?: User } & User
-        // API returns the user object flat; tolerate either shape.
-        const u = (data?.user ?? data) as User
+        const data = (await api.get('/auth/me')) as Record<string, unknown>
+        // API returns the user object flat or nested; tolerate either shape.
+        const raw = (typeof data?.user === 'object' && data.user != null ? data.user : data) as User
+        const u: User = raw
         setUser(u)
         return u
       } catch (err) {
@@ -278,6 +281,30 @@ export function useCreateReview(listingId: string | undefined, slug?: string) {
       if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) })
       if (listingId) void qc.invalidateQueries({ queryKey: reviewsKey(listingId) })
       toast.success(i18n.t('common:toasts.reviewPosted'))
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err))
+    },
+  })
+}
+
+export function useCreateReviewReply(listingId: string | undefined, slug?: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: CreateReviewReplyInput & { reviewId: string }) => {
+      if (!listingId) throw new Error('Listing ID is missing')
+      const { reviewId, body } = input
+      return api.post<ReviewReply, ReviewReply>(
+        `/listings/${listingId}/reviews/${reviewId}/replies`,
+        {
+          body,
+        }
+      )
+    },
+    onSuccess: () => {
+      if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) })
+      if (listingId) void qc.invalidateQueries({ queryKey: reviewsKey(listingId) })
+      toast.success(i18n.t('common:toasts.replyPosted'))
     },
     onError: (err) => {
       toast.error(getErrorMessage(err))

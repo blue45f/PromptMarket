@@ -78,9 +78,7 @@ export default function MarkdownToc({ source, className, scrollOffsetPx = 96 }: 
       (intersecting) => {
         const visible = intersecting
           .filter((e) => e.isIntersecting)
-          .sort(
-            (a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top
-          )
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
         if (visible[0]?.target.id) setActive(visible[0].target.id)
       },
       { rootMargin: `-${scrollOffsetPx}px 0px -60% 0px`, threshold: 0 }
