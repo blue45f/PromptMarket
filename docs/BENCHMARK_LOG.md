@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-01T18:17 (UTC) — Round 146
+
+- **Benchmark**: 자체 — Home hero의 `StatsStrip`은 신뢰 신호지만 모바일에서 세로 3칸으로 쌓이면 CTA 이후 화면 밀도가 불필요하게 커진다. 보조 지표는 한 줄 가로 스냅으로 훑게 하고, 데스크톱의 3열 비교 구조는 유지한다.
+- **Shipped**: `StatsStrip`을 모바일 `grid-flow-col` + `auto-cols` + `snap-x` 컨테이너로 전환했다. 각 stat cell은 `snap-start`를 갖고, `sm` 이상에서는 기존 3열 grid와 divider 구조로 돌아간다.
+- **Design**: surface-card와 volt/violet/coral role colors는 유지하면서 모바일 세로 공간을 줄였다. 터치 스크롤은 `overscroll-x-contain`과 `scrollbar-hide`로 조용하게 처리하고, 데스크톱에서는 overflow 없이 한눈에 비교된다.
+- **Tests**: TDD로 `StatsStrip.test.tsx`에 모바일 snap/데스크톱 grid class 회귀 테스트 추가. `pnpm --filter @promptmarket/web test:run StatsStrip.test.tsx`, `pnpm --filter @promptmarket/web typecheck`, `pnpm --filter @promptmarket/web test:run`, `pnpm --filter @promptmarket/web build` 통과.
+- **Visual check**: PromptMarket dev 서버 포트 5176에서 Playwright Python smoke로 Home desktop 1440x900은 overflow 없이 3열, mobile 390x844은 horizontal overflow와 scrollLeft 이동을 확인했다. 스크린샷은 `/private/tmp/promptmarket-stats-strip`에 저장했다.
+
 ## 2026-06-01T18:07 (UTC) — Round 145
 
 - **Benchmark**: 자체 — footer mega wordmark는 브랜드 장치지만 reveal 이후 정적인 텍스트와 라임 hairline만 남아 hover 피드백이 약했다. 상호작용 가능 UI처럼 보이면 안 되므로, 레이아웃과 탭 순서를 건드리지 않는 장식성 motion만 추가한다.

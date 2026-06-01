@@ -34,7 +34,7 @@ function Stat({
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="relative flex flex-col gap-3 px-6 py-5 sm:px-8 sm:py-7 group"
+      className="relative flex min-w-0 snap-start scroll-ml-4 flex-col gap-3 px-6 py-5 sm:scroll-ml-0 sm:px-8 sm:py-7 group"
     >
       <div className="inline-flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute">
         <span className={cn('w-1.5 h-1.5 rounded-full', ACCENT_DOT[accent])} />
@@ -82,10 +82,12 @@ export default function StatsStrip({ className }: StatsStripProps) {
   return (
     <div
       ref={ref}
+      data-stats-strip
       data-revealed={revealed}
       className={cn(
-        'reveal grid grid-cols-1 sm:grid-cols-3 rounded-3xl overflow-hidden surface-card border border-line dark:border-night-line',
-        'divide-y sm:divide-y-0 sm:divide-x divide-line dark:divide-night-line',
+        'reveal grid grid-flow-col auto-cols-[minmax(16rem,82vw)] sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3',
+        'rounded-3xl overflow-x-auto sm:overflow-hidden snap-x snap-mandatory sm:snap-none scrollbar-hide overscroll-x-contain surface-card border border-line dark:border-night-line',
+        'divide-x divide-line dark:divide-night-line',
         className
       )}
     >

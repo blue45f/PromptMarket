@@ -26,6 +26,19 @@ describe('<StatsStrip />', () => {
     expect(pulses.length).toBe(3)
   })
 
+  it('uses horizontal scroll snap on mobile while preserving the desktop grid', () => {
+    mockUseStats.mockReturnValue({ data: undefined, isPending: true })
+    const { container } = render(<StatsStrip />)
+    const strip = container.firstElementChild as HTMLElement
+
+    expect(strip.className).toContain('grid-flow-col')
+    expect(strip.className).toContain('snap-x')
+    expect(strip.className).toContain('sm:grid-cols-3')
+    expect(
+      Array.from(strip.children).every((child) => child.className.includes('snap-start'))
+    ).toBe(true)
+  })
+
   it('reads totalListings / totalDownloads / totalCreators from the stats response', () => {
     mockUseStats.mockReturnValue({
       data: { totalListings: 42, totalDownloads: 100, totalCreators: 5 },
