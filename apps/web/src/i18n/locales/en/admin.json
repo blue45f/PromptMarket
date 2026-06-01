@@ -27,6 +27,9 @@
     "floorLabel": "Minimum platform fee ($)",
     "floorInputLabel": "Minimum fee amount",
     "floorHelp": "Fee is never below this floor for paid purchases.",
+    "validation": {
+      "thresholdOrder": "Premium threshold must be less than or equal to ultra premium threshold."
+    },
     "history": {
       "title": "Change History",
       "subtitle": "The latest stored values and when they were last updated.",

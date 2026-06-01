@@ -27,6 +27,9 @@
     "floorLabel": "최소 플랫폼 수수료 ($)",
     "floorInputLabel": "최소 수수료 금액 입력",
     "floorHelp": "유료 구매의 플랫폼 수수료는 이 값보다 작아질 수 없습니다.",
+    "validation": {
+      "thresholdOrder": "프리미엄 임계값은 초고급 임계값보다 크면 안 됩니다."
+    },
     "history": {
       "title": "설정 이력",
       "subtitle": "저장된 설정 값과 마지막 반영 시점입니다.",

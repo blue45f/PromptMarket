@@ -230,6 +230,23 @@ describe('<AdminPage />', () => {
     })
   })
 
+  it('blocks saving and shows validation when premium threshold exceeds ultra premium threshold', () => {
+    render(withProviders(<AdminPage />))
+
+    fireEvent.change(screen.getByLabelText('프리미엄 임계 금액 입력'), {
+      target: { value: '200' },
+    })
+    fireEvent.change(screen.getByLabelText('초고급 임계 금액 입력'), {
+      target: { value: '100' },
+    })
+
+    const saveButton = screen.getByRole('button', { name: '저장' })
+    expect(saveButton).toBeDisabled()
+    expect(screen.getByText('프리미엄 임계값은 초고급 임계값보다 크면 안 됩니다.')).toBeTruthy()
+    fireEvent.click(saveButton)
+    expect(updateSpy).not.toHaveBeenCalled()
+  })
+
   it('saves ultra premium fee settings when ultra values change', () => {
     updateSpy.mockResolvedValue({
       ...settings,

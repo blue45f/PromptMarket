@@ -511,7 +511,18 @@ export default function AdminPage() {
     Math.abs(draftPolicy.platformFeeFloorCents - (settings.platformFeeFloorCents || 0)) >
       Number.EPSILON
 
-  const canSave = hasDraftChanges && !updateFeeMutation.isPending
+  const validationErrors = useMemo(
+    () => ({
+      thresholdOrder:
+        draftPolicy.premiumThresholdCents > draftPolicy.ultraPremiumThresholdCents
+          ? t('settings.validation.thresholdOrder')
+          : '',
+    }),
+    [draftPolicy.premiumThresholdCents, draftPolicy.ultraPremiumThresholdCents, t]
+  )
+  const hasDraftValidationErrors = Object.values(validationErrors).some(Boolean)
+
+  const canSave = hasDraftChanges && !hasDraftValidationErrors && !updateFeeMutation.isPending
 
   function handleSaveFee(event: FormEvent) {
     event.preventDefault()
@@ -730,7 +741,13 @@ export default function AdminPage() {
                     aria-label={t('settings.thresholdInputLabel')}
                     value={premiumThresholdDollars}
                     onChange={(event) => setPremiumThresholdDollars(event.target.value)}
-                    className="w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2.5 pl-7 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt"
+                    aria-invalid={validationErrors.thresholdOrder ? 'true' : undefined}
+                    className={cn(
+                      'w-full rounded-xl border bg-canvas dark:bg-night px-3 py-2.5 pl-7 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt',
+                      validationErrors.thresholdOrder
+                        ? 'border-coral/80 focus:border-coral focus:ring-2 focus:ring-coral/30'
+                        : 'border-line dark:border-night-line'
+                    )}
                   />
                 </div>
                 <p className="mt-1 text-[0.72rem] text-ink-soft dark:text-bone-soft">
@@ -753,7 +770,13 @@ export default function AdminPage() {
                     aria-label={t('settings.ultraPremiumThresholdInputLabel')}
                     value={ultraPremiumThresholdDollars}
                     onChange={(event) => setUltraPremiumThresholdDollars(event.target.value)}
-                    className="w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2.5 pl-7 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt"
+                    aria-invalid={validationErrors.thresholdOrder ? 'true' : undefined}
+                    className={cn(
+                      'w-full rounded-xl border bg-canvas dark:bg-night px-3 py-2.5 pl-7 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt',
+                      validationErrors.thresholdOrder
+                        ? 'border-coral/80 focus:border-coral focus:ring-2 focus:ring-coral/30'
+                        : 'border-line dark:border-night-line'
+                    )}
                   />
                 </div>
                 <p className="mt-1 text-[0.72rem] text-ink-soft dark:text-bone-soft">
@@ -784,6 +807,18 @@ export default function AdminPage() {
                 </p>
               </label>
             </div>
+
+            {validationErrors.thresholdOrder ? (
+              <div
+                className="rounded-2xl border border-coral/40 bg-coral/10 px-4 py-3 text-sm text-coral-deep dark:text-coral dark:border-coral/45 dark:bg-coral/15"
+                role="alert"
+              >
+                <p className="inline-flex items-center gap-2">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  {validationErrors.thresholdOrder}
+                </p>
+              </div>
+            ) : null}
 
             <button
               type="submit"

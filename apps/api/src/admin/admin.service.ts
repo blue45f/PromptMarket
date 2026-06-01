@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 
 interface TopCreatorBucket {
@@ -252,46 +252,69 @@ export class AdminService {
     premiumThresholdCents?: number
     platformFeeFloorCents?: number
   }) {
-    if (input.platformFeeBps !== undefined) {
-      await this.upsertSetting(
-        AdminService.PLATFORM_FEE_BPS_KEY,
-        this.normalizeFeeBps(input.platformFeeBps)
+    const currentPolicy = await this.getRevenuePolicy()
+
+    const nextPlatformFeeBps =
+      input.platformFeeBps === undefined
+        ? currentPolicy.platformFeeBps
+        : this.normalizeFeeBps(input.platformFeeBps)
+
+    const nextPremiumFeeBps =
+      input.premiumFeeBps === undefined
+        ? currentPolicy.premiumFeeBps
+        : this.normalizeFeeBps(input.premiumFeeBps)
+
+    const nextUltraPremiumFeeBps =
+      input.ultraPremiumFeeBps === undefined
+        ? currentPolicy.ultraPremiumFeeBps
+        : this.normalizeFeeBps(input.ultraPremiumFeeBps)
+
+    const nextPremiumThresholdCents =
+      input.premiumThresholdCents === undefined
+        ? currentPolicy.premiumThresholdCents
+        : this.normalizeMoneyCents(input.premiumThresholdCents)
+
+    const nextUltraPremiumThresholdCents =
+      input.ultraPremiumThresholdCents === undefined
+        ? currentPolicy.ultraPremiumThresholdCents
+        : this.normalizeMoneyCents(input.ultraPremiumThresholdCents)
+
+    const nextPlatformFeeFloorCents =
+      input.platformFeeFloorCents === undefined
+        ? currentPolicy.platformFeeFloorCents
+        : this.normalizeMoneyCents(input.platformFeeFloorCents)
+
+    if (nextPremiumThresholdCents > nextUltraPremiumThresholdCents) {
+      throw new BadRequestException(
+        'Premium threshold must be less than or equal to ultra premium threshold.'
       )
+    }
+
+    if (input.platformFeeBps !== undefined) {
+      await this.upsertSetting(AdminService.PLATFORM_FEE_BPS_KEY, nextPlatformFeeBps)
     }
 
     if (input.premiumFeeBps !== undefined) {
-      await this.upsertSetting(
-        AdminService.PREMIUM_FEE_BPS_KEY,
-        this.normalizeFeeBps(input.premiumFeeBps)
-      )
+      await this.upsertSetting(AdminService.PREMIUM_FEE_BPS_KEY, nextPremiumFeeBps)
     }
 
     if (input.ultraPremiumFeeBps !== undefined) {
-      await this.upsertSetting(
-        AdminService.ULTRA_PREMIUM_FEE_BPS_KEY,
-        this.normalizeFeeBps(input.ultraPremiumFeeBps)
-      )
+      await this.upsertSetting(AdminService.ULTRA_PREMIUM_FEE_BPS_KEY, nextUltraPremiumFeeBps)
     }
 
     if (input.ultraPremiumThresholdCents !== undefined) {
       await this.upsertSetting(
         AdminService.ULTRA_PREMIUM_THRESHOLD_KEY,
-        this.normalizeMoneyCents(input.ultraPremiumThresholdCents)
+        nextUltraPremiumThresholdCents
       )
     }
 
     if (input.premiumThresholdCents !== undefined) {
-      await this.upsertSetting(
-        AdminService.PREMIUM_THRESHOLD_KEY,
-        this.normalizeMoneyCents(input.premiumThresholdCents)
-      )
+      await this.upsertSetting(AdminService.PREMIUM_THRESHOLD_KEY, nextPremiumThresholdCents)
     }
 
     if (input.platformFeeFloorCents !== undefined) {
-      await this.upsertSetting(
-        AdminService.PLATFORM_FEE_FLOOR_KEY,
-        this.normalizeMoneyCents(input.platformFeeFloorCents)
-      )
+      await this.upsertSetting(AdminService.PLATFORM_FEE_FLOOR_KEY, nextPlatformFeeFloorCents)
     }
 
     return this.getPlatformFeeSetting()

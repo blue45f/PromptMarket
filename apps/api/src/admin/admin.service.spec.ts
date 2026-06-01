@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common'
 import { describe, expect, it, vi } from 'vitest'
 import { AdminService } from './admin.service'
 
@@ -148,6 +149,36 @@ describe('AdminService.getPlatform settings', () => {
       create: { key: 'platform_fee_floor_cents', intValue: 12 },
       update: { intValue: 12 },
     })
+  })
+
+  it('rejects premium threshold above ultra premium threshold', async () => {
+    const rows = [
+      { key: 'platform_fee_bps', intValue: 1700 },
+      { key: 'platform_fee_premium_bps', intValue: 1400 },
+      { key: 'platform_fee_premium_threshold_cents', intValue: 3_000 },
+      { key: 'platform_fee_ultra_premium_bps', intValue: 1200 },
+      { key: 'platform_fee_ultra_premium_threshold_cents', intValue: 10_000_00 },
+      { key: 'platform_fee_floor_cents', intValue: 0 },
+    ]
+
+    const upsertSpy = vi.fn().mockResolvedValue({})
+    const prisma = makePrisma({
+      platformSetting: {
+        findMany: vi.fn().mockResolvedValue(rows),
+        upsert: upsertSpy,
+      },
+    })
+
+    const svc = new AdminService(prisma)
+
+    await expect(
+      svc.updateRevenueSettings({
+        premiumThresholdCents: 12_000_00,
+        ultraPremiumThresholdCents: 10_000_00,
+      })
+    ).rejects.toBeInstanceOf(BadRequestException)
+
+    expect(upsertSpy).not.toHaveBeenCalled()
   })
 
   it('updates ultra premium policy values when explicitly provided', async () => {
