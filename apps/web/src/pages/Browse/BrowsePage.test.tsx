@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -8,8 +8,21 @@ const { mockUseListings } = vi.hoisted(() => ({
   mockUseListings: vi.fn(() => ({ data: null as unknown, isPending: true, error: null })),
 }))
 
+const { mockUseSearchHistory } = vi.hoisted(() => ({
+  mockUseSearchHistory: vi.fn(() => ({
+    entries: [],
+    record: vi.fn(),
+    remove: vi.fn(),
+    clear: vi.fn(),
+  })),
+}))
+
 vi.mock('@features/marketplace/queries', () => ({
   useListings: mockUseListings,
+}))
+
+vi.mock('@hooks/useSearchHistory', () => ({
+  useSearchHistory: mockUseSearchHistory,
 }))
 
 vi.mock('@hooks/useSavedFilters', () => ({
@@ -56,6 +69,42 @@ const card = {
 }
 
 describe('<BrowsePage />', () => {
+  beforeEach(() => {
+    mockUseListings.mockReturnValue({ data: null as unknown, isPending: true, error: null })
+    mockUseSearchHistory.mockReturnValue({
+      entries: [],
+      record: vi.fn(),
+      remove: vi.fn(),
+      clear: vi.fn(),
+    })
+  })
+
+  it('records a URL query into search history', () => {
+    const recordMock = vi.fn()
+    mockUseSearchHistory.mockReturnValue({
+      entries: [],
+      record: recordMock,
+      remove: vi.fn(),
+      clear: vi.fn(),
+    })
+    render(withProviders(<BrowsePage />, ['/browse?q=  prompt  ']))
+
+    expect(recordMock).toHaveBeenCalledWith('prompt')
+  })
+
+  it('ignores URL-only whitespace query for search history', () => {
+    const recordMock = vi.fn()
+    mockUseSearchHistory.mockReturnValue({
+      entries: [],
+      record: recordMock,
+      remove: vi.fn(),
+      clear: vi.fn(),
+    })
+    render(withProviders(<BrowsePage />, ['/browse?q=   ']))
+
+    expect(recordMock).not.toHaveBeenCalled()
+  })
+
   it('shows skeleton cards while loading', () => {
     mockUseListings.mockReturnValue({ data: null, isPending: true, error: null })
     const { container } = render(withProviders(<BrowsePage />))

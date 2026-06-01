@@ -5,6 +5,7 @@ import { activeIntlLocale, default as i18n } from '@/i18n'
 import type { TFunction } from 'i18next'
 import { useScrollRestore } from '@hooks/useScrollRestore'
 import { useSavedFilters } from '@hooks/useSavedFilters'
+import { useSearchHistory } from '@hooks/useSearchHistory'
 import {
   LISTING_TYPE_META,
   ListingType as ListingTypeEnum,
@@ -59,6 +60,7 @@ export default function BrowsePage() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [compareItems, setCompareItems] = useState<ListingCardType[]>([])
   const navigate = useNavigate()
+  const searchHistory = useSearchHistory()
   // Destructure the stable useCallback refs — depending on the whole hook
   // object (a fresh literal each render) made the persist effect below re-run
   // every commit, writing to localStorage in an infinite loop once 2+ filters
@@ -93,6 +95,7 @@ export default function BrowsePage() {
   }, [params])
 
   const q = params.get('q') ?? ''
+  const normalizedQuery = q.trim()
   const signalFilters = useMemo<SignalFilter[]>(
     () =>
       Array.from(
@@ -132,6 +135,11 @@ export default function BrowsePage() {
     title: `${titleSuffix} · PromptMarket`,
     description: t('meta.description'),
   })
+
+  useEffect(() => {
+    if (!normalizedQuery) return
+    searchHistory.record(normalizedQuery)
+  }, [normalizedQuery, searchHistory])
 
   const commit = useCallback(
     (next: FilterState, extra?: Record<string, string | number | null | undefined>) => {
