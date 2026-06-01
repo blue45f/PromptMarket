@@ -49,7 +49,7 @@
       "description": "마음에 드는 리스팅의 카드 우하단 ♡ 버튼을 눌러 위시리스트에 담아 보세요.",
       "action": "카탈로그 둘러보기"
     },
-    "count": "담은 항목 {{count}}건",
+    "count_other": "담은 항목 {{count}}건",
     "confirmPrompt": "정말 삭제할까요?",
     "clear": "전부 지우기",
     "clearConfirm": {
@@ -60,7 +60,7 @@
     },
     "showingCapped": "위시리스트의 처음 20개 항목을 표시합니다. (전체 {{total}}개)",
     "unavailable": {
-      "note": "담은 항목 {{count}}개를 더 이상 볼 수 없어요.",
+      "note_other": "담은 항목 {{count}}개를 더 이상 볼 수 없어요.",
       "remove": "사라진 항목 정리",
       "title": "담은 항목을 더 이상 볼 수 없어요",
       "description": "메이커가 해당 리스팅을 삭제했어요."

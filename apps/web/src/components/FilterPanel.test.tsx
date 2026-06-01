@@ -79,6 +79,30 @@ describe('<FilterPanel />', () => {
     expect(onReset).toHaveBeenCalledTimes(1)
   })
 
+  it('summarizes the empty filter state and disables reset until a condition is active', () => {
+    const onReset = vi.fn()
+    render(<FilterPanel value={emptyFilters()} onChange={vi.fn()} onReset={onReset} />)
+
+    expect(screen.getByText('조건 없음')).toBeTruthy()
+    const reset = screen.getByRole('button', { name: '전부 초기화' })
+    expect(reset).toBeDisabled()
+    fireEvent.click(reset)
+    expect(onReset).not.toHaveBeenCalled()
+  })
+
+  it('shows the active condition count when filters are selected', () => {
+    render(
+      <FilterPanel
+        value={{ ...emptyFilters(), types: ['PROMPT'], price: 'free' }}
+        onChange={vi.fn()}
+        onReset={vi.fn()}
+      />
+    )
+
+    expect(screen.getByText('조건 2개')).toBeTruthy()
+    expect(screen.getByRole('button', { name: '전부 초기화' })).toBeEnabled()
+  })
+
   it('sets price=free via the radiogroup', () => {
     const onChange = vi.fn()
     render(<FilterPanel value={emptyFilters()} onChange={onChange} onReset={vi.fn()} />)

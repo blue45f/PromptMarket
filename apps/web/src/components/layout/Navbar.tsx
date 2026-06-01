@@ -37,7 +37,7 @@ function NavLinkInner({ isActive, children }: { isActive: boolean; children: Rea
         aria-hidden
         className={cn(
           'absolute left-3 right-3 -bottom-0.5 h-[2px] rounded-full bg-volt-500',
-          'origin-left motion-safe:transition-transform motion-safe:duration-300 ease-expo',
+          'origin-left motion-safe:transition-transform ease-expo motion-safe:duration-300',
           isActive ? 'scale-x-100' : 'scale-x-0'
         )}
       />
@@ -202,9 +202,9 @@ export default function Navbar() {
               >
                 <span
                   aria-hidden
-                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 ease-expo group-hover:translate-y-0"
+                  className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform ease-expo motion-safe:duration-500 group-hover:translate-y-0"
                 />
-                <span className="relative group-hover:text-ink motion-safe:transition-colors motion-safe:duration-300 ease-expo">
+                <span className="relative group-hover:text-ink motion-safe:transition-colors ease-expo motion-safe:duration-300">
                   {t('register')}
                 </span>
               </Link>

@@ -59,7 +59,7 @@ export default function ModelPicker({
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('modelPicker.searchPlaceholder')}
             aria-label={t('modelPicker.searchPlaceholder')}
-            className="w-full pl-9 pr-3 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas dark:bg-night text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
+            className="min-h-10 w-full pl-9 pr-3 py-2 rounded-full text-sm border border-line dark:border-night-line bg-canvas dark:bg-night text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
           />
         </div>
       )}
@@ -73,7 +73,7 @@ export default function ModelPicker({
                 key={slug}
                 type="button"
                 onClick={() => toggle(slug)}
-                className="inline-flex items-center gap-1 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-xs font-medium px-2.5 py-1 hover:opacity-90 motion-safe:transition ease-expo focus-volt"
+                className="inline-flex min-h-8 items-center gap-1 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink text-xs font-medium px-2.5 py-1 hover:opacity-90 motion-safe:transition ease-expo focus-volt"
               >
                 {m?.label ?? slug}
                 <X className="w-3 h-3" aria-hidden />
@@ -101,7 +101,7 @@ export default function ModelPicker({
                   <li key={m.slug}>
                     <label
                       className={cn(
-                        'flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm cursor-pointer motion-safe:transition ease-expo',
+                        'flex min-h-9 items-center gap-2 px-2 py-1.5 rounded-lg text-sm cursor-pointer motion-safe:transition ease-expo',
                         'hover:bg-canvas-deep dark:hover:bg-night-deep',
                         checked && 'bg-volt-100 dark:bg-volt-900/30'
                       )}

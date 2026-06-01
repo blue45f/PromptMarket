@@ -13,7 +13,7 @@
     "labelWithCount": "알림, {{count}}건 새 알림",
     "labelNoUnread": "알림, 새 알림 없음",
     "panelTitle": "알림",
-    "panelBody": "{{count}}건의 새 알림",
+    "panelBody_other": "{{count}}건의 새 알림",
     "empty": "모든 알림을 확인했어요.",
     "panelFooter": "읽음 상태는 이 브라우저에 저장됩니다.",
     "markAllRead": "모두 읽음 처리",

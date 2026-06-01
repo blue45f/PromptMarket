@@ -33,7 +33,8 @@
   },
   "listing": {
     "unrated": "아직 리뷰 없음",
-    "downloadsLabel": "다운로드 {{count}}개"
+    "downloadsLabel_one": "다운로드 {{count}}개",
+    "downloadsLabel_other": "다운로드 {{count}}개"
   },
   "signals": {
     "compactLabel": "아티팩트 신뢰 신호",
@@ -81,7 +82,8 @@
     "starLabel": "{{count}}점",
     "display": "{{value}}점 / 5점",
     "widgetLabel": "별점 선택: {{value}}점 / {{outOf}}점",
-    "reviewCount": "리뷰 {{count}}개"
+    "reviewCount_one": "리뷰 {{count}}개",
+    "reviewCount_other": "리뷰 {{count}}개"
   },
   "difficulty": {
     "beginner": "입문",

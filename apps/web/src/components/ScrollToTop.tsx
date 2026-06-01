@@ -51,7 +51,7 @@ export default function ScrollToTop() {
         'backdrop-blur-md border border-bone/15 dark:border-ink/10',
         'shadow-[0_14px_36px_-18px_oklch(0.16_0.03_290/0.5)]',
         'text-[0.78rem] font-medium tracking-tight',
-        'motion-safe:transition-all motion-safe:duration-300 ease-expo',
+        'motion-safe:transition-all ease-expo motion-safe:duration-300',
         'focus-volt',
         visible
           ? 'opacity-100 translate-y-0 pointer-events-auto'

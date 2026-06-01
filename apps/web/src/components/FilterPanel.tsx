@@ -96,6 +96,8 @@ function SectionHeader({ id, children }: { id: string; children: string }) {
 function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
   const { t } = useTranslation('browse')
   const { t: tc } = useTranslation('common')
+  const activeCount = countActive(value)
+  const resetDisabled = activeCount === 0
   function set<K extends keyof FilterState>(k: K, v: FilterState[K]) {
     onChange({ ...value, [k]: v })
   }
@@ -106,14 +108,27 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <p className="font-display text-[0.95rem] font-semibold text-ink dark:text-bone tracking-tight">
-          {t('panel.title')}
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="font-display text-[0.95rem] font-semibold text-ink dark:text-bone tracking-tight">
+              {t('panel.title')}
+            </p>
+            <span className="inline-flex min-h-6 items-center rounded-full border border-line dark:border-night-line bg-canvas/75 dark:bg-night/60 px-2 text-[0.68rem] font-mono font-semibold text-ink-mute dark:text-bone-mute">
+              {resetDisabled
+                ? t('panel.summary.empty')
+                : t('panel.summary.active', { count: activeCount })}
+            </span>
+          </div>
+          <p className="mt-1 text-[0.78rem] leading-relaxed text-ink-mute dark:text-bone-mute">
+            {t('panel.hint')}
+          </p>
+        </div>
         <button
           type="button"
           onClick={onReset}
-          className="text-[0.78rem] font-medium text-volt-700 dark:text-volt-300 hover:underline underline-offset-[3px] focus-volt rounded"
+          disabled={resetDisabled}
+          className="shrink-0 min-h-8 rounded px-1 text-[0.78rem] font-medium text-volt-700 dark:text-volt-300 hover:underline underline-offset-[3px] focus-volt disabled:cursor-not-allowed disabled:text-ink-mute/55 disabled:no-underline dark:disabled:text-bone-mute/55"
         >
           {t('panel.reset')}
         </button>
@@ -132,7 +147,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
                 aria-pressed={active}
                 onClick={() => toggleType(typeKey)}
                 className={cn(
-                  'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.72rem] font-medium border motion-safe:transition ease-expo focus-volt',
+                  'inline-flex min-h-9 items-center gap-1 px-3 py-1.5 rounded-full text-[0.72rem] font-medium border motion-safe:transition ease-expo focus-volt',
                   active
                     ? 'bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200 border-volt-300 dark:border-volt-700'
                     : 'bg-canvas dark:bg-night text-ink-soft dark:text-bone-soft border-line dark:border-night-line hover:border-volt-400 dark:hover:border-volt-500/50'
@@ -157,7 +172,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
             {t('panel.sections.technique')}
           </SectionHeader>
           <div className="space-y-1" role="radiogroup" aria-labelledby="filter-section-technique">
-            <label className="flex items-center gap-2.5 text-[0.86rem] cursor-pointer">
+            <label className="flex min-h-8 items-center gap-2.5 text-[0.86rem] cursor-pointer">
               <input
                 type="radio"
                 name="technique"
@@ -168,7 +183,10 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
               <span className="text-ink-soft dark:text-bone-soft">{t('panel.all')}</span>
             </label>
             {ALL_TECHNIQUES.map((tk) => (
-              <label key={tk} className="flex items-center gap-2.5 text-[0.86rem] cursor-pointer">
+              <label
+                key={tk}
+                className="flex min-h-8 items-center gap-2.5 text-[0.86rem] cursor-pointer"
+              >
                 <input
                   type="radio"
                   name="technique"
@@ -198,7 +216,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
               <label
                 key={c}
                 className={cn(
-                  'flex items-center gap-2 px-2 py-1.5 rounded-lg text-[0.82rem] cursor-pointer motion-safe:transition ease-expo',
+                  'flex min-h-9 items-center gap-2 px-2.5 py-2 rounded-lg text-[0.82rem] cursor-pointer motion-safe:transition ease-expo',
                   active
                     ? 'bg-volt-100 dark:bg-volt-900/40 text-volt-800 dark:text-volt-200'
                     : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-deep'
@@ -245,7 +263,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
                 tabIndex={active ? 0 : -1}
                 onClick={() => set('difficulty', d as FilterState['difficulty'])}
                 className={cn(
-                  'text-[0.74rem] font-medium px-1 py-1.5 rounded-lg motion-safe:transition ease-expo focus-volt',
+                  'min-h-9 text-[0.74rem] font-medium px-1 py-1.5 rounded-lg motion-safe:transition ease-expo focus-volt',
                   active
                     ? 'bg-canvas dark:bg-night text-ink dark:text-bone shadow-[0_4px_12px_-6px_oklch(0.16_0.03_290_/_0.4)]'
                     : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone'
@@ -279,7 +297,7 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
                 tabIndex={active ? 0 : -1}
                 onClick={() => set('price', p)}
                 className={cn(
-                  'text-[0.74rem] font-medium px-2 py-1.5 rounded-lg motion-safe:transition ease-expo focus-volt',
+                  'min-h-9 text-[0.74rem] font-medium px-2 py-1.5 rounded-lg motion-safe:transition ease-expo focus-volt',
                   active
                     ? 'bg-canvas dark:bg-night text-ink dark:text-bone shadow-[0_4px_12px_-6px_oklch(0.16_0.03_290_/_0.4)]'
                     : 'text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone'

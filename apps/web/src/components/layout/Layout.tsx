@@ -160,13 +160,13 @@ function SiteFooter() {
           </p>
           <span
             aria-hidden
-            className="absolute left-0 right-0 bottom-[6%] h-[clamp(0.4rem,1vw,1rem)] bg-volt-400 origin-left scale-x-0 motion-safe:transition-transform motion-safe:duration-[1200ms] ease-expo"
+            className="absolute left-0 right-0 bottom-[6%] h-[clamp(0.4rem,1vw,1rem)] bg-volt-400 origin-left scale-x-0 motion-safe:transition-transform ease-expo motion-safe:duration-[1200ms]"
             data-bar
           />
           <span
             aria-hidden
             data-wordmark-accelerator
-            className="absolute bottom-[6%] left-0 z-10 h-[clamp(0.4rem,1vw,1rem)] w-[38%] origin-left -translate-x-full scale-x-50 bg-gradient-to-r from-transparent via-volt-100 to-transparent opacity-0 mix-blend-screen motion-safe:transition-[transform,opacity] motion-safe:duration-700 ease-expo group-hover:translate-x-[265%] group-hover:opacity-90 group-focus-within:translate-x-[265%] group-focus-within:opacity-90"
+            className="absolute bottom-[6%] left-0 z-10 h-[clamp(0.4rem,1vw,1rem)] w-[38%] origin-left -translate-x-full scale-x-50 bg-gradient-to-r from-transparent via-volt-100 to-transparent opacity-0 mix-blend-screen motion-safe:transition-[transform,opacity] ease-expo motion-safe:duration-700 group-hover:translate-x-[265%] group-hover:opacity-90 group-focus-within:translate-x-[265%] group-focus-within:opacity-90"
           />
         </div>
 
