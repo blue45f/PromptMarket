@@ -213,7 +213,7 @@ function KineticHeadline({ t }: { t: TFunction }) {
                 </span>
                 <span
                   aria-hidden
-                  className="absolute inset-x-0 bottom-[0.14em] h-[0.42em] bg-volt-300 dark:bg-volt-500/80 -z-0 -skew-x-6 origin-left motion-safe:[animation:letterIn_0.9s_cubic-bezier(0.16,1,0.3,1)_both]"
+                  className="absolute inset-x-0 bottom-[0.14em] h-[0.42em] bg-volt-300 dark:bg-volt-500/80 -z-0 -skew-x-6 origin-left motion-safe:[animation:letterIn_0.9s_var(--ease-expo)_both]"
                   style={{ animationDelay: `${(i + 1) * 90}ms` } as React.CSSProperties}
                 />
               </>

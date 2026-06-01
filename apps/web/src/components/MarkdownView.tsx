@@ -60,7 +60,11 @@ function CodeBlock({ children }: { children: ReactNode }) {
             : 'bg-bone/10 text-bone hover:bg-bone/20 opacity-0 group-hover:opacity-100 motion-safe:duration-200'
         )}
       >
-        {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+        {copied ? (
+          <Check aria-hidden className="w-3 h-3" />
+        ) : (
+          <Copy aria-hidden className="w-3 h-3" />
+        )}
         {copied ? t('markdown.copied') : t('markdown.copy')}
       </button>
     </div>
