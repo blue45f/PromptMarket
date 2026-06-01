@@ -62,6 +62,24 @@ describe('<ListingCard />', () => {
     expect(link.getAttribute('href')?.includes('test-listing')).toBeTruthy()
   })
 
+  it('mirrors the hover affordance for keyboard focus', () => {
+    render(withProviders(<ListingCard listing={listing} />))
+    const link = screen.getByRole('link')
+    expect(link.className).toContain('focus-visible:border-volt-400/70')
+    expect(link.className).toContain('dark:focus-visible:border-volt-500/40')
+    expect(link.className).toContain(
+      'focus-visible:shadow-[0_28px_60px_-32px_oklch(0.65_0.18_125/0.45)]'
+    )
+  })
+
+  it('keeps default card summaries denser on mobile', () => {
+    render(withProviders(<ListingCard listing={listing} />))
+    const description = screen.getByText('A test listing description.').closest('p')
+    expect(description?.className).toContain('line-clamp-1')
+    expect(description?.className).toContain('sm:line-clamp-2')
+    expect(description?.className.split(' ')).not.toContain('min-h-[2.5rem]')
+  })
+
   it('renders download count "42"', () => {
     render(withProviders(<ListingCard listing={listing} />))
     expect(screen.getByText('42')).toBeTruthy()

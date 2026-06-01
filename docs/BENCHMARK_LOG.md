@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-01T16:35 (UTC) — Round 143
+
+- **Benchmark**: 자체 — Browse 카드의 hover affordance는 마우스 사용자에게만 선명했고, 키보드 포커스는 같은 시각적 우선순위를 받지 못했다. 모바일 카드에서는 설명 2줄과 기본 최소 높이가 반복 목록 스캔 밀도를 떨어뜨렸다.
+- **Shipped**: `ListingCard` 링크에 hover와 동등한 `focus-visible` border/shadow 상태를 추가하고, 커버 심볼 모션도 `group-focus-visible`에서 반응하도록 맞췄다. 기본 카드 설명은 모바일 1줄, `sm` 이상 2줄로 조정해 좁은 화면의 카드 밀도를 개선했다.
+- **Design**: 기존 surface/volt 토큰과 카드 구조를 유지하면서 접근성 신호만 강화했다. 새 장식이나 카드 중첩 없이, 포커스 상태에서 제목/외곽선/그림자가 한 번에 읽히도록 시각 위계를 맞췄다.
+- **Tests**: TDD로 `ListingCard.test.tsx`에 키보드 focus affordance와 모바일 summary density 회귀 테스트를 추가. `pnpm --filter @promptmarket/web test:run ListingCard.test.tsx`, `pnpm --filter @promptmarket/web typecheck`, `pnpm --filter @promptmarket/web test:run`, `pnpm --filter @promptmarket/web build` 통과.
+- **Visual check**: Playwright Python smoke로 포트 5175의 `/browse`를 fixture API로 열어 데스크톱 1440x900과 모바일 390x844에서 카드 focus, summary clamp, 긴 제목/설명 렌더를 확인했다. 스크린샷은 `/private/tmp/promptmarket-listing-card`에 저장했다.
+
 ## 2026-06-01T16:25 (UTC) — Round 142
 
 - **Benchmark**: 자체 — footer의 Anthology 라벨은 브랜드 장치이지만 정적인 텍스트라 사용자가 발견할 수 있는 작은 반응이 없었다. 이전 제안의 `vol.01 → vol.02` cycle을 접근 가능한 micro-interaction으로 마감한다.

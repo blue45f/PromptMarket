@@ -94,8 +94,11 @@ const ListingCard = memo(function ListingCard({
           'tilt-inner group relative isolate block overflow-hidden rounded-[1.4rem] focus-volt',
           'surface-card lift-on-hover',
           'hover:border-volt-400/70 dark:hover:border-volt-500/40',
+          'focus-visible:border-volt-400/70 dark:focus-visible:border-volt-500/40',
           'hover:shadow-[0_28px_60px_-32px_oklch(0.65_0.18_125/0.45)]',
-          'dark:hover:shadow-[0_28px_60px_-32px_oklch(0.55_0.22_125/0.6)]'
+          'focus-visible:shadow-[0_28px_60px_-32px_oklch(0.65_0.18_125/0.45)]',
+          'dark:hover:shadow-[0_28px_60px_-32px_oklch(0.55_0.22_125/0.6)]',
+          'dark:focus-visible:shadow-[0_28px_60px_-32px_oklch(0.55_0.22_125/0.6)]'
         )}
       >
         {/* Cover — a mesh-gradient panel with the emoji as monolith. */}
@@ -122,7 +125,7 @@ const ListingCard = memo(function ListingCard({
             aria-hidden
             className={cn(
               'tilt-parallax absolute inset-0 flex items-center justify-center drop-shadow-[0_8px_24px_oklch(0.16_0.03_290/0.18)]',
-              'motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-3 motion-safe:transition-transform motion-safe:duration-700 ease-expo',
+              'motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-3 motion-safe:group-focus-visible:scale-110 motion-safe:group-focus-visible:-rotate-3 motion-safe:transition-transform motion-safe:duration-700 ease-expo',
               isFeatured ? 'text-[7rem] lg:text-[10rem]' : 'text-[5.5rem]'
             )}
           >
@@ -230,7 +233,7 @@ const ListingCard = memo(function ListingCard({
               'text-ink-mute dark:text-bone-mute leading-[1.55]',
               isFeatured
                 ? 'text-sm lg:text-[0.95rem] line-clamp-3'
-                : 'text-[0.83rem] line-clamp-2 min-h-[2.5rem]'
+                : 'text-[0.83rem] line-clamp-1 sm:line-clamp-2 sm:min-h-[2.5rem]'
             )}
           >
             {highlight ? (
