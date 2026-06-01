@@ -54,7 +54,7 @@ function CodeBlock({ children }: { children: ReactNode }) {
         aria-label={t('markdown.copyCodeBlock')}
         className={cn(
           'absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-1 rounded-md text-[0.65rem] font-mono uppercase tracking-[0.14em]',
-          'motion-safe:transition focus-volt',
+          'motion-safe:transition ease-expo focus-volt',
           copied
             ? 'bg-volt-300 text-ink'
             : 'bg-bone/10 text-bone hover:bg-bone/20 opacity-0 group-hover:opacity-100 motion-safe:duration-200'

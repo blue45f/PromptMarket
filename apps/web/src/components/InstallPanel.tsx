@@ -138,7 +138,7 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
               value={tg.id}
               className={cn(
                 'group relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full whitespace-nowrap',
-                'text-[0.78rem] font-medium motion-safe:transition-colors focus-volt',
+                'text-[0.78rem] font-medium motion-safe:transition-colors ease-expo focus-volt',
                 'text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone',
                 'data-[state=active]:bg-ink data-[state=active]:text-bone',
                 'dark:data-[state=active]:bg-bone dark:data-[state=active]:text-ink'

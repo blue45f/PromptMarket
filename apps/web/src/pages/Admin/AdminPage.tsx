@@ -1378,7 +1378,7 @@ function CreatorRow({ row, rank }: { row: TopCreatorRevenue; rank: number }) {
           className="inline-flex items-center gap-1.5 text-volt-700 dark:text-volt-300 hover:underline"
         >
           @{row.username}
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3.5 h-3.5" aria-hidden />
         </Link>
       </td>
       <td className="px-4 py-3 tabular-nums">{row.listingCount}</td>

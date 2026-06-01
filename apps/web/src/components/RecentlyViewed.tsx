@@ -57,7 +57,7 @@ export default function RecentlyViewed({ excludeSlug, className, limit = 8 }: Re
     return (
       <p className="text-sm text-ink-mute">
         {t('recentlyViewed.loadError', {
-          defaultValue: 'Could not load your recently viewed items.',
+          defaultValue: "Couldn't load your recently viewed items.",
         })}
       </p>
     )

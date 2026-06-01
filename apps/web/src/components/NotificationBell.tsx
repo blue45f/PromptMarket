@@ -64,9 +64,9 @@ export default function NotificationBell() {
       id: 'release-notes',
       title: t('notifications.items.release.title', { defaultValue: 'Product update available' }),
       body: t('notifications.items.release.body', {
-        defaultValue: 'New marketplace polish is now live on listing previews.',
+        defaultValue: 'A new marketplace polish cycle is now active.',
       }),
-      action: t('notifications.items.release.action', { defaultValue: 'See what changed' }),
+      action: t('notifications.items.release.action', { defaultValue: "See what's changed" }),
       href: '/browse?sort=newest',
     },
   ]

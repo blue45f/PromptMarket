@@ -190,7 +190,7 @@ const ListingCard = memo(function ListingCard({
               className={cn(
                 'w-9 h-9 rounded-full flex items-center justify-center',
                 'bg-ink text-bone dark:bg-bone dark:text-ink',
-                'opacity-0 translate-y-2 motion-safe:transition-all motion-safe:duration-500',
+                'opacity-0 translate-y-2 motion-safe:transition-all motion-safe:duration-500 ease-expo',
                 'motion-safe:group-hover:opacity-100 motion-safe:group-hover:translate-y-0',
                 'motion-safe:group-focus-within:opacity-100 motion-safe:group-focus-within:translate-y-0'
               )}

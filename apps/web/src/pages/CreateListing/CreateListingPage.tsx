@@ -719,7 +719,7 @@ export default function CreateListingPage() {
                 className="absolute inset-0 bg-volt-500 translate-y-full motion-safe:transition-transform motion-safe:duration-500 ease-expo group-hover:translate-y-0"
               />
               <span className="relative inline-flex items-center gap-2 group-hover:text-ink motion-safe:transition-colors ease-expo">
-                {busy && <Loader2 className="w-4 h-4 motion-safe:animate-spin" />}
+                {busy && <Loader2 aria-hidden className="w-4 h-4 motion-safe:animate-spin" />}
                 {busy ? t('submit.publishing') : t('submit.publish')}
               </span>
             </button>

@@ -63,7 +63,7 @@ function Stat({
         aria-hidden
         className={cn(
           'absolute left-6 sm:left-8 right-6 sm:right-8 bottom-0 h-px origin-left scale-x-0',
-          'motion-safe:[transition:transform_0.9s_cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-x-100',
+          'motion-safe:transition-transform motion-safe:duration-[900ms] ease-expo motion-safe:group-hover:scale-x-100',
           ACCENT_DOT[accent]
         )}
       />

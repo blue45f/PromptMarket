@@ -161,7 +161,10 @@ export default function DashboardPage() {
                 >
                   <PlusCircle aria-hidden className="w-4 h-4" />
                   {t('listings.empty.action')}
-                  <ArrowUpRight className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+                  <ArrowUpRight
+                    aria-hidden
+                    className="w-4 h-4 motion-safe:transition-transform ease-expo motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+                  />
                 </Link>
               }
             />
@@ -232,7 +235,7 @@ export default function DashboardPage() {
                       className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-ink text-bone dark:bg-bone dark:text-ink text-[0.78rem] motion-safe:transition ease-expo focus-volt"
                     >
                       {t('library.open')}
-                      <ArrowUpRight className="w-3 h-3" />
+                      <ArrowUpRight aria-hidden className="w-3 h-3" />
                     </Link>
                   </div>
                 </div>
@@ -298,7 +301,7 @@ export default function DashboardPage() {
                       )}
                     >
                       {isThis ? (
-                        <Loader2 className="w-3.5 h-3.5 motion-safe:animate-spin" />
+                        <Loader2 aria-hidden className="w-3.5 h-3.5 motion-safe:animate-spin" />
                       ) : (
                         <span aria-hidden>＋</span>
                       )}
