@@ -38,6 +38,24 @@ const summary = {
   totalGrossCents: 15000,
   totalSellerNetCents: 12450,
   totalPlatformFeeCents: 2550,
+  tierBreakdown: {
+    freeOrders: 2,
+    baseOrders: 0,
+    premiumOrders: 10,
+    ultraPremiumOrders: 0,
+    freeGrossCents: 0,
+    baseGrossCents: 0,
+    premiumGrossCents: 15000,
+    ultraPremiumGrossCents: 0,
+    freePlatformFeeCents: 0,
+    basePlatformFeeCents: 0,
+    premiumPlatformFeeCents: 2550,
+    ultraPremiumPlatformFeeCents: 0,
+    freeSellerNetCents: 0,
+    baseSellerNetCents: 0,
+    premiumSellerNetCents: 12450,
+    ultraPremiumSellerNetCents: 0,
+  },
   topCreators: [
     {
       creatorId: 'c1',
@@ -127,6 +145,7 @@ describe('<AdminPage />', () => {
     expect(screen.getByText('총 매출액')).toBeTruthy()
     expect(screen.getByText('플랫폼 수익률')).toBeTruthy()
     expect(screen.getByText('건당 평균 주문')).toBeTruthy()
+    expect(screen.getByText('가격대별 수익 분해')).toBeTruthy()
     expect(screen.getAllByText('$150.00').length).toBeGreaterThanOrEqual(2)
     expect(screen.getByText('가격대별 영향도')).toBeTruthy()
     expect(screen.getByText('월간 정책 영향 예측')).toBeTruthy()

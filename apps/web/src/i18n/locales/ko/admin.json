@@ -56,6 +56,18 @@
       "platformTake": "플랫폼 수익률",
       "sellerTake": "판매자 수익률",
       "avgOrder": "건당 평균 주문"
+    },
+    "tiers": {
+      "title": "가격대별 수익 분해",
+      "tier": "구간",
+      "orders": "건수 / 비율",
+      "gross": "총매출",
+      "platform": "플랫폼 수익",
+      "seller": "판매자 정산",
+      "free": "무료",
+      "base": "기본",
+      "premium": "프리미엄",
+      "ultraPremium": "초고급"
     }
   },
   "simulation": {

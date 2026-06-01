@@ -46,6 +46,24 @@ const ZERO_SUMMARY: AdminRevenueSummary = {
   totalGrossCents: 0,
   totalSellerNetCents: 0,
   totalPlatformFeeCents: 0,
+  tierBreakdown: {
+    freeOrders: 0,
+    baseOrders: 0,
+    premiumOrders: 0,
+    ultraPremiumOrders: 0,
+    freeGrossCents: 0,
+    baseGrossCents: 0,
+    premiumGrossCents: 0,
+    ultraPremiumGrossCents: 0,
+    freePlatformFeeCents: 0,
+    basePlatformFeeCents: 0,
+    premiumPlatformFeeCents: 0,
+    ultraPremiumPlatformFeeCents: 0,
+    freeSellerNetCents: 0,
+    baseSellerNetCents: 0,
+    premiumSellerNetCents: 0,
+    ultraPremiumSellerNetCents: 0,
+  },
   topCreators: [],
 }
 
@@ -75,6 +93,15 @@ interface FeeProjection {
   sellerCents: number
   usedFeePercent: number
   tier: 'base' | 'premium' | 'ultraPremium'
+}
+
+interface TierSummaryRow {
+  tier: 'free' | 'base' | 'premium' | 'ultraPremium'
+  label: string
+  orders: number
+  grossCents: number
+  sellerCents: number
+  platformCents: number
 }
 
 interface ScenarioProjection {
@@ -121,6 +148,10 @@ function formatSignedDelta(delta: number): string {
 
 function formatRate(rate: number): string {
   return `${rate.toFixed(1)}%`
+}
+
+function formatShare(value: number): string {
+  return `${value.toFixed(1)}%`
 }
 
 function parsePercentInput(value: string): number {
@@ -270,6 +301,60 @@ export default function AdminPage() {
 
   const isLoading = settingsQ.isPending || settingsHistoryQ.isPending || summaryQ.isPending
   const error = settingsQ.error ?? settingsHistoryQ.error ?? summaryQ.error
+  const tierRows = useMemo<TierSummaryRow[]>(() => {
+    return [
+      {
+        tier: 'free',
+        label: t('summary.tiers.free'),
+        orders: summary.tierBreakdown.freeOrders,
+        grossCents: summary.tierBreakdown.freeGrossCents,
+        sellerCents: summary.tierBreakdown.freeSellerNetCents,
+        platformCents: summary.tierBreakdown.freePlatformFeeCents,
+      },
+      {
+        tier: 'base',
+        label: t('summary.tiers.base'),
+        orders: summary.tierBreakdown.baseOrders,
+        grossCents: summary.tierBreakdown.baseGrossCents,
+        sellerCents: summary.tierBreakdown.baseSellerNetCents,
+        platformCents: summary.tierBreakdown.basePlatformFeeCents,
+      },
+      {
+        tier: 'premium',
+        label: t('summary.tiers.premium'),
+        orders: summary.tierBreakdown.premiumOrders,
+        grossCents: summary.tierBreakdown.premiumGrossCents,
+        sellerCents: summary.tierBreakdown.premiumSellerNetCents,
+        platformCents: summary.tierBreakdown.premiumPlatformFeeCents,
+      },
+      {
+        tier: 'ultraPremium',
+        label: t('summary.tiers.ultraPremium'),
+        orders: summary.tierBreakdown.ultraPremiumOrders,
+        grossCents: summary.tierBreakdown.ultraPremiumGrossCents,
+        sellerCents: summary.tierBreakdown.ultraPremiumSellerNetCents,
+        platformCents: summary.tierBreakdown.ultraPremiumPlatformFeeCents,
+      },
+    ]
+  }, [
+    summary.tierBreakdown.freeOrders,
+    summary.tierBreakdown.baseOrders,
+    summary.tierBreakdown.premiumOrders,
+    summary.tierBreakdown.ultraPremiumOrders,
+    summary.tierBreakdown.freeGrossCents,
+    summary.tierBreakdown.baseGrossCents,
+    summary.tierBreakdown.premiumGrossCents,
+    summary.tierBreakdown.ultraPremiumGrossCents,
+    summary.tierBreakdown.freeSellerNetCents,
+    summary.tierBreakdown.baseSellerNetCents,
+    summary.tierBreakdown.premiumSellerNetCents,
+    summary.tierBreakdown.ultraPremiumSellerNetCents,
+    summary.tierBreakdown.freePlatformFeeCents,
+    summary.tierBreakdown.basePlatformFeeCents,
+    summary.tierBreakdown.premiumPlatformFeeCents,
+    summary.tierBreakdown.ultraPremiumPlatformFeeCents,
+    t,
+  ])
 
   const settingsHistory: RevenueSettingsHistory = settingsHistoryQ.data ?? []
 
@@ -750,6 +835,63 @@ export default function AdminPage() {
               value={formatDollars(avgPaidOrderValue)}
               muted
             />
+          </div>
+          <div className="mt-5 rounded-2xl border border-line dark:border-night-line bg-canvas dark:bg-night">
+            <div className="px-4 py-3 border-b border-line/60 dark:border-night-line/60">
+              <p className="text-xs uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
+                {t('summary.tiers.title')}
+              </p>
+            </div>
+            <div className="max-h-[16rem] overflow-x-auto">
+              <table className="w-full text-xs sm:text-sm">
+                <thead className="text-[0.62rem] uppercase tracking-[0.15em] text-ink-mute dark:text-bone-mute">
+                  <tr>
+                    <th className="px-4 py-3 text-left">{t('summary.tiers.tier')}</th>
+                    <th className="px-4 py-3 text-left">{t('summary.tiers.orders')}</th>
+                    <th className="px-4 py-3 text-right">{t('summary.tiers.gross')}</th>
+                    <th className="px-4 py-3 text-right">{t('summary.tiers.platform')}</th>
+                    <th className="px-4 py-3 text-right">{t('summary.tiers.seller')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tierRows.map((row) => {
+                    const orderShare =
+                      summary.totalPurchases > 0 ? (row.orders / summary.totalPurchases) * 100 : 0
+                    const grossShare =
+                      summary.totalGrossCents > 0
+                        ? (row.grossCents / summary.totalGrossCents) * 100
+                        : 0
+
+                    return (
+                      <tr
+                        key={row.tier}
+                        className="border-t border-line/70 dark:border-night-line/70 text-ink dark:text-bone"
+                      >
+                        <td className="px-4 py-3 font-mono text-[0.75rem]">{row.label}</td>
+                        <td className="px-4 py-3 tabular-nums">
+                          {row.orders}{' '}
+                          <span className="text-ink-soft dark:text-bone-soft">
+                            ({formatShare(orderShare)})
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right tabular-nums">
+                          {formatDollars(row.grossCents)}
+                        </td>
+                        <td className="px-4 py-3 text-right tabular-nums">
+                          {formatDollars(row.platformCents)}
+                        </td>
+                        <td className="px-4 py-3 text-right tabular-nums">
+                          <span>{formatDollars(row.sellerCents)}</span>{' '}
+                          <span className="text-ink-soft dark:text-bone-soft">
+                            ({formatShare(grossShare)})
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </article>
 

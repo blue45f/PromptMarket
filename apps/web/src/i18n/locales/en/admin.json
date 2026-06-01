@@ -56,6 +56,18 @@
       "platformTake": "Platform Take",
       "sellerTake": "Seller Take",
       "avgOrder": "Avg Paid Order"
+    },
+    "tiers": {
+      "title": "Tier Revenue Breakdown",
+      "tier": "Fee tier",
+      "orders": "Orders / share",
+      "gross": "Gross sales",
+      "platform": "Platform revenue",
+      "seller": "Seller revenue",
+      "free": "Free",
+      "base": "Base",
+      "premium": "Premium",
+      "ultraPremium": "Ultra premium"
     }
   },
   "simulation": {

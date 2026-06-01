@@ -11,6 +11,27 @@ interface TopCreatorBucket {
   platformFeeCents: number
 }
 
+interface RevenueTierSummary {
+  freeOrders: number
+  baseOrders: number
+  premiumOrders: number
+  ultraPremiumOrders: number
+  freeGrossCents: number
+  baseGrossCents: number
+  premiumGrossCents: number
+  ultraPremiumGrossCents: number
+  freePlatformFeeCents: number
+  basePlatformFeeCents: number
+  premiumPlatformFeeCents: number
+  ultraPremiumPlatformFeeCents: number
+  freeSellerNetCents: number
+  baseSellerNetCents: number
+  premiumSellerNetCents: number
+  ultraPremiumSellerNetCents: number
+}
+
+type RevenueTier = 'free' | 'base' | 'premium' | 'ultraPremium'
+
 interface RevenuePolicy {
   platformFeeBps: number
   premiumFeeBps: number
@@ -57,6 +78,103 @@ export class AdminService {
     if (!Number.isFinite(n)) return 0
     if (n < 0) return 0
     return n
+  }
+
+  private selectFeeTier(grossAmountCents: number, policy: RevenuePolicy): RevenueTier {
+    if (grossAmountCents <= 0) return 'free'
+
+    const tiers = [
+      {
+        threshold: policy.ultraPremiumThresholdCents,
+        tier: 'ultraPremium' as RevenueTier,
+      },
+      {
+        threshold: policy.premiumThresholdCents,
+        tier: 'premium' as RevenueTier,
+      },
+      {
+        threshold: 0,
+        tier: 'base' as RevenueTier,
+      },
+    ]
+
+    const matched = [...tiers]
+      .sort((left, right) => right.threshold - left.threshold)
+      .find((tier) => grossAmountCents >= tier.threshold)
+
+    return matched?.tier ?? 'base'
+  }
+
+  private buildRevenueTierSummary(
+    rows: Array<{
+      grossAmountCents: number
+      _count: { _all: number }
+      _sum: {
+        grossAmountCents: number | null
+        sellerNetCents: number | null
+        platformFeeCents: number | null
+      }
+    }>,
+    policy: RevenuePolicy
+  ): RevenueTierSummary {
+    const totals: RevenueTierSummary = {
+      freeOrders: 0,
+      baseOrders: 0,
+      premiumOrders: 0,
+      ultraPremiumOrders: 0,
+      freeGrossCents: 0,
+      baseGrossCents: 0,
+      premiumGrossCents: 0,
+      ultraPremiumGrossCents: 0,
+      freePlatformFeeCents: 0,
+      basePlatformFeeCents: 0,
+      premiumPlatformFeeCents: 0,
+      ultraPremiumPlatformFeeCents: 0,
+      freeSellerNetCents: 0,
+      baseSellerNetCents: 0,
+      premiumSellerNetCents: 0,
+      ultraPremiumSellerNetCents: 0,
+    }
+
+    for (const row of rows) {
+      const grossAmountCents = row.grossAmountCents ?? 0
+      const orderCount = row._count._all
+      const grossSum = row._sum.grossAmountCents ?? 0
+      const platformFeeSum = row._sum.platformFeeCents ?? 0
+      const sellerNetSum = row._sum.sellerNetCents ?? 0
+      const tier = this.selectFeeTier(grossAmountCents, policy)
+
+      if (tier === 'free') {
+        totals.freeOrders += orderCount
+        totals.freeGrossCents += grossSum
+        totals.freePlatformFeeCents += platformFeeSum
+        totals.freeSellerNetCents += sellerNetSum
+        continue
+      }
+
+      if (tier === 'base') {
+        totals.baseOrders += orderCount
+        totals.baseGrossCents += grossSum
+        totals.basePlatformFeeCents += platformFeeSum
+        totals.baseSellerNetCents += sellerNetSum
+        continue
+      }
+
+      if (tier === 'premium') {
+        totals.premiumOrders += orderCount
+        totals.premiumGrossCents += grossSum
+        totals.premiumPlatformFeeCents += platformFeeSum
+        totals.premiumSellerNetCents += sellerNetSum
+        continue
+      }
+
+      totals.ultraPremiumOrders += orderCount
+      totals.ultraPremiumGrossCents += grossSum
+      totals.ultraPremiumPlatformFeeCents += platformFeeSum
+      totals.ultraPremiumSellerNetCents += sellerNetSum
+    }
+
+    return totals
   }
 
   private async getRevenuePolicy(): Promise<RevenuePolicy> {
@@ -182,7 +300,15 @@ export class AdminService {
   async getRevenueSummary(limit: number) {
     const requested = Math.max(1, Math.min(Math.floor(limit) || 10, 50))
 
-    const [totals, totalPurchases, paidPurchases, freePurchases, listingAgg] = await Promise.all([
+    const [
+      totals,
+      totalPurchases,
+      paidPurchases,
+      freePurchases,
+      listingAgg,
+      purchaseTierAgg,
+      policy,
+    ] = await Promise.all([
       this.prisma.purchase.aggregate({
         _sum: {
           grossAmountCents: true,
@@ -202,7 +328,30 @@ export class AdminService {
           platformFeeCents: true,
         },
       }),
+      this.prisma.purchase.groupBy({
+        by: ['grossAmountCents'],
+        _count: { _all: true },
+        _sum: {
+          grossAmountCents: true,
+          sellerNetCents: true,
+          platformFeeCents: true,
+        },
+      }),
+      this.getRevenuePolicy(),
     ])
+
+    const tierBreakdown = this.buildRevenueTierSummary(
+      purchaseTierAgg as Array<{
+        grossAmountCents: number
+        _count: { _all: number }
+        _sum: {
+          grossAmountCents: number | null
+          sellerNetCents: number | null
+          platformFeeCents: number | null
+        }
+      }>,
+      policy
+    )
 
     const listingIds = listingAgg.map((row) => row.listingId)
     const listings = await this.prisma.listing.findMany({
@@ -249,6 +398,7 @@ export class AdminService {
       totalGrossCents: totals._sum.grossAmountCents ?? 0,
       totalSellerNetCents: totals._sum.sellerNetCents ?? 0,
       totalPlatformFeeCents: totals._sum.platformFeeCents ?? 0,
+      tierBreakdown,
       topCreators: topCreatorsClipped,
     }
   }

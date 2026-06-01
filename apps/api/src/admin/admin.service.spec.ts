@@ -268,35 +268,49 @@ describe('AdminService.getRevenueSummary', () => {
           },
         }),
         count: vi.fn().mockResolvedValueOnce(4).mockResolvedValueOnce(3).mockResolvedValueOnce(1),
-        groupBy: vi.fn().mockResolvedValue([
-          {
-            listingId: 'l-1',
-            _count: { _all: 2 },
-            _sum: {
-              grossAmountCents: 5_000,
-              sellerNetCents: 4_000,
-              platformFeeCents: 1_000,
+        groupBy: vi
+          .fn()
+          .mockResolvedValueOnce([
+            {
+              listingId: 'l-1',
+              _count: { _all: 2 },
+              _sum: {
+                grossAmountCents: 5_000,
+                sellerNetCents: 4_000,
+                platformFeeCents: 1_000,
+              },
             },
-          },
-          {
-            listingId: 'l-2',
-            _count: { _all: 2 },
-            _sum: {
-              grossAmountCents: 5_000,
-              sellerNetCents: 4_300,
-              platformFeeCents: 700,
+            {
+              listingId: 'l-2',
+              _count: { _all: 2 },
+              _sum: {
+                grossAmountCents: 5_000,
+                sellerNetCents: 4_300,
+                platformFeeCents: 700,
+              },
             },
-          },
-          {
-            listingId: 'l-3',
-            _count: { _all: 0 },
-            _sum: {
+            {
+              listingId: 'l-3',
+              _count: { _all: 0 },
+              _sum: {
+                grossAmountCents: 0,
+                sellerNetCents: 0,
+                platformFeeCents: 0,
+              },
+            },
+          ])
+          .mockResolvedValueOnce([
+            {
               grossAmountCents: 0,
-              sellerNetCents: 0,
-              platformFeeCents: 0,
+              _count: { _all: 1 },
+              _sum: { grossAmountCents: 0, sellerNetCents: 0, platformFeeCents: 0 },
             },
-          },
-        ]),
+            {
+              grossAmountCents: 5_000,
+              _count: { _all: 3 },
+              _sum: { grossAmountCents: 10_000, sellerNetCents: 8_300, platformFeeCents: 1_700 },
+            },
+          ]),
       },
       listing: {
         findMany: vi.fn().mockResolvedValue([
@@ -315,6 +329,24 @@ describe('AdminService.getRevenueSummary', () => {
     expect(out.paidPurchases).toBe(3)
     expect(out.freePurchases).toBe(1)
     expect(out.totalGrossCents).toBe(10_000)
+    expect(out.tierBreakdown).toEqual({
+      freeOrders: 1,
+      baseOrders: 0,
+      premiumOrders: 3,
+      ultraPremiumOrders: 0,
+      freeGrossCents: 0,
+      baseGrossCents: 0,
+      premiumGrossCents: 10_000,
+      ultraPremiumGrossCents: 0,
+      freePlatformFeeCents: 0,
+      basePlatformFeeCents: 0,
+      premiumPlatformFeeCents: 1_700,
+      ultraPremiumPlatformFeeCents: 0,
+      freeSellerNetCents: 0,
+      baseSellerNetCents: 0,
+      premiumSellerNetCents: 8_300,
+      ultraPremiumSellerNetCents: 0,
+    })
     expect(out.topCreators).toEqual([
       {
         creatorId: 'bob',
@@ -351,17 +383,30 @@ describe('AdminService.getRevenueSummary', () => {
           },
         }),
         count: vi.fn().mockResolvedValue(0),
-        groupBy: vi.fn().mockResolvedValue(
-          Array.from({ length: 75 }, (_, i) => ({
-            listingId: `l-${i}`,
-            _count: { _all: 1 },
-            _sum: {
+        groupBy: vi
+          .fn()
+          .mockResolvedValueOnce(
+            Array.from({ length: 75 }, (_, i) => ({
+              listingId: `l-${i}`,
+              _count: { _all: 1 },
+              _sum: {
+                grossAmountCents: 100,
+                sellerNetCents: 100,
+                platformFeeCents: 0,
+              },
+            }))
+          )
+          .mockResolvedValueOnce([
+            {
               grossAmountCents: 100,
-              sellerNetCents: 100,
-              platformFeeCents: 0,
+              _count: { _all: 75 },
+              _sum: {
+                grossAmountCents: 7_500,
+                sellerNetCents: 7_500,
+                platformFeeCents: 0,
+              },
             },
-          }))
-        ),
+          ]),
       },
       listing: {
         findMany: vi.fn().mockResolvedValue(

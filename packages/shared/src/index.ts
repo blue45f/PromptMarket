@@ -418,6 +418,26 @@ export type RevenueSettingHistoryItem = z.infer<typeof RevenueSettingHistoryItem
 export const RevenueSettingsHistorySchema = z.array(RevenueSettingHistoryItemSchema)
 export type RevenueSettingsHistory = z.infer<typeof RevenueSettingsHistorySchema>
 
+export const RevenueTierBreakdownSchema = z.object({
+  freeOrders: z.number().int().nonnegative(),
+  baseOrders: z.number().int().nonnegative(),
+  premiumOrders: z.number().int().nonnegative(),
+  ultraPremiumOrders: z.number().int().nonnegative(),
+  freeGrossCents: z.number().int().nonnegative(),
+  baseGrossCents: z.number().int().nonnegative(),
+  premiumGrossCents: z.number().int().nonnegative(),
+  ultraPremiumGrossCents: z.number().int().nonnegative(),
+  freePlatformFeeCents: z.number().int().nonnegative(),
+  basePlatformFeeCents: z.number().int().nonnegative(),
+  premiumPlatformFeeCents: z.number().int().nonnegative(),
+  ultraPremiumPlatformFeeCents: z.number().int().nonnegative(),
+  freeSellerNetCents: z.number().int().nonnegative(),
+  baseSellerNetCents: z.number().int().nonnegative(),
+  premiumSellerNetCents: z.number().int().nonnegative(),
+  ultraPremiumSellerNetCents: z.number().int().nonnegative(),
+})
+export type RevenueTierBreakdown = z.infer<typeof RevenueTierBreakdownSchema>
+
 export const TopCreatorRevenueSchema = z.object({
   creatorId: z.string(),
   username: z.string(),
@@ -436,6 +456,7 @@ export const AdminRevenueSummarySchema = z.object({
   totalGrossCents: z.number().int().nonnegative(),
   totalSellerNetCents: z.number().int().nonnegative(),
   totalPlatformFeeCents: z.number().int().nonnegative(),
+  tierBreakdown: RevenueTierBreakdownSchema,
   topCreators: z.array(TopCreatorRevenueSchema),
 })
 export type AdminRevenueSummary = z.infer<typeof AdminRevenueSummarySchema>
