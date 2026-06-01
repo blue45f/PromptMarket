@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-01T18:07 (UTC) — Round 145
+
+- **Benchmark**: 자체 — footer mega wordmark는 브랜드 장치지만 reveal 이후 정적인 텍스트와 라임 hairline만 남아 hover 피드백이 약했다. 상호작용 가능 UI처럼 보이면 안 되므로, 레이아웃과 탭 순서를 건드리지 않는 장식성 motion만 추가한다.
+- **Shipped**: `SiteFooter` wordmark에 `data-footer-wordmark`와 decorative accelerator 레이어를 추가했다. hover/focus-within에서 라임 광선이 hairline 위를 지나가며, 본문 링크·CTA·통계 구조는 유지한다.
+- **Design**: 기존 cosmic footer, bone wordmark, volt accent를 유지하면서 transform/opacity 기반 motion만 사용했다. 새 카드, 글래스, 과한 그림자 없이 브랜드의 전기적 느낌만 보강했다.
+- **Tests**: `Layout.test.tsx`에 wordmark polish가 decorative scope 안에 존재하는지 확인하는 회귀 테스트 추가. `pnpm --filter @promptmarket/web test:run Layout.test.tsx`, `pnpm --filter @promptmarket/web typecheck`, `pnpm --filter @promptmarket/web test:run`, `pnpm --filter @promptmarket/web build` 통과.
+- **Visual check**: PromptMarket dev 서버 포트 5176에서 Playwright Python smoke로 footer wordmark 기본/hover 상태를 데스크톱 1440x900과 모바일 390x844에서 확인했다. 스크린샷은 `/private/tmp/promptmarket-footer-wordmark`에 저장했다.
+
 ## 2026-06-01T16:45 (UTC) — Round 144
 
 - **Benchmark**: 자체 — Home 상단 progress bar는 첫 화면의 스크롤 방향 신호인데, 문서 전체 비율을 따라 footer까지 계속 켜지면 글로벌 상태처럼 보인다. Hero 맥락 안에서만 활성화되는 것이 더 명확하다.

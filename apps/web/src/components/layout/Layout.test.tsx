@@ -152,4 +152,12 @@ describe('Layout', () => {
     fireEvent.click(cycle)
     expect(cycle.textContent).toContain('vol.01')
   })
+
+  it('keeps the footer mega wordmark hover polish decorative and scoped', () => {
+    const { container } = render(<TestLayout />)
+    const wordmark = container.querySelector('[data-footer-wordmark]')
+
+    expect(wordmark?.textContent).toContain('PromptMarket')
+    expect(wordmark?.querySelector('[data-wordmark-accelerator]')).toBeTruthy()
+  })
 })
