@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-01T16:45 (UTC) — Round 144
+
+- **Benchmark**: 자체 — Home 상단 progress bar는 첫 화면의 스크롤 방향 신호인데, 문서 전체 비율을 따라 footer까지 계속 켜지면 글로벌 상태처럼 보인다. Hero 맥락 안에서만 활성화되는 것이 더 명확하다.
+- **Shipped**: `Hero` 섹션에 `data-home-hero` 앵커를 추가하고 `ScrollProgress`를 hero 높이 기준으로 계산하도록 변경했다. Hero를 지나면 `is-complete` 상태로 전환해 상단 바를 숨기고, opacity transition만 추가해 레이아웃 흔들림 없이 사라지게 했다.
+- **Design**: 기존 2px volt progress bar와 motion timing을 유지하면서 정보 범위를 첫 화면으로 제한했다. 사용자가 카탈로그 섹션을 읽는 동안 의미 없는 상단 장식이 남지 않게 정리했다.
+- **Tests**: TDD로 `HomePage.test.tsx`에 hero 범위 progress 회귀 테스트 추가. `pnpm --filter @promptmarket/web test:run HomePage.test.tsx` 통과.
+- **Visual check**: PromptMarket dev 서버를 포트 5176에서 실행하고 Playwright Python smoke로 Home desktop 1440x900과 mobile 390x844에서 hero 중간 active 상태, hero 이후 hidden 상태를 확인했다. 스크린샷은 `/private/tmp/promptmarket-home-progress`에 저장했다.
+
 ## 2026-06-01T16:35 (UTC) — Round 143
 
 - **Benchmark**: 자체 — Browse 카드의 hover affordance는 마우스 사용자에게만 선명했고, 키보드 포커스는 같은 시각적 우선순위를 받지 못했다. 모바일 카드에서는 설명 2줄과 기본 최소 높이가 반복 목록 스캔 밀도를 떨어뜨렸다.

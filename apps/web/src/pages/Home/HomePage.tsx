@@ -208,13 +208,20 @@ export default function HomePage() {
 /* ---------- Scroll progress bar --------------------------------------- */
 
 function ScrollProgress() {
-  const [progress, setProgress] = useState(0)
+  const [state, setState] = useState({ complete: false, progress: 0 })
   useEffect(() => {
     let raf = 0
     const tick = () => {
-      const h = document.documentElement
-      const max = h.scrollHeight - h.clientHeight
-      setProgress(max <= 0 ? 0 : h.scrollTop / max)
+      const hero = document.querySelector<HTMLElement>('[data-home-hero]')
+      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
+      const top = hero?.offsetTop ?? 0
+      const height = Math.max(1, hero?.offsetHeight ?? window.innerHeight)
+      const raw = (scrollTop - top) / height
+      const progress = Math.min(1, Math.max(0, raw))
+      const complete = raw >= 1
+      setState((prev) =>
+        prev.progress === progress && prev.complete === complete ? prev : { complete, progress }
+      )
     }
     const onScroll = () => {
       cancelAnimationFrame(raf)
@@ -227,7 +234,13 @@ function ScrollProgress() {
       cancelAnimationFrame(raf)
     }
   }, [])
-  return <div className="scroll-progress" style={{ ['--progress' as string]: progress }} />
+  return (
+    <div
+      aria-hidden
+      className={cn('scroll-progress', state.complete && 'is-complete')}
+      style={{ ['--progress' as string]: state.progress }}
+    />
+  )
 }
 
 /* ---------- Section error state ---------------------------------------- */

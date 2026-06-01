@@ -52,6 +52,7 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
   return (
     <section
       ref={spotlightRef}
+      data-home-hero
       aria-labelledby="hero-heading"
       className="spotlight-host relative overflow-hidden isolate"
     >
