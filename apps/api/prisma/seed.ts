@@ -56,6 +56,7 @@ async function main() {
   await prisma.purchase.deleteMany()
   await prisma.listing.deleteMany()
   await prisma.user.deleteMany()
+  await prisma.platformSetting.deleteMany()
 
   const passwordHash = await argon2.hash('password')
 
@@ -64,6 +65,7 @@ async function main() {
       email: 'alice@example.com',
       username: 'alice',
       passwordHash,
+      isAdmin: true,
       balanceCents: 10000,
       bio: 'Claude-Code power user. I ship CLAUDE.md files, subagents, and skills that actually work.',
     },
@@ -115,6 +117,17 @@ async function main() {
   })
 
   const userByKey = { alice, bob, carol, dave, eve, frank } as const
+
+  await prisma.platformSetting.createMany({
+    data: [
+      { key: 'platform_fee_bps', intValue: 1700 },
+      { key: 'platform_fee_premium_bps', intValue: 1400 },
+      { key: 'platform_fee_ultra_premium_bps', intValue: 1200 },
+      { key: 'platform_fee_ultra_premium_threshold_cents', intValue: 10_000_00 },
+      { key: 'platform_fee_premium_threshold_cents', intValue: 3_000 },
+      { key: 'platform_fee_floor_cents', intValue: 0 },
+    ],
+  })
 
   // ===========================================================================
   // Realistic bodies
