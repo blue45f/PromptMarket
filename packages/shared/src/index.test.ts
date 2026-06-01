@@ -14,6 +14,7 @@ import {
   PromptTechnique,
   RegisterSchema,
   TECHNIQUE_META,
+  formatDollars,
   TopupSchema,
   formatPrice,
   modelFamily,
@@ -32,6 +33,20 @@ describe('formatPrice', () => {
     expect(formatPrice(199)).toBe('$1.99')
     expect(formatPrice(12300)).toBe('$123.00')
     expect(formatPrice(1)).toBe('$0.01')
+  })
+})
+
+describe('formatDollars', () => {
+  it.each([
+    [0, '$0.00'],
+    [100, '$1.00'],
+    [199, '$1.99'],
+    [12345, '$123.45'],
+    [123456, '$1,234.56'],
+    [undefined as unknown as number, '$0.00'],
+    [null as unknown as number, '$0.00'],
+  ])('formats %p cents as %s', (cents, expected) => {
+    expect(formatDollars(cents)).toBe(expected)
   })
 })
 

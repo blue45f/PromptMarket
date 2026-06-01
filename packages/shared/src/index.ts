@@ -454,6 +454,18 @@ export const typeEmoji = (t: ListingType) => LISTING_TYPE_META[t].emoji
 export const formatPrice = (cents: number) =>
   cents === 0 ? 'Free' : `$${(cents / 100).toFixed(2)}`
 
+export const formatDollars = (cents: number) => {
+  const dollars = (Number.isFinite(cents) ? cents : 0) / 100
+  try {
+    return `$${new Intl.NumberFormat(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(dollars)}`
+  } catch {
+    return `$${dollars.toFixed(2)}`
+  }
+}
+
 export const modelLabel = (slug: string) => MODEL_BY_SLUG[slug]?.label ?? slug
 export const modelVendor = (slug: string) => MODEL_BY_SLUG[slug]?.vendor ?? ''
 export const modelFamily = (slug: string) => MODEL_BY_SLUG[slug]?.family ?? ''
