@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import * as Tabs from '@radix-ui/react-tabs'
@@ -32,12 +32,7 @@ export default function DashboardPage() {
   const { t } = useTranslation('dashboard')
   const { user } = useAuthStore()
   const [searchParams, setSearchParams] = useSearchParams()
-  const tabParam = tabFromSearchParam(searchParams.get('tab'))
-  const [activeTab, setActiveTab] = useState<DashboardTab>(tabParam)
-
-  useEffect(() => {
-    setActiveTab(tabParam)
-  }, [tabParam])
+  const activeTab = tabFromSearchParam(searchParams.get('tab'))
 
   usePageMeta({
     title: t('meta.title'),
@@ -77,7 +72,6 @@ export default function DashboardPage() {
 
   function handleTabChange(value: string) {
     const next = tabFromSearchParam(value)
-    setActiveTab(next)
     setSearchParams(
       (current) => {
         const params = new URLSearchParams(current)

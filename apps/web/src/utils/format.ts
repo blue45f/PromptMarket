@@ -13,6 +13,26 @@ export {
 
 import { activeIntlLocale } from '@/i18n'
 
+const rtfCache = new Map<string, Intl.RelativeTimeFormat>()
+const nfCompactCache = new Map<string, Intl.NumberFormat>()
+
+function getRtf(locale: string): Intl.RelativeTimeFormat {
+  if (!rtfCache.has(locale)) {
+    rtfCache.set(locale, new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }))
+  }
+  return rtfCache.get(locale)!
+}
+
+function getNfCompact(locale: string): Intl.NumberFormat {
+  if (!nfCompactCache.has(locale)) {
+    nfCompactCache.set(
+      locale,
+      new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 })
+    )
+  }
+  return nfCompactCache.get(locale)!
+}
+
 export function formatDate(input: string | Date): string {
   const d = typeof input === 'string' ? new Date(input) : input
   if (Number.isNaN(d.getTime())) return ''
@@ -36,7 +56,7 @@ export function formatRelative(input: string | Date): string {
   const absMin = Math.abs(diffMin)
   try {
     const locale = activeIntlLocale()
-    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
+    const rtf = getRtf(locale)
     if (absSec < 60) return locale === 'ko-KR' ? '방금' : rtf.format(diffSec, 'second')
     if (absMin < 60) return rtf.format(diffMin, 'minute')
     if (absMin < 60 * 24) return rtf.format(Math.round(diffMin / 60), 'hour')
@@ -52,10 +72,7 @@ export function formatRelative(input: string | Date): string {
 export function formatCompact(n: number | undefined | null): string {
   if (n == null || !Number.isFinite(n)) return '0'
   try {
-    return new Intl.NumberFormat(activeIntlLocale(), {
-      notation: 'compact',
-      maximumFractionDigits: 1,
-    }).format(n)
+    return getNfCompact(activeIntlLocale()).format(n)
   } catch {
     return String(n)
   }

@@ -60,7 +60,7 @@ export default function BrowsePage() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [compareItems, setCompareItems] = useState<ListingCardType[]>([])
   const navigate = useNavigate()
-  const searchHistory = useSearchHistory()
+  const { record: recordSearch, ...searchHistory } = useSearchHistory()
   // Destructure the stable useCallback refs — depending on the whole hook
   // object (a fresh literal each render) made the persist effect below re-run
   // every commit, writing to localStorage in an infinite loop once 2+ filters
@@ -138,8 +138,8 @@ export default function BrowsePage() {
 
   useEffect(() => {
     if (!normalizedQuery) return
-    searchHistory.record(normalizedQuery)
-  }, [normalizedQuery, searchHistory])
+    recordSearch(normalizedQuery)
+  }, [normalizedQuery, recordSearch])
 
   const commit = useCallback(
     (next: FilterState, extra?: Record<string, string | number | null | undefined>) => {
