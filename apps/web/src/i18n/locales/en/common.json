@@ -36,6 +36,40 @@
     "downloadsLabel_one": "{{count}} download",
     "downloadsLabel_other": "{{count}} downloads"
   },
+  "signals": {
+    "compactLabel": "Artifact trust signals",
+    "panel": {
+      "title": "Pre-purchase check",
+      "subtitle": "Scan installability, maintenance, and review signals before buying."
+    },
+    "verified": {
+      "title": "Verified reviews",
+      "description_one": "{{count}} review",
+      "description_other": "{{count}} reviews"
+    },
+    "install": {
+      "title": "Install-ready",
+      "description": "CLI and editor commands included"
+    },
+    "usage": {
+      "title": "Field use",
+      "description_one": "{{count}} download",
+      "description_other": "{{count}} downloads"
+    },
+    "models": {
+      "title_one": "{{count}} model",
+      "title_other": "{{count}} models",
+      "description": "Multi-model compatible"
+    },
+    "version": {
+      "title": "v{{version}}",
+      "description": "Pinned release version"
+    },
+    "fresh": {
+      "title": "Recently maintained",
+      "description": "Updated within {{days}} days"
+    }
+  },
   "toasts": {
     "welcomeBack": "Welcome back, @{{name}}",
     "accountCreated": "Account created",
@@ -63,6 +97,13 @@
     "remove": "Remove from wishlist",
     "saved": "Saved",
     "label": "Wishlist"
+  },
+  "compare": {
+    "add": "Add to compare: {{title}}",
+    "remove": "Remove from compare: {{title}}",
+    "addShort": "Compare",
+    "selectedShort": "Selected",
+    "limitReached": "You can compare up to 3 listings"
   },
   "audience": {
     "fitHeading": "Great if you",

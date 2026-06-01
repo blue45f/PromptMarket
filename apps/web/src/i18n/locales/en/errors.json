@@ -47,7 +47,8 @@
       "newest": "Newest",
       "free": "Free listings",
       "sell": "Sell a prompt",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "admin": "Admin console"
     },
     "hints": {
       "navigate": "Navigate",
@@ -75,7 +76,8 @@
         "browse": "Browse",
         "dashboard": "Dashboard",
         "sell": "Sell page",
-        "login": "Log in"
+        "login": "Log in",
+        "admin": "Admin"
       },
       "catalog": {
         "title": "Catalog (Browse)",

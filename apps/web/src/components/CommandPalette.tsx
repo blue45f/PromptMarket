@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import * as Dialog from '@radix-ui/react-dialog'
-import { ArrowRight, Compass, PlusCircle, Search, Sparkles, User } from 'lucide-react'
+import { ArrowRight, Compass, PlusCircle, Search, ShieldCheck, Sparkles, User } from 'lucide-react'
 import { LISTING_TYPE_META } from '@promptmarket/shared'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { listingsKey, listingKey } from '@features/marketplace/queryKeys'
@@ -32,6 +32,7 @@ interface QuickAction {
   to: string
   icon: typeof Compass
   requiresAuth?: boolean
+  requiresAdmin?: boolean
 }
 
 const STATIC_ACTIONS: QuickAction[] = [
@@ -79,6 +80,15 @@ const STATIC_ACTIONS: QuickAction[] = [
     icon: User,
     requiresAuth: true,
   },
+  {
+    id: 'admin',
+    labelKey: 'palette.actions.admin',
+    hint: '/admin',
+    to: '/admin',
+    icon: ShieldCheck,
+    requiresAuth: true,
+    requiresAdmin: true,
+  },
 ]
 
 export default function CommandPalette() {
@@ -91,6 +101,7 @@ export default function CommandPalette() {
   const listRef = useRef<HTMLDivElement>(null)
   const submittedRef = useRef(false)
   const token = useAuthStore((s) => s.token)
+  const user = useAuthStore((s) => s.user)
 
   // Global shortcut: ⌘K / Ctrl+K / "/"
   useEffect(() => {
@@ -168,11 +179,12 @@ export default function CommandPalette() {
   const actions = useMemo(() => {
     const filtered = STATIC_ACTIONS.filter((a) => {
       if (a.requiresAuth && !token) return false
+      if (a.requiresAdmin && !user?.isAdmin) return false
       if (!trimmed) return true
       return (t(a.labelKey) + ' ' + a.hint).toLowerCase().includes(trimmed.toLowerCase())
     })
     return filtered
-  }, [trimmed, token, t])
+  }, [trimmed, token, user?.isAdmin, t])
 
   // Flat-index navigation across all sections.
   const total = actions.length + wishlistListings.length + listings.length

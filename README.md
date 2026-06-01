@@ -34,12 +34,12 @@
 
 ## 기술 스택
 
-| 계층 | 기술 |
-| --- | --- |
+| 계층         | 기술                                                                                                                                                                                                                                                                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Frontend** | Vite 6 · React **19** · TypeScript · **Tailwind v4**(Oxide 엔진, CSS 전용 `@theme` 설정, 클래스 기반 다크 모드) · **TanStack Query v5** · **React Hook Form + Zod resolver** · Zustand 5 · React Router 6 · **lucide-react v1** · react-hot-toast · **Radix UI**(Dialog / Tabs / DropdownMenu) · clsx · **tailwind-merge v3** · Inter 폰트 |
-| **Backend** | NestJS **11** · Prisma **6**(기본 SQLite, Docker에서는 Postgres) · **nestjs-zod** · **argon2id** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino**(pino-http 11 / pino-pretty 13) |
-| **Shared** | `@promptmarket/shared` — **Zod** 스키마 + 21개 모델 레지스트리 + 기법 / 난이도 / 라이선스 enum + 뷰 헬퍼. api와 web에서 동일하게 사용하므로 DTO 불일치가 발생하지 않습니다. |
-| **Tooling** | **pnpm workspaces** · **Turborepo** · Docker / docker-compose · 멀티 스테이지 Dockerfile |
+| **Backend**  | NestJS **11** · Prisma **6**(기본 SQLite, Docker에서는 Postgres) · **nestjs-zod** · **argon2id** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino**(pino-http 11 / pino-pretty 13)                                                                                                                         |
+| **Shared**   | `@promptmarket/shared` — **Zod** 스키마 + 21개 모델 레지스트리 + 기법 / 난이도 / 라이선스 enum + 뷰 헬퍼. api와 web에서 동일하게 사용하므로 DTO 불일치가 발생하지 않습니다.                                                                                                                                                                |
+| **Tooling**  | **pnpm workspaces** · Docker / docker-compose · 멀티 스테이지 Dockerfile                                                                                                                                                                                                                                                                   |
 
 ---
 
@@ -53,7 +53,7 @@ pnpm install
 pnpm db:push
 pnpm seed
 
-# 3. Turbo로 web + api 병렬 실행
+# 3. web + api 병렬 실행
 pnpm dev
 #  web → http://localhost:5173
 #  api → http://localhost:3000/api
@@ -62,10 +62,10 @@ pnpm dev
 
 ### 데모 계정(seed 후 사용 가능)
 
-| 이메일 | 비밀번호 | 역할 |
-| --- | --- | --- |
-| `alice@example.com` | `password` | 판매자 |
-| `bob@example.com` | `password` | 구매자 |
+| 이메일              | 비밀번호   | 역할            |
+| ------------------- | ---------- | --------------- |
+| `alice@example.com` | `password` | 판매자          |
+| `bob@example.com`   | `password` | 구매자          |
 | `carol@example.com` | `password` | 판매자 + 구매자 |
 
 각 데모 사용자는 목업 지갑에 **$100**를 보유한 상태로 시작합니다.
@@ -111,25 +111,24 @@ packages/
 pnpm-workspace.yaml
 tsconfig.base.json
 docker-compose.yml
-turbo.json
 ```
 
 ---
 
 ## 스크립트(루트)
 
-| 명령어 | 설명 |
-| --- | --- |
-| `pnpm dev` | Turbo가 api + web의 `dev`를 병렬 실행합니다. |
-| `pnpm build` | Turbo가 shared → api → web 순서로 빌드합니다(위상 정렬). |
-| `pnpm typecheck` | 모노레포 전체에서 `tsc --noEmit`을 실행합니다. |
-| `pnpm test:run` | Vitest 테스트를 실행합니다. |
+| 명령어               | 설명                                                            |
+| -------------------- | --------------------------------------------------------------- |
+| `pnpm dev`           | api + web를 병렬 실행합니다.                                    |
+| `pnpm build`         | shared → api → web 순서로 빌드됩니다(위상 정렬).                |
+| `pnpm typecheck`     | 모노레포 전체에서 `tsc --noEmit`을 실행합니다.                  |
+| `pnpm test:run`      | Vitest 테스트를 실행합니다.                                     |
 | `pnpm test:monorepo` | pnpm workspace 필수 파일과 Docker/API 런타임 배치를 검증합니다. |
-| `pnpm db:push` | 설정된 DB에 Prisma 스키마를 적용합니다. |
-| `pnpm seed` | 샘플 사용자 / 리스팅 / 리뷰를 시드합니다. |
-| `pnpm shared:build` | 공유 Zod 스키마 패키지를 다시 빌드합니다. |
-| `pnpm docker:up` | 모든 컨테이너를 빌드하고 시작합니다. |
-| `pnpm docker:down` | 컨테이너를 중지합니다. |
+| `pnpm db:push`       | 설정된 DB에 Prisma 스키마를 적용합니다.                         |
+| `pnpm seed`          | 샘플 사용자 / 리스팅 / 리뷰를 시드합니다.                       |
+| `pnpm shared:build`  | 공유 Zod 스키마 패키지를 다시 빌드합니다.                       |
+| `pnpm docker:up`     | 모든 컨테이너를 빌드하고 시작합니다.                            |
+| `pnpm docker:down`   | 컨테이너를 중지합니다.                                          |
 
 ---
 
@@ -145,27 +144,27 @@ turbo.json
 - **구매 흐름.** `POST /listings/:id/purchase`는 단일 Prisma `$transaction`으로 실행됩니다. 구매자 잔액 차감, 작성자 정산, `Purchase` 행 생성, `downloads` 증가가 원자적으로 처리됩니다. 구매자가 작성자인 경우, 이미 보유한 경우, 잔액이 부족한 경우에는 거절됩니다.
 - **요율 제한.** 전역 기본값은 60 req/min이며, 인증 엔드포인트는 `@Throttle({ auth: … })`를 통해 10 req/min으로 제한됩니다.
 - **로깅.** 개발 환경에서는 `pino-pretty`를 포함한 `nestjs-pino`를 사용하고, 프로덕션에서는 구조화된 JSON 로그를 출력합니다.
-- **Turborepo.** `build`는 위상 정렬(`^build`)되어 공유 패키지가 항상 먼저 빌드됩니다. `dev`는 api + web을 병렬 실행합니다.
+- **pnpm 기반 병렬/순차 실행.** `build`는 shared → api → web 순으로 순차 실행되며, `dev`는 api + web를 동시 실행합니다.
 
 ---
 
 ## API 표면(일부)
 
-| 메서드 | 경로 | 비고 |
-| --- | --- | --- |
-| `POST` | `/api/auth/register` | 요율 제한 적용 |
-| `POST` | `/api/auth/login` | 요율 제한 적용 |
-| `GET` | `/api/auth/me` | Bearer |
-| `GET` | `/api/listings` | 필터: `type`, `category`, `q`, **`model`**, **`vendor`**, **`technique`**, **`difficulty`**, `free`, `sort=newest\|trending\|top`, `page`, `pageSize≤48` |
-| `GET` | `/api/listings/:slug` | 선택적 인증(무료 / 구매 완료 / 소유자인 경우에만 `body` 반환) |
-| `GET` | `/api/listings/stats` | `{ totalListings, totalDownloads, totalCreators }` — 30초 인메모리 캐시 |
-| `GET` | `/api/listings/related/:id?limit=4` | 타입 또는 카테고리가 같은 리스팅, 자기 자신 제외 |
-| `POST` | `/api/listings` | Bearer |
-| `POST` | `/api/listings/:id/purchase` | Bearer; 원자적 잔액 이동 |
-| `POST` | `/api/listings/:id/reviews` | Bearer; 구매자 전용 |
-| `GET` | `/api/me`, `/api/me/purchases`, `/api/me/listings` | Bearer |
-| `POST` | `/api/me/topup` | Bearer |
-| `GET` | `/api/users/:username` | 공개 프로필 |
+| 메서드 | 경로                                               | 비고                                                                                                                                                     |
+| ------ | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST` | `/api/auth/register`                               | 요율 제한 적용                                                                                                                                           |
+| `POST` | `/api/auth/login`                                  | 요율 제한 적용                                                                                                                                           |
+| `GET`  | `/api/auth/me`                                     | Bearer                                                                                                                                                   |
+| `GET`  | `/api/listings`                                    | 필터: `type`, `category`, `q`, **`model`**, **`vendor`**, **`technique`**, **`difficulty`**, `free`, `sort=newest\|trending\|top`, `page`, `pageSize≤48` |
+| `GET`  | `/api/listings/:slug`                              | 선택적 인증(무료 / 구매 완료 / 소유자인 경우에만 `body` 반환)                                                                                            |
+| `GET`  | `/api/listings/stats`                              | `{ totalListings, totalDownloads, totalCreators }` — 30초 인메모리 캐시                                                                                  |
+| `GET`  | `/api/listings/related/:id?limit=4`                | 타입 또는 카테고리가 같은 리스팅, 자기 자신 제외                                                                                                         |
+| `POST` | `/api/listings`                                    | Bearer                                                                                                                                                   |
+| `POST` | `/api/listings/:id/purchase`                       | Bearer; 원자적 잔액 이동                                                                                                                                 |
+| `POST` | `/api/listings/:id/reviews`                        | Bearer; 구매자 전용                                                                                                                                      |
+| `GET`  | `/api/me`, `/api/me/purchases`, `/api/me/listings` | Bearer                                                                                                                                                   |
+| `POST` | `/api/me/topup`                                    | Bearer                                                                                                                                                   |
+| `GET`  | `/api/users/:username`                             | 공개 프로필                                                                                                                                              |
 
 전체 스키마는 `http://localhost:3000/api/docs`의 **Swagger UI**에서 확인할 수 있습니다.
 

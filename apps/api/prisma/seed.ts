@@ -1497,14 +1497,27 @@ You are GitHub Copilot generating code in this FastAPI service.
     { buyer: frank, listing: byTitle('Gemini 2.5 Pro Long-Context Research Brief') },
     { buyer: bob, listing: byTitle('.cursorrules for TypeScript Monorepos') },
   ]
+  const defaultPlatformFeeBps = 1700
+  const defaultPlatformFeeFloorCents = 0
+  const calcSellerNetCents = (pricePaidCents: number) => {
+    const platformFee = Math.round((pricePaidCents * defaultPlatformFeeBps) / 10_000)
+    const boundedFee = Math.max(defaultPlatformFeeFloorCents, platformFee)
+    const platformFeeCents = Math.min(pricePaidCents, Math.max(0, boundedFee))
+    const sellerNetCents = Math.max(0, pricePaidCents - platformFeeCents)
+    return { sellerNetCents, platformFeeCents }
+  }
 
   for (const { buyer, listing } of purchases) {
     if (buyer.id === listing.authorId) continue // never buy your own
+    const { sellerNetCents, platformFeeCents } = calcSellerNetCents(listing.priceCents)
     await prisma.purchase.create({
       data: {
         userId: buyer.id,
         listingId: listing.id,
         pricePaidCents: listing.priceCents,
+        grossAmountCents: listing.priceCents,
+        sellerNetCents,
+        platformFeeCents,
       },
     })
     if (listing.priceCents > 0) {

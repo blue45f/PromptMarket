@@ -35,6 +35,37 @@
     "unrated": "아직 리뷰 없음",
     "downloadsLabel": "다운로드 {{count}}개"
   },
+  "signals": {
+    "compactLabel": "아티팩트 신뢰 신호",
+    "panel": {
+      "title": "구매 전 체크",
+      "subtitle": "설치성, 유지보수, 리뷰 신호를 빠르게 확인하세요."
+    },
+    "verified": {
+      "title": "검증 리뷰",
+      "description": "리뷰 {{count}}개"
+    },
+    "install": {
+      "title": "설치 준비",
+      "description": "CLI와 에디터 명령 제공"
+    },
+    "usage": {
+      "title": "현장 사용",
+      "description": "다운로드 {{count}}회"
+    },
+    "models": {
+      "title": "{{count}}개 모델",
+      "description": "멀티 모델 호환"
+    },
+    "version": {
+      "title": "v{{version}}",
+      "description": "고정 버전으로 배포"
+    },
+    "fresh": {
+      "title": "최근 유지보수",
+      "description": "최근 {{days}}일 내 업데이트"
+    }
+  },
   "toasts": {
     "welcomeBack": "@{{name}}님, 다시 오신 걸 환영해요",
     "accountCreated": "계정이 생성됐어요",
@@ -61,6 +92,13 @@
     "remove": "위시리스트에서 빼기",
     "saved": "저장됨",
     "label": "위시리스트"
+  },
+  "compare": {
+    "add": "비교에 추가: {{title}}",
+    "remove": "비교에서 제거: {{title}}",
+    "addShort": "비교",
+    "selectedShort": "선택됨",
+    "limitReached": "비교는 최대 3개까지 가능합니다"
   },
   "audience": {
     "fitHeading": "이런 분께",

@@ -1,15 +1,16 @@
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { ConfigModule } from '@nestjs/config';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { LoggerModule } from 'nestjs-pino';
-import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { ListingsModule } from './listings/listings.module';
-import { PurchasesModule } from './purchases/purchases.module';
-import { ReviewsModule } from './reviews/reviews.module';
-import { SeoModule } from './seo/seo.module';
+import { Module } from '@nestjs/common'
+import { APP_GUARD } from '@nestjs/core'
+import { ConfigModule } from '@nestjs/config'
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import { LoggerModule } from 'nestjs-pino'
+import { PrismaModule } from './prisma/prisma.module'
+import { AuthModule } from './auth/auth.module'
+import { UsersModule } from './users/users.module'
+import { ListingsModule } from './listings/listings.module'
+import { PurchasesModule } from './purchases/purchases.module'
+import { ReviewsModule } from './reviews/reviews.module'
+import { SeoModule } from './seo/seo.module'
+import { AdminModule } from './admin/admin.module'
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { SeoModule } from './seo/seo.module';
     PurchasesModule,
     ReviewsModule,
     SeoModule,
+    AdminModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

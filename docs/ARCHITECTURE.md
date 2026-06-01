@@ -45,7 +45,6 @@ packages/
 pnpm-workspace.yaml
 pnpm-lock.yaml
 tsconfig.base.json
-turbo.json
 ```
 
 내부 패키지 참조는 npm registry가 아니라 pnpm workspace link를 사용합니다.
@@ -89,12 +88,12 @@ TanStack Query의 `QueryClient`는 `src/app/queryClient.ts`의 `createAppQueryCl
 
 ## 품질 게이트
 
-| 명령 | 목적 |
-| --- | --- |
-| `pnpm test:run` | Vitest 단위 테스트 |
+| 명령                 | 목적                                                                        |
+| -------------------- | --------------------------------------------------------------------------- |
+| `pnpm test:run`      | Vitest 단위 테스트                                                          |
 | `pnpm test:monorepo` | pnpm workspace 필수 파일, 웹 bootstrap 파일, API Docker runtime layout 검증 |
-| `pnpm typecheck` | 모노레포 타입 검사 |
-| `pnpm build` | shared → api → web 위상 정렬 빌드 |
-| `pnpm docker:up` | Postgres + API + Web 컨테이너 실행 |
+| `pnpm typecheck`     | 모노레포 타입 검사                                                          |
+| `pnpm build`         | shared → api → web 위상 정렬 빌드                                           |
+| `pnpm docker:up`     | Postgres + API + Web 컨테이너 실행                                          |
 
 새 아키텍처 변경은 `apps/web/src/app/queryClient.test.ts`와 `apps/web/src/router/index.test.tsx`가 보호합니다.

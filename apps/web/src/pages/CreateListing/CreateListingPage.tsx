@@ -36,6 +36,9 @@ import { usePageMeta } from '@hooks/usePageMeta'
 import MarkdownView from '@components/MarkdownView'
 import ModelPicker from '@components/ModelPicker'
 import ListingCard from '@components/ListingCard'
+import ListingQualityChecklist, {
+  evaluateListingQuality,
+} from '@components/ListingQualityChecklist'
 import { cn } from '@utils/cn'
 import type { ListingCard as ListingCardType } from '@/types'
 
@@ -254,6 +257,36 @@ export default function CreateListingPage() {
   )
 
   const busy = isSubmitting || createMut.isPending
+
+  const qualityResult = useMemo(
+    () =>
+      evaluateListingQuality({
+        title: v.title,
+        description: v.description,
+        body: v.body,
+        type: v.type as ListingType,
+        tags: v.tags,
+        models: v.modelsArr,
+        version: v.version,
+      }),
+    [v.title, v.description, v.body, v.type, v.tags, v.modelsArr, v.version]
+  )
+
+  const jumpToSection = useCallback(
+    (section: 'basics' | 'content' | 'metadata') => {
+      setTab(section)
+      const selectorBySection = {
+        basics: '[name="title"]',
+        content: '[name="body"]',
+        metadata: '[name="tags"]',
+      } satisfies Record<'basics' | 'content' | 'metadata', string>
+      window.requestAnimationFrame(() => {
+        const target = document.querySelector(selectorBySection[section]) as HTMLElement | null
+        target?.focus()
+      })
+    },
+    [setTab]
+  )
 
   // Build a preview-shaped listing object reused in the live card.
   const previewListing = useMemo<ListingCardType>(
@@ -608,7 +641,16 @@ export default function CreateListingPage() {
             </Tabs.Content>
           </Tabs.Root>
 
-          <div className="flex justify-end pt-2 border-t border-line dark:border-night-line">
+          <div className="flex justify-end items-center pt-2 border-t border-line dark:border-night-line">
+            {qualityResult.complete < qualityResult.total && (
+              <p className="mr-auto text-[0.76rem] text-coral-800 dark:text-coral-100">
+                {t('quality.publishHint', {
+                  remain: qualityResult.total - qualityResult.complete,
+                  ready: qualityResult.complete,
+                  total: qualityResult.total,
+                })}
+              </p>
+            )}
             <button
               type="submit"
               disabled={busy}
@@ -631,6 +673,16 @@ export default function CreateListingPage() {
             <span aria-hidden className="w-5 h-px bg-volt-500" />
             {t('preview.eyebrow')}
           </p>
+          <ListingQualityChecklist
+            title={v.title}
+            description={v.description}
+            body={v.body}
+            type={v.type as ListingType}
+            tags={v.tags}
+            models={v.modelsArr}
+            version={v.version}
+            onJumpToSection={jumpToSection}
+          />
           <ListingCard listing={previewListing} />
           <div className="rounded-2xl border border-line dark:border-night-line bg-canvas-sub dark:bg-night-sub p-5">
             <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute mb-3">

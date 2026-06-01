@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "title": "Admin Revenue Console",
+    "description": "Review platform revenue settings, monitor payouts, and run fee scenario checks for growth planning."
+  },
+  "header": {
+    "eyebrow": "Administration",
+    "title": "PromptMarket Revenue Operations",
+    "subtitle": "Set platform economics, review marketplace health, and validate fee impact before publishing changes."
+  },
+  "settings": {
+    "title": "Revenue Settings",
+    "current": "Current policy: base {{basePercent}}%, premium {{premiumPercent}}% / threshold {{threshold}}, floor {{floor}}",
+    "description": "Support tiered fees: apply one fee below threshold and another at/above threshold for paid purchases.",
+    "feeLabel": "Base fee (%)",
+    "percentInputLabel": "Base platform fee percentage input",
+    "premiumFeeLabel": "Premium fee (%)",
+    "premiumPercentInputLabel": "Premium platform fee percentage input",
+    "thresholdLabel": "Premium threshold ($)",
+    "thresholdInputLabel": "Premium threshold amount",
+    "thresholdHelp": "If purchase amount is at least this value, premium fee applies.",
+    "floorLabel": "Minimum platform fee ($)",
+    "floorInputLabel": "Minimum fee amount",
+    "floorHelp": "Fee is never below this floor for paid purchases.",
+    "history": {
+      "title": "Change History",
+      "subtitle": "The latest stored values and when they were last updated.",
+      "updatedAt": "Last updated",
+      "unset": "Not yet set (using default)",
+      "loading": "Loading change history...",
+      "labels": {
+        "platformFee": "Base platform fee",
+        "premiumFee": "Premium platform fee",
+        "premiumThreshold": "Premium threshold",
+        "platformFeeFloor": "Minimum platform fee"
+      }
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Revenue settings saved"
+  },
+  "summary": {
+    "title": "Revenue Summary",
+    "metrics": {
+      "gross": "Gross Sales",
+      "platform": "Platform Revenue",
+      "seller": "Seller Payout",
+      "paidRatio": "Paid ratio"
+    }
+  },
+  "simulation": {
+    "title": "Fee Simulation",
+    "subtitle": "Use a sample amount to compare current and draft fee settings.",
+    "sampleAmountLabel": "Sample purchase amount",
+    "currentScenario": "Current scenario",
+    "nextScenario": "Draft scenario",
+    "base": "Base fee applied",
+    "premium": "Premium fee applies (>= {{threshold}} threshold)",
+    "delta": "Platform fee delta",
+    "sellerGain": "Seller impact {{amount}}",
+    "sellerLoss": "Seller impact {{amount}}",
+    "impactTitlePositive": "Seller Impact (positive)",
+    "impactTitleNegative": "Seller Impact (negative)",
+    "impactGood": "Projected seller payout improves by {{amount}} for the sample amount.",
+    "impactBad": "Projected seller payout drops by {{amount}} for the sample amount.",
+    "share": {
+      "platform": "platform / seller split",
+      "seller": "seller share"
+    }
+  },
+  "creators": {
+    "title": "Top Creators",
+    "subtitle": "Creators ranked by payout with highest seller revenue first.",
+    "emptyTitle": "No creator revenue yet",
+    "emptyDescription": "The summary will populate as sales are completed.",
+    "table": {
+      "rank": "Rank",
+      "creator": "Creator",
+      "listings": "Listings",
+      "sales": "Sales",
+      "gross": "Gross",
+      "seller": "Seller",
+      "platform": "Platform"
+    }
+  }
+}

@@ -60,6 +60,36 @@
     "bodyPlaceholder": "*Start typing to see a body preview here…*",
     "authorYou": "you"
   },
+  "quality": {
+    "title": "Publishing quality check",
+    "subtitle": "Fill the signals buyers use to judge a listing.",
+    "ready": "The core pre-publish signals are ready.",
+    "variables": "Detected input variables",
+    "quickJumpSection": "Jump to {{section}}",
+    "publishHint": "Currently {{ready}}/{{total}}. Add {{remain}} remaining points to improve publishing confidence.",
+    "items": {
+      "useCase": {
+        "title": "Use case",
+        "todo": "Make the title and description show who uses this and when.",
+        "done": "Buyers can quickly understand what this is for."
+      },
+      "bodyDepth": {
+        "title": "Reviewable body",
+        "todo": "Add enough procedure, examples, and expected output to review.",
+        "done": "The body has enough depth for buyer review."
+      },
+      "inputs": {
+        "title": "Input variables",
+        "todo": "Add replaceable values like {{audience}} or setup hints.",
+        "done": "Reusable inputs or setup hints are visible."
+      },
+      "metadata": {
+        "title": "Search and release info",
+        "todo": "Select models, add 2+ tags, and use a semver version.",
+        "done": "Search and release metadata is ready."
+      }
+    }
+  },
   "validation": {
     "price": "Please enter a valid price",
     "models": "Select at least one model",

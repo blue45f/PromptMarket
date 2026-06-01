@@ -2,7 +2,16 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { LogOut, Menu, PlusCircle, ShoppingCart, User as UserIcon, Wallet, X } from 'lucide-react'
+import {
+  LogOut,
+  Menu,
+  PlusCircle,
+  ShieldCheck,
+  ShoppingCart,
+  User as UserIcon,
+  Wallet,
+  X,
+} from 'lucide-react'
 import { useAuthStore } from '@store/auth'
 import SearchBar from '@components/SearchBar'
 import ThemeToggle from '@components/ThemeToggle'
@@ -108,6 +117,16 @@ export default function Navbar() {
                 <NavLinkInner isActive={isActive}>
                   <ShoppingCart className="w-4 h-4" />
                   <span className="hidden lg:inline">{t('library')}</span>
+                </NavLinkInner>
+              )}
+            </NavLink>
+          )}
+          {token && user?.isAdmin && (
+            <NavLink to="/admin" className={navLinkClass}>
+              {({ isActive }) => (
+                <NavLinkInner isActive={isActive}>
+                  <ShieldCheck className="w-4 h-4" />
+                  <span className="hidden lg:inline">{t('admin')}</span>
                 </NavLinkInner>
               )}
             </NavLink>
@@ -231,6 +250,15 @@ export default function Navbar() {
                   className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
                 >
                   {t('library')} <span aria-hidden>→</span>
+                </Link>
+              )}
+              {token && user?.isAdmin && (
+                <Link
+                  onClick={() => setMobileOpen(false)}
+                  to="/admin"
+                  className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
+                >
+                  {t('admin')} <span aria-hidden>→</span>
                 </Link>
               )}
               {token && user && (

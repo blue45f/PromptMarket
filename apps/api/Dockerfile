@@ -1,7 +1,7 @@
 FROM node:22-alpine AS deps
 WORKDIR /repo
 RUN corepack enable
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.base.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages/shared/package.json packages/shared/
 COPY packages/shared/tsconfig.json packages/shared/
 COPY packages/shared/src packages/shared/src

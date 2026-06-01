@@ -116,6 +116,43 @@
       "curlHint": "Fetch listing body"
     }
   },
+  "readiness": {
+    "title": "Run readiness",
+    "subtitle": "Check where it goes and what inputs it needs before buying.",
+    "labels": {
+      "target": "Target",
+      "scope": "Verified from",
+      "models": "Models",
+      "variables": "Input variables"
+    },
+    "targets": {
+      "PROMPT": "Prompt copy",
+      "CLAUDE_MD": "CLAUDE.md placement",
+      "AGENT_MD": "agent.md placement",
+      "SKILL": "Claude Code install",
+      "MCP_SERVER": "MCP config",
+      "SLASH_COMMAND": "Slash command",
+      "SUBAGENT": "Sub-agent registration",
+      "CURSOR_RULES": "Cursor rules"
+    },
+    "scope": {
+      "full": "Full text",
+      "preview": "Preview",
+      "locked": "Needs body access"
+    },
+    "models": {
+      "count": "{{count}} models",
+      "count_one": "{{count}} model",
+      "count_other": "{{count}} models",
+      "any": "Model agnostic"
+    },
+    "variables": {
+      "count": "{{count}} slots",
+      "count_one": "{{count}} slot",
+      "count_other": "{{count}} slots",
+      "empty": "No extra inputs"
+    }
+  },
   "toc": {
     "aside": "Table of contents",
     "label": "Contents"

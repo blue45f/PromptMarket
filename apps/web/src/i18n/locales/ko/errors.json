@@ -47,7 +47,8 @@
       "newest": "최신",
       "free": "무료 리스팅",
       "sell": "프롬프트 판매",
-      "dashboard": "대시보드"
+      "dashboard": "대시보드",
+      "admin": "관리자"
     },
     "hints": {
       "navigate": "이동",
@@ -75,7 +76,8 @@
         "browse": "둘러보기",
         "dashboard": "대시보드",
         "sell": "판매 페이지",
-        "login": "로그인"
+        "login": "로그인",
+        "admin": "관리자"
       },
       "catalog": {
         "title": "카탈로그 (Browse)",

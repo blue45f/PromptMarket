@@ -7,6 +7,76 @@
 
 ---
 
+## 2026-06-01T06:59 (UTC) — Round 140
+
+- **Benchmark**: 품질 점프는 실제 로그인 상태에서 검증되어야 한다. `/sell`은 인증 라우트이므로, `/login` 리다이렉트 경로를 제거하고 실제 사용자 토큰 상태에서 동작해야 기능 완결도를 확정할 수 있다.
+- **Shipped**: `CreateListingPage` 점프 액션 회귀 검증 범위를 `기본/본문/메타데이터` 3개 탭으로 확대해, 각 버튼 클릭 시 대상 탭 활성화와 해당 핵심 필드 포커스(`title/body/tags`)를 모두 확인하는 테스트를 추가했습니다.
+- **Tests**: `pnpm --filter @promptmarket/web test:run CreateListingPage.test.tsx`, `pnpm --filter @promptmarket/web test:run`, `pnpm --filter @promptmarket/web typecheck`, `pnpm --filter @promptmarket/web build` 모두 통과.
+- **Visual check**: Playwright Python 런타임 검증으로 실제 데모 계정 토큰(`alice/password`)을 `/api/auth/login`으로 획득해 `localStorage['pm_token']`에 주입 후 `/sell`을 열어 점검. `게시 품질 체크` 섹션이 렌더되고, `빠르게 기본로 이동`/`빠르게 본문로 이동`/`빠르게 메타데이터로 이동` 버튼이 각각 탭 활성화와 `title/body/tags` 포커스 동작을 반환했습니다.
+- **Sources**: https://promptbase.com/sell, https://promptbase.com/prompt-guidelines, https://smithery.ai/docs/use/connect
+
+## 2026-06-01T06:57 (UTC) — Round 139
+
+- **Benchmark**: 점검 항목 점프(Quick Jump)는 실제로 동작해야 가치를 만든다. 체크리스트에서 CTA를 눌렀을 때 탭 전환만 되는 것이 아니라 목표 필드에 포커스가 바로 가야 사용자가 즉시 수정할 수 있다.
+- **Shipped**: `CreateListingPage`에 `jumpToSection` 동작을 `requestAnimationFrame` 기반 포커스 동기화로 보강해, 실패한 품질 항목에서 정확한 섹션(기본/본문/메타데이터)로 이동해 곧바로 입력 가능한 상태를 보장했습니다. 또한 `CreateListingPage.test.tsx`에 점프 동작 회귀 테스트를 추가해 탭 전환 + 포커스 보증을 CI가 검증하도록 했습니다.
+- **Tests**: `pnpm --filter @promptmarket/web test:run ListingQualityChecklist.test.tsx CreateListingPage.test.tsx`, `pnpm --filter @promptmarket/web typecheck`, `pnpm --filter @promptmarket/web build` 모두 통과.
+- **Visual check**: Playwright 런타임 점검은 HTTP 200 확인까지는 가능했으나, 브라우저 스크립트 실행 환경에서 `playwright` npm 패키지가 없어 Node API 자동실행은 실패(`require('playwright')` 모듈 미해결). Python Playwright로는 `/sell` 접근이 즉시 `/login`으로 리다이렉트되어 체크리스트 영역 자체가 렌더되지 않아 별도 로그인 세션 주입이 필요했습니다.
+  -- **Sources**: https://promptbase.com/sell, https://promptbase.com/prompt-guidelines, https://smithery.ai/docs/use/connect
+
+## 2026-06-01T06:54 (UTC) — Round 138
+
+- **Benchmark**: 판매 흐름 고도화는 "점수만 보여주고 끝"이 아니라 실제 사용자가 즉시 보정 작업을 할 수 있어야 한다는 점에서 PromptBase의 가이드 문구/폼 완성도 패턴이 유사하다. 점수 판별 후 즉시 액션이 가능해야 마찰이 낮다.
+- **Shipped**: `ListingQualityChecklist`의 섹션 이동 액션을 실제 동작 타겟팅으로 마감했습니다. 실패 항목별 버튼이 탭 전환 + 필드 포커스를 호출해 `기본/본문/메타데이터`로 즉시 이동합니다. 또한 탭 이동 쿼리 선택자에서 문자열 escape 이슈를 제거해 동작 안정성을 확정했습니다.
+- **Tests**: `pnpm --filter @promptmarket/web test:run ListingQualityChecklist CreateListingPage`, `pnpm --filter @promptmarket/web typecheck`, `pnpm --filter @promptmarket/web build`, `pnpm test:run` 모두 통과. web 테스트는 `69 passed (69)`, api는 `14 passed`, shared는 `35 passed`.
+- **Visual check**: 이전 스냅샷 흐름 유지. (현재 단계는 회귀 테스트 기반 검증 완료 후 확정 상태)
+- **Sources**: https://promptbase.com/sell, https://promptbase.com/prompt-guidelines, https://smithery.ai/docs/use/connect
+
+## 2026-06-01T06:52 (UTC) — Round 137
+
+- **Benchmark**: 판매 플로우에서는 PromptBase와 Cursor Marketplace가 항목 미달 시 `Draft` 단계에서 바로 편집 탭으로 이동하면서 보강하도록 UX를 유도한다는 점이 컸다. PromptMarket의 체크리스트도 단순 점수판에서 바로 수정 동선으로 이어지도록 이어받을 필요가 있었다.
+- **Shipped**: `ListingQualityChecklist`에 실패 항목별 `빠르게 채우러 가기` 액션을 추가하고, `/sell` 미리보기 옆에서 바로 해당 탭(`기본/본문/메타데이터`)으로 이동할 수 있게 연결했습니다. 또한 제출 영역에 실시간으로 `현재 점수/남은 항목`을 노출해 게시 준비도 신호를 명확화했습니다.
+- **Design**: 체크 항목 액션은 시각적으로 분리된 코너 버튼으로 노출했고, 미달 상태에서는 상태 배너를 함께 표시해 사용자가 다음 액션을 즉시 인지할 수 있게 했습니다.
+- **Sources**: https://promptbase.com/sell, https://promptbase.com/prompt-guidelines, https://smithery.ai/docs/use/connect
+
+## 2026-06-01T06:43 (UTC) — Round 136
+
+- **Benchmark**: PromptBase의 판매/심사 흐름은 템플릿화 가능한 프롬프트, 높은 use-case, 검증 가능한 예시 입력을 강조한다. Smithery 문서는 MCP 서버마다 필요한 API key, project ID 같은 설정값과 배포 설정을 명확히 드러내는 패턴을 요구한다. PromptMarket의 판매 작성 화면도 게시 전에 "이 리스팅이 재사용 가능하고 설치/검색 가능한가"를 스스로 점검하게 할 필요가 있었다.
+- **Shipped**: `/sell` 우측 미리보기 영역에 `ListingQualityChecklist` 추가. 사용 사례, 검증 가능한 본문 길이, 입력 변수/설정 힌트, 검색·배포 메타데이터를 4점 체크리스트로 실시간 채점하고, 본문에서 감지한 `{{variable}}` 입력 칩을 노출한다.
+- **Tests**: TDD로 `ListingQualityChecklist.test.tsx`와 `CreateListingPage.test.tsx`를 먼저 실패시킨 뒤 구현. 전체 `pnpm typecheck`, `pnpm test:run`(**shared 35 + api 87 + web 346**), `pnpm build` green.
+- **Visual check**: Playwright로 `/sell` desktop/mobile에서 seeded seller 로그인 후 `게시 품질 체크`, `0/4`, 모든 체크 행, 제목/설명 입력 후 `1/4` 실시간 갱신 확인.
+- **Sources**: https://promptbase.com/sell, https://promptbase.com/prompt-guidelines, https://smithery.ai/docs/use/connect, https://smithery.mintlify.dev/docs/build/project-config
+
+## 2026-06-01T06:16 (UTC) — Round 135
+
+- **Benchmark**: PromptBase의 탐색은 후보를 빠르게 좁히는 필터/가격/리뷰 표면이 강하고, Cursor Marketplace와 Smithery는 여러 도구 후보를 보며 설치 가능성·신뢰 신호를 빠르게 훑는 패턴이 강하다. PromptMarket도 단일 카드 판단뿐 아니라 2~3개 후보를 나란히 비교하는 선택 흐름이 필요했다.
+- **Shipped**: Browse 카드에 `비교` 토글 추가. 최대 3개까지 선택하면 하단 `CompareTray`가 열리고 가격, 타입, 모델, 신뢰 신호, 다운로드, 리뷰를 가로 비교표로 보여준다. 버튼은 카드 링크 내부에서도 `preventDefault/stopPropagation`으로 내비게이션을 막고, 트레이는 긴 제목과 모바일 폭에서 가로 스크롤로 버틴다.
+- **Tests**: TDD로 `CompareTray.test.tsx`, `ListingCard.test.tsx`, `BrowsePage.test.tsx` 추가/확장. 전체 `pnpm typecheck`, `pnpm test:run`(**shared 35 + api 87 + web 341**), `pnpm build` green.
+- **Visual check**: Playwright로 `/browse` desktop/mobile에서 비교 버튼 12개 확인, 첫 2개 선택 후 `비교 후보`, `비교 비우기`, `가격`, `신뢰` 렌더 확인. 콘솔 에러 없음.
+- **Sources**: https://promptbase.com/marketplace, https://cursor.com/marketplace, https://smithery.ai/servers/smithery, https://www.cursor.store/
+
+## 2026-06-01T06:01 (UTC) — Round 134
+
+- **Benchmark**: PromptBase는 구매 전 예시/미리보기로 산출물 형태를 빠르게 판단하게 하고, Smithery는 MCP 설치/설정 가능성을 전면에 둔다. Cursor Marketplace/cursor.store는 확장·규칙·자동화가 실제 어디에 꽂히는지 빠르게 드러내는 쪽이 강하다. PromptMarket 상세도 "무엇을 사는가"에서 "구매 직후 어디에 넣고 어떤 값을 채우는가"까지 한 단계 더 선명하게 해야 한다.
+- **Shipped**: `ArtifactReadiness` 컴포넌트 추가. 상세 Overview에서 리스팅 타입별 적용 위치(`프롬프트 복사`, `MCP 설정`, `Claude Code 설치` 등), 미리보기/전체 본문 기준 상태, 호환 모델 수, `{{audience}}` 같은 입력 변수 목록을 구매 전 노출한다. 변수 추출은 중복 제거와 안전한 placeholder 패턴만 허용하도록 분리 함수로 구현했다.
+- **Tests**: TDD로 `ArtifactReadiness.test.tsx`와 `ListingDetailPage.test.tsx` 회귀 테스트 추가. 전체 `pnpm typecheck`, `pnpm test:run`(**shared 35 + api 87 + web 337**), `pnpm build` green.
+- **Visual check**: Playwright로 `/browse`, `/browse?signal=reviewed`, 첫 번째 상세 페이지 desktop/mobile 캡처. 상세에서 `실행 준비도`와 `입력 변수` 렌더 확인, 콘솔 에러 없음.
+- **Sources**: https://promptbase.com/marketplace, https://cursor.com/marketplace, https://smithery.ai/servers/smithery, https://www.cursor.store/
+
+## 2026-06-01T05:48 (UTC) — Round 133
+
+- **Benchmark**: PromptBase의 필터 우선 탐색과 Cursor Marketplace의 큐레이션 신호를 PromptMarket의 신뢰 신호 시스템에 연결. 카드/상세에서만 보이던 신호를 Browse의 즉시 필터로 올려 구매 전 후보를 더 빨리 좁히게 했다.
+- **Shipped**: `/browse` 상단에 `신뢰 필터` segmented controls 추가(`검증 리뷰`, `현장 사용`, `멀티 모델`, `최근 유지보수`). URL은 `signal=reviewed|used|multi-model|fresh`를 지원하고 active chip, 저장 필터 라벨, 빈 상태의 "지금 거는 필터"에도 반영된다. 필터링은 API 쿼리 스키마와 `ListingsService`까지 확장해 서버가 `reviewCount/downloads/models/updatedAt` 기준으로 총 개수와 페이지를 정확히 계산한다.
+- **Tests**: `BrowsePage.test.tsx`에 `?signal=reviewed` URL 필터 회귀 테스트 추가. `ListingQuerySchema`는 comma-separated signal 정규화/거부 테스트 추가, `ListingsService.list`는 Prisma where clause 테스트 추가. 전체 `pnpm typecheck`, `pnpm test:run`(**shared 35 + api 87 + web 332**), `pnpm build` green.
+- **Visual check**: Playwright로 `/browse`, `/browse?signal=reviewed`, 첫 번째 상세 페이지를 desktop/mobile 캡처. 신뢰 필터 버튼, active chip, 빈 상태 필터 제거 행 확인.
+
+## 2026-06-01T05:41 (UTC) — Round 132
+
+- **Benchmark**: PromptBase marketplace는 제품/타입/가격/모델 필터를 구매 전 판단의 전면에 둔다. Cursor Marketplace는 플러그인/자동화/카테고리별 큐레이션과 "스킬 + MCP + 명령" 구성 신호를 노출한다. Smithery와 cursor.store는 설치 명령, MCP 설정, uptime/배포 같은 운영 신뢰 신호를 강하게 보여준다.
+- **Shipped**: `ArtifactSignals` 컴포넌트 추가. 카드에는 `설치 준비` / `검증 리뷰` 등 compact 신뢰 신호를 노출하고, 상세 사이드바에는 `구매 전 체크` 패널로 설치성, 리뷰, 다운로드, 모델 호환, 버전, 최근 유지보수 신호를 한 번에 보여준다. 신호는 기존 API 데이터(`reviewCount`, `downloads`, `models`, `version`, `updatedAt`)에서 파생해 계약 변경 없이 붙였다.
+- **Tests**: TDD로 `ArtifactSignals.test.tsx`, `ListingCard.test.tsx`, `ListingDetailPage.test.tsx`를 먼저 실패시킨 뒤 구현. Targeted **19 tests / 3 files** green, web 전체 **331 tests / 66 files** green, `pnpm --filter @promptmarket/web typecheck` green.
+- **Visual check**: Playwright로 `/browse`와 첫 번째 `/listings/...`를 desktop(1440x1100) / mobile(390x844)에서 캡처. Browse 카드의 `설치 준비`, 상세의 `구매 전 체크` / `설치 준비` 신호 확인.
+- **Sources**: https://promptbase.com/marketplace, https://cursor.com/marketplace, https://smithery.ai/servers/smithery, https://www.cursor.store/
+
 ## 2026-05-28T19:20 (UTC) — Rounds 123-131
 
 - **Benchmark**: 전체 monorepo 테스트 커버리지 완성 — 미커버 컴포넌트/페이지/훅 전량 추가.
@@ -501,7 +571,7 @@
 ## 2026-05-28T08:38 (UTC) — Round 47
 
 - **Benchmark**: [Vercel · Linear PWA manifest](https://vercel.com) — "Add to Home Screen"이 가능하면 모바일 사용자에게 앱처럼 보인다. 브랜드 컬러와 아이콘이 OS 레벨에서 적용돼야 첫 인상이 깔끔하다.
-- **Shipped**: `apps/web/public/manifest.webmanifest` + `icon.svg`(lime "P" sigil on cosmic-ink). `index.html`에 manifest 링크, apple-touch-icon, prefers-color-scheme별 theme-color 두 개(라이트=크림, 다크=잉크), apple-mobile-web-app-* 메타 3종, viewport-fit=cover. 매니페스트에 둘러보기/판매 shortcuts 2개.
+- **Shipped**: `apps/web/public/manifest.webmanifest` + `icon.svg`(lime "P" sigil on cosmic-ink). `index.html`에 manifest 링크, apple-touch-icon, prefers-color-scheme별 theme-color 두 개(라이트=크림, 다크=잉크), apple-mobile-web-app-\* 메타 3종, viewport-fit=cover. 매니페스트에 둘러보기/판매 shortcuts 2개.
 - **Commit**: `pending`
 - **Next ideas**: (1) Library 빈 상태에서 무료 추천 자동 보여주기. (2) Footer 라이브 통계 호버 시 카운트업 재실행.
 
@@ -739,7 +809,7 @@
 ## 2026-05-27T18:10 (UTC) — Round 6
 
 - **Benchmark**: [Vercel · Linear 공유 카드](https://vercel.com) — 두 곳 모두 OG 메타와 동적 페이지 타이틀을 1급으로 다룬다. SPA여도 클라이언트 사이드에서 document.head를 업데이트하면 슬랙/iMessage/트위터 공유 시 적절한 카드가 뜬다.
-- **Shipped**: `usePageMeta` 훅 — title, description, og:* / twitter:* / canonical을 한 번에 관리. unmount 시 이전 타이틀 복원. ListingDetail에는 리스팅 제목 + 설명 + canonical URL, Home에는 브랜드 기본값, Browse에는 검색어/카테고리/정렬을 반영한 동적 타이틀("...검색 결과" / "...카탈로그" / "트렌딩")을 자동 설정.
+- **Shipped**: `usePageMeta` 훅 — title, description, og:_ / twitter:_ / canonical을 한 번에 관리. unmount 시 이전 타이틀 복원. ListingDetail에는 리스팅 제목 + 설명 + canonical URL, Home에는 브랜드 기본값, Browse에는 검색어/카테고리/정렬을 반영한 동적 타이틀("...검색 결과" / "...카탈로그" / "트렌딩")을 자동 설정.
 - **Commit**: [`d159970`](https://github.com/blue45f/promptmarket/commit/d159970)
 - **Next ideas**: (1) Browse 검색 결과 스니펫 하이라이트. (2) 404/offline 페이지 톤업.
 

@@ -11,12 +11,10 @@ allowBuilds:
   prisma: true
 
 minimumReleaseAgeExclude:
-  - '@turbo/*'
   - enhanced-resolve
   - hasown
   - lucide-react
   - react-router
   - react-router-dom
   - tldts-core
-  - turbo
   - zustand

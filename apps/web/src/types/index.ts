@@ -8,6 +8,10 @@ export type {
   ListingListResponse as ListingsListResponse,
   ListingType,
   PurchaseResponse,
+  RevenueSettings,
+  RevenueSettingsHistory,
+  AdminRevenueSummary,
+  TopCreatorRevenue,
   PromptTechnique,
   Difficulty,
   License,
@@ -20,6 +24,7 @@ export interface User {
   email?: string
   username: string
   balanceCents?: number
+  isAdmin?: boolean
   bio?: string | null
   avatarUrl?: string | null
 }

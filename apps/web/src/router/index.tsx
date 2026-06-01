@@ -1,34 +1,50 @@
-import type { ComponentType } from 'react';
-import { createBrowserRouter, type RouteObject } from 'react-router-dom';
-import App from '@/App';
-import { RequireAuth } from '@components/route';
-import RouteError from '@components/common/RouteError/RouteError';
+import type { ComponentType } from 'react'
+import { createBrowserRouter, type RouteObject } from 'react-router-dom'
+import App from '@/App'
+import { RequireAdmin, RequireAuth } from '@components/route'
+import RouteError from '@components/common/RouteError/RouteError'
 
 type PageModule = {
-  default: ComponentType;
-};
+  default: ComponentType
+}
 
 function lazyPage(loader: () => Promise<PageModule>) {
   return async () => {
-    const { default: Component } = await loader();
-    return { Component };
-  };
+    const { default: Component } = await loader()
+    return { Component }
+  }
 }
 
 function lazyProtectedPage(loader: () => Promise<PageModule>) {
   return async () => {
-    const { default: Page } = await loader();
+    const { default: Page } = await loader()
 
     function ProtectedPage() {
       return (
         <RequireAuth>
           <Page />
         </RequireAuth>
-      );
+      )
     }
 
-    return { Component: ProtectedPage };
-  };
+    return { Component: ProtectedPage }
+  }
+}
+
+function lazyAdminProtectedPage(loader: () => Promise<PageModule>) {
+  return async () => {
+    const { default: Page } = await loader()
+
+    function ProtectedPage() {
+      return (
+        <RequireAdmin>
+          <Page />
+        </RequireAdmin>
+      )
+    }
+
+    return { Component: ProtectedPage }
+  }
 }
 
 export const routes = [
@@ -54,9 +70,13 @@ export const routes = [
         path: 'dashboard',
         lazy: lazyProtectedPage(() => import('@pages/Dashboard')),
       },
+      {
+        path: 'admin',
+        lazy: lazyAdminProtectedPage(() => import('@pages/Admin')),
+      },
       { path: '*', lazy: lazyPage(() => import('@pages/NotFound')) },
     ],
   },
-] satisfies RouteObject[];
+] satisfies RouteObject[]
 
-export const router = createBrowserRouter(routes);
+export const router = createBrowserRouter(routes)

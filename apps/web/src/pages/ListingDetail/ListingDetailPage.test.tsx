@@ -135,6 +135,40 @@ describe('<ListingDetailPage />', () => {
     expect(screen.getAllByText('$4.99').length).toBeGreaterThan(0)
   })
 
+  it('shows a buyer decision checklist in the detail sidebar', () => {
+    ;(useListing as unknown as Mock).mockReturnValue({
+      data: { listing: mockListing, reviews: [] },
+      isPending: false,
+      error: null,
+    })
+    renderPage()
+    expect(screen.getByRole('heading', { name: '구매 전 체크' })).toBeTruthy()
+    expect(screen.getByText('설치 준비')).toBeTruthy()
+    expect(screen.getByText('검증 리뷰')).toBeTruthy()
+  })
+
+  it('shows run readiness from preview variables before purchase', () => {
+    ;(useListing as unknown as Mock).mockReturnValue({
+      data: {
+        listing: {
+          ...mockListing,
+          models: ['claude-opus-4-7', 'gpt-5'],
+          previewBody: 'Draft for {{audience}} in {{tone}}.',
+        },
+        reviews: [],
+        canViewBody: false,
+      },
+      isPending: false,
+      error: null,
+    })
+    renderPage()
+    expect(screen.getByRole('heading', { name: '실행 준비도' })).toBeTruthy()
+    expect(screen.getByText('audience')).toBeTruthy()
+    expect(screen.getByText('tone')).toBeTruthy()
+    expect(screen.getByText('미리보기 기준')).toBeTruthy()
+    expect(screen.getAllByText('2개 모델').length).toBeGreaterThan(0)
+  })
+
   it('shows an insufficient-balance hint with a /dashboard top-up link when short', () => {
     ;(useAuthStore as unknown as Mock).mockReturnValue({
       token: 't',

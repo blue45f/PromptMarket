@@ -4,59 +4,158 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+} from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class PurchasesService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private static readonly PREMIUM_FEE_BPS_KEY = 'platform_fee_premium_bps'
+  private static readonly PREMIUM_THRESHOLD_KEY = 'platform_fee_premium_threshold_cents'
+  private static readonly PLATFORM_FEE_FLOOR_KEY = 'platform_fee_floor_cents'
+  private static readonly PLATFORM_FEE_BPS_KEY = 'platform_fee_bps'
+  private static readonly DEFAULT_PLATFORM_FEE_BPS = 1700
+  private static readonly DEFAULT_PREMIUM_FEE_BPS = 1400
+  private static readonly DEFAULT_PREMIUM_THRESHOLD_CENTS = 3_000
+  private static readonly DEFAULT_PLATFORM_FEE_FLOOR_CENTS = 0
+
+  private normalizeFeeBps(value: number): number {
+    if (!Number.isInteger(value)) return PurchasesService.DEFAULT_PLATFORM_FEE_BPS
+    if (value < 0) return 0
+    if (value > 10_000) return 10_000
+    return value
+  }
+
+  private normalizeMoneyCents(value: number): number {
+    const n = Math.trunc(value)
+    if (!Number.isFinite(n)) return 0
+    if (n < 0) return 0
+    return n
+  }
+
+  private async getRevenuePolicy() {
+    const keys = [
+      PurchasesService.PLATFORM_FEE_BPS_KEY,
+      PurchasesService.PREMIUM_FEE_BPS_KEY,
+      PurchasesService.PREMIUM_THRESHOLD_KEY,
+      PurchasesService.PLATFORM_FEE_FLOOR_KEY,
+    ]
+
+    const settings = await this.prisma.platformSetting.findMany({
+      where: { key: { in: keys } },
+    })
+    const byKey = new Map(settings.map((row) => [row.key, row.intValue]))
+
+    return {
+      platformFeeBps: this.normalizeFeeBps(
+        byKey.get(PurchasesService.PLATFORM_FEE_BPS_KEY) ??
+          PurchasesService.DEFAULT_PLATFORM_FEE_BPS
+      ),
+      premiumFeeBps: this.normalizeFeeBps(
+        byKey.get(PurchasesService.PREMIUM_FEE_BPS_KEY) ?? PurchasesService.DEFAULT_PREMIUM_FEE_BPS
+      ),
+      premiumThresholdCents: this.normalizeMoneyCents(
+        byKey.get(PurchasesService.PREMIUM_THRESHOLD_KEY) ??
+          PurchasesService.DEFAULT_PREMIUM_THRESHOLD_CENTS
+      ),
+      platformFeeFloorCents: this.normalizeMoneyCents(
+        byKey.get(PurchasesService.PLATFORM_FEE_FLOOR_KEY) ??
+          PurchasesService.DEFAULT_PLATFORM_FEE_FLOOR_CENTS
+      ),
+    }
+  }
+
+  private selectFeeBps(
+    grossAmountCents: number,
+    policy: { platformFeeBps: number; premiumFeeBps: number; premiumThresholdCents: number }
+  ) {
+    if (grossAmountCents >= policy.premiumThresholdCents) {
+      return policy.premiumFeeBps
+    }
+    return policy.platformFeeBps
+  }
+
+  private splitRevenue(
+    grossAmountCents: number,
+    policy: {
+      platformFeeBps: number
+      premiumFeeBps: number
+      premiumThresholdCents: number
+      platformFeeFloorCents: number
+    }
+  ) {
+    const normalizedFeeBps = this.selectFeeBps(grossAmountCents, policy)
+    const rawPlatformFeeCents = Math.max(
+      0,
+      Math.round((grossAmountCents * normalizedFeeBps) / 10_000)
+    )
+    const platformFeeCents = Math.max(policy.platformFeeFloorCents, rawPlatformFeeCents)
+    const boundedPlatformFeeCents = Math.min(grossAmountCents, platformFeeCents)
+    const sellerNetCents = Math.max(0, grossAmountCents - boundedPlatformFeeCents)
+    return {
+      grossAmountCents,
+      platformFeeCents: boundedPlatformFeeCents,
+      sellerNetCents,
+      platformFeeBps: normalizedFeeBps,
+    }
+  }
+
   async purchase(userId: string, listingId: string) {
     const listing = await this.prisma.listing.findUnique({
       where: { id: listingId },
-    });
-    if (!listing) throw new NotFoundException('Listing not found');
+    })
+    if (!listing) throw new NotFoundException('Listing not found')
     if (listing.authorId === userId) {
-      throw new ForbiddenException('You cannot purchase your own listing');
+      throw new ForbiddenException('You cannot purchase your own listing')
     }
 
     const existing = await this.prisma.purchase.findUnique({
       where: { userId_listingId: { userId, listingId } },
-    });
+    })
     if (existing) {
-      throw new ConflictException('Already purchased');
+      throw new ConflictException('Already purchased')
     }
 
     if (listing.priceCents === 0) {
+      const split = this.splitRevenue(listing.priceCents, await this.getRevenuePolicy())
       const [purchase] = await this.prisma.$transaction([
         this.prisma.purchase.create({
           data: {
             userId,
             listingId,
             pricePaidCents: 0,
+            grossAmountCents: split.grossAmountCents,
+            sellerNetCents: split.sellerNetCents,
+            platformFeeCents: split.platformFeeCents,
           },
         }),
         this.prisma.listing.update({
           where: { id: listingId },
           data: { downloads: { increment: 1 } },
         }),
-      ]);
+      ])
       return {
         purchase: {
           id: purchase.id,
           listingId: purchase.listingId,
           pricePaidCents: purchase.pricePaidCents,
+          grossAmountCents: purchase.grossAmountCents,
+          sellerNetCents: purchase.sellerNetCents,
+          platformFeeCents: purchase.platformFeeCents,
           createdAt: purchase.createdAt,
         },
         body: listing.body,
-      };
+      }
     }
 
-    const buyer = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!buyer) throw new NotFoundException('Buyer not found');
+    const buyer = await this.prisma.user.findUnique({ where: { id: userId } })
+    if (!buyer) throw new NotFoundException('Buyer not found')
     if (buyer.balanceCents < listing.priceCents) {
-      throw new BadRequestException('Insufficient balance');
+      throw new BadRequestException('Insufficient balance')
     }
+
+    const split = this.splitRevenue(listing.priceCents, await this.getRevenuePolicy())
 
     const [purchase] = await this.prisma.$transaction([
       this.prisma.purchase.create({
@@ -64,6 +163,9 @@ export class PurchasesService {
           userId,
           listingId,
           pricePaidCents: listing.priceCents,
+          grossAmountCents: split.grossAmountCents,
+          sellerNetCents: split.sellerNetCents,
+          platformFeeCents: split.platformFeeCents,
         },
       }),
       this.prisma.user.update({
@@ -72,22 +174,25 @@ export class PurchasesService {
       }),
       this.prisma.user.update({
         where: { id: listing.authorId },
-        data: { balanceCents: { increment: listing.priceCents } },
+        data: { balanceCents: { increment: split.sellerNetCents } },
       }),
       this.prisma.listing.update({
         where: { id: listingId },
         data: { downloads: { increment: 1 } },
       }),
-    ]);
+    ])
 
     return {
       purchase: {
         id: purchase.id,
         listingId: purchase.listingId,
         pricePaidCents: purchase.pricePaidCents,
+        grossAmountCents: purchase.grossAmountCents,
+        sellerNetCents: purchase.sellerNetCents,
+        platformFeeCents: purchase.platformFeeCents,
         createdAt: purchase.createdAt,
       },
       body: listing.body,
-    };
+    }
   }
 }

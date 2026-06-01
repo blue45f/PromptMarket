@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ListingCard from './ListingCard'
@@ -75,5 +75,25 @@ describe('<ListingCard />', () => {
   it('shows the rating (not the unrated label) once the listing has reviews', () => {
     render(withProviders(<ListingCard listing={listing} />))
     expect(screen.queryByText('아직 리뷰 없음')).toBeNull()
+  })
+
+  it('shows compact artifact trust signals for quick marketplace scanning', () => {
+    render(
+      withProviders(<ListingCard listing={{ ...listing, models: ['claude-code', 'cursor'] }} />)
+    )
+    expect(screen.getByText('설치 준비')).toBeTruthy()
+    expect(screen.getByText('검증 리뷰')).toBeTruthy()
+  })
+
+  it('exposes an optional compare toggle without navigating the card', () => {
+    const onToggle = vi.fn()
+    render(
+      withProviders(
+        <ListingCard listing={listing} compare={{ selected: false, onToggle, disabled: false }} />
+      )
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: '비교에 추가: My Test Listing' }))
+    expect(onToggle).toHaveBeenCalledWith(listing)
   })
 })

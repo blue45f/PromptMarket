@@ -12,6 +12,7 @@ import koDashboard from './locales/ko/dashboard.json'
 import koProfile from './locales/ko/profile.json'
 import koCreate from './locales/ko/create.json'
 import koErrors from './locales/ko/errors.json'
+import koAdmin from './locales/ko/admin.json'
 
 import enCommon from './locales/en/common.json'
 import enNav from './locales/en/nav.json'
@@ -23,6 +24,7 @@ import enDashboard from './locales/en/dashboard.json'
 import enProfile from './locales/en/profile.json'
 import enCreate from './locales/en/create.json'
 import enErrors from './locales/en/errors.json'
+import enAdmin from './locales/en/admin.json'
 
 export const SUPPORTED_LANGS = ['ko', 'en'] as const
 export type Lang = (typeof SUPPORTED_LANGS)[number]
@@ -42,6 +44,7 @@ export const NS = [
   'profile',
   'create',
   'errors',
+  'admin',
 ] as const
 
 export const resources = {
@@ -56,6 +59,7 @@ export const resources = {
     profile: koProfile,
     create: koCreate,
     errors: koErrors,
+    admin: koAdmin,
   },
   en: {
     common: enCommon,
@@ -68,6 +72,7 @@ export const resources = {
     profile: enProfile,
     create: enCreate,
     errors: enErrors,
+    admin: enAdmin,
   },
 } as const
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Keyboard, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useAuthStore } from '@store/auth'
 import { cn } from '@utils/cn'
 
 /* ---------------------------------------------------------------------------
@@ -52,6 +53,18 @@ const GROUPS: Array<{ titleKey: string; rows: Array<{ keys: string[]; labelKey: 
 export default function ShortcutsOverlay() {
   const [open, setOpen] = useState(false)
   const { t } = useTranslation('errors')
+  const user = useAuthStore((s) => s.user)
+
+  const groups = (() => {
+    if (!user?.isAdmin) return GROUPS
+    return GROUPS.map((group) => {
+      if (group.titleKey !== 'shortcuts.groups.nav.title') return group
+      return {
+        ...group,
+        rows: [...group.rows, { keys: ['g', 'a'], labelKey: 'shortcuts.groups.nav.admin' }],
+      }
+    })
+  })()
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -108,7 +121,7 @@ export default function ShortcutsOverlay() {
           </div>
 
           <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
-            {GROUPS.map((g) => (
+            {groups.map((g) => (
               <section key={g.titleKey} className="space-y-2.5">
                 <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300">
                   {t(g.titleKey)}

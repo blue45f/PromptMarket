@@ -18,6 +18,15 @@
     "sortLabel": "Sort",
     "searchLabel": "Search listings"
   },
+  "signals": {
+    "label": "Trust filters",
+    "options": {
+      "reviewed": "Verified reviews",
+      "used": "Field use",
+      "multi-model": "Multi-model",
+      "fresh": "Recently maintained"
+    }
+  },
   "filters": {
     "activeCount_one": "{{count}} filter applied",
     "activeCount_other": "{{count}} filters applied",
@@ -41,6 +50,33 @@
     "loading": "Loading…",
     "count_one": "{{formatted}} result",
     "count_other": "{{formatted}} results"
+  },
+  "compare": {
+    "label": "Compare candidates",
+    "heading": "Compare candidates",
+    "needMore": "Select one more listing to open the comparison table.",
+    "count_one": "{{count}}/{{max}} selected",
+    "count_other": "{{count}}/{{max}} selected",
+    "clear": "Clear compare",
+    "remove": "Remove from compare: {{title}}",
+    "none": "No signals",
+    "anyModel": "Model agnostic",
+    "modelsPlus": "{{models}} + {{count}} more",
+    "modelsPlus_one": "{{models}} + {{count}} more",
+    "modelsPlus_other": "{{models}} + {{count}} more",
+    "downloads_one": "{{count}} download",
+    "downloads_other": "{{count}} downloads",
+    "reviews_one": "{{count}} review",
+    "reviews_other": "{{count}} reviews",
+    "rows": {
+      "item": "Item",
+      "price": "Price",
+      "type": "Type",
+      "models": "Models",
+      "signals": "Trust",
+      "usage": "Use",
+      "reviews": "Reviews"
+    }
   },
   "pagination": {
     "prev": "Previous",
@@ -114,6 +150,7 @@
     "technique": "Technique · {{value}}",
     "difficulty": "Difficulty · {{value}}",
     "category": "Category · {{value}}",
-    "price": "Price · {{value}}"
+    "price": "Price · {{value}}",
+    "signal": "Trust signal · {{value}}"
   }
 }

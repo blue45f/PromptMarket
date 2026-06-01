@@ -12,12 +12,22 @@ import {
   TECHNIQUE_META,
 } from '@promptmarket/shared'
 import type { Difficulty, ListingType, PromptTechnique } from '@promptmarket/shared'
-import { ChevronDown, SlidersHorizontal, X } from 'lucide-react'
+import {
+  BadgeCheck,
+  ChevronDown,
+  Download,
+  Layers3,
+  RefreshCw,
+  SlidersHorizontal,
+  X,
+} from 'lucide-react'
 import { useListings } from '@features/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { getErrorMessage } from '@services/api'
 import { modelLabel } from '@utils/format'
+import type { ListingCard as ListingCardType } from '@/types'
 import ListingCard from '@components/ListingCard'
+import CompareTray from '@components/CompareTray'
 import FilterPanel, { countActive, emptyFilters, type FilterState } from '@components/FilterPanel'
 import FilterDrawer from '@components/FilterDrawer'
 import SearchBar from '@components/SearchBar'
@@ -30,14 +40,24 @@ const VALID_SORTS = ['newest', 'trending', 'top'] as const
 const VALID_PRICES = ['all', 'free', 'paid'] as const
 const VALID_DIFFICULTIES = new Set<Difficulty>(['beginner', 'intermediate', 'advanced'])
 const VALID_TECHNIQUES = new Set<PromptTechnique>(PromptTechniqueEnum.options)
+const VALID_SIGNALS = ['reviewed', 'used', 'multi-model', 'fresh'] as const
 
 type Sort = (typeof VALID_SORTS)[number]
+type SignalFilter = (typeof VALID_SIGNALS)[number]
+
+const SIGNAL_OPTIONS = [
+  { key: 'reviewed', Icon: BadgeCheck },
+  { key: 'used', Icon: Download },
+  { key: 'multi-model', Icon: Layers3 },
+  { key: 'fresh', Icon: RefreshCw },
+] as const
 
 export default function BrowsePage() {
   useScrollRestore()
   const { t } = useTranslation('browse')
   const [params, setParams] = useSearchParams()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [compareItems, setCompareItems] = useState<ListingCardType[]>([])
   const navigate = useNavigate()
   // Destructure the stable useCallback refs — depending on the whole hook
   // object (a fresh literal each render) made the persist effect below re-run
@@ -73,6 +93,17 @@ export default function BrowsePage() {
   }, [params])
 
   const q = params.get('q') ?? ''
+  const signalFilters = useMemo<SignalFilter[]>(
+    () =>
+      Array.from(
+        new Set(
+          params
+            .getAll('signal')
+            .filter((s): s is SignalFilter => (VALID_SIGNALS as readonly string[]).includes(s))
+        )
+      ),
+    [params]
+  )
   const sort: Sort = (() => {
     const s = params.get('sort')
     return s && (VALID_SORTS as readonly string[]).includes(s) ? (s as Sort) : 'newest'
@@ -109,6 +140,7 @@ export default function BrowsePage() {
       if (q) merged.set('q', q)
       merged.set('sort', sort)
       if (vendor) merged.set('vendor', vendor)
+      signalFilters.forEach((s) => merged.append('signal', s))
       next.types.forEach((t) => merged.append('type', t))
       next.models.forEach((m) => merged.append('model', m))
       if (next.technique) merged.set('technique', next.technique)
@@ -124,7 +156,7 @@ export default function BrowsePage() {
       if (!merged.has('page')) merged.set('page', '1')
       setParams(merged, { replace: true })
     },
-    [q, sort, vendor, setParams]
+    [q, sort, vendor, signalFilters, setParams]
   )
 
   function updateExtras(extra: Record<string, string | number | null | undefined>) {
@@ -136,6 +168,28 @@ export default function BrowsePage() {
   }, [setParams])
 
   const onFilterChange = useCallback((next: FilterState) => commit(next, { page: 1 }), [commit])
+
+  const setSignals = useCallback(
+    (nextSignals: SignalFilter[]) => {
+      const merged = new URLSearchParams(params)
+      merged.delete('signal')
+      nextSignals.forEach((s) => merged.append('signal', s))
+      merged.set('page', '1')
+      setParams(merged, { replace: true })
+    },
+    [params, setParams]
+  )
+
+  const toggleSignal = useCallback(
+    (signal: SignalFilter) => {
+      setSignals(
+        signalFilters.includes(signal)
+          ? signalFilters.filter((s) => s !== signal)
+          : [...signalFilters, signal]
+      )
+    },
+    [signalFilters, setSignals]
+  )
 
   // Server-side params: the backend only accepts a single type/model. When the
   // user selects 2+ we must NOT pin the server to the first value — that would
@@ -152,6 +206,7 @@ export default function BrowsePage() {
     technique: filters.technique || undefined,
     difficulty: filters.difficulty || undefined,
     vendor: vendor || undefined,
+    signal: signalFilters.length > 0 ? signalFilters.join(',') : undefined,
     sort,
     q: q || undefined,
     free: filters.price === 'free' ? 'true' : filters.price === 'paid' ? 'false' : undefined,
@@ -188,18 +243,33 @@ export default function BrowsePage() {
   }, [data, filters.types, filters.models, filters.price, narrowTypes, narrowModels])
 
   const activeCount = countActive(filters)
+  const appliedCount = activeCount + signalFilters.length + (vendor ? 1 : 0)
   const fmt = useMemo(() => new Intl.NumberFormat(activeIntlLocale()), [i18n.resolvedLanguage])
+
+  const toggleCompare = useCallback((listing: ListingCardType) => {
+    setCompareItems((current) => {
+      if (current.some((item) => item.id === listing.id)) {
+        return current.filter((item) => item.id !== listing.id)
+      }
+      if (current.length >= 3) return current
+      return [...current, listing]
+    })
+  }, [])
+
+  const removeCompareItem = useCallback((id: string) => {
+    setCompareItems((current) => current.filter((item) => item.id !== id))
+  }, [])
 
   // Persist non-trivial filter combinations into the recent-filters store
   // so visitors can jump back without re-applying chip by chip.
   useEffect(() => {
-    if (activeCount < 2) return
-    const label = describeFilters(filters, q, t)
+    if (appliedCount < 2) return
+    const label = describeFilters(filters, q, signalFilters, t)
     if (!label) return
     const search = params.toString()
     if (!search) return
     saveFilter(search, label)
-  }, [activeCount, filters, q, params, saveFilter, t])
+  }, [appliedCount, filters, q, signalFilters, params, saveFilter, t])
 
   // Keep a ref with the latest pagination state so the keyboard handler never
   // closes over stale values (fixes the arrow-key pagination stale closure).
@@ -302,20 +372,22 @@ export default function BrowsePage() {
           >
             <SlidersHorizontal className="w-4 h-4" />
             {t('toolbar.filter')}
-            {activeCount > 0 && (
+            {appliedCount > 0 && (
               <span
                 className="inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] px-1 text-[0.62rem] rounded-full bg-volt-300 text-ink font-mono font-semibold"
                 aria-hidden
               >
-                {activeCount}
+                {appliedCount}
               </span>
             )}
-            {activeCount > 0 && (
-              <span className="sr-only">{t('filters.activeCount', { count: activeCount })}</span>
+            {appliedCount > 0 && (
+              <span className="sr-only">{t('filters.activeCount', { count: appliedCount })}</span>
             )}
           </button>
         </div>
       </div>
+
+      <SignalFilterBar value={signalFilters} onToggle={toggleSignal} />
 
       <div className="flex flex-col lg:flex-row gap-7 lg:gap-9">
         <aside className="hidden lg:block lg:w-72 shrink-0" aria-label={t('filters.sidebarLabel')}>
@@ -358,7 +430,7 @@ export default function BrowsePage() {
               ))}
             </div>
           )}
-          {(activeCount > 0 || vendor) && (
+          {(activeCount > 0 || vendor || signalFilters.length > 0) && (
             <div className="mb-4 flex flex-wrap items-center gap-2">
               {vendor && (
                 <Chip
@@ -420,6 +492,13 @@ export default function BrowsePage() {
                   onRemove={() => commit({ ...filters, price: 'all' }, { page: 1 })}
                 />
               )}
+              {signalFilters.map((signal) => (
+                <Chip
+                  key={`signal-${signal}`}
+                  label={t('signals.options.' + signal)}
+                  onRemove={() => setSignals(signalFilters.filter((s) => s !== signal))}
+                />
+              ))}
               <button
                 type="button"
                 onClick={reset}
@@ -463,7 +542,17 @@ export default function BrowsePage() {
               <div className="cards-fluid">
                 {items.map((l) => (
                   <div key={l.id} data-browse-card>
-                    <ListingCard listing={l} highlight={q} />
+                    <ListingCard
+                      listing={l}
+                      highlight={q}
+                      compare={{
+                        selected: compareItems.some((item) => item.id === l.id),
+                        disabled:
+                          compareItems.length >= 3 &&
+                          !compareItems.some((item) => item.id === l.id),
+                        onToggle: toggleCompare,
+                      }}
+                    />
                   </div>
                 ))}
               </div>
@@ -517,6 +606,7 @@ export default function BrowsePage() {
                 difficulty: filters.difficulty,
                 category: filters.category,
                 price: filters.price,
+                signals: signalFilters,
                 removeType: (t) =>
                   commit({ ...filters, types: filters.types.filter((x) => x !== t) }, { page: 1 }),
                 removeModel: (m) =>
@@ -529,6 +619,7 @@ export default function BrowsePage() {
                 removeCategory: () => commit({ ...filters, category: '' }, { page: 1 }),
                 removePrice: () => commit({ ...filters, price: 'all' }, { page: 1 }),
                 removeQuery: () => updateExtras({ q: undefined, page: 1 }),
+                removeSignal: (signal) => setSignals(signalFilters.filter((s) => s !== signal)),
               })}
             />
           )}
@@ -542,11 +633,21 @@ export default function BrowsePage() {
         onChange={onFilterChange}
         onReset={reset}
       />
+      <CompareTray
+        items={compareItems}
+        onRemove={removeCompareItem}
+        onClear={() => setCompareItems([])}
+      />
     </div>
   )
 }
 
-function describeFilters(f: FilterState, q: string, t: TFunction<'browse'>): string {
+function describeFilters(
+  f: FilterState,
+  q: string,
+  signals: SignalFilter[],
+  t: TFunction<'browse'>
+): string {
   const parts: string[] = []
   if (q) parts.push(`"${q}"`)
   if (f.category)
@@ -558,7 +659,49 @@ function describeFilters(f: FilterState, q: string, t: TFunction<'browse'>): str
     parts.push(t('common:difficulty.' + f.difficulty, { defaultValue: f.difficulty }))
   if (f.price === 'free') parts.push(t('describe.free'))
   if (f.price === 'paid') parts.push(t('describe.paid'))
+  signals.forEach((s) => parts.push(t('signals.options.' + s)))
   return parts.slice(0, 4).join(' · ')
+}
+
+function SignalFilterBar({
+  value,
+  onToggle,
+}: {
+  value: SignalFilter[]
+  onToggle: (signal: SignalFilter) => void
+}) {
+  const { t } = useTranslation('browse')
+  return (
+    <div
+      className="mb-6 flex flex-wrap items-center gap-2"
+      aria-label={t('signals.label')}
+      role="group"
+    >
+      <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute mr-1">
+        {t('signals.label')}
+      </span>
+      {SIGNAL_OPTIONS.map(({ key, Icon }) => {
+        const active = value.includes(key)
+        return (
+          <button
+            key={key}
+            type="button"
+            aria-pressed={active}
+            onClick={() => onToggle(key)}
+            className={cn(
+              'inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[0.8rem] font-medium motion-safe:transition ease-expo focus-volt',
+              active
+                ? 'border-volt-300 bg-volt-200/70 text-ink dark:border-volt-700 dark:bg-volt-900/50 dark:text-volt-100'
+                : 'border-line bg-canvas-sub/60 text-ink-soft hover:border-volt-400 hover:text-ink dark:border-night-line dark:bg-night-sub/60 dark:text-bone-soft dark:hover:border-volt-500/60 dark:hover:text-bone'
+            )}
+          >
+            <Icon className="h-3.5 w-3.5" aria-hidden />
+            {t('signals.options.' + key)}
+          </button>
+        )
+      })}
+    </div>
+  )
 }
 
 function Chip({ label, onRemove }: { label: string; onRemove: () => void }) {

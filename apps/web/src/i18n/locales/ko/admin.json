@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "title": "관리자 매출 운영",
+    "description": "플랫폼 수수료 정책을 설정하고 전체 매출 동향 및 수익 분배를 모니터링하세요."
+  },
+  "header": {
+    "eyebrow": "운영 관리",
+    "title": "PromptMarket 수익 운영",
+    "subtitle": "플랫폼 수수료 정책을 관리하고 매출 동향을 점검하며 변경 영향도를 사전 검토합니다."
+  },
+  "settings": {
+    "title": "수익 설정",
+    "current": "현재 정책: 기본 {{basePercent}}%, 프리미엄 {{premiumPercent}}% / 임계 {{threshold}}, 최소 {{floor}}",
+    "description": "유료 구매는 임계값 이상일 때 프리미엄 수수료가 적용됩니다.",
+    "feeLabel": "기본 수수료 (%)",
+    "percentInputLabel": "기본 수수료 퍼센트 입력",
+    "premiumFeeLabel": "프리미엄 수수료 (%)",
+    "premiumPercentInputLabel": "프리미엄 수수료 퍼센트 입력",
+    "thresholdLabel": "프리미엄 임계 금액 ($)",
+    "thresholdInputLabel": "프리미엄 임계 금액 입력",
+    "thresholdHelp": "구매 금액이 임계값 이상이면 프리미엄 수수료를 적용합니다.",
+    "floorLabel": "최소 플랫폼 수수료 ($)",
+    "floorInputLabel": "최소 수수료 금액 입력",
+    "floorHelp": "유료 구매의 플랫폼 수수료는 이 값보다 작아질 수 없습니다.",
+    "history": {
+      "title": "설정 이력",
+      "subtitle": "저장된 설정 값과 마지막 반영 시점입니다.",
+      "updatedAt": "마지막 반영",
+      "unset": "미설정(기본값 사용 중)",
+      "loading": "변경 이력을 불러오는 중...",
+      "labels": {
+        "platformFee": "기본 플랫폼 수수료",
+        "premiumFee": "프리미엄 플랫폼 수수료",
+        "premiumThreshold": "프리미엄 임계값",
+        "platformFeeFloor": "최소 플랫폼 수수료"
+      }
+    },
+    "save": "저장",
+    "saving": "저장 중…",
+    "saved": "수익 설정이 저장됐습니다"
+  },
+  "summary": {
+    "title": "매출 요약",
+    "metrics": {
+      "gross": "총 매출액",
+      "platform": "플랫폼 수익",
+      "seller": "판매자 정산액",
+      "paidRatio": "유료 구매 비율"
+    }
+  },
+  "simulation": {
+    "title": "수수료 시뮬레이션",
+    "subtitle": "예시 금액으로 현재 정책과 변경안의 플랫폼/판매자 분배를 비교해보세요.",
+    "sampleAmountLabel": "예시 구매금액",
+    "currentScenario": "현재 시나리오",
+    "nextScenario": "변경안 시나리오",
+    "base": "기본 수수료 적용",
+    "premium": "프리미엄 수수료 적용 ({{threshold}} 이상)",
+    "delta": "플랫폼 수수료 차이",
+    "sellerGain": "판매자 수익 {{amount}}",
+    "sellerLoss": "판매자 수익 {{amount}}",
+    "impactTitlePositive": "판매자 영향 (상승)",
+    "impactTitleNegative": "판매자 영향 (하락)",
+    "impactGood": "샘플 금액 기준으로 판매자 정산이 {{amount}} 개선됩니다.",
+    "impactBad": "샘플 금액 기준으로 판매자 정산이 {{amount}} 감소합니다.",
+    "share": {
+      "platform": "플랫폼 / 판매자",
+      "seller": "판매자 / 플랫폼"
+    }
+  },
+  "creators": {
+    "title": "상위 판매자",
+    "subtitle": "판매자 정산액 기준 정렬입니다.",
+    "emptyTitle": "표시할 판매자가 아직 없어요",
+    "emptyDescription": "판매 데이터가 누적되면 여기에 정렬됩니다.",
+    "table": {
+      "rank": "순위",
+      "creator": "제작자",
+      "listings": "리스팅",
+      "sales": "판매량",
+      "gross": "총매출",
+      "seller": "판매자",
+      "platform": "플랫폼"
+    }
+  }
+}

@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { ArrowUpRight, Download } from 'lucide-react'
+import { ArrowUpRight, Download, Layers3 } from 'lucide-react'
 import type { ListingCard as ListingCardType, ListingDetailResponse } from '@/types'
 import { formatPrice, typeGradient } from '@utils/format'
 import { LISTING_TYPE_META } from '@promptmarket/shared'
@@ -13,6 +13,7 @@ import ModelBadge from './ModelBadge'
 import StarRating from './StarRating'
 import Highlight from './Highlight'
 import WishlistButton from './WishlistButton'
+import ArtifactSignals from './ArtifactSignals'
 import { cn } from '@utils/cn'
 
 interface ListingCardProps {
@@ -25,6 +26,11 @@ interface ListingCardProps {
   fixedWidth?: boolean
   /** Search query to underline inside title/description. */
   highlight?: string
+  compare?: {
+    selected: boolean
+    disabled?: boolean
+    onToggle: (listing: ListingCardType) => void
+  }
 }
 
 const ListingCard = memo(function ListingCard({
@@ -33,6 +39,7 @@ const ListingCard = memo(function ListingCard({
   variant = 'default',
   fixedWidth = false,
   highlight,
+  compare,
 }: ListingCardProps) {
   const { t } = useTranslation('common')
   const free = (listing.priceCents ?? 0) === 0
@@ -140,6 +147,36 @@ const ListingCard = memo(function ListingCard({
             </span>
           </div>
 
+          {compare && (
+            <div className="absolute bottom-3.5 left-3.5">
+              <button
+                type="button"
+                aria-pressed={compare.selected}
+                aria-label={t(compare.selected ? 'compare.remove' : 'compare.add', {
+                  title: listing.title,
+                })}
+                disabled={compare.disabled && !compare.selected}
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  compare.onToggle(listing)
+                }}
+                className={cn(
+                  'inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 py-2 text-[0.76rem] font-semibold backdrop-blur-sm motion-safe:transition ease-expo focus-volt',
+                  compare.selected
+                    ? 'border-volt-300 bg-volt-300 text-ink'
+                    : 'border-bone/50 bg-ink/65 text-bone hover:border-volt-300 hover:bg-ink/85',
+                  compare.disabled &&
+                    !compare.selected &&
+                    'cursor-not-allowed opacity-50 hover:border-bone/50 hover:bg-ink/65'
+                )}
+              >
+                <Layers3 className="h-3.5 w-3.5" aria-hidden />
+                {compare.selected ? t('compare.selectedShort') : t('compare.addShort')}
+              </button>
+            </div>
+          )}
+
           {/* Bottom-right wishlist + arrow stack */}
           <div className="absolute bottom-3.5 right-3.5 flex items-center gap-2">
             <span className="motion-safe:transition-all motion-safe:duration-500 opacity-0 motion-safe:group-hover:opacity-100 motion-safe:group-focus-within:opacity-100">
@@ -202,6 +239,7 @@ const ListingCard = memo(function ListingCard({
               listing.description
             )}
           </p>
+          <ArtifactSignals listing={listing} limit={2} />
 
           <div className="mt-1 flex items-center justify-between pt-3 border-t border-line/70 dark:border-night-line/70">
             <div className="flex items-center gap-1.5 min-w-0">

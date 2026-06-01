@@ -41,6 +41,8 @@ import WishlistButton from '@components/WishlistButton'
 import MarkdownToc from '@components/MarkdownToc'
 import InstallPanel from '@components/InstallPanel'
 import AudienceMatch from '@components/AudienceMatch'
+import ArtifactSignals from '@components/ArtifactSignals'
+import ArtifactReadiness from '@components/ArtifactReadiness'
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { useStructuredData } from '@hooks/useStructuredData'
@@ -493,6 +495,14 @@ export default function ListingDetailPage() {
                 models={listing.models}
                 className="mb-6"
               />
+              <ArtifactReadiness
+                type={listing.type}
+                body={listing.body}
+                previewBody={listing.previewBody}
+                canViewBody={canViewBody}
+                models={listing.models}
+                className="mb-6"
+              />
               <section aria-labelledby="listing-body-heading">
                 <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
                   <p className="text-base text-ink-soft dark:text-bone-soft whitespace-pre-wrap leading-relaxed max-w-[72ch]">
@@ -850,6 +860,8 @@ export default function ListingDetailPage() {
                 </Link>
               </div>
             </div>
+
+            <ArtifactSignals listing={listing} variant="panel" />
 
             <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 space-y-4 text-sm">
               <Meta label={t('meta_rows.type')}>

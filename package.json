@@ -12,20 +12,20 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "pnpm --filter @promptmarket/api --filter @promptmarket/web -r --parallel run dev",
     "prepare": "husky",
     "dev:web": "pnpm --filter @promptmarket/web dev",
     "dev:api": "pnpm --filter @promptmarket/api dev",
     "dev:shared": "pnpm --filter @promptmarket/shared dev",
-    "build": "turbo run build",
+    "build": "pnpm --filter @promptmarket/shared build && pnpm --filter @promptmarket/api build && pnpm --filter @promptmarket/web build",
     "clean": "pnpm -r --if-present run clean",
     "ci": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:run && pnpm run build",
     "verify": "pnpm run validate:architecture && pnpm run ci",
     "verify:push": "pnpm run verify",
-    "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "test:run": "turbo run test:run",
+    "typecheck": "pnpm --filter @promptmarket/shared build && pnpm --filter @promptmarket/api typecheck && pnpm --filter @promptmarket/web typecheck",
+    "lint": "pnpm -r --if-present run lint",
+    "test": "pnpm -r --if-present run test",
+    "test:run": "pnpm -r --if-present run test:run",
     "format": "pnpm -r --if-present run format",
     "format:check": "pnpm -r --if-present run format:check",
     "test:monorepo": "node scripts/verify-pnpm-monorepo.mjs",
@@ -44,8 +44,7 @@
     "@commitlint/config-conventional": "^21.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
-    "prettier": "^3.8.3",
-    "turbo": "^2.9.16"
+    "prettier": "^3.8.3"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

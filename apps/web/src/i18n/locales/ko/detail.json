@@ -114,6 +114,39 @@
       "curlHint": "리스팅 본문 받기"
     }
   },
+  "readiness": {
+    "title": "실행 준비도",
+    "subtitle": "구매 전에 적용 위치와 필요한 입력값을 확인하세요.",
+    "labels": {
+      "target": "적용 위치",
+      "scope": "검증 범위",
+      "models": "호환 모델",
+      "variables": "입력 변수"
+    },
+    "targets": {
+      "PROMPT": "프롬프트 복사",
+      "CLAUDE_MD": "CLAUDE.md 배치",
+      "AGENT_MD": "agent.md 배치",
+      "SKILL": "Claude Code 설치",
+      "MCP_SERVER": "MCP 설정",
+      "SLASH_COMMAND": "슬래시 명령",
+      "SUBAGENT": "서브에이전트 등록",
+      "CURSOR_RULES": "Cursor 규칙"
+    },
+    "scope": {
+      "full": "전체 본문 기준",
+      "preview": "미리보기 기준",
+      "locked": "본문 확인 필요"
+    },
+    "models": {
+      "count": "{{count}}개 모델",
+      "any": "모델 비종속"
+    },
+    "variables": {
+      "count": "{{count}}개",
+      "empty": "추가 입력 없음"
+    }
+  },
   "toc": {
     "aside": "목차",
     "label": "목차"

@@ -147,6 +147,7 @@ export function buildActiveFilterRows(args: {
   difficulty: string
   category: string
   price: string
+  signals?: string[]
   removeType: (t: string) => void
   removeModel: (m: string) => void
   removeTechnique: () => void
@@ -154,6 +155,7 @@ export function buildActiveFilterRows(args: {
   removeCategory: () => void
   removePrice: () => void
   removeQuery: () => void
+  removeSignal?: (s: string) => void
 }): ActiveFilter[] {
   const out: ActiveFilter[] = []
   if (args.q)
@@ -210,5 +212,14 @@ export function buildActiveFilterRows(args: {
       label: i18n.t('browse:activeFilter.price', { value: args.price }),
       onRemove: args.removePrice,
     })
+  for (const signal of args.signals ?? []) {
+    out.push({
+      key: `signal:${signal}`,
+      label: i18n.t('browse:activeFilter.signal', {
+        value: i18n.t('browse:signals.options.' + signal, { defaultValue: signal }),
+      }),
+      onRemove: () => args.removeSignal?.(signal),
+    })
+  }
   return out
 }

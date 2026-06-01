@@ -18,6 +18,15 @@
     "sortLabel": "정렬",
     "searchLabel": "프롬프트 검색"
   },
+  "signals": {
+    "label": "신뢰 필터",
+    "options": {
+      "reviewed": "검증 리뷰",
+      "used": "현장 사용",
+      "multi-model": "멀티 모델",
+      "fresh": "최근 유지보수"
+    }
+  },
   "filters": {
     "activeCount_other": "{{count}}개 필터 적용됨",
     "sidebarLabel": "필터"
@@ -39,6 +48,28 @@
   "results": {
     "loading": "불러오는 중…",
     "count_other": "{{formatted}}건"
+  },
+  "compare": {
+    "label": "비교 후보",
+    "heading": "비교 후보",
+    "needMore": "하나 더 선택하면 비교표가 열려요.",
+    "count": "{{count}}/{{max}}개 선택",
+    "clear": "비교 비우기",
+    "remove": "비교에서 제거: {{title}}",
+    "none": "신호 없음",
+    "anyModel": "모델 비종속",
+    "modelsPlus": "{{models}} 외 {{count}}개",
+    "downloads": "다운로드 {{count}}회",
+    "reviews": "리뷰 {{count}}개",
+    "rows": {
+      "item": "항목",
+      "price": "가격",
+      "type": "타입",
+      "models": "모델",
+      "signals": "신뢰",
+      "usage": "사용",
+      "reviews": "리뷰"
+    }
   },
   "pagination": {
     "prev": "이전",
@@ -112,6 +143,7 @@
     "technique": "기법 · {{value}}",
     "difficulty": "난이도 · {{value}}",
     "category": "카테고리 · {{value}}",
-    "price": "가격 · {{value}}"
+    "price": "가격 · {{value}}",
+    "signal": "신뢰 신호 · {{value}}"
   }
 }

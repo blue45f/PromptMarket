@@ -1,10 +1,10 @@
-import { routes } from './index';
+import { routes } from './index'
 
 describe('router routes', () => {
   it('uses a static root route with lazy page modules', () => {
-    const root = routes[0];
+    const root = routes[0]
 
-    expect(root.path).toBe('/');
+    expect(root.path).toBe('/')
     expect(root.children?.map((route) => route.path ?? 'index')).toEqual([
       'index',
       'browse',
@@ -14,8 +14,9 @@ describe('router routes', () => {
       'register',
       'users/:username',
       'dashboard',
+      'admin',
       '*',
-    ]);
-    expect(root.children?.every((route) => typeof route.lazy === 'function')).toBe(true);
-  });
-});
+    ])
+    expect(root.children?.every((route) => typeof route.lazy === 'function')).toBe(true)
+  })
+})

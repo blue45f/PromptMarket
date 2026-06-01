@@ -6,12 +6,17 @@ import type {
   CreateReviewInput,
   LoginInput,
   RegisterInput,
+  RevenueSettings,
+  RevenueSettingsHistory,
 } from '@promptmarket/shared'
 import axios from 'axios'
 import { api, getErrorMessage } from '@services/api'
 import {
   listingKey,
   listingsKey,
+  adminRevenueSettingsKey,
+  adminRevenueSettingsHistoryKey,
+  adminRevenueSummaryKey,
   mePurchasesKey,
   meListingsKey,
   meKey,
@@ -23,6 +28,7 @@ import {
 } from './queryKeys'
 import type {
   AuthResponse,
+  AdminRevenueSummary,
   ListingCard,
   ListingDetailResponse,
   ListingFull,
@@ -50,6 +56,7 @@ export function useListings(params: ListingsParams = {}) {
           vendor: params.vendor || undefined,
           technique: params.technique || undefined,
           difficulty: params.difficulty || undefined,
+          signal: params.signal || undefined,
           free: params.free || undefined,
           page: params.page,
           pageSize: params.pageSize,
@@ -82,6 +89,31 @@ export function useRelated(id: string | undefined) {
     queryKey: id ? relatedKey(id) : ['related', '__none__'],
     enabled: !!id,
     queryFn: () => api.get<ListingCard[], ListingCard[]>(`/listings/related/${id}`),
+  })
+}
+
+export function useAdminRevenueSettings() {
+  return useQuery({
+    queryKey: adminRevenueSettingsKey,
+    queryFn: () => api.get<RevenueSettings, RevenueSettings>('/admin/revenue/settings'),
+  })
+}
+
+export function useAdminRevenueSettingsHistory() {
+  return useQuery({
+    queryKey: adminRevenueSettingsHistoryKey,
+    queryFn: () =>
+      api.get<RevenueSettingsHistory, RevenueSettingsHistory>('/admin/revenue/settings/history'),
+  })
+}
+
+export function useAdminRevenueSummary(limit = 10) {
+  return useQuery({
+    queryKey: adminRevenueSummaryKey(limit),
+    queryFn: () =>
+      api.get<AdminRevenueSummary, AdminRevenueSummary>('/admin/revenue/summary', {
+        params: { limit },
+      }),
   })
 }
 
@@ -245,6 +277,24 @@ export function useCreateReview(listingId: string | undefined, slug?: string) {
       if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) })
       if (listingId) void qc.invalidateQueries({ queryKey: reviewsKey(listingId) })
       toast.success(i18n.t('common:toasts.reviewPosted'))
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err))
+    },
+  })
+}
+
+export function useUpdateRevenueSettings() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: Partial<RevenueSettings>) =>
+      api.patch<RevenueSettings, RevenueSettings>('/admin/revenue/settings', {
+        ...input,
+      }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: adminRevenueSettingsKey })
+      void qc.invalidateQueries({ queryKey: ['admin'] })
+      toast.success(i18n.t('admin:settings.saved'))
     },
     onError: (err) => {
       toast.error(getErrorMessage(err))
