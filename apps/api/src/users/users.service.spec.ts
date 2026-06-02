@@ -1,19 +1,25 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { describe, expect, it, vi } from 'vitest';
-import { UsersService } from './users.service';
+import { BadRequestException, NotFoundException } from '@nestjs/common'
+import { describe, expect, it, vi } from 'vitest'
+import { UsersService } from './users.service'
 
-type PrismaArg = ConstructorParameters<typeof UsersService>[0];
+type PrismaArg = ConstructorParameters<typeof UsersService>[0]
 
-function makePrisma(handlers: Partial<{
-  userFindUnique: unknown;
-  userUpdate: unknown;
-  purchaseFindMany: unknown[];
-  listingFindMany: unknown[];
-}> = {}): PrismaArg {
+function makePrisma(
+  handlers: Partial<{
+    userFindUnique: unknown
+    userUpdate: unknown
+    userUpdateMany: { count: number }
+    userFindUniqueOrThrow: unknown
+    purchaseFindMany: unknown[]
+    listingFindMany: unknown[]
+  }> = {}
+): PrismaArg {
   return {
     user: {
       findUnique: vi.fn().mockResolvedValue(handlers.userFindUnique ?? null),
       update: vi.fn().mockResolvedValue(handlers.userUpdate ?? null),
+      updateMany: vi.fn().mockResolvedValue(handlers.userUpdateMany ?? { count: 1 }),
+      findUniqueOrThrow: vi.fn().mockResolvedValue(handlers.userFindUniqueOrThrow ?? null),
     },
     purchase: {
       findMany: vi.fn().mockResolvedValue(handlers.purchaseFindMany ?? []),
@@ -21,16 +27,14 @@ function makePrisma(handlers: Partial<{
     listing: {
       findMany: vi.fn().mockResolvedValue(handlers.listingFindMany ?? []),
     },
-  } as unknown as PrismaArg;
+  } as unknown as PrismaArg
 }
 
 describe('UsersService.getPublicProfile', () => {
   it('throws NotFoundException when the username is unknown', async () => {
-    const svc = new UsersService(makePrisma({ userFindUnique: null }));
-    await expect(svc.getPublicProfile('ghost')).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
-  });
+    const svc = new UsersService(makePrisma({ userFindUnique: null }))
+    await expect(svc.getPublicProfile('ghost')).rejects.toBeInstanceOf(NotFoundException)
+  })
 
   it('omits email + balanceCents from the public shape', async () => {
     const svc = new UsersService(
@@ -46,14 +50,14 @@ describe('UsersService.getPublicProfile', () => {
           createdAt: new Date('2026-05-01T00:00:00Z'),
           listings: [],
         },
-      }),
-    );
-    const out = await svc.getPublicProfile('alex');
-    expect(out).not.toHaveProperty('email');
-    expect(out).not.toHaveProperty('balanceCents');
-    expect(out).not.toHaveProperty('passwordHash');
-    expect(out.username).toBe('alex');
-  });
+      })
+    )
+    const out = await svc.getPublicProfile('alex')
+    expect(out).not.toHaveProperty('email')
+    expect(out).not.toHaveProperty('balanceCents')
+    expect(out).not.toHaveProperty('passwordHash')
+    expect(out.username).toBe('alex')
+  })
 
   it('serializes nested listings with avgRating + author', async () => {
     const svc = new UsersService(
@@ -88,16 +92,16 @@ describe('UsersService.getPublicProfile', () => {
             },
           ],
         },
-      }),
-    );
-    const out = await svc.getPublicProfile('alex');
-    expect(out.listings).toHaveLength(1);
-    expect(out.listings[0].avgRating).toBe(3);
-    expect(out.listings[0].reviewCount).toBe(2);
-    expect(out.listings[0].author).toEqual({ id: 'u1', username: 'alex' });
-    expect(out.listings[0].tags).toEqual(['a', 'b']);
-  });
-});
+      })
+    )
+    const out = await svc.getPublicProfile('alex')
+    expect(out.listings).toHaveLength(1)
+    expect(out.listings[0].avgRating).toBe(3)
+    expect(out.listings[0].reviewCount).toBe(2)
+    expect(out.listings[0].author).toEqual({ id: 'u1', username: 'alex' })
+    expect(out.listings[0].tags).toEqual(['a', 'b'])
+  })
+})
 
 describe('UsersService.topUp', () => {
   it.each([
@@ -106,25 +110,35 @@ describe('UsersService.topUp', () => {
     ['negative', -100],
     ['too large', 100001],
   ])('rejects amountCents (%s)', async (_label, amount) => {
-    const svc = new UsersService(makePrisma());
-    await expect(svc.topUp('u1', amount as number)).rejects.toBeInstanceOf(
-      BadRequestException,
-    );
-  });
+    const svc = new UsersService(makePrisma())
+    await expect(svc.topUp('u1', amount as number)).rejects.toBeInstanceOf(BadRequestException)
+  })
 
-  it('increments the balance via prisma.user.update and returns the new balance', async () => {
-    const prisma = makePrisma({ userUpdate: { balanceCents: 1500 } });
-    const svc = new UsersService(prisma);
-    const out = await svc.topUp('u1', 500);
-    expect(out).toEqual({ balanceCents: 1500 });
-    const updateSpy = (prisma as unknown as { user: { update: ReturnType<typeof vi.fn> } }).user
-      .update;
-    expect(updateSpy).toHaveBeenCalledWith({
-      where: { id: 'u1' },
-      data: { balanceCents: { increment: 500 } },
-    });
-  });
-});
+  it('increments the balance via updateMany and returns the new balance', async () => {
+    const prisma = makePrisma({
+      userUpdateMany: { count: 1 },
+      userFindUniqueOrThrow: { balanceCents: 1500 },
+    })
+    const svc = new UsersService(prisma)
+    const out = await svc.topUp('u1', 500)
+    expect(out).toEqual({ balanceCents: 1500 })
+    const updateManySpy = (prisma as unknown as { user: { updateMany: ReturnType<typeof vi.fn> } })
+      .user.updateMany
+    expect(updateManySpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ id: 'u1' }),
+        data: { balanceCents: { increment: 500 } },
+      })
+    )
+  })
+
+  it('throws BadRequestException when balance cap would be exceeded', async () => {
+    const svc = new UsersService(
+      makePrisma({ userUpdateMany: { count: 0 }, userFindUnique: { id: 'u1' } })
+    )
+    await expect(svc.topUp('u1', 100)).rejects.toBeInstanceOf(BadRequestException)
+  })
+})
 
 describe('UsersService.myListings', () => {
   it('aggregates salesCount + earningsCents from purchases', async () => {
@@ -149,20 +163,16 @@ describe('UsersService.myListings', () => {
             downloads: 0,
             createdAt: new Date(),
             reviews: [],
-            purchases: [
-              { pricePaidCents: 1000 },
-              { pricePaidCents: 1000 },
-              { pricePaidCents: 0 },
-            ],
+            purchases: [{ pricePaidCents: 1000 }, { pricePaidCents: 1000 }, { pricePaidCents: 0 }],
             author: { id: 'u1', username: 'alex' },
           },
         ],
-      }),
-    );
-    const out = await svc.myListings('u1');
-    expect(out[0].salesCount).toBe(3);
-    expect(out[0].earningsCents).toBe(2000);
-  });
+      })
+    )
+    const out = await svc.myListings('u1')
+    expect(out[0].salesCount).toBe(3)
+    expect(out[0].earningsCents).toBe(2000)
+  })
 
   it('returns 0/0 when no purchases yet', async () => {
     const svc = new UsersService(
@@ -190,19 +200,19 @@ describe('UsersService.myListings', () => {
             author: { id: 'u1', username: 'alex' },
           },
         ],
-      }),
-    );
-    const out = await svc.myListings('u1');
-    expect(out[0].salesCount).toBe(0);
-    expect(out[0].earningsCents).toBe(0);
-  });
-});
+      })
+    )
+    const out = await svc.myListings('u1')
+    expect(out[0].salesCount).toBe(0)
+    expect(out[0].earningsCents).toBe(0)
+  })
+})
 
 describe('UsersService.getMe', () => {
   it('throws NotFoundException when the user is gone', async () => {
-    const svc = new UsersService(makePrisma({ userFindUnique: null }));
-    await expect(svc.getMe('u1')).rejects.toBeInstanceOf(NotFoundException);
-  });
+    const svc = new UsersService(makePrisma({ userFindUnique: null }))
+    await expect(svc.getMe('u1')).rejects.toBeInstanceOf(NotFoundException)
+  })
 
   it('returns private shape with email + balanceCents but never passwordHash', async () => {
     const svc = new UsersService(
@@ -217,11 +227,11 @@ describe('UsersService.getMe', () => {
           passwordHash: 'should-never-appear',
           createdAt: new Date(),
         },
-      }),
-    );
-    const out = await svc.getMe('u1');
-    expect(out.email).toBe('a@b.com');
-    expect(out.balanceCents).toBe(4200);
-    expect(out).not.toHaveProperty('passwordHash');
-  });
-});
+      })
+    )
+    const out = await svc.getMe('u1')
+    expect(out.email).toBe('a@b.com')
+    expect(out.balanceCents).toBe(4200)
+    expect(out).not.toHaveProperty('passwordHash')
+  })
+})

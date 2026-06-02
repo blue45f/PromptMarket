@@ -302,9 +302,9 @@ export type UpdateListingInput = z.infer<typeof UpdateListingSchema>
 export const ListingQuerySchema = z.object({
   type: ListingType.optional(),
   category: Category.optional(),
-  q: z.string().optional(),
+  q: z.string().max(200).optional(),
   model: ModelSlug.optional(),
-  vendor: z.string().optional(),
+  vendor: z.string().max(50).optional(),
   technique: PromptTechnique.optional(),
   difficulty: Difficulty.optional(),
   signal: ListingSignalField.default([]),

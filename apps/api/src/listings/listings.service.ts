@@ -39,6 +39,18 @@ function addAnd(where: Record<string, any>, clause: Record<string, any>) {
   where.AND = [...(Array.isArray(where.AND) ? where.AND : []), clause]
 }
 
+/** Exact-token match for a slug stored in a comma-separated models field. */
+function modelSlugMatch(slug: string): Record<string, any> {
+  return {
+    OR: [
+      { models: { equals: slug } },
+      { models: { startsWith: `${slug},` } },
+      { models: { endsWith: `,${slug}` } },
+      { models: { contains: `,${slug},` } },
+    ],
+  }
+}
+
 const FRESH_SIGNAL_DAYS = 90
 const DAY_MS = 86_400_000
 
@@ -88,14 +100,14 @@ export class ListingsService {
     if (query.category) where.category = query.category
     if (query.technique) where.technique = query.technique
     if (query.difficulty) where.difficulty = query.difficulty
-    if (query.model) addAnd(where, { models: { contains: query.model } })
+    if (query.model) addAnd(where, modelSlugMatch(query.model))
     if (query.vendor) {
       const slugs = slugsForVendor(query.vendor)
       if (slugs.length === 0) {
         // unknown vendor → guarantee empty result set
         where.id = '__no_match__'
       } else {
-        where.OR = (where.OR ?? []).concat(slugs.map((s) => ({ models: { contains: s } })))
+        where.OR = (where.OR ?? []).concat(slugs.map(modelSlugMatch))
       }
     }
     if (query.q) {

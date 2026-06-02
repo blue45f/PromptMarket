@@ -457,7 +457,7 @@ export default function ListingDetailPage() {
                     to={`/users/${listing.author?.username ?? 'unknown'}`}
                     className="font-medium text-volt-700 hover:underline dark:text-volt-300"
                   >
-                    @{listing.author?.username ?? 'unknown'}
+                    @{listing.author?.username ?? t('labels.unknownAuthor', { ns: 'common' })}
                   </Link>{' '}
                   ·{' '}
                   <span title={formatDate(listing.createdAt)}>
@@ -856,9 +856,7 @@ export default function ListingDetailPage() {
                                 rows={3}
                                 aria-label={t('reviews.replyLabel')}
                                 aria-invalid={replyError ? true : undefined}
-                                aria-describedby={
-                                  replyError ? `${replyHelpId} ${replyErrorId}` : replyHelpId
-                                }
+                                aria-describedby={replyError ? replyErrorId : replyHelpId}
                                 placeholder={t('reviews.replyPlaceholder')}
                                 className="mt-2 min-h-24 w-full resize-y rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm leading-relaxed text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500 disabled:cursor-not-allowed disabled:opacity-70"
                                 disabled={replySubmitting}
@@ -980,7 +978,11 @@ export default function ListingDetailPage() {
                     </span>
                   </button>
                   <span className="sr-only" role="status" aria-live="polite">
-                    {shareState !== 'idle' ? t('sidebar.shared') : ''}
+                    {shareState === 'shared'
+                      ? t('sidebar.shared')
+                      : shareState === 'copied'
+                        ? t('sidebar.linkCopied')
+                        : ''}
                   </span>
                 </div>
               </div>
@@ -1071,7 +1073,7 @@ export default function ListingDetailPage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="font-display text-[0.95rem] font-semibold text-ink dark:text-bone truncate tracking-tight">
-                    @{listing.author?.username ?? 'unknown'}
+                    @{listing.author?.username ?? t('labels.unknownAuthor', { ns: 'common' })}
                   </p>
                   <p className="text-[0.7rem] font-mono uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
                     {t('sidebar.maker')}

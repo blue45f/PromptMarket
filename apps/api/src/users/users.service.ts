@@ -76,6 +76,8 @@ export class UsersService {
     }
   }
 
+  private static readonly MAX_BALANCE_CENTS = 1_000_000_00 // $1,000,000
+
   async topUp(userId: string, amountCents: number) {
     if (!Number.isInteger(amountCents) || amountCents <= 0) {
       throw new BadRequestException('amountCents must be a positive integer')
@@ -83,9 +85,24 @@ export class UsersService {
     if (amountCents > 100000) {
       throw new BadRequestException('amountCents too large')
     }
-    const user = await this.prisma.user.update({
-      where: { id: userId },
+    const result = await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        balanceCents: { lte: UsersService.MAX_BALANCE_CENTS - amountCents },
+      },
       data: { balanceCents: { increment: amountCents } },
+    })
+    if (result.count === 0) {
+      const exists = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true },
+      })
+      if (!exists) throw new NotFoundException('User not found')
+      throw new BadRequestException('Balance cap exceeded')
+    }
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { balanceCents: true },
     })
     return { balanceCents: user.balanceCents }
   }
