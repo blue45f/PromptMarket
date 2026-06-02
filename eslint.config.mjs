@@ -99,7 +99,11 @@ export default defineConfig([
   // ── Test files — relax fast-refresh & allow test-runner globals ──────────
   {
     files: ['**/*.{test,spec}.{ts,tsx}', 'apps/web/src/test/**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: { ...globals.vitest },
+    },
     rules: {
+      'react-hooks/rules-of-hooks': 'off',
       'react-refresh/only-export-components': 'off',
     },
   },

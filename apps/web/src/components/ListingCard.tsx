@@ -83,6 +83,7 @@ const ListingCard = memo(function ListingCard({
         'tilt-host card-perf relative',
         fixedWidth && 'w-[280px] sm:w-[300px] shrink-0 snap-start',
         isFeatured && 'lg:row-span-2',
+        isWide && 'cq',
         className
       )}
     >
@@ -94,8 +95,7 @@ const ListingCard = memo(function ListingCard({
           'tilt-inner group relative isolate block overflow-hidden rounded-[1.4rem] focus-volt',
           'surface-card lift-on-hover',
           // Wide lead: cover beside body once the card is wide enough to earn it.
-          isWide &&
-            'cq @lg:grid @lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] @lg:items-stretch',
+          isWide && '@lg:grid @lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] @lg:items-stretch',
           'hover:border-volt-400/70 dark:hover:border-volt-500/40',
           'focus-visible:border-volt-400/70 dark:focus-visible:border-volt-500/40',
           'hover:shadow-[0_28px_60px_-32px_oklch(0.65_0.18_125/0.45)]',
