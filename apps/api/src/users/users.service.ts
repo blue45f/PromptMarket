@@ -151,10 +151,7 @@ export class UsersService {
     })
     return listings.map((l) => {
       const salesCount = l.purchases.length
-      const earningsCents = l.purchases.reduce((sum, p) => {
-        if (typeof p.sellerNetCents === 'number') return sum + p.sellerNetCents
-        return sum + p.pricePaidCents
-      }, 0)
+      const earningsCents = l.purchases.reduce((sum, p) => sum + p.sellerNetCents, 0)
       return {
         ...this.serializeListing(l),
         author: l.author,

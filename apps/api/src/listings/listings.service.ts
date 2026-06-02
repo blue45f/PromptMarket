@@ -184,7 +184,7 @@ export class ListingsService {
         take: pageSize,
         include: {
           author: { select: { id: true, username: true } },
-          reviews: true,
+          reviews: { select: { rating: true } },
         },
       }),
     ])
@@ -289,7 +289,7 @@ export class ListingsService {
       take: safeLimit,
       include: {
         author: { select: { id: true, username: true } },
-        reviews: true,
+        reviews: { select: { rating: true } },
       },
     })
     return { items: items.map((l) => this.serializeCard(l)) }
@@ -341,7 +341,7 @@ export class ListingsService {
       },
       include: {
         author: { select: { id: true, username: true } },
-        reviews: true,
+        reviews: { select: { rating: true } },
       },
     })
     return this.serializeCard(listing)
@@ -376,7 +376,7 @@ export class ListingsService {
       data,
       include: {
         author: { select: { id: true, username: true } },
-        reviews: true,
+        reviews: { select: { rating: true } },
       },
     })
     return this.serializeCard(updated)

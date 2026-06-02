@@ -100,4 +100,5 @@ model Review {
   replies     ReviewReply[]
 
   @@unique([userId, listingId])
+  @@index([listingId])
 }

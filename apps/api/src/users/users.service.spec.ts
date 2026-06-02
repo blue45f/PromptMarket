@@ -168,7 +168,11 @@ describe('UsersService.myListings', () => {
             downloads: 0,
             createdAt: new Date(),
             reviews: [],
-            purchases: [{ pricePaidCents: 1000 }, { pricePaidCents: 1000 }, { pricePaidCents: 0 }],
+            purchases: [
+              { pricePaidCents: 1000, sellerNetCents: 830 },
+              { pricePaidCents: 1000, sellerNetCents: 830 },
+              { pricePaidCents: 0, sellerNetCents: 0 },
+            ],
             author: { id: 'u1', username: 'alex' },
           },
         ],
@@ -176,7 +180,7 @@ describe('UsersService.myListings', () => {
     )
     const out = await svc.myListings('u1')
     expect(out[0].salesCount).toBe(3)
-    expect(out[0].earningsCents).toBe(2000)
+    expect(out[0].earningsCents).toBe(1660)
   })
 
   it('returns 0/0 when no purchases yet', async () => {
