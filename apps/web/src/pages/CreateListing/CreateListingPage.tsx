@@ -649,6 +649,22 @@ export default function CreateListingPage() {
                 <div
                   role="radiogroup"
                   className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep"
+                  onKeyDown={(e) => {
+                    const idx = DIFFICULTIES.indexOf(v.difficulty)
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                      e.preventDefault()
+                      setValue('difficulty', DIFFICULTIES[(idx + 1) % DIFFICULTIES.length], {
+                        shouldDirty: true,
+                      })
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                      e.preventDefault()
+                      setValue(
+                        'difficulty',
+                        DIFFICULTIES[(idx - 1 + DIFFICULTIES.length) % DIFFICULTIES.length],
+                        { shouldDirty: true }
+                      )
+                    }
+                  }}
                 >
                   {DIFFICULTIES.map((d) => {
                     const active = v.difficulty === d

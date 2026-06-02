@@ -27,7 +27,8 @@
     "copied": "Copied",
     "downloadMd": "Download .md",
     "noPreview": "*No preview available.*",
-    "noBody": "No content yet."
+    "noBody": "No content yet.",
+    "copyFailed": "Could not copy to clipboard"
   },
   "paywall": {
     "unlock": "🔒 Unlock the full text",

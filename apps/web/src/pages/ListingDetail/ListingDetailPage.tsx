@@ -271,7 +271,7 @@ export default function ListingDetailPage() {
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
       copiedTimerRef.current = setTimeout(() => setCopied(false), 1500)
     } catch {
-      /* ignore */
+      toast.error(t('body.copyFailed'))
     }
   }
 

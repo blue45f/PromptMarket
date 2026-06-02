@@ -27,7 +27,8 @@
     "copied": "복사됨",
     "downloadMd": ".md 다운로드",
     "noPreview": "*미리보기를 제공하지 않아요.*",
-    "noBody": "아직 본문이 없어요."
+    "noBody": "아직 본문이 없어요.",
+    "copyFailed": "클립보드에 복사할 수 없어요"
   },
   "paywall": {
     "unlock": "🔒 전체 본문 잠금 해제",
