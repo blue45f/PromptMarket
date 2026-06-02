@@ -21,9 +21,9 @@ import type { ListingCard, ListingFull } from '@promptmarket/shared'
 
 export interface User {
   id: string
-  email?: string
+  email: string
   username: string
-  balanceCents?: number
+  balanceCents: number
   isAdmin?: boolean
   bio?: string | null
   avatarUrl?: string | null
