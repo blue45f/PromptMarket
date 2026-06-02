@@ -62,7 +62,9 @@
     "anyModel": "모델 비종속",
     "modelsPlus_one": "{{models}} 외 {{count}}개",
     "modelsPlus_other": "{{models}} 외 {{count}}개",
+    "downloads_one": "다운로드 {{count}}회",
     "downloads_other": "다운로드 {{count}}회",
+    "reviews_one": "리뷰 {{count}}개",
     "reviews_other": "리뷰 {{count}}개",
     "rows": {
       "item": "항목",

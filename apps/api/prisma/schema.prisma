@@ -46,6 +46,10 @@ model Listing {
   updatedAt    DateTime   @updatedAt
   purchases    Purchase[]
   reviews      Review[]
+
+  @@index([authorId])
+  @@index([createdAt])
+  @@index([downloads, createdAt])
 }
 
 model Purchase {

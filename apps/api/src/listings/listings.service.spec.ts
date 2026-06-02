@@ -163,7 +163,8 @@ describe('ListingsService.update / remove ownership', () => {
       findUnique: vi.fn().mockResolvedValue({ id: 'l1', authorId: 'author-1' }),
       delete: vi.fn().mockResolvedValue({ id: 'l1' }),
     }
-    const prisma = { listing, review, purchase } as unknown as PrismaMock
+    const $transaction = vi.fn().mockImplementation(async (ops: unknown[]) => Promise.all(ops))
+    const prisma = { listing, review, purchase, $transaction } as unknown as PrismaMock
     const svc = new ListingsService(prisma)
     await expect(svc.remove('author-1', 'l1')).resolves.toEqual({ ok: true })
     expect(review.deleteMany).toHaveBeenCalledWith({

@@ -133,7 +133,7 @@ describe('<AdminPage />', () => {
       error: null,
     })
     ;(useUpdateRevenueSettings as unknown as Mock).mockReturnValue({
-      mutateAsync: updateSpy,
+      mutate: updateSpy,
       isPending: false,
     })
   })
@@ -210,7 +210,7 @@ describe('<AdminPage />', () => {
     expect(within(platformDeltaCard as HTMLElement).getByText('+$2.70')).toBeTruthy()
   })
 
-  it('calls mutateAsync when fee changes and Save is clicked', () => {
+  it('calls mutate when fee changes and Save is clicked', () => {
     updateSpy.mockResolvedValue({
       ...settings,
       platformFeePercent: 20,

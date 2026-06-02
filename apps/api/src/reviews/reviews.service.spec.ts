@@ -198,8 +198,26 @@ describe('ReviewsService.createReply', () => {
     ).rejects.toBeInstanceOf(BadRequestException)
   })
 
+  it('throws ForbiddenException when caller is neither author nor buyer', async () => {
+    const svc = new ReviewsService(
+      makePrisma({
+        listing: { id: 'listing-1', authorId: 'other-user' },
+        purchase: null,
+        existingReview: { id: 'review-1', listingId: 'listing-1' },
+      })
+    )
+    await expect(
+      svc.createReply('u1', 'listing-1', 'review-1', { body: '좋은 리뷰네요' })
+    ).rejects.toBeInstanceOf(ForbiddenException)
+  })
+
   it('throws NotFoundException when the parent review does not exist', async () => {
-    const svc = new ReviewsService(makePrisma({ existingReview: null }))
+    const svc = new ReviewsService(
+      makePrisma({
+        listing: { id: 'listing-1', authorId: 'u1' }, // caller is author → no purchase check
+        existingReview: null,
+      })
+    )
     await expect(
       svc.createReply('u1', 'listing-1', 'review-1', { body: '좋은 리뷰네요' })
     ).rejects.toBeInstanceOf(NotFoundException)
@@ -208,6 +226,8 @@ describe('ReviewsService.createReply', () => {
   it('persists a reply for an existing review and returns the public shape', async () => {
     const createdAt = new Date('2026-06-01T10:00:00Z')
     const prisma = makePrisma({
+      listing: { id: 'listing-1', authorId: 'other-user' }, // caller is NOT author
+      purchase: { id: 'p1', userId: 'u1', listingId: 'listing-1' }, // but is a buyer
       existingReview: { id: 'review-1', listingId: 'listing-1' },
       createdReply: {
         id: 'reply-1',

@@ -18,7 +18,29 @@ interface MockOptions {
 }
 
 function makePrisma(opts: MockOptions = {}): PrismaMock {
-  const $transaction = vi.fn().mockImplementation(async (ops: unknown[]) => {
+  const tx = {
+    user: {
+      updateMany: vi.fn().mockImplementation(async () => {
+        const buyer = opts.buyer as { balanceCents: number } | null | undefined
+        const priceCents = (opts.listing as { priceCents?: number } | null)?.priceCents ?? 0
+        const hasFunds = buyer != null && buyer.balanceCents >= priceCents
+        return { count: hasFunds ? 1 : 0 }
+      }),
+      update: vi.fn().mockResolvedValue({}),
+    },
+    purchase: {
+      create: vi.fn().mockResolvedValue(opts.createdPurchase ?? null),
+    },
+    listing: {
+      update: vi.fn().mockResolvedValue({}),
+    },
+  }
+
+  const $transaction = vi.fn().mockImplementation(async (opsOrCallback: unknown) => {
+    if (typeof opsOrCallback === 'function') {
+      return (opsOrCallback as (t: typeof tx) => Promise<unknown>)(tx)
+    }
+    const ops = opsOrCallback as unknown[]
     const created = opts.createdPurchase ?? null
     return ops.map((_op, index) => (index === 0 ? created : undefined))
   })
@@ -110,14 +132,14 @@ describe('PurchasesService.purchase', () => {
     ).not.toHaveBeenCalled()
   })
 
-  it('rejects paid purchase when buyer is missing', async () => {
+  it('rejects paid purchase when buyer has no balance record', async () => {
     const svc = new PurchasesService(
       makePrisma({
         listing: { id: 'l1', authorId: 'author-1', priceCents: 1000 },
         buyer: null,
       })
     )
-    await expect(svc.purchase('u1', 'l1')).rejects.toBeInstanceOf(NotFoundException)
+    await expect(svc.purchase('u1', 'l1')).rejects.toBeInstanceOf(BadRequestException)
   })
 
   it('rejects paid purchase on insufficient balance', async () => {
@@ -166,9 +188,8 @@ describe('PurchasesService.purchase', () => {
       },
       body: 'PAID BODY',
     })
-    const tx = (prisma as unknown as { $transaction: ReturnType<typeof vi.fn> }).$transaction
-    expect(tx).toHaveBeenCalledTimes(1)
-    expect(tx.mock.calls[0][0]).toHaveLength(4)
+    const txSpy = (prisma as unknown as { $transaction: ReturnType<typeof vi.fn> }).$transaction
+    expect(txSpy).toHaveBeenCalledTimes(1)
   })
 
   it('uses premium fee when gross amount exceeds threshold', async () => {

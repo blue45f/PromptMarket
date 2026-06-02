@@ -111,6 +111,21 @@ export class ReviewsService {
       throw new BadRequestException('reply body must be 1-1000 characters')
     }
 
+    const listing = await this.prisma.listing.findUnique({
+      where: { id: listingId },
+      select: { authorId: true },
+    })
+    if (!listing) throw new NotFoundException('Listing not found')
+
+    const isAuthor = listing.authorId === userId
+    if (!isAuthor) {
+      const purchase = await this.prisma.purchase.findUnique({
+        where: { userId_listingId: { userId, listingId } },
+        select: { id: true },
+      })
+      if (!purchase) throw new ForbiddenException('Only listing authors and buyers may reply')
+    }
+
     const review = await this.prisma.review.findFirst({
       where: { id: reviewId, listingId },
       select: { id: true },
