@@ -16,6 +16,9 @@
   },
   "empty": {
     "title": "No work published yet",
-    "description": "When this maker ships their first drop, it'll show up here."
+    "description": "When this maker ships their first drop, it'll show up here.",
+    "ownTitle": "Ship your first drop",
+    "ownDescription": "Share a prompt, skill, or agent — and let other makers build with your work.",
+    "createCta": "Create a listing"
   }
 }

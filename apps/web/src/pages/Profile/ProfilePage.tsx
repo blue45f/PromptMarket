@@ -1,9 +1,10 @@
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserProfile } from '@features/marketplace/queries'
 import { getErrorMessage } from '@services/api'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { useSpotlight } from '@hooks/useSpotlight'
+import { useAuthStore } from '@store/auth'
 import ListingCard from '@components/ListingCard'
 import { SkeletonGrid } from '@components/SkeletonCard'
 import EmptyState from '@components/EmptyState'
@@ -12,6 +13,7 @@ export default function ProfilePage() {
   const { t } = useTranslation('profile')
   const { username } = useParams<{ username: string }>()
   const { data, isPending, error } = useUserProfile(username)
+  const { user: currentUser } = useAuthStore()
   const spotlightRef = useSpotlight<HTMLElement>()
 
   // The API may return the profile flat or under a `user` key; normalise.
@@ -121,7 +123,23 @@ export default function ProfilePage() {
           </div>
         </div>
         {listings.length === 0 ? (
-          <EmptyState emoji="🪺" title={t('empty.title')} description={t('empty.description')} />
+          currentUser?.username === username ? (
+            <EmptyState
+              emoji="🪺"
+              title={t('empty.ownTitle')}
+              description={t('empty.ownDescription')}
+              action={
+                <Link
+                  to="/create"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-volt-500 text-ink font-semibold text-sm hover:bg-volt-400 motion-safe:transition ease-expo focus-volt"
+                >
+                  {t('empty.createCta')}
+                </Link>
+              }
+            />
+          ) : (
+            <EmptyState emoji="🪺" title={t('empty.title')} description={t('empty.description')} />
+          )
         ) : (
           <div className="cards-fluid">
             {listings.map((l) => (
