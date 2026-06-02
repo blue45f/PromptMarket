@@ -34,7 +34,7 @@ export default function ModelTabs() {
   const { t } = useTranslation('home')
   const [active, setActive] = useState<string>(FAMILY_TABS[0].key)
   const vendor = pickVendorForFamily(active)
-  const { data, isPending, isError, refetch } = useListings({
+  const { data, isPending, isFetching, isError, refetch } = useListings({
     vendor: active === 'Tool' ? undefined : vendor,
     model: active === 'Tool' ? 'claude-code' : undefined,
     pageSize: 4,
@@ -155,8 +155,9 @@ export default function ModelTabs() {
             <p>{t('modelTabs.error')}</p>
             <button
               type="button"
-              onClick={() => refetch()}
-              className="mt-2 text-volt-700 dark:text-volt-400 underline"
+              onClick={() => void refetch()}
+              disabled={isFetching}
+              className="mt-2 text-volt-700 dark:text-volt-400 underline disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {t('common:retry')}
             </button>

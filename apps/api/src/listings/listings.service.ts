@@ -149,7 +149,7 @@ export class ListingsService {
         orderBy: [{ downloads: 'desc' }, { createdAt: 'desc' }],
         include: {
           author: { select: { id: true, username: true } },
-          reviews: true,
+          reviews: { select: { rating: true } },
         },
       })
       const scored = all.map((l) => {

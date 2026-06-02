@@ -31,6 +31,7 @@ function makePrisma(opts: MockOptions = {}): PrismaMock {
         const hasFunds = buyer != null && buyer.balanceCents >= priceCents
         return { count: hasFunds ? 1 : 0 }
       }),
+      findUnique: vi.fn().mockImplementation(async () => opts.buyer ?? null),
       update: vi.fn().mockImplementation(async () => {
         if (opts.txAuthorUpdateThrowsP2025) {
           throw new Prisma.PrismaClientKnownRequestError('Record not found', {
@@ -193,14 +194,14 @@ describe('PurchasesService.purchase', () => {
     expect(createData.grossAmountCents).toBe(1500)
   })
 
-  it('rejects paid purchase when buyer has no balance record', async () => {
+  it('throws NotFoundException when buyer account has been deleted before the transaction', async () => {
     const svc = new PurchasesService(
       makePrisma({
         listing: { id: 'l1', authorId: 'author-1', priceCents: 1000 },
-        buyer: null,
+        buyer: null, // simulates a user row that no longer exists
       })
     )
-    await expect(svc.purchase('u1', 'l1')).rejects.toBeInstanceOf(BadRequestException)
+    await expect(svc.purchase('u1', 'l1')).rejects.toBeInstanceOf(NotFoundException)
   })
 
   it('rejects paid purchase on insufficient balance', async () => {

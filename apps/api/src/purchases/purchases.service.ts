@@ -212,7 +212,15 @@ export class PurchasesService {
           where: { id: userId, balanceCents: { gte: currentPrice } },
           data: { balanceCents: { decrement: currentPrice } },
         })
-        if (balanceUpdate.count === 0) throw new BadRequestException('Insufficient balance')
+        if (balanceUpdate.count === 0) {
+          // count=0 means either the user row is gone (deleted between auth and tx) or funds are low.
+          const userExists = await tx.user.findUnique({
+            where: { id: userId },
+            select: { id: true },
+          })
+          if (!userExists) throw new NotFoundException('User not found')
+          throw new BadRequestException('Insufficient balance')
+        }
         const newPurchase = await tx.purchase.create({
           data: {
             userId,

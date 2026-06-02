@@ -44,7 +44,7 @@ export class UsersService {
       where: { username },
       include: {
         listings: {
-          include: { reviews: true },
+          include: { reviews: { select: { rating: true } } },
           orderBy: { createdAt: 'desc' },
         },
       },
@@ -117,7 +117,7 @@ export class UsersService {
       include: {
         listing: {
           include: {
-            reviews: true,
+            reviews: { select: { rating: true } },
             author: { select: { id: true, username: true } },
           },
         },
@@ -139,7 +139,7 @@ export class UsersService {
       where: { authorId: userId },
       orderBy: { createdAt: 'desc' },
       include: {
-        reviews: true,
+        reviews: { select: { rating: true } },
         purchases: {
           select: {
             pricePaidCents: true,
