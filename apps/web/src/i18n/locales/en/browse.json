@@ -5,6 +5,14 @@
     "search": "Results for \"{{q}}\"",
     "category": "{{category}} catalog"
   },
+  "hero": {
+    "lede": "Prompts, skills, MCP servers, agents, and rules, filtered to what ships."
+  },
+  "active": {
+    "label": "Applied",
+    "count_one": "{{count}} active",
+    "count_other": "{{count}} active"
+  },
   "meta": {
     "titleSearch": "Results for \"{{q}}\"",
     "titleCategory": "{{category}} catalog",
@@ -144,7 +152,14 @@
     "browseAll": "Full catalog",
     "clearAll": "Clear all filters",
     "activeHeading": "Active filters",
-    "removeRow": "Remove ✕"
+    "removeRow": "Remove ✕",
+    "suggestHeading": "Or start from",
+    "suggest": {
+      "free": "Free drops",
+      "skills": "Claude Code skills",
+      "mcp": "MCP servers",
+      "trending": "Trending now"
+    }
   },
   "modelTabs": {
     "error": "Could not load listings."

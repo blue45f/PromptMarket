@@ -254,6 +254,15 @@ export default function BrowsePage() {
   const appliedCount = activeCount + signalFilters.length + (vendor ? 1 : 0)
   const fmt = useMemo(() => new Intl.NumberFormat(activeIntlLocale()), [i18n.resolvedLanguage])
 
+  // Result-density rhythm: on the first page of a non-search browse, promote the
+  // top listing to a full-width "lead drop" so the grid isn't a uniform wall of
+  // identical cards. Text searches keep the even grid — when you're hunting a
+  // keyword, uniform scannability beats editorial flourish. Needs >=4 items so a
+  // lone lead never strands a near-empty grid beneath it.
+  const showLead = !q && page === 1 && items.length >= 4
+  const leadItem = showLead ? items[0] : null
+  const gridItems = showLead ? items.slice(1) : items
+
   const toggleCompare = useCallback((listing: ListingCardType) => {
     setCompareItems((current) => {
       if (current.some((item) => item.id === listing.id)) {
@@ -363,25 +372,58 @@ export default function BrowsePage() {
 
   return (
     <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
-      <header className="space-y-2 mb-7">
-        <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
-          <span aria-hidden className="w-6 h-px bg-volt-500" />
-          {t('eyebrow')}
-        </p>
-        <h1
-          className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.035em] display-tight"
-          style={{ fontSize: 'var(--text-display-md)' }}
-        >
-          {q
-            ? t('heading.search', { q })
-            : filters.category
-              ? t('heading.category', {
-                  category: t('home:categories.labels.' + filters.category, {
-                    defaultValue: filters.category,
-                  }),
-                })
-              : t('heading.default')}
-        </h1>
+      <header className="relative isolate overflow-hidden rounded-[1.75rem] surface-card mb-7 px-[clamp(1.5rem,3.5vw,2.75rem)] py-[clamp(1.5rem,3vw,2.25rem)]">
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              'radial-gradient(at 12% 0%, oklch(0.92 0.18 122 / 0.32) 0, transparent 52%), radial-gradient(at 92% 120%, oklch(0.66 0.24 305 / 0.14) 0, transparent 55%)',
+          }}
+        />
+        <div className="grain-layer" aria-hidden style={{ opacity: 0.05 }} />
+        <div className="flex flex-col gap-x-10 gap-y-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-2 min-w-0">
+            <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
+              <span aria-hidden className="w-6 h-px bg-volt-500" />
+              {t('eyebrow')}
+            </p>
+            <h1
+              className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.035em] display-tight"
+              style={{ fontSize: 'var(--text-display-md)' }}
+            >
+              {q
+                ? t('heading.search', { q })
+                : filters.category
+                  ? t('heading.category', {
+                      category: t('home:categories.labels.' + filters.category, {
+                        defaultValue: filters.category,
+                      }),
+                    })
+                  : t('heading.default')}
+            </h1>
+            {!q && !filters.category && (
+              <p className="text-ink-soft dark:text-bone-soft text-[0.95rem] leading-relaxed max-w-[46ch] [word-break:keep-all]">
+                {t('hero.lede')}
+              </p>
+            )}
+          </div>
+          {!isPending && !error && (
+            <p
+              className="shrink-0 self-start lg:self-end inline-flex items-baseline gap-2 font-mono text-[0.78rem] text-ink-mute dark:text-bone-mute"
+              aria-hidden
+            >
+              <span
+                aria-hidden
+                className="inline-block w-1.5 h-1.5 rounded-full bg-volt-500 volt-pulse translate-y-[-0.1em]"
+              />
+              {t('results.count', {
+                count: effectiveTotal,
+                formatted: fmt.format(effectiveTotal),
+              })}
+            </p>
+          )}
+        </div>
       </header>
 
       <div className="flex items-center justify-between mb-7 flex-wrap gap-3">
@@ -460,81 +502,91 @@ export default function BrowsePage() {
             </div>
           )}
           {(activeCount > 0 || vendor || signalFilters.length > 0) && (
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              {vendor && (
-                <Chip
-                  label={vendor}
-                  onRemove={() => updateExtras({ vendor: undefined, page: 1 })}
-                />
-              )}
-              {filters.types.map((typeVal) => (
-                <Chip
-                  key={`type-${typeVal}`}
-                  label={t('common:types.' + typeVal, { defaultValue: typeVal })}
-                  onRemove={() =>
-                    commit(
-                      { ...filters, types: filters.types.filter((x) => x !== typeVal) },
-                      { page: 1 }
-                    )
-                  }
-                />
-              ))}
-              {filters.models.map((m) => (
-                <Chip
-                  key={`model-${m}`}
-                  label={modelLabel(m)}
-                  onRemove={() =>
-                    commit(
-                      { ...filters, models: filters.models.filter((x) => x !== m) },
-                      { page: 1 }
-                    )
-                  }
-                />
-              ))}
-              {filters.technique && (
-                <Chip
-                  label={t('common:technique.' + filters.technique + '.label', {
-                    defaultValue: filters.technique,
-                  })}
-                  onRemove={() => commit({ ...filters, technique: '' }, { page: 1 })}
-                />
-              )}
-              {filters.difficulty && (
-                <Chip
-                  label={t('common:difficulty.' + filters.difficulty, {
-                    defaultValue: filters.difficulty,
-                  })}
-                  onRemove={() => commit({ ...filters, difficulty: '' }, { page: 1 })}
-                />
-              )}
-              {filters.category && (
-                <Chip
-                  label={t('home:categories.labels.' + filters.category, {
-                    defaultValue: filters.category,
-                  })}
-                  onRemove={() => commit({ ...filters, category: '' }, { page: 1 })}
-                />
-              )}
-              {filters.price !== 'all' && (
-                <Chip
-                  label={t('panel.price.' + filters.price)}
-                  onRemove={() => commit({ ...filters, price: 'all' }, { page: 1 })}
-                />
-              )}
-              {signalFilters.map((signal) => (
-                <Chip
-                  key={`signal-${signal}`}
-                  label={t('signals.options.' + signal)}
-                  onRemove={() => setSignals(signalFilters.filter((s) => s !== signal))}
-                />
-              ))}
-              <button
-                type="button"
-                onClick={reset}
-                className="text-[0.78rem] font-medium text-volt-700 dark:text-volt-300 hover:underline underline-offset-[3px] focus-volt rounded"
-              >
-                {t('chips.reset')}
-              </button>
+            <div className="mb-4 rounded-2xl border border-volt-200/70 dark:border-volt-800/50 bg-volt-50/60 dark:bg-volt-900/15 px-3.5 py-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mr-0.5">
+                  <span aria-hidden className="w-5 h-px bg-volt-500" />
+                  {t('active.label')}
+                  <span className="text-volt-800 dark:text-volt-200 tabular-nums">
+                    {t('active.count', { count: appliedCount })}
+                  </span>
+                </span>
+                {vendor && (
+                  <Chip
+                    label={vendor}
+                    onRemove={() => updateExtras({ vendor: undefined, page: 1 })}
+                  />
+                )}
+                {filters.types.map((typeVal) => (
+                  <Chip
+                    key={`type-${typeVal}`}
+                    label={t('common:types.' + typeVal, { defaultValue: typeVal })}
+                    onRemove={() =>
+                      commit(
+                        { ...filters, types: filters.types.filter((x) => x !== typeVal) },
+                        { page: 1 }
+                      )
+                    }
+                  />
+                ))}
+                {filters.models.map((m) => (
+                  <Chip
+                    key={`model-${m}`}
+                    label={modelLabel(m)}
+                    onRemove={() =>
+                      commit(
+                        { ...filters, models: filters.models.filter((x) => x !== m) },
+                        { page: 1 }
+                      )
+                    }
+                  />
+                ))}
+                {filters.technique && (
+                  <Chip
+                    label={t('common:technique.' + filters.technique + '.label', {
+                      defaultValue: filters.technique,
+                    })}
+                    onRemove={() => commit({ ...filters, technique: '' }, { page: 1 })}
+                  />
+                )}
+                {filters.difficulty && (
+                  <Chip
+                    label={t('common:difficulty.' + filters.difficulty, {
+                      defaultValue: filters.difficulty,
+                    })}
+                    onRemove={() => commit({ ...filters, difficulty: '' }, { page: 1 })}
+                  />
+                )}
+                {filters.category && (
+                  <Chip
+                    label={t('home:categories.labels.' + filters.category, {
+                      defaultValue: filters.category,
+                    })}
+                    onRemove={() => commit({ ...filters, category: '' }, { page: 1 })}
+                  />
+                )}
+                {filters.price !== 'all' && (
+                  <Chip
+                    label={t('panel.price.' + filters.price)}
+                    onRemove={() => commit({ ...filters, price: 'all' }, { page: 1 })}
+                  />
+                )}
+                {signalFilters.map((signal) => (
+                  <Chip
+                    key={`signal-${signal}`}
+                    label={t('signals.options.' + signal)}
+                    onRemove={() => setSignals(signalFilters.filter((s) => s !== signal))}
+                  />
+                ))}
+                <span aria-hidden className="mx-0.5 h-4 w-px bg-volt-200 dark:bg-volt-800/70" />
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="text-[0.78rem] font-medium text-volt-700 dark:text-volt-300 hover:underline underline-offset-[3px] focus-volt rounded"
+                >
+                  {t('chips.reset')}
+                </button>
+              </div>
             </div>
           )}
 
@@ -568,13 +620,35 @@ export default function BrowsePage() {
             <SkeletonGrid count={8} />
           ) : items.length ? (
             <>
-              <div className="cards-fluid">
-                {items.map((l) => (
-                  <div key={l.id} data-browse-card>
-                    <ListingCard listing={l} highlight={q} compare={comparePropsMap.get(l.id)} />
+              {leadItem ? (
+                <>
+                  {/* Lead drop — a full-width editorial card breaks the uniform
+                      grid so Browse keeps Home's rhythm on the first page.
+                      Search results stay uniform (scannability over flourish). */}
+                  <div className="mb-[var(--space-gap)]" data-browse-card>
+                    <ListingCard
+                      listing={leadItem}
+                      variant="wide"
+                      compare={comparePropsMap.get(leadItem.id)}
+                    />
                   </div>
-                ))}
-              </div>
+                  <div className="cards-fluid">
+                    {gridItems.map((l) => (
+                      <div key={l.id} data-browse-card>
+                        <ListingCard listing={l} compare={comparePropsMap.get(l.id)} />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="cards-fluid">
+                  {items.map((l) => (
+                    <div key={l.id} data-browse-card>
+                      <ListingCard listing={l} highlight={q} compare={comparePropsMap.get(l.id)} />
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {effectiveTotalPages > 1 && (
                 <nav aria-label={t('pagination.label')}>

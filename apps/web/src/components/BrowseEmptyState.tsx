@@ -1,9 +1,18 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowUpRight, Compass, Filter, SearchX } from 'lucide-react'
+import { ArrowUpRight, Compass, Filter, Flame, Gift, Plug, SearchX, Sparkles } from 'lucide-react'
 import i18n from '@/i18n'
 import { modelLabel } from '@utils/format'
 import { cn } from '@utils/cn'
+
+/* Curated entry points so an empty result is never a dead end. These reset the
+ * current filters and drop the visitor onto a populated slice of the catalog. */
+const SUGGESTIONS = [
+  { key: 'free', to: '/browse?price=free', Icon: Gift },
+  { key: 'skills', to: '/browse?type=SKILL', Icon: Sparkles },
+  { key: 'mcp', to: '/browse?type=MCP_SERVER', Icon: Plug },
+  { key: 'trending', to: '/browse?sort=trending', Icon: Flame },
+] as const
 
 interface ActiveFilter {
   key: string
@@ -106,6 +115,26 @@ export default function BrowseEmptyState({
                 {t('empty.clearAll')}
               </button>
             )}
+          </div>
+
+          {/* Curated jump-offs — turn a dead end into a path forward. */}
+          <div className="mt-7">
+            <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2 mb-3">
+              <span aria-hidden className="w-5 h-px bg-volt-500" />
+              {t('empty.suggestHeading')}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {SUGGESTIONS.map(({ key, to, Icon }) => (
+                <Link
+                  key={key}
+                  to={to}
+                  className="group inline-flex items-center gap-1.5 rounded-full border border-line dark:border-night-line bg-canvas dark:bg-night px-3.5 py-1.5 text-[0.8rem] font-medium text-ink-soft dark:text-bone-soft hover:border-volt-400 dark:hover:border-volt-500/50 hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
+                >
+                  <Icon aria-hidden className="w-3.5 h-3.5 text-volt-700 dark:text-volt-300" />
+                  {t('empty.suggest.' + key)}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 
