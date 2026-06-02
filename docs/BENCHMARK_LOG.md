@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-02T00:06 (UTC) — Round 148
+
+- **Benchmark**: 자체 — 상세 페이지 리뷰는 신뢰 신호로는 충분하지만, 상용 커뮤니티 기능으로는 구매자와 제작자가 리뷰 아래에서 맥락을 이어갈 수 있어야 한다. 답글 작성 권한, 입력 검증, 목록 정렬, 긴 텍스트 대응, 모바일 터치 영역을 함께 보강한다.
+- **Shipped**: `ReviewReply` Prisma 모델과 `CreateReviewReplySchema`, `POST /listings/:id/reviews/:reviewId/replies` API를 추가했다. 리뷰 조회와 상세 응답은 답글을 오래된 순으로 포함하고, seed 데이터에도 제작자/사용자 답글 예시를 넣었다.
+- **Design**: 상세 페이지 리뷰 탭을 스레드형 UI로 고도화했다. 답글 수 배지, 얇은 좌측 타임라인, 인라인 답글 폼, 로그인 유도, 글자 수/검증 메시지, disabled/loading 상태를 추가하고 긴 본문은 `break-words`/`whitespace-pre-wrap`으로 방어했다.
+- **Tests**: TDD로 shared schema, API service/controller, ListingDetail reply UI 테스트를 추가했다. `pnpm typecheck`, `pnpm test:run`, `pnpm build` 통과.
+- **Visual check**: PromptMarket dev 서버 포트 5176과 API 3000에서 Playwright Python smoke로 desktop 1440x900, mobile 390x844를 확인했다. 답글 표시, 인라인 작성, 성공 토스트, 모바일 오버플로 없음을 확인했고 스크린샷은 `/private/tmp/promptmarket-review-replies`에 저장했다.
+
 ## 2026-06-01T18:37 (UTC) — Round 147
 
 - **Benchmark**: 자체 — Home hero의 실시간 드롭 행은 움직임과 가격 정보가 있어 눈에 띄지만, 일반 사용자는 행 전체가 상세 페이지 링크인지 즉시 알기 어렵다. 가격 옆에 짧은 액션 라벨을 붙여 다음 행동을 더 명확히 한다.

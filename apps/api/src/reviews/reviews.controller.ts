@@ -1,20 +1,10 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
-import { ReviewsService } from './reviews.service';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CurrentUser, AuthUser } from '../auth/current-user.decorator';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ReviewsService } from './reviews.service'
+import { CreateReviewDto } from './dto/create-review.dto'
+import { CreateReviewReplyDto } from './dto/create-review-reply.dto'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
 
 @ApiTags('reviews')
 @Controller('listings')
@@ -24,18 +14,27 @@ export class ReviewsController {
   @Get(':id/reviews')
   @ApiOperation({ summary: 'List reviews for a listing' })
   list(@Param('id') id: string) {
-    return this.reviews.listForListing(id);
+    return this.reviews.listForListing(id)
   }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post(':id/reviews')
   @ApiOperation({ summary: 'Create a review for a purchased listing' })
-  create(
+  create(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: CreateReviewDto) {
+    return this.reviews.create(user.id, id, dto)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post(':id/reviews/:reviewId/replies')
+  @ApiOperation({ summary: 'Reply to a review thread' })
+  createReply(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
-    @Body() dto: CreateReviewDto,
+    @Param('reviewId') reviewId: string,
+    @Body() dto: CreateReviewReplyDto
   ) {
-    return this.reviews.create(user.id, id, dto);
+    return this.reviews.createReply(user.id, id, reviewId, dto)
   }
 }

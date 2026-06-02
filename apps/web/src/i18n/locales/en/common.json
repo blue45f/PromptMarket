@@ -76,7 +76,8 @@
     "listingPublished": "Listing published",
     "purchaseComplete": "Purchase complete",
     "balanceToppedUp": "Balance topped up",
-    "reviewPosted": "Review posted"
+    "reviewPosted": "Review posted",
+    "replyPosted": "Reply posted"
   },
   "errors": {
     "generic": "Something went wrong"

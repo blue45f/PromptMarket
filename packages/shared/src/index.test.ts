@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   CreateListingSchema,
   CreateReviewSchema,
+  CreateReviewReplySchema,
   RevenueSettingsSchema,
   RevenueSettingsHistorySchema,
   AdminRevenueSummarySchema,
@@ -242,6 +243,21 @@ describe('CreateReviewSchema', () => {
     expect(CreateReviewSchema.safeParse({ rating: 5, comment: 'x'.repeat(1001) }).success).toBe(
       false
     )
+  })
+})
+
+describe('CreateReviewReplySchema', () => {
+  it('accepts a concise reply body', () => {
+    const parsed = CreateReviewReplySchema.safeParse({ body: 'Thanks, this helped our team.' })
+    expect(parsed.success).toBe(true)
+  })
+
+  it('rejects blank reply bodies', () => {
+    expect(CreateReviewReplySchema.safeParse({ body: '   ' }).success).toBe(false)
+  })
+
+  it('rejects a reply over 1000 chars', () => {
+    expect(CreateReviewReplySchema.safeParse({ body: 'x'.repeat(1001) }).success).toBe(false)
   })
 })
 

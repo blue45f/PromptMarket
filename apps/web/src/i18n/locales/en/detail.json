@@ -50,9 +50,20 @@
     "submit": "Post review",
     "empty": "No reviews yet. Be the first to leave one!",
     "anonymous": "anonymous",
+    "repliesCount_one": "{{count}} reply",
+    "repliesCount_other": "{{count}} replies",
+    "replyButton": "Reply",
+    "replyLogin": "Log in to reply",
+    "replyingAs": "Replying as @{{username}}",
+    "replyPlaceholder": "Share what helped, add a setup tip, or respond to the maker.",
+    "replyLabel": "Write a reply",
+    "replySubmit": "Post reply",
+    "replyCancel": "Cancel",
+    "replySubmitting": "Posting…",
     "validation": {
       "rating": "Please select a rating.",
-      "comment": "Keep your review to 1,000 characters or fewer."
+      "comment": "Keep your review to 1,000 characters or fewer.",
+      "reply": "Keep replies between 1 and 1,000 characters."
     }
   },
   "sidebar": {

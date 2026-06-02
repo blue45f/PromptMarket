@@ -189,6 +189,10 @@ export class ListingsService {
         reviews: {
           include: {
             user: { select: { id: true, username: true } },
+            replies: {
+              orderBy: { createdAt: 'asc' },
+              include: { user: { select: { id: true, username: true } } },
+            },
           },
           orderBy: { createdAt: 'desc' },
         },
@@ -237,6 +241,12 @@ export class ListingsService {
         comment: r.comment,
         createdAt: r.createdAt,
         user: r.user,
+        replies: (r.replies ?? []).map((reply) => ({
+          id: reply.id,
+          body: reply.body,
+          createdAt: reply.createdAt,
+          user: reply.user,
+        })),
       })),
       avgRating,
       reviewCount: ratings.length,

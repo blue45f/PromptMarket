@@ -369,12 +369,26 @@ export const CreateReviewSchema = z.object({
 })
 export type CreateReviewInput = z.infer<typeof CreateReviewSchema>
 
+export const CreateReviewReplySchema = z.object({
+  body: z.string().trim().min(1).max(1000),
+})
+export type CreateReviewReplyInput = z.infer<typeof CreateReviewReplySchema>
+
+export const ReviewReplyDto = z.object({
+  id: z.string(),
+  body: z.string(),
+  user: AuthorSummary,
+  createdAt: z.string(),
+})
+export type ReviewReplyDto = z.infer<typeof ReviewReplyDto>
+
 export const ReviewDto = z.object({
   id: z.string(),
   rating: z.number().int(),
   comment: z.string().nullable(),
   user: AuthorSummary,
   createdAt: z.string(),
+  replies: z.array(ReviewReplyDto).default([]),
 })
 export type ReviewDto = z.infer<typeof ReviewDto>
 

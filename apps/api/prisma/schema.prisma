@@ -19,6 +19,7 @@ model User {
   listings      Listing[]
   purchases     Purchase[]
   reviews       Review[]
+  reviewReplies ReviewReply[]
 }
 
 model Listing {
@@ -62,6 +63,19 @@ model Purchase {
   @@unique([userId, listingId])
 }
 
+model ReviewReply {
+  id        String   @id @default(cuid())
+  body      String
+  userId    String
+  reviewId  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@index([reviewId, createdAt])
+  @@index([userId, createdAt])
+}
+
 model PlatformSetting {
   id        String   @id @default(cuid())
   key       String   @unique
@@ -79,6 +93,7 @@ model Review {
   createdAt   DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id])
   listing     Listing  @relation(fields: [listingId], references: [id])
+  replies     ReviewReply[]
 
   @@unique([userId, listingId])
 }

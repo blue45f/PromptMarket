@@ -50,9 +50,20 @@
     "submit": "리뷰 등록",
     "empty": "아직 리뷰가 없어요. 첫 번째 리뷰가 되어 보세요!",
     "anonymous": "익명",
+    "repliesCount_one": "답글 {{count}}개",
+    "repliesCount_other": "답글 {{count}}개",
+    "replyButton": "답글 남기기",
+    "replyLogin": "로그인하고 답글",
+    "replyingAs": "@{{username}}로 답글 작성",
+    "replyPlaceholder": "도움이 된 점, 추가 팁, 제작자에게 남길 말을 적어주세요.",
+    "replyLabel": "답글 입력",
+    "replySubmit": "답글 등록",
+    "replyCancel": "취소",
+    "replySubmitting": "등록 중…",
     "validation": {
       "rating": "별점을 선택해 주세요.",
-      "comment": "리뷰는 1,000자 이하로 작성해 주세요."
+      "comment": "리뷰는 1,000자 이하로 작성해 주세요.",
+      "reply": "답글은 1자 이상 1,000자 이하로 작성해 주세요."
     }
   },
   "sidebar": {

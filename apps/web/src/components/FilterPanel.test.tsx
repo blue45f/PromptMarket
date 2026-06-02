@@ -81,9 +81,12 @@ describe('<FilterPanel />', () => {
 
   it('summarizes the empty filter state and disables reset until a condition is active', () => {
     const onReset = vi.fn()
-    render(<FilterPanel value={emptyFilters()} onChange={vi.fn()} onReset={onReset} />)
+    const { container } = render(
+      <FilterPanel value={emptyFilters()} onChange={vi.fn()} onReset={onReset} />
+    )
 
     expect(screen.getByText('조건 없음')).toBeTruthy()
+    expect(container.querySelector('[data-filter-panel-status]')).toBeTruthy()
     const reset = screen.getByRole('button', { name: '전부 초기화' })
     expect(reset).toBeDisabled()
     fireEvent.click(reset)

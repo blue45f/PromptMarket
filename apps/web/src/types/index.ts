@@ -41,6 +41,14 @@ export interface Review {
   createdAt: string
   author?: Author
   user?: Author
+  replies?: ReviewReply[]
+}
+
+export interface ReviewReply {
+  id: string
+  body: string
+  createdAt: string
+  user?: Author
 }
 
 export interface Purchase {

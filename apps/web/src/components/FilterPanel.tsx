@@ -114,7 +114,10 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
             <p className="font-display text-[0.95rem] font-semibold text-ink dark:text-bone tracking-tight">
               {t('panel.title')}
             </p>
-            <span className="inline-flex min-h-6 items-center rounded-full border border-line dark:border-night-line bg-canvas/75 dark:bg-night/60 px-2 text-[0.68rem] font-mono font-semibold text-ink-mute dark:text-bone-mute">
+            <span
+              data-filter-panel-status
+              className="inline-flex min-h-6 items-center rounded-full border border-line dark:border-night-line bg-canvas/75 dark:bg-night/60 px-2 text-[0.68rem] font-mono font-semibold text-ink-mute dark:text-bone-mute"
+            >
               {resetDisabled
                 ? t('panel.summary.empty')
                 : t('panel.summary.active', { count: activeCount })}

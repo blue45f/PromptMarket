@@ -1,4 +1,4 @@
-import { Listing, PrismaClient } from '@prisma/client'
+import { Listing, PrismaClient, Review } from '@prisma/client'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import * as argon2 from 'argon2'
 
@@ -68,6 +68,7 @@ type SeedListing = {
 }
 
 async function main() {
+  await prisma.reviewReply.deleteMany()
   await prisma.review.deleteMany()
   await prisma.purchase.deleteMany()
   await prisma.listing.deleteMany()
@@ -2568,9 +2569,10 @@ You analyze a sprint retrospective and produce a next-sprint action set.
     },
   ]
 
+  const createdReviews: Array<{ review: Review; buyer: SeedUser; listing: Listing }> = []
   for (const r of reviews) {
     if (r.buyer.id === r.listing.authorId) continue
-    await prisma.review.create({
+    const review = await prisma.review.create({
       data: {
         userId: r.buyer.id,
         listingId: r.listing.id,
@@ -2578,7 +2580,39 @@ You analyze a sprint retrospective and produce a next-sprint action set.
         comment: r.comment,
       },
     })
+    createdReviews.push({ review, buyer: r.buyer, listing: r.listing })
   }
+
+  const reviewByTitle = (title: string) => {
+    const found = createdReviews.find((r) => r.listing.title === title)
+    if (!found) throw new Error(`Review seed not found for ${title}`)
+    return found.review
+  }
+
+  await prisma.reviewReply.createMany({
+    data: [
+      {
+        reviewId: reviewByTitle('Ultimate Next.js 15 CLAUDE.md').id,
+        userId: alice.id,
+        body: '좋은 피드백 감사합니다. App Router 섹션은 다음 버전에서 체크리스트를 더 짧게 정리해둘게요.',
+      },
+      {
+        reviewId: reviewByTitle('Claude Opus 4.7 Senior Code-Reviewer Subagent').id,
+        userId: alice.id,
+        body: 'race condition 케이스를 공유해 주셔서 감사해요. severity table 예시는 계속 보강하겠습니다.',
+      },
+      {
+        reviewId: reviewByTitle('Postgres MCP Server').id,
+        userId: carol.id,
+        body: 'read-only role을 먼저 만든 뒤 MCP 설정을 연결하면 운영 DB에서도 안전하게 굴릴 수 있습니다.',
+      },
+      {
+        reviewId: reviewByTitle('Prompt Ops Checklist').id,
+        userId: quinn.id,
+        body: '팀 롤아웃 전에 쓰기 좋은 최소 점검 항목도 별도 섹션으로 추가해보겠습니다.',
+      },
+    ],
+  })
 
   // ===========================================================================
   // Final summary

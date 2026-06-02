@@ -73,7 +73,8 @@
     "listingPublished": "리스팅이 게시됐어요",
     "purchaseComplete": "구매가 완료됐어요",
     "balanceToppedUp": "잔액이 충전됐어요",
-    "reviewPosted": "리뷰가 등록됐어요"
+    "reviewPosted": "리뷰가 등록됐어요",
+    "replyPosted": "답글이 등록됐어요"
   },
   "errors": {
     "generic": "문제가 발생했어요"
