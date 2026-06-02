@@ -18,15 +18,17 @@ pnpm run dev
 
 ## 품질 기준
 
-| 명령 | 목적 |
-| --- | --- |
-| `pnpm run verify` | format, lint, typecheck, test, build |
-| `pnpm run ci` | CI 기본 검증 |
-| `pnpm run test:run` | Vitest 단위 테스트 |
+| 명령                | 목적                                 |
+| ------------------- | ------------------------------------ |
+| `pnpm run verify`   | format, lint, typecheck, test, build |
+| `pnpm run ci`       | CI 기본 검증                         |
+| `pnpm run test:run` | Vitest 단위 테스트                   |
 
 ## 코드 스타일
 
 TypeScript strict 기준을 유지합니다. 도메인 schema, enum, 공유 타입은 `packages/shared`에 두고, 앱 내부 구현 세부사항은 각 앱 아래에 둡니다.
+
+린트는 루트 `eslint.config.mjs`(flat config)가 web/api/shared를 모두 검사합니다. `pnpm run lint`(또는 자동 수정 `pnpm run lint:fix`)로 실행하며, 포매팅은 Prettier가 담당하므로 ESLint는 정합성·품질 규칙만 다룹니다.
 
 ## PR 규칙
 

@@ -61,7 +61,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials')
     }
-    let ok = false
+    let ok: boolean
     try {
       ok = await argon2.verify(user.passwordHash, dto.password)
     } catch {

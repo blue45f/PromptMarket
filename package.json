@@ -23,7 +23,8 @@
     "verify": "pnpm run validate:architecture && pnpm run ci",
     "verify:push": "pnpm run verify",
     "typecheck": "pnpm --filter @promptmarket/shared build && pnpm --filter @promptmarket/api typecheck && pnpm --filter @promptmarket/web typecheck",
-    "lint": "pnpm -r --if-present run lint",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "pnpm -r --if-present run test",
     "test:run": "pnpm -r --if-present run test:run",
     "format": "pnpm -r --if-present run format",
@@ -43,9 +44,15 @@
   "devDependencies": {
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.4.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "typescript-eslint": "^8.60.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

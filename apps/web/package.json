@@ -8,7 +8,6 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
-    "lint": "echo \"no lint configured\"",
     "test": "vitest",
     "test:run": "vitest run"
   },
