@@ -5,16 +5,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
-
-function isPrismaP2002(err: unknown): boolean {
-  return err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002'
-}
-
-function isPrismaP2025(err: unknown): boolean {
-  return err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025'
-}
+import { isPrismaP2002, isPrismaP2025 } from '../prisma/prisma-errors'
 
 @Injectable()
 export class PurchasesService {
@@ -231,10 +223,16 @@ export class PurchasesService {
             platformFeeCents: split.platformFeeCents,
           },
         })
-        await tx.user.update({
-          where: { id: liveListing.authorId },
-          data: { balanceCents: { increment: split.sellerNetCents } },
-        })
+        // Scope P2025 catch here so author-deleted and listing-deleted cases are distinct.
+        try {
+          await tx.user.update({
+            where: { id: liveListing.authorId },
+            data: { balanceCents: { increment: split.sellerNetCents } },
+          })
+        } catch (authorErr) {
+          if (isPrismaP2025(authorErr)) throw new NotFoundException('Seller account not found')
+          throw authorErr
+        }
         await tx.listing.update({
           where: { id: listingId },
           data: { downloads: { increment: 1 } },

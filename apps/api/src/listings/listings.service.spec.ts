@@ -205,6 +205,52 @@ describe('ListingsService.related', () => {
   })
 })
 
+describe('ListingsService.list sort=top', () => {
+  it('uses all.length as total — no separate count() query is issued', async () => {
+    const count = vi.fn()
+    const rows = [buildListing({ id: 'l1', downloads: 5, reviews: [{ rating: 4 }] })]
+    const findMany = vi.fn().mockResolvedValue(rows)
+    const prisma = { listing: { count, findMany } } as unknown as PrismaMock
+    const svc = new ListingsService(prisma)
+    const out = await svc.list({ sort: 'top', page: 1, pageSize: 12 } as never)
+    expect(count).not.toHaveBeenCalled()
+    expect(out.total).toBe(1)
+    expect(out.totalPages).toBe(1)
+  })
+
+  it('ranks by avg rating descending then createdAt descending', async () => {
+    const older = buildListing({
+      id: 'l-old',
+      createdAt: new Date('2026-01-01'),
+      reviews: [{ rating: 3 }],
+    })
+    const newer = buildListing({
+      id: 'l-new',
+      createdAt: new Date('2026-06-01'),
+      reviews: [{ rating: 5 }],
+    })
+    const findMany = vi.fn().mockResolvedValue([older, newer])
+    const prisma = { listing: { findMany } } as unknown as PrismaMock
+    const svc = new ListingsService(prisma)
+    const out = await svc.list({ sort: 'top', page: 1, pageSize: 12 } as never)
+    expect(out.items[0].id).toBe('l-new')
+    expect(out.items[1].id).toBe('l-old')
+  })
+
+  it('pages correctly within the in-memory window', async () => {
+    const rows = Array.from({ length: 5 }, (_, i) =>
+      buildListing({ id: `l${i}`, downloads: i, reviews: [] })
+    )
+    const findMany = vi.fn().mockResolvedValue(rows)
+    const prisma = { listing: { findMany } } as unknown as PrismaMock
+    const svc = new ListingsService(prisma)
+    const page2 = await svc.list({ sort: 'top', page: 2, pageSize: 2 } as never)
+    expect(page2.items).toHaveLength(2)
+    expect(page2.total).toBe(5)
+    expect(page2.totalPages).toBe(3)
+  })
+})
+
 describe('ListingsService.list vendor filter', () => {
   it('forces an empty result set when the vendor name is unknown', async () => {
     const count = vi.fn().mockResolvedValue(0)

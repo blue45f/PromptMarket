@@ -140,19 +140,18 @@ export class ListingsService {
 
     if (sort === 'top') {
       // Compute avg rating in memory; cap fetch at 5000 rows to avoid OOM.
-      // Total count is queried separately so pagination metadata is always accurate.
-      const [all, total] = await Promise.all([
-        this.prisma.listing.findMany({
-          where,
-          take: 5000,
-          orderBy: [{ downloads: 'desc' }, { createdAt: 'desc' }],
-          include: {
-            author: { select: { id: true, username: true } },
-            reviews: true,
-          },
-        }),
-        this.prisma.listing.count({ where }),
-      ])
+      // all.length is the authoritative total: when DB has ≤5000 matching rows it equals the true
+      // count; when DB has >5000 rows it is capped at 5000, which is correct — no separate count()
+      // query needed and no risk of the two queries observing different DB snapshots.
+      const all = await this.prisma.listing.findMany({
+        where,
+        take: 5000,
+        orderBy: [{ downloads: 'desc' }, { createdAt: 'desc' }],
+        include: {
+          author: { select: { id: true, username: true } },
+          reviews: true,
+        },
+      })
       const scored = all.map((l) => {
         const ratings = l.reviews.map((r) => r.rating)
         const avg = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0
@@ -162,15 +161,14 @@ export class ListingsService {
         if (b.avg !== a.avg) return b.avg - a.avg
         return b.listing.createdAt.getTime() - a.listing.createdAt.getTime()
       })
-      // Cap reported total to the in-memory window so pagination never advertises pages that would be empty.
-      const reportedTotal = Math.min(total, scored.length)
+      const total = scored.length
       const sliced = scored.slice((page - 1) * pageSize, page * pageSize)
       return {
         items: sliced.map((s) => this.serializeCard(s.listing)),
-        total: reportedTotal,
+        total,
         page,
         pageSize,
-        totalPages: Math.max(1, Math.ceil(reportedTotal / pageSize)),
+        totalPages: Math.max(1, Math.ceil(total / pageSize)),
       }
     }
 

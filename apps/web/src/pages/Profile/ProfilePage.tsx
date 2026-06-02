@@ -12,7 +12,7 @@ import EmptyState from '@components/EmptyState'
 export default function ProfilePage() {
   const { t } = useTranslation('profile')
   const { username } = useParams<{ username: string }>()
-  const { data, isPending, error, refetch } = useUserProfile(username)
+  const { data, isPending, isFetching, error, refetch } = useUserProfile(username)
   const { user: currentUser } = useAuthStore()
   const spotlightRef = useSpotlight<HTMLElement>()
 
@@ -53,7 +53,8 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => void refetch()}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line text-ink-soft dark:text-bone-soft font-mono text-xs uppercase tracking-[0.15em] hover:border-volt-500 hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
+            disabled={isFetching}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line text-ink-soft dark:text-bone-soft font-mono text-xs uppercase tracking-[0.15em] hover:border-volt-500 hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {t('error.retry')}
           </button>

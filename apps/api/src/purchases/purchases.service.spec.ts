@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { describe, expect, it, vi } from 'vitest'
 import { PurchasesService } from './purchases.service'
 
@@ -17,6 +18,8 @@ interface MockOptions {
   buyer?: unknown
   createdPurchase?: unknown
   platformSetting?: { key: string; intValue: number }[]
+  /** When true, tx.user.update (author credit) throws P2025. */
+  txAuthorUpdateThrowsP2025?: boolean
 }
 
 function makePrisma(opts: MockOptions = {}): PrismaMock {
@@ -28,7 +31,15 @@ function makePrisma(opts: MockOptions = {}): PrismaMock {
         const hasFunds = buyer != null && buyer.balanceCents >= priceCents
         return { count: hasFunds ? 1 : 0 }
       }),
-      update: vi.fn().mockResolvedValue({}),
+      update: vi.fn().mockImplementation(async () => {
+        if (opts.txAuthorUpdateThrowsP2025) {
+          throw new Prisma.PrismaClientKnownRequestError('Record not found', {
+            code: 'P2025',
+            clientVersion: '0.0.0',
+          })
+        }
+        return {}
+      }),
     },
     purchase: {
       create: vi.fn().mockResolvedValue(opts.createdPurchase ?? null),
@@ -353,5 +364,26 @@ describe('PurchasesService.purchase', () => {
     const result = await svc.purchase('u1', 'l2')
 
     expect(result.purchase).toEqual(createdPurchase)
+  })
+
+  it('throws NotFoundException with seller-specific message when author account is deleted mid-transaction', async () => {
+    const prisma = makePrisma({
+      listing: { id: 'l1', authorId: 'author-1', priceCents: 1000, body: 'BODY' },
+      buyer: { id: 'u1', balanceCents: 5000 },
+      createdPurchase: {
+        id: 'p1',
+        listingId: 'l1',
+        pricePaidCents: 1000,
+        grossAmountCents: 1000,
+        sellerNetCents: 830,
+        platformFeeCents: 170,
+        createdAt: new Date(),
+      },
+      txAuthorUpdateThrowsP2025: true,
+    })
+    const svc = new PurchasesService(prisma)
+    const err = await svc.purchase('u1', 'l1').catch((e) => e)
+    expect(err).toBeInstanceOf(NotFoundException)
+    expect((err as Error).message).toBe('Seller account not found')
   })
 })
