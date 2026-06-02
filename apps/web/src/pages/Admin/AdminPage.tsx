@@ -287,14 +287,7 @@ export default function AdminPage() {
     setPremiumThresholdDollars(formatMoneyInput(settingsQ.data.premiumThresholdCents))
     setUltraPremiumThresholdDollars(formatMoneyInput(settingsQ.data.ultraPremiumThresholdCents))
     setPlatformFeeFloorDollars(formatMoneyInput(settingsQ.data.platformFeeFloorCents))
-  }, [
-    settingsQ.data?.platformFeePercent,
-    settingsQ.data?.premiumFeePercent,
-    settingsQ.data?.ultraPremiumFeePercent,
-    settingsQ.data?.premiumThresholdCents,
-    settingsQ.data?.ultraPremiumThresholdCents,
-    settingsQ.data?.platformFeeFloorCents,
-  ])
+  }, [settingsQ.data])
 
   const settings = settingsQ.data ?? ZERO_SETTINGS
   const summary = summaryQ.data ?? ZERO_SUMMARY
@@ -413,8 +406,8 @@ export default function AdminPage() {
     [grossCents, draftPolicy]
   )
   const [monthlyOrderInput, setMonthlyOrderInput] = useState('1000')
-  const [monthlyPaidRatioInput, setMonthlyPaidRatioInput] = useState('')
-  const [hasMonthlyPaidRatioTouched, setHasMonthlyPaidRatioTouched] = useState(false)
+  const [monthlyPaidRatioManual, setMonthlyPaidRatioManual] = useState<string | null>(null)
+  const monthlyPaidRatioInput = monthlyPaidRatioManual ?? String(paidRate)
   const [scenarioOrderAmounts, setScenarioOrderAmounts] = useState(
     DEFAULT_SCENARIO_ORDER_AMOUNTS.map((amount) => String(amount))
   )
@@ -583,12 +576,6 @@ export default function AdminPage() {
     summary.totalGrossCents > 0 ? (summary.totalSellerNetCents / summary.totalGrossCents) * 100 : 0
   const avgPaidOrderValue =
     summary.paidPurchases > 0 ? summary.totalGrossCents / summary.paidPurchases : 0
-  useEffect(() => {
-    if (!hasMonthlyPaidRatioTouched) {
-      setMonthlyPaidRatioInput(String(paidRate))
-    }
-  }, [paidRate, hasMonthlyPaidRatioTouched])
-
   return (
     <div className="pb-20 mx-auto max-w-[1280px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
       <header className="space-y-2 mb-8">
@@ -1132,8 +1119,7 @@ export default function AdminPage() {
                       aria-label={t('simulation.monthlyPaidRatioLabel')}
                       value={monthlyPaidRatioInput}
                       onChange={(event) => {
-                        setHasMonthlyPaidRatioTouched(true)
-                        setMonthlyPaidRatioInput(event.target.value)
+                        setMonthlyPaidRatioManual(event.target.value)
                       }}
                       className="w-full rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2.5 text-sm font-mono tabular-nums text-ink dark:text-bone focus-volt"
                     />

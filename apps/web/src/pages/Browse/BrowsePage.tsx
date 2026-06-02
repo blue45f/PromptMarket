@@ -286,6 +286,18 @@ export default function BrowsePage() {
     paginationRef.current = { page, effectiveTotalPages, updateExtras }
   })
 
+  // Cache browse-card focusable elements so j/k navigation doesn't call
+  // querySelectorAll on every keystroke. Updated after each render that
+  // produces a new items array (page change, filter change, initial load).
+  const browseCardsRef = useRef<HTMLElement[]>([])
+  useEffect(() => {
+    browseCardsRef.current = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        '[data-browse-card] a, [data-browse-card] [role="link"]'
+      )
+    )
+  }, [items])
+
   // ← / → keyboard pagination + j / k row navigation. Skips when a typing
   // target is focused so the arrow keys keep their default behavior inside
   // the search input.
@@ -314,11 +326,7 @@ export default function BrowsePage() {
       // listing card within the results grid. Falls back to the first
       // card if nothing's focused yet.
       if (e.key === 'j' || e.key === 'k') {
-        const cards = Array.from(
-          document.querySelectorAll<HTMLElement>(
-            '[data-browse-card] a, [data-browse-card] [role="link"]'
-          )
-        )
+        const cards = browseCardsRef.current
         if (cards.length === 0) return
         const focused = document.activeElement as HTMLElement | null
         const idx = focused ? cards.indexOf(focused) : -1

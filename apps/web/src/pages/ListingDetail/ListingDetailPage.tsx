@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as Tabs from '@radix-ui/react-tabs'
 import {
+  CreateReviewReplySchema,
   CreateReviewSchema,
   typeGradient,
   type CreateReviewInput,
@@ -16,14 +17,21 @@ import {
 import {
   BookOpen,
   Check,
+  CornerDownRight,
   Copy,
   Download,
   Loader2,
+  MessageCircle,
   PanelRight,
   Share2,
   ShoppingCart,
 } from 'lucide-react'
-import { useListing, usePurchase, useCreateReview } from '@features/marketplace/queries'
+import {
+  useListing,
+  usePurchase,
+  useCreateReview,
+  useCreateReviewReply,
+} from '@features/marketplace/queries'
 import { getErrorMessage } from '@services/api'
 import { formatDate, formatPrice, formatRelative } from '@utils/format'
 import toast from 'react-hot-toast'
@@ -82,34 +90,21 @@ export default function ListingDetailPage() {
   const { token, user } = useAuthStore()
   const { data, isPending, error } = useListing(slug)
 
-  // The API returns the detail response with a flat shape OR nested under
-  // `listing` depending on serialisation. Normalise both into a uniform view.
-  type AnyShape = Record<string, unknown> & {
-    listing?: Record<string, unknown>
-  }
-  const raw = data as AnyShape | undefined
-  const listing = (raw?.listing ?? raw) as ListingViewModel | undefined
-
-  const reviews =
-    (raw?.reviews as
-      | Array<{
-          id: string
-          rating: number
-          comment?: string | null
-          createdAt: string
-          author?: { id: string; username: string }
-          user?: { id: string; username: string }
-        }>
-      | undefined) ?? []
-  const isOwner = !!raw?.isOwner
-  const isPurchased = !!raw?.isPurchased
-  const canViewBody = !!raw?.canViewBody
+  const listing: ListingViewModel | undefined = data
+  const reviews = data?.reviews ?? []
+  const isOwner = !!data?.isOwner
+  const isPurchased = !!data?.isPurchased
+  const canViewBody = !!data?.canViewBody
 
   const purchaseMut = usePurchase(listing?.id, slug)
   const reviewMut = useCreateReview(listing?.id, slug)
+  const replyMut = useCreateReviewReply(listing?.id, slug)
 
   const [copied, setCopied] = useState(false)
   const [shareState, setShareState] = useState<'idle' | 'shared' | 'copied'>('idle')
+  const [activeReplyReviewId, setActiveReplyReviewId] = useState<string | null>(null)
+  const [replyDraft, setReplyDraft] = useState('')
+  const [replyError, setReplyError] = useState<string | null>(null)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const shareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -345,6 +340,32 @@ export default function ListingDetailPage() {
     }
   })
 
+  function startReply(reviewId: string) {
+    if (!token) {
+      navigate('/login', { state: { from: `/listings/${listing?.slug ?? slug ?? ''}` } })
+      return
+    }
+    setActiveReplyReviewId(reviewId)
+    setReplyDraft('')
+    setReplyError(null)
+  }
+
+  async function submitReply(reviewId: string) {
+    const parsed = CreateReviewReplySchema.safeParse({ body: replyDraft })
+    if (!parsed.success) {
+      setReplyError(t('reviews.validation.reply'))
+      return
+    }
+    try {
+      await replyMut.mutateAsync({ reviewId, body: parsed.data.body })
+      setActiveReplyReviewId(null)
+      setReplyDraft('')
+      setReplyError(null)
+    } catch {
+      /* toast handled in hook */
+    }
+  }
+
   if (isPending) {
     return <SkeletonDetail />
   }
@@ -377,6 +398,7 @@ export default function ListingDetailPage() {
   const shortfallCents = cannotAfford ? (listing.priceCents ?? 0) - (user?.balanceCents ?? 0) : 0
   const buying = purchaseMut.isPending
   const reviewSubmitting = isSubmitting || reviewMut.isPending
+  const replySubmitting = replyMut.isPending
   const models = listing.models ?? []
 
   return (
@@ -671,32 +693,149 @@ export default function ListingDetailPage() {
                 {reviews.length === 0 ? (
                   <p className="text-sm text-ink-mute dark:text-bone-mute">{t('reviews.empty')}</p>
                 ) : (
-                  <ul className="space-y-4">
+                  <ul className="divide-y divide-line/70 dark:divide-night-line/70">
                     {reviews.map((r) => {
                       const author = r.user ?? r.author
+                      const replies = r.replies ?? []
+                      const isReplying = activeReplyReviewId === r.id
                       return (
-                        <li
-                          key={r.id}
-                          className="border-b border-line/70 dark:border-night-line/70 last:border-0 pb-4 last:pb-0"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <StarRating value={r.rating} />
-                              <span className="text-sm font-medium text-ink dark:text-bone">
-                                @{author?.username ?? t('reviews.anonymous')}
-                              </span>
+                        <li key={r.id} className="py-5 first:pt-0 last:pb-0">
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <StarRating value={r.rating} />
+                                <span className="text-sm font-semibold text-ink dark:text-bone break-words">
+                                  @{author?.username ?? t('reviews.anonymous')}
+                                </span>
+                                {replies.length > 0 && (
+                                  <span className="inline-flex items-center gap-1 rounded-full bg-canvas-deep dark:bg-night-deep px-2 py-0.5 text-[0.68rem] font-medium text-ink-mute dark:text-bone-mute">
+                                    <MessageCircle className="h-3 w-3" aria-hidden="true" />
+                                    {t('reviews.repliesCount', { count: replies.length })}
+                                  </span>
+                                )}
+                              </div>
+                              {r.comment && (
+                                <p className="mt-2 max-w-[72ch] whitespace-pre-wrap break-words text-sm leading-relaxed text-ink-soft dark:text-bone-soft">
+                                  {r.comment}
+                                </p>
+                              )}
                             </div>
-                            <span
-                              className="text-xs text-ink-mute dark:text-bone-mute"
-                              title={formatDate(r.createdAt)}
-                            >
-                              {formatRelative(r.createdAt)}
-                            </span>
+                            <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
+                              <span
+                                className="text-xs text-ink-mute dark:text-bone-mute"
+                                title={formatDate(r.createdAt)}
+                              >
+                                {formatRelative(r.createdAt)}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => startReply(r.id)}
+                                className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-line dark:border-night-line px-3 py-1 text-xs font-medium text-ink-soft dark:text-bone-soft hover:border-volt-400 hover:text-ink dark:hover:border-volt-500/60 dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
+                              >
+                                <CornerDownRight className="h-3.5 w-3.5" aria-hidden="true" />
+                                {token ? t('reviews.replyButton') : t('reviews.replyLogin')}
+                              </button>
+                            </div>
                           </div>
-                          {r.comment && (
-                            <p className="mt-2 text-sm text-ink-soft dark:text-bone-soft max-w-[72ch]">
-                              {r.comment}
-                            </p>
+
+                          {replies.length > 0 && (
+                            <ol className="mt-4 space-y-3 border-l border-line/80 pl-4 dark:border-night-line/80 sm:ml-8">
+                              {replies.map((reply) => (
+                                <li key={reply.id} className="min-w-0">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="text-xs font-semibold text-ink dark:text-bone">
+                                      @{reply.user?.username ?? t('reviews.anonymous')}
+                                    </span>
+                                    <span
+                                      className="text-[0.7rem] text-ink-mute dark:text-bone-mute"
+                                      title={formatDate(reply.createdAt)}
+                                    >
+                                      {formatRelative(reply.createdAt)}
+                                    </span>
+                                  </div>
+                                  <p className="mt-1 max-w-[68ch] whitespace-pre-wrap break-words text-sm leading-relaxed text-ink-soft dark:text-bone-soft">
+                                    {reply.body}
+                                  </p>
+                                </li>
+                              ))}
+                            </ol>
+                          )}
+
+                          {isReplying && (
+                            <form
+                              className="mt-4 border-t border-line/70 pt-4 dark:border-night-line/70 sm:ml-8"
+                              onSubmit={(event) => {
+                                event.preventDefault()
+                                void submitReply(r.id)
+                              }}
+                              noValidate
+                            >
+                              <p className="text-xs font-medium text-ink-mute dark:text-bone-mute">
+                                {t('reviews.replyingAs', {
+                                  username: user?.username ?? t('reviews.anonymous'),
+                                })}
+                              </p>
+                              <textarea
+                                value={replyDraft}
+                                onChange={(event) => {
+                                  setReplyDraft(event.target.value)
+                                  if (replyError) setReplyError(null)
+                                }}
+                                maxLength={1000}
+                                rows={3}
+                                aria-label={t('reviews.replyLabel')}
+                                aria-invalid={replyError ? true : undefined}
+                                aria-describedby={replyError ? `reply-error-${r.id}` : undefined}
+                                placeholder={t('reviews.replyPlaceholder')}
+                                className="mt-2 min-h-24 w-full resize-y rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm leading-relaxed text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
+                              />
+                              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                                <div className="min-w-0">
+                                  {replyError ? (
+                                    <p
+                                      id={`reply-error-${r.id}`}
+                                      role="alert"
+                                      className="text-xs text-coral-deep dark:text-coral"
+                                    >
+                                      {replyError}
+                                    </p>
+                                  ) : (
+                                    <p className="text-xs text-ink-mute dark:text-bone-mute">
+                                      {replyDraft.length}/1000
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveReplyReviewId(null)
+                                      setReplyDraft('')
+                                      setReplyError(null)
+                                    }}
+                                    disabled={replySubmitting}
+                                    className="inline-flex min-h-9 items-center rounded-full px-3 py-1.5 text-sm font-medium text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone disabled:cursor-not-allowed disabled:opacity-60 focus-volt"
+                                  >
+                                    {t('reviews.replyCancel')}
+                                  </button>
+                                  <button
+                                    type="submit"
+                                    disabled={replySubmitting}
+                                    className="inline-flex min-h-9 items-center gap-2 rounded-full bg-ink px-4 py-1.5 text-sm font-semibold text-bone motion-safe:transition ease-expo active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-bone dark:text-ink focus-volt"
+                                  >
+                                    {replySubmitting && (
+                                      <Loader2
+                                        aria-hidden="true"
+                                        className="h-4 w-4 motion-safe:animate-spin"
+                                      />
+                                    )}
+                                    {replySubmitting
+                                      ? t('reviews.replySubmitting')
+                                      : t('reviews.replySubmit')}
+                                  </button>
+                                </div>
+                              </div>
+                            </form>
                           )}
                         </li>
                       )

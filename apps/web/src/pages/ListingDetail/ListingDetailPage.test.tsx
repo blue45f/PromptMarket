@@ -1,15 +1,21 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ListingDetailPage from './ListingDetailPage'
-import { useListing, usePurchase, useCreateReview } from '@features/marketplace/queries'
+import {
+  useListing,
+  usePurchase,
+  useCreateReview,
+  useCreateReviewReply,
+} from '@features/marketplace/queries'
 import { useAuthStore } from '@store/auth'
 
 vi.mock('@features/marketplace/queries', () => ({
   useListing: vi.fn(),
   usePurchase: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
   useCreateReview: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
+  useCreateReviewReply: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
 }))
 
 vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }))
@@ -85,6 +91,10 @@ function renderPage() {
 
 beforeEach(() => {
   ;(useAuthStore as unknown as Mock).mockReturnValue({ token: null, user: null })
+  ;(useCreateReviewReply as unknown as Mock).mockReturnValue({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  })
 })
 
 describe('<ListingDetailPage />', () => {
@@ -106,7 +116,7 @@ describe('<ListingDetailPage />', () => {
 
   it('shows the listing title when loaded', () => {
     ;(useListing as unknown as Mock).mockReturnValue({
-      data: { listing: mockListing, reviews: [] },
+      data: { ...mockListing, reviews: [], isOwner: false, isPurchased: false, canViewBody: true },
       isPending: false,
       error: null,
     })
@@ -117,7 +127,7 @@ describe('<ListingDetailPage />', () => {
 
   it('shows the author username', () => {
     ;(useListing as unknown as Mock).mockReturnValue({
-      data: { listing: mockListing, reviews: [] },
+      data: { ...mockListing, reviews: [], isOwner: false, isPurchased: false, canViewBody: true },
       isPending: false,
       error: null,
     })
@@ -127,7 +137,7 @@ describe('<ListingDetailPage />', () => {
 
   it('shows the price for priceCents=499', () => {
     ;(useListing as unknown as Mock).mockReturnValue({
-      data: { listing: mockListing, reviews: [] },
+      data: { ...mockListing, reviews: [], isOwner: false, isPurchased: false, canViewBody: true },
       isPending: false,
       error: null,
     })
@@ -137,7 +147,7 @@ describe('<ListingDetailPage />', () => {
 
   it('shows a buyer decision checklist in the detail sidebar', () => {
     ;(useListing as unknown as Mock).mockReturnValue({
-      data: { listing: mockListing, reviews: [] },
+      data: { ...mockListing, reviews: [], isOwner: false, isPurchased: false, canViewBody: true },
       isPending: false,
       error: null,
     })
@@ -150,12 +160,12 @@ describe('<ListingDetailPage />', () => {
   it('shows run readiness from preview variables before purchase', () => {
     ;(useListing as unknown as Mock).mockReturnValue({
       data: {
-        listing: {
-          ...mockListing,
-          models: ['claude-opus-4-7', 'gpt-5'],
-          previewBody: 'Draft for {{audience}} in {{tone}}.',
-        },
+        ...mockListing,
+        models: ['claude-opus-4-7', 'gpt-5'],
+        previewBody: 'Draft for {{audience}} in {{tone}}.',
         reviews: [],
+        isOwner: false,
+        isPurchased: false,
         canViewBody: false,
       },
       isPending: false,
@@ -175,7 +185,7 @@ describe('<ListingDetailPage />', () => {
       user: { id: 'u1', username: 'buyer', balanceCents: 100 },
     })
     ;(useListing as unknown as Mock).mockReturnValue({
-      data: { listing: mockListing, reviews: [] },
+      data: { ...mockListing, reviews: [], isOwner: false, isPurchased: false, canViewBody: true },
       isPending: false,
       error: null,
     })
@@ -192,11 +202,75 @@ describe('<ListingDetailPage />', () => {
       user: { id: 'u1', username: 'buyer', balanceCents: 99999 },
     })
     ;(useListing as unknown as Mock).mockReturnValue({
-      data: { listing: mockListing, reviews: [] },
+      data: { ...mockListing, reviews: [], isOwner: false, isPurchased: false, canViewBody: true },
       isPending: false,
       error: null,
     })
     renderPage()
     expect(screen.queryByRole('link', { name: /충전하기|Top up/i })).toBeNull()
+  })
+
+  it('shows review replies and lets a signed-in user add a reply inline', async () => {
+    const replyMock = vi.fn().mockResolvedValue({ id: 'reply-new' })
+    ;(useCreateReviewReply as unknown as Mock).mockReturnValue({
+      mutateAsync: replyMock,
+      isPending: false,
+    })
+    ;(useAuthStore as unknown as Mock).mockReturnValue({
+      token: 't',
+      user: { id: 'u2', username: 'maker', balanceCents: 99999 },
+    })
+    ;(useListing as unknown as Mock).mockReturnValue({
+      data: {
+        ...mockListing,
+        reviews: [
+          {
+            id: 'review-1',
+            rating: 5,
+            comment: '설치가 쉬웠어요.',
+            createdAt: '2026-05-02T00:00:00Z',
+            user: { id: 'u1', username: 'buyer' },
+            replies: [
+              {
+                id: 'reply-1',
+                body: '사용 사례 공유 감사합니다.',
+                createdAt: '2026-05-03T00:00:00Z',
+                user: { id: 'u2', username: 'maker' },
+              },
+            ],
+          },
+        ],
+        isOwner: false,
+        isPurchased: true,
+        canViewBody: true,
+      },
+      isPending: false,
+      error: null,
+    })
+
+    renderPage()
+    const reviewsTab = screen.getByRole('tab', { name: /리뷰/ })
+    fireEvent.mouseDown(reviewsTab, { button: 0, ctrlKey: false })
+    fireEvent.mouseUp(reviewsTab)
+    fireEvent.click(reviewsTab)
+    await waitFor(() => {
+      expect(reviewsTab.getAttribute('data-state')).toBe('active')
+    })
+
+    expect(await screen.findByText('답글 1개')).toBeTruthy()
+    expect(screen.getByText('사용 사례 공유 감사합니다.')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: '답글 남기기' }))
+    fireEvent.change(screen.getByLabelText('답글 입력'), {
+      target: { value: '저도 같은 방식으로 해결했습니다.' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: '답글 등록' }))
+
+    await waitFor(() => {
+      expect(replyMock).toHaveBeenCalledWith({
+        reviewId: 'review-1',
+        body: '저도 같은 방식으로 해결했습니다.',
+      })
+    })
   })
 })
