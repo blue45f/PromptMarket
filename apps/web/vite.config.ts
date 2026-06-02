@@ -1,12 +1,14 @@
 /// <reference types="vitest/config" />
-import path from 'path';
+import path from 'path'
 
-import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
+import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  // React Compiler (React 19.2 native) runs via Babel for apps/web.
+  plugins: [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -51,29 +53,29 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
-            return 'vendor';
+            return 'vendor'
           }
           if (id.includes('node_modules/react-router')) {
-            return 'router';
+            return 'router'
           }
           if (id.includes('node_modules/@tanstack/react-query')) {
-            return 'query';
+            return 'query'
           }
           if (
             id.includes('node_modules/react-hook-form') ||
             id.includes('node_modules/@hookform/') ||
             id.includes('node_modules/zod')
           ) {
-            return 'form';
+            return 'form'
           }
           if (
             id.includes('node_modules/react-markdown') ||
             id.includes('node_modules/remark-gfm')
           ) {
-            return 'markdown';
+            return 'markdown'
           }
         },
       },
     },
   },
-});
+})
