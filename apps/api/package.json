@@ -12,6 +12,7 @@
     "test": "pnpm run db:generate && vitest",
     "test:run": "pnpm run db:generate && vitest run",
     "db:push": "prisma db push",
+    "db:migrate:deploy": "prisma migrate deploy",
     "db:generate": "prisma generate",
     "seed": "ts-node prisma/seed.ts"
   },

@@ -7,6 +7,14 @@
 
 ---
 
+## 2026-06-02T00:44 (UTC) — Round 149
+
+- **Benchmark**: 자체 — 대댓글 기능은 들어갔지만 상용화 관점에서는 첫 화면 정보 밀도, 리뷰 탭의 신뢰 요약, 제작자 답글 식별, 운영 DB 재현성이 함께 닫혀야 한다. 사용자는 리뷰 탭에 들어온 즉시 평균 평점, 리뷰 수, 답글 수와 다음 행동을 알아야 한다.
+- **Shipped**: 상세 페이지 hero를 2열 제품 헤더로 압축해 cover, 제목, 설명, 제작자, 평점, 다운로드, 태그가 첫 화면에서 함께 보이도록 재배치했다. `ReviewReply`가 포함된 현재 Prisma schema를 baseline migration으로 고정하고 `db:migrate:deploy` 스크립트와 운영 절차 문서를 추가했다.
+- **Design**: 리뷰 탭 상단에 `리뷰 신뢰도` 요약 pill을 추가하고, 중첩 카드형 리뷰 작성 폼은 divider 기반 섹션으로 정리했다. 제작자 답글에는 `제작자` 배지를 붙였고, 대댓글 textarea는 열자마자 포커스되며 Ctrl/⌘ Enter 안내, 글자 수, disabled/loading 상태를 갖는다. 빈 리뷰 상태는 방문자/구매자/작성자 맥락별 안내 문구로 분기한다.
+- **Tests**: TDD로 ListingDetail 테스트에 리뷰 요약, 제작자 답글 배지, 답글 composer focus, 방문자 빈 상태 회귀 테스트를 추가했다. `pnpm --filter @promptmarket/web test:run ListingDetailPage.test.tsx` 통과.
+- **Visual check**: PromptMarket dev 서버 `127.0.0.1:5176`에서 Playwright Python smoke로 desktop 1440x1000, mobile 390x844를 확인했다. 리뷰 요약, 제작자 배지, 답글 입력 포커스, 긴 텍스트 줄바꿈, 제출 toast를 검증했고 스크린샷은 `/private/tmp/promptmarket-review-ui-20260602`에 저장했다.
+
 ## 2026-06-02T00:06 (UTC) — Round 148
 
 - **Benchmark**: 자체 — 상세 페이지 리뷰는 신뢰 신호로는 충분하지만, 상용 커뮤니티 기능으로는 구매자와 제작자가 리뷰 아래에서 맥락을 이어갈 수 있어야 한다. 답글 작성 권한, 입력 검증, 목록 정렬, 긴 텍스트 대응, 모바일 터치 영역을 함께 보강한다.

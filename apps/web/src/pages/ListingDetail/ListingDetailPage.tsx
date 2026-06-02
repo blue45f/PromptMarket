@@ -416,63 +416,81 @@ export default function ListingDetailPage() {
       )}
       <div className={cn('grid gap-8', !readingMode && 'grid-cols-1 lg:grid-cols-12')}>
         <div className={cn('min-w-0 space-y-6', !readingMode && 'lg:col-span-8')}>
-          {/* Hero cover */}
-          <div
-            className={cn(
-              'aspect-[16/9] rounded-2xl bg-gradient-to-br relative overflow-hidden flex items-center justify-center',
-              typeGradient(listing.type)
-            )}
+          <section
+            aria-labelledby="listing-title"
+            className="rounded-2xl border border-line bg-canvas-sub p-4 dark:border-night-line dark:bg-night-sub sm:p-5"
           >
-            <span className="text-8xl drop-shadow-lg" aria-hidden>
-              {listing.coverEmoji || '✨'}
-            </span>
-            <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
-              <TypeBadge type={listing.type} overlay />
-              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-canvas dark:bg-night ring-1 ring-line dark:ring-night-line text-ink dark:text-bone">
-                {t('cover.categoryBadge', {
-                  category: t('home:categories.labels.' + listing.category, {
-                    defaultValue: listing.category,
-                  }),
-                })}
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-ink dark:text-bone">
-              {listing.title}
-            </h1>
-            <p className="mt-2 text-sm text-ink-mute dark:text-bone-mute">
-              <Link
-                to={`/users/${listing.author?.username ?? 'unknown'}`}
-                className="text-volt-700 dark:text-volt-300 hover:underline font-medium"
+            <div className="grid gap-5 md:grid-cols-[minmax(14rem,0.78fr)_minmax(0,1.22fr)] md:items-stretch">
+              <div
+                className={cn(
+                  'relative flex min-h-56 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br sm:min-h-64 md:min-h-full',
+                  typeGradient(listing.type)
+                )}
               >
-                @{listing.author?.username ?? 'unknown'}
-              </Link>{' '}
-              ·{' '}
-              <span title={formatDate(listing.createdAt)}>{formatRelative(listing.createdAt)}</span>
-            </p>
-            <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
-              <StarRating value={listing.avgRating ?? 0} count={listing.reviewCount} showLabel />
-              <span className="inline-flex items-center gap-1 text-ink-mute dark:text-bone-mute">
-                <Download className="w-3.5 h-3.5" aria-hidden="true" />
-                {t('hero.downloads', { count: listing.downloads ?? 0 })}
-              </span>
-            </div>
-            {listing.tags && listing.tags.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {listing.tags.map((tag) => (
-                  <Link
-                    key={tag}
-                    to={`/browse?q=${encodeURIComponent(tag)}`}
-                    className="text-xs px-2 py-0.5 rounded-full bg-canvas-deep dark:bg-night-deep text-ink-soft dark:text-bone-soft hover:bg-volt-300/40 hover:text-ink dark:hover:bg-volt-300/30 dark:hover:text-bone motion-safe:transition-colors ease-expo focus-volt"
-                  >
-                    #{tag}
-                  </Link>
-                ))}
+                <span className="text-7xl drop-shadow-lg sm:text-8xl" aria-hidden>
+                  {listing.coverEmoji || '✨'}
+                </span>
+                <div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-2">
+                  <TypeBadge type={listing.type} overlay />
+                  <span className="inline-flex min-h-7 items-center rounded-full bg-canvas px-2.5 py-1 text-xs font-medium text-ink ring-1 ring-line dark:bg-night dark:text-bone dark:ring-night-line">
+                    {t('cover.categoryBadge', {
+                      category: t('home:categories.labels.' + listing.category, {
+                        defaultValue: listing.category,
+                      }),
+                    })}
+                  </span>
+                </div>
               </div>
-            )}
-          </div>
+
+              <div className="flex min-w-0 flex-col justify-end py-1 md:py-2">
+                <h1
+                  id="listing-title"
+                  className="max-w-[15ch] break-words text-3xl font-bold leading-tight tracking-tight text-ink dark:text-bone sm:max-w-[18ch] sm:text-4xl"
+                >
+                  {listing.title}
+                </h1>
+                <p className="mt-3 max-w-[64ch] break-words text-base leading-relaxed text-ink-soft dark:text-bone-soft">
+                  {listing.description}
+                </p>
+                <p className="mt-4 text-sm text-ink-mute dark:text-bone-mute">
+                  <Link
+                    to={`/users/${listing.author?.username ?? 'unknown'}`}
+                    className="font-medium text-volt-700 hover:underline dark:text-volt-300"
+                  >
+                    @{listing.author?.username ?? 'unknown'}
+                  </Link>{' '}
+                  ·{' '}
+                  <span title={formatDate(listing.createdAt)}>
+                    {formatRelative(listing.createdAt)}
+                  </span>
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+                  <StarRating
+                    value={listing.avgRating ?? 0}
+                    count={listing.reviewCount}
+                    showLabel
+                  />
+                  <span className="inline-flex items-center gap-1 text-ink-mute dark:text-bone-mute">
+                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t('hero.downloads', { count: listing.downloads ?? 0 })}
+                  </span>
+                </div>
+                {listing.tags && listing.tags.length > 0 && (
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {listing.tags.map((tag) => (
+                      <Link
+                        key={tag}
+                        to={`/browse?q=${encodeURIComponent(tag)}`}
+                        className="max-w-full rounded-full bg-canvas-deep px-2 py-0.5 text-xs text-ink-soft motion-safe:transition-colors hover:bg-volt-300/40 hover:text-ink focus-volt dark:bg-night-deep dark:text-bone-soft dark:hover:bg-volt-300/30 dark:hover:text-bone"
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
 
           <Tabs.Root defaultValue="overview" className="w-full">
             <Tabs.List

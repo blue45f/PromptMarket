@@ -21,13 +21,20 @@
 - `pnpm run ci`
 - `pnpm run db:generate`
 - `pnpm run db:push`
+- `pnpm run db:migrate:deploy`
 - `pnpm run seed`
 
 ## 아키텍처 변경 규칙
 
 1. 도메인 경계와 공유 타입 계약 변경은 `docs/ARCHITECTURE.md`에서 먼저 반영합니다.
-2. 계약 변경이 API/스키마에 영향을 주면 문서와 테스트 계획을 함께 갱신합니다.
+2. 계약 변경이 API/스키마에 영향을 주면 문서, 테스트 계획, Prisma migration을 함께 갱신합니다.
 3. `pnpm run verify`는 `validate:architecture`가 선행된 상태여야 합니다.
+
+## DB 변경 규칙
+
+- 로컬 실험은 `pnpm run db:push`로 빠르게 동기화할 수 있습니다.
+- 스테이징/운영에 반영할 스키마 변경은 `apps/api/prisma/migrations`에 migration SQL을 남깁니다.
+- 기존 `db:push` 기반 DB를 migration 체계로 전환할 때는 baseline migration을 applied 상태로 표시한 뒤 `pnpm run db:migrate:deploy`를 사용합니다.
 
 ## PR 체크리스트
 

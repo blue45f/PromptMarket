@@ -2,7 +2,7 @@
 
 **프롬프트**, **`CLAUDE.md`**, **`agent.md`**, **Claude Code 스킬**, **MCP 서버**, **슬래시 명령어**, **서브 에이전트**, **`.cursorrules`**를 둘러보고, 구매하고, 판매하고, 공유할 수 있는 마켓플레이스입니다. LLM별 분류 체계와 프롬프트 엔지니어링 기법 카탈로그를 함께 제공합니다.
 
-> 2026년 기준의 최신 스택인 **React 19** + **NestJS 11** + **Prisma 6**로 구축했으며, 공유 **Zod** 스키마 패키지로 API 계약의 단일 진실 공급원을 유지합니다.
+> 2026년 기준의 최신 스택인 **React 19** + **NestJS 11** + **Prisma 7**로 구축했으며, 공유 **Zod** 스키마 패키지로 API 계약의 단일 진실 공급원을 유지합니다.
 
 ---
 
@@ -21,7 +21,7 @@
 - 📝 **리스팅 상세 화면** — 16:9 그라디언트 히어로, Radix 탭(개요 / 리뷰 / 관련 항목), 고정 가격 + 작성자 + 메타데이터 사이드바, 체크 아이콘 피드백이 포함된 **복사** + **`.md` 다운로드**
 - 🪞 **생성 폼 실시간 미리보기** — 입력하는 동안 카드와 Markdown 렌더링이 함께 갱신됩니다.
 - 🔁 **관련 리스팅** — `/listings/related/:id`가 타입 + 카테고리 기준으로 추천합니다.
-- ⭐ **리뷰 및 평점** — 구매자 검증 기반, 1-5점 별점 + 코멘트
+- ⭐ **리뷰 및 평점** — 구매자 검증 기반, 1-5점 별점 + 코멘트, 리뷰별 대댓글 스레드와 제작자 답글 표식
 - 📊 **홈페이지 통계 스트립** — `/listings/stats`에서 가져온 `totalListings` · `totalDownloads` · `totalCreators` 표시(인메모리 30초 캐시)
 - 👤 **작성자 대시보드** — 판매량 + 수익이 포함된 내 리스팅, 구매한 항목 라이브러리, 지갑
 - 🪪 **JWT 인증**(**argon2id** 해싱 — OWASP 2026 기본 권장값)
@@ -37,7 +37,7 @@
 | 계층         | 기술                                                                                                                                                                                                                                                                                                                                       |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Frontend** | Vite 6 · React **19** · TypeScript · **Tailwind v4**(Oxide 엔진, CSS 전용 `@theme` 설정, 클래스 기반 다크 모드) · **TanStack Query v5** · **React Hook Form + Zod resolver** · Zustand 5 · React Router 6 · **lucide-react v1** · react-hot-toast · **Radix UI**(Dialog / Tabs / DropdownMenu) · clsx · **tailwind-merge v3** · Inter 폰트 |
-| **Backend**  | NestJS **11** · Prisma **6**(기본 SQLite, Docker에서는 Postgres) · **nestjs-zod** · **argon2id** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino**(pino-http 11 / pino-pretty 13)                                                                                                                         |
+| **Backend**  | NestJS **11** · Prisma **7**(기본 SQLite, Docker에서는 Postgres) · **nestjs-zod** · **argon2id** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino**(pino-http 11 / pino-pretty 13)                                                                                                                         |
 | **Shared**   | `@promptmarket/shared` — **Zod** 스키마 + 21개 모델 레지스트리 + 기법 / 난이도 / 라이선스 enum + 뷰 헬퍼. api와 web에서 동일하게 사용하므로 DTO 불일치가 발생하지 않습니다.                                                                                                                                                                |
 | **Tooling**  | **pnpm workspaces** · Docker / docker-compose · 멀티 스테이지 Dockerfile                                                                                                                                                                                                                                                                   |
 
@@ -90,6 +90,17 @@ DATABASE_URL=postgresql://promptmarket:promptmarket@localhost:5432/promptmarket 
   pnpm seed
 ```
 
+## DB 마이그레이션
+
+로컬 개발은 빠른 스키마 동기화를 위해 기존처럼 `pnpm db:push`를 사용할 수 있습니다.
+스테이징/운영처럼 재현 가능한 배포 이력이 필요한 환경은 다음 명령을 사용합니다.
+
+```bash
+pnpm db:migrate:deploy
+```
+
+이 저장소는 초기에는 `db:push` 기반으로 운영됐기 때문에 `apps/api/prisma/migrations/20260602000000_initial_schema`는 현재 스키마의 baseline입니다. 이미 같은 스키마가 적용된 기존 DB에서 migration 체계로 전환할 때는 Prisma baseline 절차로 해당 migration을 applied 상태로 표시한 뒤 `pnpm db:migrate:deploy`를 사용하세요.
+
 ---
 
 ## 저장소 구조
@@ -117,18 +128,19 @@ docker-compose.yml
 
 ## 스크립트(루트)
 
-| 명령어               | 설명                                                            |
-| -------------------- | --------------------------------------------------------------- |
-| `pnpm dev`           | api + web를 병렬 실행합니다.                                    |
-| `pnpm build`         | shared → api → web 순서로 빌드됩니다(위상 정렬).                |
-| `pnpm typecheck`     | 모노레포 전체에서 `tsc --noEmit`을 실행합니다.                  |
-| `pnpm test:run`      | Vitest 테스트를 실행합니다.                                     |
-| `pnpm test:monorepo` | pnpm workspace 필수 파일과 Docker/API 런타임 배치를 검증합니다. |
-| `pnpm db:push`       | 설정된 DB에 Prisma 스키마를 적용합니다.                         |
-| `pnpm seed`          | 샘플 사용자 / 리스팅 / 리뷰를 시드합니다.                       |
-| `pnpm shared:build`  | 공유 Zod 스키마 패키지를 다시 빌드합니다.                       |
-| `pnpm docker:up`     | 모든 컨테이너를 빌드하고 시작합니다.                            |
-| `pnpm docker:down`   | 컨테이너를 중지합니다.                                          |
+| 명령어                   | 설명                                                            |
+| ------------------------ | --------------------------------------------------------------- |
+| `pnpm dev`               | api + web를 병렬 실행합니다.                                    |
+| `pnpm build`             | shared → api → web 순서로 빌드됩니다(위상 정렬).                |
+| `pnpm typecheck`         | 모노레포 전체에서 `tsc --noEmit`을 실행합니다.                  |
+| `pnpm test:run`          | Vitest 테스트를 실행합니다.                                     |
+| `pnpm test:monorepo`     | pnpm workspace 필수 파일과 Docker/API 런타임 배치를 검증합니다. |
+| `pnpm db:push`           | 설정된 DB에 Prisma 스키마를 적용합니다.                         |
+| `pnpm db:migrate:deploy` | 스테이징/운영 DB에 Prisma migration을 적용합니다.               |
+| `pnpm seed`              | 샘플 사용자 / 리스팅 / 리뷰를 시드합니다.                       |
+| `pnpm shared:build`      | 공유 Zod 스키마 패키지를 다시 빌드합니다.                       |
+| `pnpm docker:up`         | 모든 컨테이너를 빌드하고 시작합니다.                            |
+| `pnpm docker:down`       | 컨테이너를 중지합니다.                                          |
 
 ---
 
@@ -162,6 +174,7 @@ docker-compose.yml
 | `POST` | `/api/listings`                                    | Bearer                                                                                                                                                   |
 | `POST` | `/api/listings/:id/purchase`                       | Bearer; 원자적 잔액 이동                                                                                                                                 |
 | `POST` | `/api/listings/:id/reviews`                        | Bearer; 구매자 전용                                                                                                                                      |
+| `POST` | `/api/listings/:id/reviews/:reviewId/replies`      | Bearer; 리뷰 스레드에 1-1,000자 대댓글 작성                                                                                                              |
 | `GET`  | `/api/me`, `/api/me/purchases`, `/api/me/listings` | Bearer                                                                                                                                                   |
 | `POST` | `/api/me/topup`                                    | Bearer                                                                                                                                                   |
 | `GET`  | `/api/users/:username`                             | 공개 프로필                                                                                                                                              |

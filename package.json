@@ -31,6 +31,7 @@
     "test:monorepo": "node scripts/verify-pnpm-monorepo.mjs",
     "seed": "pnpm --filter @promptmarket/api seed",
     "db:push": "pnpm --filter @promptmarket/api db:push",
+    "db:migrate:deploy": "pnpm --filter @promptmarket/api db:migrate:deploy",
     "db:generate": "pnpm --filter @promptmarket/api db:generate",
     "shared:build": "pnpm --filter @promptmarket/shared build",
     "shared:dev": "pnpm --filter @promptmarket/shared dev",

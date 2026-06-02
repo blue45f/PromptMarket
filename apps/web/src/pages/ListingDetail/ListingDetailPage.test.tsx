@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ListingDetailPage from './ListingDetailPage'
@@ -272,5 +272,121 @@ describe('<ListingDetailPage />', () => {
         body: '저도 같은 방식으로 해결했습니다.',
       })
     })
+  })
+
+  it('summarises review activity and highlights maker replies', async () => {
+    ;(useAuthStore as unknown as Mock).mockReturnValue({
+      token: 't',
+      user: { id: 'u2', username: 'buyer-two', balanceCents: 99999 },
+    })
+    ;(useListing as unknown as Mock).mockReturnValue({
+      data: {
+        ...mockListing,
+        reviews: [
+          {
+            id: 'review-1',
+            rating: 5,
+            comment: '팀 온보딩에 바로 썼어요.',
+            createdAt: '2026-05-02T00:00:00Z',
+            user: { id: 'u1', username: 'buyer' },
+            replies: [
+              {
+                id: 'reply-1',
+                body: '적용 사례 공유 고맙습니다.',
+                createdAt: '2026-05-03T00:00:00Z',
+                user: { id: 'a1', username: 'testauthor' },
+              },
+            ],
+          },
+          {
+            id: 'review-2',
+            rating: 4,
+            comment: '문서가 조금 더 있으면 좋겠어요.',
+            createdAt: '2026-05-04T00:00:00Z',
+            user: { id: 'u3', username: 'casey' },
+            replies: [],
+          },
+        ],
+        isOwner: false,
+        isPurchased: true,
+        canViewBody: true,
+      },
+      isPending: false,
+      error: null,
+    })
+
+    renderPage()
+    const reviewsTab = screen.getByRole('tab', { name: /리뷰/ })
+    fireEvent.mouseDown(reviewsTab, { button: 0, ctrlKey: false })
+    fireEvent.mouseUp(reviewsTab)
+    fireEvent.click(reviewsTab)
+
+    expect(await screen.findByText('리뷰 신뢰도')).toBeTruthy()
+    const summary = screen.getByLabelText('리뷰 신뢰도 요약')
+    expect(within(summary).getByText('평균 4.5')).toBeTruthy()
+    expect(within(summary).getByText('리뷰 2개')).toBeTruthy()
+    expect(within(summary).getByText('대화 1개')).toBeTruthy()
+    expect(screen.getByText('제작자')).toBeTruthy()
+  })
+
+  it('focuses the reply composer after opening it', async () => {
+    ;(useAuthStore as unknown as Mock).mockReturnValue({
+      token: 't',
+      user: { id: 'u2', username: 'maker', balanceCents: 99999 },
+    })
+    ;(useListing as unknown as Mock).mockReturnValue({
+      data: {
+        ...mockListing,
+        reviews: [
+          {
+            id: 'review-1',
+            rating: 5,
+            comment: '설치가 쉬웠어요.',
+            createdAt: '2026-05-02T00:00:00Z',
+            user: { id: 'u1', username: 'buyer' },
+            replies: [],
+          },
+        ],
+        isOwner: false,
+        isPurchased: true,
+        canViewBody: true,
+      },
+      isPending: false,
+      error: null,
+    })
+
+    renderPage()
+    const reviewsTab = screen.getByRole('tab', { name: /리뷰/ })
+    fireEvent.mouseDown(reviewsTab, { button: 0, ctrlKey: false })
+    fireEvent.mouseUp(reviewsTab)
+    fireEvent.click(reviewsTab)
+    fireEvent.click(await screen.findByRole('button', { name: '답글 남기기' }))
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('답글 입력')).toHaveFocus()
+    })
+  })
+
+  it('uses a helpful empty review state for visitors', async () => {
+    ;(useListing as unknown as Mock).mockReturnValue({
+      data: {
+        ...mockListing,
+        reviews: [],
+        isOwner: false,
+        isPurchased: false,
+        canViewBody: false,
+      },
+      isPending: false,
+      error: null,
+    })
+
+    renderPage()
+    const reviewsTab = screen.getByRole('tab', { name: /리뷰/ })
+    fireEvent.mouseDown(reviewsTab, { button: 0, ctrlKey: false })
+    fireEvent.mouseUp(reviewsTab)
+    fireEvent.click(reviewsTab)
+
+    expect(await screen.findByText('아직 대화가 없어요')).toBeTruthy()
+    expect(screen.getByText('구매 후 리뷰를 남길 수 있어요.')).toBeTruthy()
   })
 })
