@@ -188,7 +188,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: (input: LoginInput) => api.post<AuthResponse, AuthResponse>('/auth/login', input),
     onSuccess: (res) => {
-      login(res.token, res.user as User)
+      login(res.token, res.user)
       qc.setQueryData(meKey, res.user)
       toast.success(i18n.t('common:toasts.welcomeBack', { name: res.user.username }))
     },
@@ -205,7 +205,7 @@ export function useRegister() {
     mutationFn: (input: RegisterInput) =>
       api.post<AuthResponse, AuthResponse>('/auth/register', input),
     onSuccess: (res) => {
-      login(res.token, res.user as User)
+      login(res.token, res.user)
       qc.setQueryData(meKey, res.user)
       toast.success(i18n.t('common:toasts.accountCreated'))
     },

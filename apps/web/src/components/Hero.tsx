@@ -296,28 +296,45 @@ interface DropsMarqueeProps {
   t: TFunction
 }
 
+const SEED_TYPES = [
+  'SUBAGENT',
+  'AGENT_MD',
+  'MCP_SERVER',
+  'CLAUDE_MD',
+  'PROMPT',
+  'CURSOR_RULES',
+] as const
+const SEED_PRICES = [499, 0, 0, 299, 1299, 0] as const
+const SEED_EMOJIS = ['🧑‍⚖️', '📊', '🗂️', '📘', '🎨', '🦅'] as const
+const SEED_AUTHORS = ['alex', 'mira', 'kenji', 'lou', 'pia', 'rin'] as const
+
 function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
-  const seedTitles = [
-    t('hero.seed.codeReviewer'),
-    t('hero.seed.dataSubagent'),
-    t('hero.seed.mcpFilesystem'),
-    t('hero.seed.monorepoClaudeMd'),
-    t('hero.seed.artDirector'),
-    t('hero.seed.cursorSwift'),
-  ]
-  const seed: DropsMarqueeProps['items'] = items.length
-    ? items
-    : Array.from({ length: 6 }).map((_, i) => ({
-        id: `seed-${i}`,
-        slug: `seed-${i}`,
-        title: seedTitles[i],
-        type: ['SUBAGENT', 'AGENT_MD', 'MCP_SERVER', 'CLAUDE_MD', 'PROMPT', 'CURSOR_RULES'][
-          i
-        ] as keyof typeof LISTING_TYPE_META,
-        priceCents: [499, 0, 0, 299, 1299, 0][i],
-        coverEmoji: ['🧑‍⚖️', '📊', '🗂️', '📘', '🎨', '🦅'][i],
-        author: { username: ['alex', 'mira', 'kenji', 'lou', 'pia', 'rin'][i] },
-      }))
+  const seedTitles = useMemo(
+    () => [
+      t('hero.seed.codeReviewer'),
+      t('hero.seed.dataSubagent'),
+      t('hero.seed.mcpFilesystem'),
+      t('hero.seed.monorepoClaudeMd'),
+      t('hero.seed.artDirector'),
+      t('hero.seed.cursorSwift'),
+    ],
+    [t]
+  )
+  const seed: DropsMarqueeProps['items'] = useMemo(
+    () =>
+      items.length
+        ? items
+        : Array.from({ length: 6 }).map((_, i) => ({
+            id: `seed-${i}`,
+            slug: `seed-${i}`,
+            title: seedTitles[i],
+            type: SEED_TYPES[i] as keyof typeof LISTING_TYPE_META,
+            priceCents: SEED_PRICES[i],
+            coverEmoji: SEED_EMOJIS[i],
+            author: { username: SEED_AUTHORS[i] },
+          })),
+    [items, seedTitles]
+  )
 
   return (
     <div

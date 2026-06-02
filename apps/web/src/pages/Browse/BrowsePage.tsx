@@ -673,7 +673,7 @@ function describeFilters(
     parts.push(t('home:categories.labels.' + f.category, { defaultValue: f.category }))
   if (f.types.length === 1) parts.push(LISTING_TYPE_META[f.types[0]].label)
   else if (f.types.length > 1) parts.push(t('describe.typesCount', { count: f.types.length }))
-  if (f.technique) parts.push(TECHNIQUE_META[f.technique as PromptTechnique].label)
+  if (f.technique) parts.push(TECHNIQUE_META[f.technique].label)
   if (f.difficulty)
     parts.push(t('common:difficulty.' + f.difficulty, { defaultValue: f.difficulty }))
   if (f.price === 'free') parts.push(t('describe.free'))

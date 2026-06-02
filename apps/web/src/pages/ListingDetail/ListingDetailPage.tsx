@@ -9,11 +9,8 @@ import {
   CreateReviewSchema,
   typeGradient,
   type CreateReviewInput,
-  type Difficulty,
-  type License,
-  type ListingType,
-  type PromptTechnique,
 } from '@promptmarket/shared'
+import type { ListingDetailResponse } from '@/types'
 import {
   BookOpen,
   Check,
@@ -58,31 +55,6 @@ import { useWishlist } from '@hooks/useWishlist'
 import { useAuthStore } from '@store/auth'
 import { cn } from '@utils/cn'
 
-interface ListingViewModel {
-  id: string
-  slug: string
-  title: string
-  type: ListingType
-  description: string
-  category: string
-  tags?: string[]
-  models?: string[]
-  technique?: PromptTechnique | null
-  difficulty?: Difficulty
-  license?: License
-  version?: string
-  priceCents: number
-  coverEmoji?: string | null
-  downloads?: number
-  author: { id: string; username: string }
-  avgRating?: number
-  reviewCount?: number
-  createdAt: string
-  updatedAt?: string
-  body?: string | null
-  previewBody?: string
-}
-
 export default function ListingDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
@@ -90,7 +62,7 @@ export default function ListingDetailPage() {
   const { token, user } = useAuthStore()
   const { data, isPending, error } = useListing(slug)
 
-  const listing: ListingViewModel | undefined = data
+  const listing: ListingDetailResponse | undefined = data
   const reviews = data?.reviews ?? []
   const isOwner = !!data?.isOwner
   const isPurchased = !!data?.isPurchased
@@ -107,6 +79,7 @@ export default function ListingDetailPage() {
   const [replyError, setReplyError] = useState<string | null>(null)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const shareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const replyTextareaRef = useRef<HTMLTextAreaElement | null>(null)
 
   useEffect(() => {
     return () => {
@@ -114,6 +87,11 @@ export default function ListingDetailPage() {
       if (shareTimerRef.current) clearTimeout(shareTimerRef.current)
     }
   }, [])
+
+  useEffect(() => {
+    if (!activeReplyReviewId) return
+    replyTextareaRef.current?.focus()
+  }, [activeReplyReviewId])
   const [readingMode, setReadingMode] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false
     return window.localStorage.getItem('pm.readingMode') === '1'
@@ -400,6 +378,16 @@ export default function ListingDetailPage() {
   const reviewSubmitting = isSubmitting || reviewMut.isPending
   const replySubmitting = replyMut.isPending
   const models = listing.models ?? []
+  const totalReplyCount = reviews.reduce(
+    (total, review) => total + (review.replies?.length ?? 0),
+    0
+  )
+  const reviewAverage = (listing.avgRating ?? 0).toFixed(1)
+  const emptyReviewHint = isOwner
+    ? t('reviews.emptyOwner')
+    : isPurchased
+      ? t('reviews.emptyBuyer')
+      : t('reviews.emptyVisitor')
 
   return (
     <div
@@ -626,12 +614,45 @@ export default function ListingDetailPage() {
             <Tabs.Content value="reviews" className="pt-6 focus-visible:outline-none">
               <div className="bg-canvas-sub dark:bg-night-sub rounded-2xl border border-line dark:border-night-line p-6 sm:p-8">
                 <h2 className="sr-only">{t('tabs.reviews', { count: reviews?.length ?? 0 })}</h2>
+                <div className="mb-6 flex flex-col gap-4 border-b border-line/70 pb-5 dark:border-night-line/70 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-ink dark:text-bone">
+                      {t('reviews.summary.title')}
+                    </p>
+                    <p className="mt-1 max-w-[58ch] text-sm leading-relaxed text-ink-mute dark:text-bone-mute">
+                      {t('reviews.summary.subtitle')}
+                    </p>
+                  </div>
+                  <dl
+                    aria-label={t('reviews.summary.aria')}
+                    className="flex flex-wrap gap-2 text-xs text-ink-soft dark:text-bone-soft sm:justify-end"
+                  >
+                    <div className="inline-flex min-h-8 items-center rounded-full border border-line/80 bg-canvas px-3 dark:border-night-line/80 dark:bg-night">
+                      <dt className="sr-only">{t('reviews.summary.averageLabel')}</dt>
+                      <dd className="font-semibold tabular-nums text-ink dark:text-bone">
+                        {t('reviews.summary.average', { rating: reviewAverage })}
+                      </dd>
+                    </div>
+                    <div className="inline-flex min-h-8 items-center rounded-full border border-line/80 bg-canvas px-3 dark:border-night-line/80 dark:bg-night">
+                      <dt className="sr-only">{t('reviews.summary.reviewLabel')}</dt>
+                      <dd className="font-semibold tabular-nums text-ink dark:text-bone">
+                        {t('reviews.summary.reviews', { count: reviews.length })}
+                      </dd>
+                    </div>
+                    <div className="inline-flex min-h-8 items-center rounded-full border border-line/80 bg-canvas px-3 dark:border-night-line/80 dark:bg-night">
+                      <dt className="sr-only">{t('reviews.summary.replyLabel')}</dt>
+                      <dd className="font-semibold tabular-nums text-ink dark:text-bone">
+                        {t('reviews.summary.replies', { count: totalReplyCount })}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
                 {isPurchased && !ownReview && (
                   <form
                     onSubmit={onSubmitReview}
                     noValidate
                     aria-labelledby="review-form-label"
-                    className="mb-6 rounded-xl border border-line dark:border-night-line p-4 bg-canvas-deep/60 dark:bg-night-deep/40"
+                    className="mb-6 border-b border-line/70 pb-6 dark:border-night-line/70"
                   >
                     <h3
                       id="review-form-label"
@@ -691,13 +712,28 @@ export default function ListingDetailPage() {
                 )}
 
                 {reviews.length === 0 ? (
-                  <p className="text-sm text-ink-mute dark:text-bone-mute">{t('reviews.empty')}</p>
+                  <div className="py-8 text-center">
+                    <span
+                      aria-hidden="true"
+                      className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-canvas-deep text-ink-soft ring-1 ring-line dark:bg-night-deep dark:text-bone-soft dark:ring-night-line"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                    </span>
+                    <h3 className="mt-3 text-base font-semibold text-ink dark:text-bone">
+                      {t('reviews.emptyTitle')}
+                    </h3>
+                    <p className="mx-auto mt-1 max-w-[36ch] text-sm leading-relaxed text-ink-mute dark:text-bone-mute">
+                      {emptyReviewHint}
+                    </p>
+                  </div>
                 ) : (
                   <ul className="divide-y divide-line/70 dark:divide-night-line/70">
                     {reviews.map((r) => {
                       const author = r.user ?? r.author
                       const replies = r.replies ?? []
                       const isReplying = activeReplyReviewId === r.id
+                      const replyHelpId = `reply-help-${r.id}`
+                      const replyErrorId = `reply-error-${r.id}`
                       return (
                         <li key={r.id} className="py-5 first:pt-0 last:pb-0">
                           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -746,6 +782,11 @@ export default function ListingDetailPage() {
                                     <span className="text-xs font-semibold text-ink dark:text-bone">
                                       @{reply.user?.username ?? t('reviews.anonymous')}
                                     </span>
+                                    {reply.user?.id === listing.author?.id && (
+                                      <span className="inline-flex items-center rounded-full border border-volt-300/70 bg-volt-100 px-2 py-0.5 text-[0.66rem] font-semibold text-volt-900 dark:border-volt-700/60 dark:bg-volt-900/35 dark:text-volt-200">
+                                        {t('reviews.makerBadge')}
+                                      </span>
+                                    )}
                                     <span
                                       className="text-[0.7rem] text-ink-mute dark:text-bone-mute"
                                       title={formatDate(reply.createdAt)}
@@ -776,32 +817,48 @@ export default function ListingDetailPage() {
                                 })}
                               </p>
                               <textarea
+                                ref={replyTextareaRef}
                                 value={replyDraft}
                                 onChange={(event) => {
                                   setReplyDraft(event.target.value)
                                   if (replyError) setReplyError(null)
                                 }}
+                                onKeyDown={(event) => {
+                                  if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+                                    event.preventDefault()
+                                    void submitReply(r.id)
+                                  }
+                                }}
                                 maxLength={1000}
                                 rows={3}
                                 aria-label={t('reviews.replyLabel')}
                                 aria-invalid={replyError ? true : undefined}
-                                aria-describedby={replyError ? `reply-error-${r.id}` : undefined}
+                                aria-describedby={
+                                  replyError ? `${replyHelpId} ${replyErrorId}` : replyHelpId
+                                }
                                 placeholder={t('reviews.replyPlaceholder')}
-                                className="mt-2 min-h-24 w-full resize-y rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm leading-relaxed text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
+                                className="mt-2 min-h-24 w-full resize-y rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm leading-relaxed text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500 disabled:cursor-not-allowed disabled:opacity-70"
+                                disabled={replySubmitting}
                               />
                               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                                 <div className="min-w-0">
                                   {replyError ? (
                                     <p
-                                      id={`reply-error-${r.id}`}
+                                      id={replyErrorId}
                                       role="alert"
                                       className="text-xs text-coral-deep dark:text-coral"
                                     >
                                       {replyError}
                                     </p>
                                   ) : (
-                                    <p className="text-xs text-ink-mute dark:text-bone-mute">
-                                      {replyDraft.length}/1000
+                                    <p
+                                      id={replyHelpId}
+                                      className="text-xs text-ink-mute dark:text-bone-mute"
+                                    >
+                                      {t('reviews.replyHelp', {
+                                        count: replyDraft.length,
+                                        max: 1000,
+                                      })}
                                     </p>
                                   )}
                                 </div>
