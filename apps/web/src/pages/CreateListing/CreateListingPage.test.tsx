@@ -196,9 +196,9 @@ describe('CreateListingPage', () => {
   it('renders a publish success toast containing preview content', async () => {
     renderPage()
 
-    const titleInput = document.querySelector('input[name=\"title\"]') as HTMLInputElement | null
+    const titleInput = document.querySelector('input[name="title"]') as HTMLInputElement | null
     const descriptionInput = document.querySelector(
-      'textarea[name=\"description\"]'
+      'textarea[name="description"]'
     ) as HTMLTextAreaElement | null
     const contentTabName = i18n.t('sectionTabs.content', { ns: 'create' })
     const jumpToContentButton = screen

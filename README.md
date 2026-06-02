@@ -39,7 +39,7 @@
 | **Frontend** | Vite 8 · React **19**(React Compiler 활성화) · TypeScript · **Tailwind v4**(Oxide 엔진, CSS 전용 `@theme` 설정, 클래스 기반 다크 모드) · **TanStack Query v5** · **React Hook Form + Zod resolver** · Zustand 5 · React Router 7 · **lucide-react v1** · react-hot-toast · **Radix UI**(Dialog / Tabs / DropdownMenu) · clsx · **tailwind-merge v3** · Inter 폰트 |
 | **Backend**  | NestJS **11** · Prisma **7**(기본 SQLite, Docker에서는 Postgres) · **nestjs-zod** · **argon2id** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino**(pino-http 11 / pino-pretty 13)                                                                                                                                                |
 | **Shared**   | `@promptmarket/shared` — **Zod** 스키마 + 21개 모델 레지스트리 + 기법 / 난이도 / 라이선스 enum + 뷰 헬퍼. api와 web에서 동일하게 사용하므로 DTO 불일치가 발생하지 않습니다.                                                                                                                                                                                       |
-| **Tooling**  | **pnpm workspaces** · Docker / docker-compose · 멀티 스테이지 Dockerfile                                                                                                                                                                                                                                                                                          |
+| **Tooling**  | **pnpm workspaces** · Docker / docker-compose · 멀티 스테이지 Dockerfile · **ESLint 10**(flat config, typescript-eslint + react-hooks + react-refresh) · **Prettier**                                                                                                                                                                                             |
 
 ---
 
@@ -133,6 +133,7 @@ docker-compose.yml
 | `pnpm dev`               | api + web를 병렬 실행합니다.                                    |
 | `pnpm build`             | shared → api → web 순서로 빌드됩니다(위상 정렬).                |
 | `pnpm typecheck`         | 모노레포 전체에서 `tsc --noEmit`을 실행합니다.                  |
+| `pnpm lint`              | 루트 flat config로 `eslint .`를 실행합니다(web/api/shared).     |
 | `pnpm test:run`          | Vitest 테스트를 실행합니다.                                     |
 | `pnpm test:monorepo`     | pnpm workspace 필수 파일과 Docker/API 런타임 배치를 검증합니다. |
 | `pnpm db:push`           | 설정된 DB에 Prisma 스키마를 적용합니다.                         |

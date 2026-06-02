@@ -5,6 +5,13 @@
     "search": "\"{{q}}\" 검색 결과",
     "category": "{{category}} 카탈로그"
   },
+  "hero": {
+    "lede": "프롬프트, 스킬, MCP 서버, 에이전트, 룰까지. 바로 쓰는 것만 걸러서."
+  },
+  "active": {
+    "label": "적용 중",
+    "count_other": "{{count}}개 적용"
+  },
   "meta": {
     "titleSearch": "\"{{q}}\" 검색 결과",
     "titleCategory": "{{category}} 카탈로그",
@@ -141,7 +148,14 @@
     "browseAll": "전체 카탈로그",
     "clearAll": "필터 전부 초기화",
     "activeHeading": "지금 거는 필터",
-    "removeRow": "풀기 ✕"
+    "removeRow": "풀기 ✕",
+    "suggestHeading": "이렇게 시작해 보세요",
+    "suggest": {
+      "free": "무료 드롭",
+      "skills": "Claude Code 스킬",
+      "mcp": "MCP 서버",
+      "trending": "지금 트렌딩"
+    }
   },
   "modelTabs": {
     "error": "모델 목록을 불러오지 못했어요."

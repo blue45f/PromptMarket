@@ -83,6 +83,7 @@ const ListingCard = memo(function ListingCard({
         'tilt-host card-perf relative',
         fixedWidth && 'w-[280px] sm:w-[300px] shrink-0 snap-start',
         isFeatured && 'lg:row-span-2',
+        isWide && 'cq',
         className
       )}
     >
@@ -93,6 +94,8 @@ const ListingCard = memo(function ListingCard({
         className={cn(
           'tilt-inner group relative isolate block overflow-hidden rounded-[1.4rem] focus-volt',
           'surface-card lift-on-hover',
+          // Wide lead: cover beside body once the card is wide enough to earn it.
+          isWide && '@lg:grid @lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] @lg:items-stretch',
           'hover:border-volt-400/70 dark:hover:border-volt-500/40',
           'focus-visible:border-volt-400/70 dark:focus-visible:border-volt-500/40',
           'hover:shadow-[0_28px_60px_-32px_oklch(0.65_0.18_125/0.45)]',
@@ -106,7 +109,11 @@ const ListingCard = memo(function ListingCard({
           className={cn(
             'relative overflow-hidden bg-gradient-to-br',
             typeGradient(listing.type),
-            isFeatured ? 'aspect-[5/6] lg:aspect-[4/5]' : isWide ? 'aspect-[16/9]' : 'aspect-[4/5]'
+            isFeatured
+              ? 'aspect-[5/6] lg:aspect-[4/5]'
+              : isWide
+                ? 'aspect-[16/9] @lg:aspect-auto @lg:h-full @lg:min-h-[15rem]'
+                : 'aspect-[4/5]'
           )}
         >
           {/* Soft mesh wash */}
@@ -126,7 +133,11 @@ const ListingCard = memo(function ListingCard({
             className={cn(
               'tilt-parallax absolute inset-0 flex items-center justify-center drop-shadow-[0_8px_24px_oklch(0.16_0.03_290/0.18)]',
               'motion-safe:group-hover:scale-110 motion-safe:group-hover:-rotate-3 motion-safe:group-focus-visible:scale-110 motion-safe:group-focus-visible:-rotate-3 motion-safe:transition-transform ease-expo motion-safe:duration-700',
-              isFeatured ? 'text-[7rem] lg:text-[10rem]' : 'text-[5.5rem]'
+              isFeatured
+                ? 'text-[7rem] lg:text-[10rem]'
+                : isWide
+                  ? 'text-[5.5rem] @lg:text-[8rem]'
+                  : 'text-[5.5rem]'
             )}
           >
             {listing.coverEmoji || meta.emoji}
@@ -204,7 +215,8 @@ const ListingCard = memo(function ListingCard({
         <div
           className={cn(
             'px-4 pt-3.5 pb-4 flex flex-col gap-2.5',
-            isFeatured && 'px-5 pt-4 pb-5 gap-3'
+            isFeatured && 'px-5 pt-4 pb-5 gap-3',
+            isWide && '@lg:justify-center @lg:px-7 @lg:py-7 @lg:gap-3.5'
           )}
         >
           {visibleModels.length > 0 && (
@@ -223,7 +235,11 @@ const ListingCard = memo(function ListingCard({
             className={cn(
               'font-display font-semibold text-ink dark:text-bone tracking-tight leading-[1.15]',
               'motion-safe:transition-colors ease-expo group-hover:text-volt-800 dark:group-hover:text-volt-200 group-focus-within:text-volt-800 dark:group-focus-within:text-volt-200',
-              isFeatured ? 'text-[1.45rem] lg:text-[1.7rem] line-clamp-3' : 'text-base line-clamp-2'
+              isFeatured
+                ? 'text-[1.45rem] lg:text-[1.7rem] line-clamp-3'
+                : isWide
+                  ? 'text-base @lg:text-[1.5rem] line-clamp-2'
+                  : 'text-base line-clamp-2'
             )}
           >
             {highlight ? <Highlight text={listing.title} query={highlight} /> : listing.title}
@@ -233,7 +249,9 @@ const ListingCard = memo(function ListingCard({
               'text-ink-mute dark:text-bone-mute leading-[1.55]',
               isFeatured
                 ? 'text-sm lg:text-[0.95rem] line-clamp-3'
-                : 'text-[0.83rem] line-clamp-1 sm:line-clamp-2 sm:min-h-[2.5rem]'
+                : isWide
+                  ? 'text-[0.83rem] @lg:text-[0.95rem] line-clamp-2 @lg:line-clamp-2'
+                  : 'text-[0.83rem] line-clamp-1 sm:line-clamp-2 sm:min-h-[2.5rem]'
             )}
           >
             {highlight ? (
