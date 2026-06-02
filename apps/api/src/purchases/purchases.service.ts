@@ -13,7 +13,7 @@ function isPrismaP2002(err: unknown): boolean {
 }
 
 function isPrismaP2025(err: unknown): boolean {
-  return (err as { code?: string })?.code === 'P2025'
+  return err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025'
 }
 
 @Injectable()
@@ -30,6 +30,7 @@ export class PurchasesService {
   private static readonly DEFAULT_PREMIUM_FEE_BPS = 1400
   private static readonly DEFAULT_ULTRA_PREMIUM_FEE_BPS = 1200
   private static readonly DEFAULT_PREMIUM_THRESHOLD_CENTS = 3_000
+  // $10,000 — currently unreachable given the $9,999 max listing price; lower to activate the tier.
   private static readonly DEFAULT_ULTRA_PREMIUM_THRESHOLD_CENTS = 10_000_00
   private static readonly DEFAULT_PLATFORM_FEE_FLOOR_CENTS = 0
 
