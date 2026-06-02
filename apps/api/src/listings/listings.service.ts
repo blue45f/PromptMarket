@@ -127,9 +127,11 @@ export class ListingsService {
     const sort = query.sort ?? 'newest'
 
     if (sort === 'top') {
-      // Need to compute avg rating; fetch all matching then sort in memory
+      // Need to compute avg rating; fetch all matching then sort in memory.
+      // Safety cap prevents full-table load when table is large.
       const all = await this.prisma.listing.findMany({
         where,
+        take: 5000,
         include: {
           author: { select: { id: true, username: true } },
           reviews: true,
@@ -371,9 +373,11 @@ export class ListingsService {
     if (existing.authorId !== userId) {
       throw new ForbiddenException('Not the owner of this listing')
     }
-    await this.prisma.review.deleteMany({ where: { listingId: id } })
-    await this.prisma.purchase.deleteMany({ where: { listingId: id } })
-    await this.prisma.listing.delete({ where: { id } })
+    await this.prisma.$transaction([
+      this.prisma.review.deleteMany({ where: { listingId: id } }),
+      this.prisma.purchase.deleteMany({ where: { listingId: id } }),
+      this.prisma.listing.delete({ where: { id } }),
+    ])
     return { ok: true }
   }
 }

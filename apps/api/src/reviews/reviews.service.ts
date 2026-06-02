@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 
 export interface CreateReviewInput {
@@ -46,22 +47,29 @@ export class ReviewsService {
       throw new ConflictException('You have already reviewed this listing')
     }
 
-    const review = await this.prisma.review.create({
-      data: {
-        userId,
-        listingId,
-        rating: input.rating,
-        comment: input.comment ?? null,
-      },
-      include: { user: { select: { id: true, username: true } } },
-    })
-    return {
-      id: review.id,
-      rating: review.rating,
-      comment: review.comment,
-      createdAt: review.createdAt,
-      user: review.user,
-      replies: [],
+    try {
+      const review = await this.prisma.review.create({
+        data: {
+          userId,
+          listingId,
+          rating: input.rating,
+          comment: input.comment ?? null,
+        },
+        include: { user: { select: { id: true, username: true } } },
+      })
+      return {
+        id: review.id,
+        rating: review.rating,
+        comment: review.comment,
+        createdAt: review.createdAt,
+        user: review.user,
+        replies: [],
+      }
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        throw new ConflictException('You have already reviewed this listing')
+      }
+      throw err
     }
   }
 

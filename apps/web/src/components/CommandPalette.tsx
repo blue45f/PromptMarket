@@ -141,8 +141,8 @@ export default function CommandPalette() {
     if (open) {
       setQ('')
       setActive(0)
-      // Focus the input on the next tick after Radix mounts it
-      requestAnimationFrame(() => inputRef.current?.focus())
+      const id = requestAnimationFrame(() => inputRef.current?.focus())
+      return () => cancelAnimationFrame(id)
     }
   }, [open])
 

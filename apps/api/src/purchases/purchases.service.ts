@@ -5,7 +5,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
+
+function isPrismaP2002(err: unknown): boolean {
+  return err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002'
+}
 
 @Injectable()
 export class PurchasesService {
@@ -147,22 +152,69 @@ export class PurchasesService {
 
     if (listing.priceCents === 0) {
       const split = this.splitRevenue(listing.priceCents, await this.getRevenuePolicy())
-      const [purchase] = await this.prisma.$transaction([
-        this.prisma.purchase.create({
+      try {
+        const [purchase] = await this.prisma.$transaction([
+          this.prisma.purchase.create({
+            data: {
+              userId,
+              listingId,
+              pricePaidCents: 0,
+              grossAmountCents: split.grossAmountCents,
+              sellerNetCents: split.sellerNetCents,
+              platformFeeCents: split.platformFeeCents,
+            },
+          }),
+          this.prisma.listing.update({
+            where: { id: listingId },
+            data: { downloads: { increment: 1 } },
+          }),
+        ])
+        return {
+          purchase: {
+            id: purchase.id,
+            listingId: purchase.listingId,
+            pricePaidCents: purchase.pricePaidCents,
+            grossAmountCents: purchase.grossAmountCents,
+            sellerNetCents: purchase.sellerNetCents,
+            platformFeeCents: purchase.platformFeeCents,
+            createdAt: purchase.createdAt,
+          },
+          body: listing.body,
+        }
+      } catch (err) {
+        if (isPrismaP2002(err)) throw new ConflictException('Already purchased')
+        throw err
+      }
+    }
+
+    const split = this.splitRevenue(listing.priceCents, await this.getRevenuePolicy())
+    try {
+      const purchase = await this.prisma.$transaction(async (tx) => {
+        const balanceUpdate = await tx.user.updateMany({
+          where: { id: userId, balanceCents: { gte: listing.priceCents } },
+          data: { balanceCents: { decrement: listing.priceCents } },
+        })
+        if (balanceUpdate.count === 0) throw new BadRequestException('Insufficient balance')
+        const newPurchase = await tx.purchase.create({
           data: {
             userId,
             listingId,
-            pricePaidCents: 0,
+            pricePaidCents: listing.priceCents,
             grossAmountCents: split.grossAmountCents,
             sellerNetCents: split.sellerNetCents,
             platformFeeCents: split.platformFeeCents,
           },
-        }),
-        this.prisma.listing.update({
+        })
+        await tx.user.update({
+          where: { id: listing.authorId },
+          data: { balanceCents: { increment: split.sellerNetCents } },
+        })
+        await tx.listing.update({
           where: { id: listingId },
           data: { downloads: { increment: 1 } },
-        }),
-      ])
+        })
+        return newPurchase
+      })
       return {
         purchase: {
           id: purchase.id,
@@ -175,52 +227,10 @@ export class PurchasesService {
         },
         body: listing.body,
       }
-    }
-
-    const buyer = await this.prisma.user.findUnique({ where: { id: userId } })
-    if (!buyer) throw new NotFoundException('Buyer not found')
-    if (buyer.balanceCents < listing.priceCents) {
-      throw new BadRequestException('Insufficient balance')
-    }
-
-    const split = this.splitRevenue(listing.priceCents, await this.getRevenuePolicy())
-
-    const [purchase] = await this.prisma.$transaction([
-      this.prisma.purchase.create({
-        data: {
-          userId,
-          listingId,
-          pricePaidCents: listing.priceCents,
-          grossAmountCents: split.grossAmountCents,
-          sellerNetCents: split.sellerNetCents,
-          platformFeeCents: split.platformFeeCents,
-        },
-      }),
-      this.prisma.user.update({
-        where: { id: userId },
-        data: { balanceCents: { decrement: listing.priceCents } },
-      }),
-      this.prisma.user.update({
-        where: { id: listing.authorId },
-        data: { balanceCents: { increment: split.sellerNetCents } },
-      }),
-      this.prisma.listing.update({
-        where: { id: listingId },
-        data: { downloads: { increment: 1 } },
-      }),
-    ])
-
-    return {
-      purchase: {
-        id: purchase.id,
-        listingId: purchase.listingId,
-        pricePaidCents: purchase.pricePaidCents,
-        grossAmountCents: purchase.grossAmountCents,
-        sellerNetCents: purchase.sellerNetCents,
-        platformFeeCents: purchase.platformFeeCents,
-        createdAt: purchase.createdAt,
-      },
-      body: listing.body,
+    } catch (err) {
+      if (err instanceof BadRequestException) throw err
+      if (isPrismaP2002(err)) throw new ConflictException('Already purchased')
+      throw err
     }
   }
 }
