@@ -23,7 +23,8 @@
     "reviews_one": "{{count}} review",
     "reviews_other": "{{count}} reviews",
     "ratingCount": "({{count}})",
-    "more": "+{{count}}"
+    "more": "+{{count}}",
+    "unknownAuthor": "unknown"
   },
   "search": {
     "placeholder": "Search prompts, agents, skills…",

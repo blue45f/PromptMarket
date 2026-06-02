@@ -43,6 +43,20 @@ export default function StarRating({
         }
         aria-describedby={interactive ? ariaDescribedBy : undefined}
         onMouseLeave={() => setHover(null)}
+        onKeyDown={
+          interactive
+            ? (e) => {
+                const current = Math.round(value ?? 0) || 1
+                if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+                  e.preventDefault()
+                  onChange?.(Math.min(5, current + 1))
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+                  e.preventDefault()
+                  onChange?.(Math.max(1, current - 1))
+                }
+              }
+            : undefined
+        }
       >
         {[1, 2, 3, 4, 5].map((n) => {
           const filled = n <= Math.round(displayed)
@@ -65,6 +79,7 @@ export default function StarRating({
               key={n}
               type="button"
               role="radio"
+              tabIndex={n === (Math.round(value ?? 0) || 1) ? 0 : -1}
               aria-checked={n <= Math.round(value ?? 0)}
               onMouseEnter={() => setHover(n)}
               onClick={() => onChange?.(n)}

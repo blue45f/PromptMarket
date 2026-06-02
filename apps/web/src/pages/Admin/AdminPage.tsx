@@ -568,7 +568,8 @@ export default function AdminPage() {
     if (nextPlatformFeeFloorCents !== settings.platformFeeFloorCents)
       patch.platformFeeFloorCents = nextPlatformFeeFloorCents
 
-    void updateFeeMutation.mutateAsync(patch)
+    if (Object.keys(patch).length === 0) return
+    updateFeeMutation.mutate(patch)
   }
 
   const premiumThresholdAmount = formatDollars(settings.premiumThresholdCents)

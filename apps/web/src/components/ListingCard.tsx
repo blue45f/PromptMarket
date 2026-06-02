@@ -136,7 +136,7 @@ const ListingCard = memo(function ListingCard({
           <div className="absolute top-3.5 left-3.5 right-3.5 flex items-start justify-between gap-2">
             <span className="tilt-parallax inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[0.65rem] font-mono uppercase tracking-[0.16em] bg-ink/85 text-bone">
               <span aria-hidden>{meta.emoji}</span>
-              {meta.label}
+              {t('types.' + listing.type, { defaultValue: meta.label })}
             </span>
             <span
               className={cn(
@@ -253,7 +253,7 @@ const ListingCard = memo(function ListingCard({
                 {listing.author?.username?.[0]?.toUpperCase() ?? '?'}
               </span>
               <span className="text-[0.78rem] text-ink-soft dark:text-bone-soft truncate">
-                @{listing.author?.username ?? 'unknown'}
+                @{listing.author?.username ?? t('labels.unknownAuthor')}
               </span>
             </div>
             <div className="flex items-center gap-2 shrink-0 text-[0.72rem] font-mono text-ink-mute dark:text-bone-mute">
