@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -48,6 +48,7 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
   const { t } = useTranslation('home')
   const drops = recentItems ?? []
   const spotlightRef = useSpotlight<HTMLDivElement>()
+  const phrases = useMemo(() => timeOfDayPhrases(t), [t])
 
   return (
     <section
@@ -82,7 +83,7 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
                 <span className="relative inline-flex w-2 h-2 rounded-full bg-volt-500 volt-pulse" />
                 {t('hero.badge')}
               </span>
-              <RotatingPhrase phrases={timeOfDayPhrases(t)} />
+              <RotatingPhrase phrases={phrases} />
             </div>
 
             <KineticHeadline t={t} />

@@ -268,6 +268,19 @@ export default function BrowsePage() {
     setCompareItems((current) => current.filter((item) => item.id !== id))
   }, [])
 
+  // Stable compare prop objects per item so memo(ListingCard) bails out correctly
+  // when unrelated parent state changes (filters, pagination, search query).
+  const compareSet = useMemo(() => new Set(compareItems.map((i) => i.id)), [compareItems])
+  const comparePropsMap = useMemo(() => {
+    const atLimit = compareSet.size >= 3
+    return new Map(
+      items.map((l) => {
+        const selected = compareSet.has(l.id)
+        return [l.id, { selected, disabled: atLimit && !selected, onToggle: toggleCompare }]
+      })
+    )
+  }, [items, compareSet, toggleCompare])
+
   // Persist non-trivial filter combinations into the recent-filters store
   // so visitors can jump back without re-applying chip by chip.
   useEffect(() => {
@@ -558,17 +571,7 @@ export default function BrowsePage() {
               <div className="cards-fluid">
                 {items.map((l) => (
                   <div key={l.id} data-browse-card>
-                    <ListingCard
-                      listing={l}
-                      highlight={q}
-                      compare={{
-                        selected: compareItems.some((item) => item.id === l.id),
-                        disabled:
-                          compareItems.length >= 3 &&
-                          !compareItems.some((item) => item.id === l.id),
-                        onToggle: toggleCompare,
-                      }}
-                    />
+                    <ListingCard listing={l} highlight={q} compare={comparePropsMap.get(l.id)} />
                   </div>
                 ))}
               </div>

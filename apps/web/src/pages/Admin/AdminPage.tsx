@@ -237,17 +237,19 @@ function historyDisplayValue(key: string, value: number): string {
   return formatDollars(value)
 }
 
+const historyDateFmt = new Intl.DateTimeFormat(undefined, {
+  year: 'numeric',
+  month: 'short',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+})
+
 function formatHistoryUpdatedAt(updatedAt: string | null): string {
   if (!updatedAt) return ''
   const parsed = new Date(updatedAt)
   if (Number.isNaN(parsed.getTime())) return updatedAt
-  return new Intl.DateTimeFormat(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(parsed)
+  return historyDateFmt.format(parsed)
 }
 
 export default function AdminPage() {
@@ -420,8 +422,14 @@ export default function AdminPage() {
     0,
     Math.round((monthlyOrderCount * monthlyPaidRatio) / 100)
   )
-  const scenarioOrderAmountsParsed = scenarioOrderAmounts.map(parseIntegerInput)
-  const scenarioOrderWeightsParsed = scenarioOrderWeights.map(parsePositiveFloatInput)
+  const scenarioOrderAmountsParsed = useMemo(
+    () => scenarioOrderAmounts.map(parseIntegerInput),
+    [scenarioOrderAmounts]
+  )
+  const scenarioOrderWeightsParsed = useMemo(
+    () => scenarioOrderWeights.map(parsePositiveFloatInput),
+    [scenarioOrderWeights]
+  )
 
   const scenarioRows = useMemo(() => {
     return scenarioOrderAmountsParsed.map((amount) => {

@@ -402,7 +402,7 @@ function WishlistTab() {
   const [clearPending, setClearPending] = useState(false)
 
   // Cap the visible slugs to prevent a 200-request fan-out
-  const visibleSlugs = slugs.slice(0, WISHLIST_PAGE_LIMIT)
+  const visibleSlugs = useMemo(() => slugs.slice(0, WISHLIST_PAGE_LIMIT), [slugs])
   const isCapped = slugs.length > WISHLIST_PAGE_LIMIT
 
   const results = useQueries({
