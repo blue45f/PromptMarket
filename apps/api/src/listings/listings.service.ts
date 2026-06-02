@@ -139,16 +139,20 @@ export class ListingsService {
     const sort = query.sort ?? 'newest'
 
     if (sort === 'top') {
-      // Need to compute avg rating; fetch all matching then sort in memory.
-      // Safety cap prevents full-table load when table is large.
-      const all = await this.prisma.listing.findMany({
-        where,
-        take: 5000,
-        include: {
-          author: { select: { id: true, username: true } },
-          reviews: true,
-        },
-      })
+      // Compute avg rating in memory; cap fetch at 5000 rows to avoid OOM.
+      // Total count is queried separately so pagination metadata is always accurate.
+      const [all, total] = await Promise.all([
+        this.prisma.listing.findMany({
+          where,
+          take: 5000,
+          orderBy: [{ downloads: 'desc' }, { createdAt: 'desc' }],
+          include: {
+            author: { select: { id: true, username: true } },
+            reviews: true,
+          },
+        }),
+        this.prisma.listing.count({ where }),
+      ])
       const scored = all.map((l) => {
         const ratings = l.reviews.map((r) => r.rating)
         const avg = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0
@@ -158,7 +162,6 @@ export class ListingsService {
         if (b.avg !== a.avg) return b.avg - a.avg
         return b.listing.createdAt.getTime() - a.listing.createdAt.getTime()
       })
-      const total = scored.length
       const sliced = scored.slice((page - 1) * pageSize, page * pageSize)
       return {
         items: sliced.map((s) => this.serializeCard(s.listing)),

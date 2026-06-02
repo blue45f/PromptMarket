@@ -125,9 +125,10 @@ describe('PurchasesService.purchase', () => {
       },
       body: 'PROMPT BODY',
     })
-    const tx = (prisma as unknown as { $transaction: ReturnType<typeof vi.fn> }).$transaction
-    expect(tx).toHaveBeenCalledTimes(1)
-    expect(tx.mock.calls[0][0]).toHaveLength(2)
+    const txSpy = (prisma as unknown as { $transaction: ReturnType<typeof vi.fn> }).$transaction
+    expect(txSpy).toHaveBeenCalledTimes(1)
+    // Free path uses interactive $transaction (callback form) to re-verify price inside tx
+    expect(typeof txSpy.mock.calls[0][0]).toBe('function')
     expect(
       (prisma as unknown as { user: { findUnique: ReturnType<typeof vi.fn> } }).user.findUnique
     ).not.toHaveBeenCalled()

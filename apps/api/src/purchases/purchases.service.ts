@@ -155,10 +155,19 @@ export class PurchasesService {
     }
 
     if (listing.priceCents === 0) {
-      const split = this.splitRevenue(listing.priceCents, await this.getRevenuePolicy())
+      const freePolicy = await this.getRevenuePolicy()
       try {
-        const [purchase] = await this.prisma.$transaction([
-          this.prisma.purchase.create({
+        const result = await this.prisma.$transaction(async (tx) => {
+          // Re-verify price inside tx to prevent free→paid TOCTOU
+          const liveListing = await tx.listing.findUnique({
+            where: { id: listingId },
+            select: { priceCents: true, body: true },
+          })
+          if (!liveListing) throw new NotFoundException('Listing not found')
+          if (liveListing.priceCents !== 0)
+            throw new BadRequestException('Listing is no longer free')
+          const split = this.splitRevenue(0, freePolicy)
+          const purchase = await tx.purchase.create({
             data: {
               userId,
               listingId,
@@ -167,26 +176,30 @@ export class PurchasesService {
               sellerNetCents: split.sellerNetCents,
               platformFeeCents: split.platformFeeCents,
             },
-          }),
-          this.prisma.listing.update({
+          })
+          await tx.listing.update({
             where: { id: listingId },
             data: { downloads: { increment: 1 } },
-          }),
-        ])
+          })
+          return { purchase, body: liveListing.body }
+        })
         return {
           purchase: {
-            id: purchase.id,
-            listingId: purchase.listingId,
-            pricePaidCents: purchase.pricePaidCents,
-            grossAmountCents: purchase.grossAmountCents,
-            sellerNetCents: purchase.sellerNetCents,
-            platformFeeCents: purchase.platformFeeCents,
-            createdAt: purchase.createdAt,
+            id: result.purchase.id,
+            listingId: result.purchase.listingId,
+            pricePaidCents: result.purchase.pricePaidCents,
+            grossAmountCents: result.purchase.grossAmountCents,
+            sellerNetCents: result.purchase.sellerNetCents,
+            platformFeeCents: result.purchase.platformFeeCents,
+            createdAt: result.purchase.createdAt,
           },
-          body: listing.body,
+          body: result.body,
         }
       } catch (err) {
+        if (err instanceof BadRequestException) throw err
+        if (err instanceof NotFoundException) throw err
         if (isPrismaP2002(err)) throw new ConflictException('Already purchased')
+        if (isPrismaP2025(err)) throw new NotFoundException('Listing not found')
         throw err
       }
     }
