@@ -1,6 +1,6 @@
 import { useId, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Braces, Layers3, ListChecks, Terminal, type LucideIcon } from 'lucide-react'
+import { Braces, Layers3, ListChecks, Terminal } from 'lucide-react'
 import type { ListingType } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
 
@@ -49,38 +49,35 @@ export default function ArtifactReadiness({
   const source = sourceState === 'full' ? body : sourceState === 'preview' ? previewBody : ''
   const variables = useMemo(() => extractTemplateVariables(source), [source])
 
-  const items: Array<{
-    key: string
-    Icon: LucideIcon
-    label: string
-    value: string
-    tone: string
-  }> = [
-    {
-      key: 'target',
-      Icon: Terminal,
-      label: t('readiness.labels.target'),
-      value: t(`readiness.targets.${type}`),
-      tone: 'bg-ink text-volt-300 dark:bg-volt-300 dark:text-ink',
-    },
-    {
-      key: 'scope',
-      Icon: ListChecks,
-      label: t('readiness.labels.scope'),
-      value: t(`readiness.scope.${sourceState}`),
-      tone: 'bg-canvas-deep text-ink-soft dark:bg-night-deep dark:text-bone-soft',
-    },
-    {
-      key: 'models',
-      Icon: Layers3,
-      label: t('readiness.labels.models'),
-      value:
-        modelCount > 0
-          ? t('readiness.models.count', { count: modelCount })
-          : t('readiness.models.any'),
-      tone: 'bg-iris/10 text-iris-deep dark:text-iris',
-    },
-  ]
+  const items = useMemo(
+    () => [
+      {
+        key: 'target',
+        Icon: Terminal,
+        label: t('readiness.labels.target'),
+        value: t(`readiness.targets.${type}`),
+        tone: 'bg-ink text-volt-300 dark:bg-volt-300 dark:text-ink',
+      },
+      {
+        key: 'scope',
+        Icon: ListChecks,
+        label: t('readiness.labels.scope'),
+        value: t(`readiness.scope.${sourceState}`),
+        tone: 'bg-canvas-deep text-ink-soft dark:bg-night-deep dark:text-bone-soft',
+      },
+      {
+        key: 'models',
+        Icon: Layers3,
+        label: t('readiness.labels.models'),
+        value:
+          modelCount > 0
+            ? t('readiness.models.count', { count: modelCount })
+            : t('readiness.models.any'),
+        tone: 'bg-iris/10 text-iris-deep dark:text-iris',
+      },
+    ],
+    [t, type, sourceState, modelCount]
+  )
 
   return (
     <section

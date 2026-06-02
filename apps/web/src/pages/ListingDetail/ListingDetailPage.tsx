@@ -229,6 +229,19 @@ export default function ListingDetailPage() {
   })
   const rating = watch('rating')
 
+  const ownReview = useMemo(
+    () =>
+      reviews.find((r) => {
+        const author = r.user ?? r.author
+        return user && author?.id === user.id
+      }),
+    [reviews, user]
+  )
+  const totalReplyCount = useMemo(
+    () => reviews.reduce((total, review) => total + (review.replies?.length ?? 0), 0),
+    [reviews]
+  )
+
   async function handlePurchase() {
     if (!listing) return
     if (!token) {
@@ -361,10 +374,6 @@ export default function ListingDetailPage() {
     )
   }
 
-  const ownReview = reviews.find((r) => {
-    const author = r.user ?? r.author
-    return user && author?.id === user.id
-  })
   const free = (listing.priceCents ?? 0) === 0
   const cannotAfford =
     !!token &&
@@ -378,10 +387,6 @@ export default function ListingDetailPage() {
   const reviewSubmitting = isSubmitting || reviewMut.isPending
   const replySubmitting = replyMut.isPending
   const models = listing.models ?? []
-  const totalReplyCount = reviews.reduce(
-    (total, review) => total + (review.replies?.length ?? 0),
-    0
-  )
   const reviewAverage = (listing.avgRating ?? 0).toFixed(1)
   const emptyReviewHint = isOwner
     ? t('reviews.emptyOwner')

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import i18n from '@/i18n'
+import { UserDto } from '@promptmarket/shared'
 import type {
   CreateListingInput,
   CreateReviewInput,
@@ -129,9 +130,10 @@ export function useMe() {
     queryFn: async () => {
       try {
         const data = (await api.get('/auth/me')) as Record<string, unknown>
-        // API returns the user object flat or nested; tolerate either shape.
-        const raw = (typeof data?.user === 'object' && data.user != null ? data.user : data) as User
-        const u: User = raw
+        const candidate = typeof data?.user === 'object' && data.user != null ? data.user : data
+        const parsed = UserDto.safeParse(candidate)
+        if (!parsed.success) throw new Error('Unexpected /auth/me shape')
+        const u: User = parsed.data
         setUser(u)
         return u
       } catch (err) {

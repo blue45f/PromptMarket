@@ -27,6 +27,7 @@ export interface User {
   isAdmin?: boolean
   bio?: string | null
   avatarUrl?: string | null
+  createdAt?: string
 }
 
 export interface Author {

@@ -17,30 +17,37 @@ const rtfCache = new Map<string, Intl.RelativeTimeFormat>()
 const nfCompactCache = new Map<string, Intl.NumberFormat>()
 
 function getRtf(locale: string): Intl.RelativeTimeFormat {
-  if (!rtfCache.has(locale)) {
-    rtfCache.set(locale, new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }))
+  let fmt = rtfCache.get(locale)
+  if (!fmt) {
+    fmt = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
+    rtfCache.set(locale, fmt)
   }
-  return rtfCache.get(locale)!
+  return fmt
 }
 
 function getNfCompact(locale: string): Intl.NumberFormat {
-  if (!nfCompactCache.has(locale)) {
-    nfCompactCache.set(
-      locale,
-      new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 })
-    )
+  let fmt = nfCompactCache.get(locale)
+  if (!fmt) {
+    fmt = new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1 })
+    nfCompactCache.set(locale, fmt)
   }
-  return nfCompactCache.get(locale)!
+  return fmt
+}
+
+const dtfDateCache = new Map<string, Intl.DateTimeFormat>()
+function getDtfDate(locale: string): Intl.DateTimeFormat {
+  let fmt = dtfDateCache.get(locale)
+  if (!fmt) {
+    fmt = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short', day: 'numeric' })
+    dtfDateCache.set(locale, fmt)
+  }
+  return fmt
 }
 
 export function formatDate(input: string | Date): string {
   const d = typeof input === 'string' ? new Date(input) : input
   if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleDateString(activeIntlLocale(), {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
+  return getDtfDate(activeIntlLocale()).format(d)
 }
 
 /** Relative time ("3분 전", "yesterday") for activity timestamps where the

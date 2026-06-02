@@ -183,7 +183,7 @@ function formatMoneyInput(cents: number): string {
   return normalized.toString()
 }
 
-function buildScenarioOrderCounts(totalOrders: number, weights: number[]) {
+function buildScenarioOrderCounts(totalOrders: number, weights: number[]): number[] {
   const safeTotal = Math.max(0, Math.round(totalOrders))
   if (safeTotal <= 0 || weights.length === 0) return Array(weights.length).fill(0)
 

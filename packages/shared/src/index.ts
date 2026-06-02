@@ -492,13 +492,15 @@ export const typeEmoji = (t: ListingType) => LISTING_TYPE_META[t].emoji
 export const formatPrice = (cents: number) =>
   cents === 0 ? 'Free' : `$${(cents / 100).toFixed(2)}`
 
+const _usdFmt = new Intl.NumberFormat(undefined, {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+
 export const formatDollars = (cents: number) => {
   const dollars = (Number.isFinite(cents) ? cents : 0) / 100
   try {
-    return `$${new Intl.NumberFormat(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(dollars)}`
+    return `$${_usdFmt.format(dollars)}`
   } catch {
     return `$${dollars.toFixed(2)}`
   }

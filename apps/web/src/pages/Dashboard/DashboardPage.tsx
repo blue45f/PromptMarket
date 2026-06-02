@@ -405,13 +405,16 @@ function WishlistTab() {
   const visibleSlugs = useMemo(() => slugs.slice(0, WISHLIST_PAGE_LIMIT), [slugs])
   const isCapped = slugs.length > WISHLIST_PAGE_LIMIT
 
-  const results = useQueries({
-    queries: visibleSlugs.map((slug) => ({
-      queryKey: listingKey(slug),
-      queryFn: () => api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${slug}`),
-      staleTime: 10 * 60_000,
-    })),
-  })
+  const queries = useMemo(
+    () =>
+      visibleSlugs.map((slug) => ({
+        queryKey: listingKey(slug),
+        queryFn: () => api.get<ListingDetailResponse, ListingDetailResponse>(`/listings/${slug}`),
+        staleTime: 10 * 60_000,
+      })),
+    [visibleSlugs]
+  )
+  const results = useQueries({ queries })
   // Resolve each saved slug. A 404 means the listing was deleted, so it can be
   // pruned safely; transient errors (500/offline) are NOT treated as gone, to
   // avoid silently dropping saved items the user can still recover.
