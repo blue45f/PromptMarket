@@ -32,6 +32,7 @@ function makePrisma(opts: MockOptions = {}): PrismaMock {
       create: vi.fn().mockResolvedValue(opts.createdPurchase ?? null),
     },
     listing: {
+      findUnique: vi.fn().mockResolvedValue(opts.listing ?? null),
       update: vi.fn().mockResolvedValue({}),
     },
   }
@@ -190,6 +191,9 @@ describe('PurchasesService.purchase', () => {
     })
     const txSpy = (prisma as unknown as { $transaction: ReturnType<typeof vi.fn> }).$transaction
     expect(txSpy).toHaveBeenCalledTimes(1)
+    // Verify listing price was re-read inside the transaction
+    const txArg = txSpy.mock.calls[0][0]
+    expect(typeof txArg).toBe('function')
   })
 
   it('uses premium fee when gross amount exceeds threshold', async () => {

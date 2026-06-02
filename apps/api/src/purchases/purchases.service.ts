@@ -12,6 +12,10 @@ function isPrismaP2002(err: unknown): boolean {
   return err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002'
 }
 
+function isPrismaP2025(err: unknown): boolean {
+  return (err as { code?: string })?.code === 'P2025'
+}
+
 @Injectable()
 export class PurchasesService {
   constructor(private readonly prisma: PrismaService) {}
@@ -187,49 +191,59 @@ export class PurchasesService {
       }
     }
 
-    const split = this.splitRevenue(listing.priceCents, await this.getRevenuePolicy())
+    const policy = await this.getRevenuePolicy()
     try {
-      const purchase = await this.prisma.$transaction(async (tx) => {
+      const result = await this.prisma.$transaction(async (tx) => {
+        // Re-read listing inside transaction to prevent price TOCTOU
+        const liveListing = await tx.listing.findUnique({
+          where: { id: listingId },
+          select: { priceCents: true, authorId: true, body: true },
+        })
+        if (!liveListing) throw new NotFoundException('Listing not found')
+        const currentPrice = liveListing.priceCents
+        const split = this.splitRevenue(currentPrice, policy)
         const balanceUpdate = await tx.user.updateMany({
-          where: { id: userId, balanceCents: { gte: listing.priceCents } },
-          data: { balanceCents: { decrement: listing.priceCents } },
+          where: { id: userId, balanceCents: { gte: currentPrice } },
+          data: { balanceCents: { decrement: currentPrice } },
         })
         if (balanceUpdate.count === 0) throw new BadRequestException('Insufficient balance')
         const newPurchase = await tx.purchase.create({
           data: {
             userId,
             listingId,
-            pricePaidCents: listing.priceCents,
+            pricePaidCents: currentPrice,
             grossAmountCents: split.grossAmountCents,
             sellerNetCents: split.sellerNetCents,
             platformFeeCents: split.platformFeeCents,
           },
         })
         await tx.user.update({
-          where: { id: listing.authorId },
+          where: { id: liveListing.authorId },
           data: { balanceCents: { increment: split.sellerNetCents } },
         })
         await tx.listing.update({
           where: { id: listingId },
           data: { downloads: { increment: 1 } },
         })
-        return newPurchase
+        return { purchase: newPurchase, body: liveListing.body }
       })
       return {
         purchase: {
-          id: purchase.id,
-          listingId: purchase.listingId,
-          pricePaidCents: purchase.pricePaidCents,
-          grossAmountCents: purchase.grossAmountCents,
-          sellerNetCents: purchase.sellerNetCents,
-          platformFeeCents: purchase.platformFeeCents,
-          createdAt: purchase.createdAt,
+          id: result.purchase.id,
+          listingId: result.purchase.listingId,
+          pricePaidCents: result.purchase.pricePaidCents,
+          grossAmountCents: result.purchase.grossAmountCents,
+          sellerNetCents: result.purchase.sellerNetCents,
+          platformFeeCents: result.purchase.platformFeeCents,
+          createdAt: result.purchase.createdAt,
         },
-        body: listing.body,
+        body: result.body,
       }
     } catch (err) {
       if (err instanceof BadRequestException) throw err
+      if (err instanceof NotFoundException) throw err
       if (isPrismaP2002(err)) throw new ConflictException('Already purchased')
+      if (isPrismaP2025(err)) throw new NotFoundException('Listing not found')
       throw err
     }
   }

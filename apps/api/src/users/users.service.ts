@@ -85,26 +85,27 @@ export class UsersService {
     if (amountCents > 100000) {
       throw new BadRequestException('amountCents too large')
     }
-    const result = await this.prisma.user.updateMany({
-      where: {
-        id: userId,
-        balanceCents: { lte: UsersService.MAX_BALANCE_CENTS - amountCents },
-      },
-      data: { balanceCents: { increment: amountCents } },
-    })
-    if (result.count === 0) {
-      const exists = await this.prisma.user.findUnique({
-        where: { id: userId },
-        select: { id: true },
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          id: userId,
+          balanceCents: { lte: UsersService.MAX_BALANCE_CENTS - amountCents },
+        },
+        data: { balanceCents: { increment: amountCents } },
+        select: { balanceCents: true },
       })
-      if (!exists) throw new NotFoundException('User not found')
-      throw new BadRequestException('Balance cap exceeded')
+      return { balanceCents: user.balanceCents }
+    } catch (err: unknown) {
+      if ((err as { code?: string })?.code === 'P2025') {
+        const exists = await this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { id: true },
+        })
+        if (!exists) throw new NotFoundException('User not found')
+        throw new BadRequestException('Balance cap exceeded')
+      }
+      throw err
     }
-    const user = await this.prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-      select: { balanceCents: true },
-    })
-    return { balanceCents: user.balanceCents }
   }
 
   async myPurchases(userId: string) {
