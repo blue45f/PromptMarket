@@ -5,8 +5,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
+import { isPrismaP2002 } from '../prisma/prisma-errors'
 
 export interface CreateReviewInput {
   rating: number
@@ -66,7 +66,7 @@ export class ReviewsService {
         replies: [],
       }
     } catch (err) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+      if (isPrismaP2002(err)) {
         throw new ConflictException('You have already reviewed this listing')
       }
       throw err

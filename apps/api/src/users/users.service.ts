@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
+import { isPrismaP2025 } from '../prisma/prisma-errors'
 
 @Injectable()
 export class UsersService {
@@ -97,7 +98,7 @@ export class UsersService {
       })
       return { balanceCents: user.balanceCents }
     } catch (err: unknown) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+      if (isPrismaP2025(err)) {
         const exists = await this.prisma.user.findUnique({
           where: { id: userId },
           select: { id: true },
