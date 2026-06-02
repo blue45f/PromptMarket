@@ -8,8 +8,7 @@ function makePrisma(
   handlers: Partial<{
     userFindUnique: unknown
     userUpdate: unknown
-    userUpdateMany: { count: number }
-    userFindUniqueOrThrow: unknown
+    userUpdateThrowsP2025: boolean
     purchaseFindMany: unknown[]
     listingFindMany: unknown[]
   }> = {}
@@ -17,9 +16,13 @@ function makePrisma(
   return {
     user: {
       findUnique: vi.fn().mockResolvedValue(handlers.userFindUnique ?? null),
-      update: vi.fn().mockResolvedValue(handlers.userUpdate ?? null),
-      updateMany: vi.fn().mockResolvedValue(handlers.userUpdateMany ?? { count: 1 }),
-      findUniqueOrThrow: vi.fn().mockResolvedValue(handlers.userFindUniqueOrThrow ?? null),
+      update: vi.fn().mockImplementation(async () => {
+        if (handlers.userUpdateThrowsP2025) {
+          const err = Object.assign(new Error('Record not found'), { code: 'P2025' })
+          throw err
+        }
+        return handlers.userUpdate ?? null
+      }),
     },
     purchase: {
       findMany: vi.fn().mockResolvedValue(handlers.purchaseFindMany ?? []),
@@ -114,17 +117,16 @@ describe('UsersService.topUp', () => {
     await expect(svc.topUp('u1', amount as number)).rejects.toBeInstanceOf(BadRequestException)
   })
 
-  it('increments the balance via updateMany and returns the new balance', async () => {
+  it('increments the balance via update and returns the new balance', async () => {
     const prisma = makePrisma({
-      userUpdateMany: { count: 1 },
-      userFindUniqueOrThrow: { balanceCents: 1500 },
+      userUpdate: { balanceCents: 1500 },
     })
     const svc = new UsersService(prisma)
     const out = await svc.topUp('u1', 500)
     expect(out).toEqual({ balanceCents: 1500 })
-    const updateManySpy = (prisma as unknown as { user: { updateMany: ReturnType<typeof vi.fn> } })
-      .user.updateMany
-    expect(updateManySpy).toHaveBeenCalledWith(
+    const updateSpy = (prisma as unknown as { user: { update: ReturnType<typeof vi.fn> } }).user
+      .update
+    expect(updateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({ id: 'u1' }),
         data: { balanceCents: { increment: 500 } },
@@ -134,7 +136,7 @@ describe('UsersService.topUp', () => {
 
   it('throws BadRequestException when balance cap would be exceeded', async () => {
     const svc = new UsersService(
-      makePrisma({ userUpdateMany: { count: 0 }, userFindUnique: { id: 'u1' } })
+      makePrisma({ userUpdateThrowsP2025: true, userFindUnique: { id: 'u1' } })
     )
     await expect(svc.topUp('u1', 100)).rejects.toBeInstanceOf(BadRequestException)
   })
