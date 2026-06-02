@@ -221,6 +221,59 @@ describe('ListingsService.list vendor filter', () => {
   })
 })
 
+describe('ListingsService.list sort=top pagination cap', () => {
+  it('caps reported total to scored.length when DB count exceeds the 5000 in-memory window', async () => {
+    const rows = Array.from({ length: 3 }, (_, i) =>
+      buildListing({ id: `l${i}`, slug: `slug-${i}`, downloads: i, reviews: [] })
+    )
+    const count = vi.fn().mockResolvedValue(9999)
+    const findMany = vi.fn().mockResolvedValue(rows)
+    const prisma = { listing: { count, findMany } } as unknown as PrismaMock
+    const svc = new ListingsService(prisma)
+    const out = await svc.list({ sort: 'top', page: 1, pageSize: 12 } as never)
+    // DB reports 9999 but we only fetched 3; reported total must be 3
+    expect(out.total).toBe(3)
+    expect(out.totalPages).toBe(1)
+  })
+})
+
+describe('ListingsService.list modelSlugMatch', () => {
+  it('builds all 4 OR branches for exact CSV token matching', async () => {
+    const count = vi.fn().mockResolvedValue(0)
+    const findMany = vi.fn().mockResolvedValue([])
+    const prisma = { listing: { count, findMany } } as unknown as PrismaMock
+    const svc = new ListingsService(prisma)
+
+    await svc.list({ model: 'gpt-5' } as never)
+
+    const where = count.mock.calls[0][0].where
+    const slugFilter = where.AND?.find((c: Record<string, unknown>) => c.OR)
+    expect(slugFilter).toBeDefined()
+    expect(slugFilter.OR).toContainEqual({ models: { equals: 'gpt-5' } })
+    expect(slugFilter.OR).toContainEqual({ models: { startsWith: 'gpt-5,' } })
+    expect(slugFilter.OR).toContainEqual({ models: { endsWith: ',gpt-5' } })
+    expect(slugFilter.OR).toContainEqual({ models: { contains: ',gpt-5,' } })
+  })
+
+  it('does not match a partial slug token (e.g. gpt-5 must not hit gpt-5-turbo)', async () => {
+    const count = vi.fn().mockResolvedValue(0)
+    const findMany = vi.fn().mockResolvedValue([])
+    const prisma = { listing: { count, findMany } } as unknown as PrismaMock
+    const svc = new ListingsService(prisma)
+
+    await svc.list({ model: 'gpt-5' } as never)
+
+    const where = count.mock.calls[0][0].where
+    const slugFilter = where.AND?.find((c: Record<string, unknown>) => c.OR)
+    const orBranches: Array<{ models: Record<string, string> }> = slugFilter?.OR ?? []
+    // None of the 4 branches use bare `contains: 'gpt-5'` which would match 'gpt-5-turbo'
+    const hasLooseContains = orBranches.some(
+      (b) => b.models?.contains !== undefined && !b.models.contains.startsWith(',')
+    )
+    expect(hasLooseContains).toBe(false)
+  })
+})
+
 describe('ListingsService.list signal filters', () => {
   it('pushes trust signal filters into the database where clause', async () => {
     const count = vi.fn().mockResolvedValue(0)

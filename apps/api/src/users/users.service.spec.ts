@@ -1,4 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { describe, expect, it, vi } from 'vitest'
 import { UsersService } from './users.service'
 
@@ -18,8 +19,10 @@ function makePrisma(
       findUnique: vi.fn().mockResolvedValue(handlers.userFindUnique ?? null),
       update: vi.fn().mockImplementation(async () => {
         if (handlers.userUpdateThrowsP2025) {
-          const err = Object.assign(new Error('Record not found'), { code: 'P2025' })
-          throw err
+          throw new Prisma.PrismaClientKnownRequestError('Record not found', {
+            code: 'P2025',
+            clientVersion: '0.0.0',
+          })
         }
         return handlers.userUpdate ?? null
       }),

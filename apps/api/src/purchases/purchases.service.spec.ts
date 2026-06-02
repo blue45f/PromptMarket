@@ -11,6 +11,8 @@ type PrismaMock = ConstructorParameters<typeof PurchasesService>[0]
 
 interface MockOptions {
   listing?: unknown
+  /** Overrides what tx.listing.findUnique returns (defaults to listing). */
+  txListingFindUnique?: unknown
   existingPurchase?: unknown
   buyer?: unknown
   createdPurchase?: unknown
@@ -32,7 +34,11 @@ function makePrisma(opts: MockOptions = {}): PrismaMock {
       create: vi.fn().mockResolvedValue(opts.createdPurchase ?? null),
     },
     listing: {
-      findUnique: vi.fn().mockResolvedValue(opts.listing ?? null),
+      findUnique: vi
+        .fn()
+        .mockResolvedValue(
+          opts.txListingFindUnique !== undefined ? opts.txListingFindUnique : (opts.listing ?? null)
+        ),
       update: vi.fn().mockResolvedValue({}),
     },
   }
@@ -63,6 +69,7 @@ function makePrisma(opts: MockOptions = {}): PrismaMock {
       update: vi.fn(),
     },
     $transaction,
+    _tx: tx,
   } as unknown as PrismaMock
 }
 
@@ -132,6 +139,47 @@ describe('PurchasesService.purchase', () => {
     expect(
       (prisma as unknown as { user: { findUnique: ReturnType<typeof vi.fn> } }).user.findUnique
     ).not.toHaveBeenCalled()
+  })
+
+  it('throws BadRequestException when seller raises a free listing to paid inside the tx (TOCTOU guard)', async () => {
+    const prisma = makePrisma({
+      listing: { id: 'l1', authorId: 'author-1', priceCents: 0, body: 'FREE BODY' },
+      // tx re-reads and finds the price is now non-zero
+      txListingFindUnique: { priceCents: 500, body: 'NOW PAID' },
+    })
+    const svc = new PurchasesService(prisma)
+    await expect(svc.purchase('u1', 'l1')).rejects.toBeInstanceOf(BadRequestException)
+  })
+
+  it('records the correct platformFeeCents and sellerNetCents in the purchase row', async () => {
+    const createdAt = new Date('2026-05-28T11:00:00Z')
+    const prisma = makePrisma({
+      listing: {
+        id: 'l1',
+        authorId: 'author-1',
+        priceCents: 1500,
+        body: 'PAID BODY',
+      },
+      buyer: { id: 'u1', balanceCents: 5000 },
+      createdPurchase: {
+        id: 'p1',
+        listingId: 'l1',
+        pricePaidCents: 1500,
+        grossAmountCents: 1500,
+        sellerNetCents: 1245,
+        platformFeeCents: 255,
+        createdAt,
+      },
+    })
+    const svc = new PurchasesService(prisma)
+    await svc.purchase('u1', 'l1')
+    const txRef = (prisma as unknown as { _tx: { purchase: { create: ReturnType<typeof vi.fn> } } })
+      ._tx
+    const createData = txRef.purchase.create.mock.calls[0][0].data
+    // 1700 bps on 1500 cents = 255 platform fee, 1245 seller net
+    expect(createData.platformFeeCents).toBe(255)
+    expect(createData.sellerNetCents).toBe(1245)
+    expect(createData.grossAmountCents).toBe(1500)
   })
 
   it('rejects paid purchase when buyer has no balance record', async () => {

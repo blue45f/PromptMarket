@@ -162,13 +162,15 @@ export class ListingsService {
         if (b.avg !== a.avg) return b.avg - a.avg
         return b.listing.createdAt.getTime() - a.listing.createdAt.getTime()
       })
+      // Cap reported total to the in-memory window so pagination never advertises pages that would be empty.
+      const reportedTotal = Math.min(total, scored.length)
       const sliced = scored.slice((page - 1) * pageSize, page * pageSize)
       return {
         items: sliced.map((s) => this.serializeCard(s.listing)),
-        total,
+        total: reportedTotal,
         page,
         pageSize,
-        totalPages: Math.max(1, Math.ceil(total / pageSize)),
+        totalPages: Math.max(1, Math.ceil(reportedTotal / pageSize)),
       }
     }
 

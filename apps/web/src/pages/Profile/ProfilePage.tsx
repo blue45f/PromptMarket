@@ -12,7 +12,7 @@ import EmptyState from '@components/EmptyState'
 export default function ProfilePage() {
   const { t } = useTranslation('profile')
   const { username } = useParams<{ username: string }>()
-  const { data, isPending, error } = useUserProfile(username)
+  const { data, isPending, error, refetch } = useUserProfile(username)
   const { user: currentUser } = useAuthStore()
   const spotlightRef = useSpotlight<HTMLElement>()
 
@@ -49,13 +49,26 @@ export default function ProfilePage() {
         <p className="text-coral-deep dark:text-coral font-mono text-sm">
           {error ? getErrorMessage(error) : t('notFound')}
         </p>
+        {error && (
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line dark:border-night-line text-ink-soft dark:text-bone-soft font-mono text-xs uppercase tracking-[0.15em] hover:border-volt-500 hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
+          >
+            {t('error.retry')}
+          </button>
+        )}
       </div>
     )
   }
 
   return (
     <div className="animate-fade-in">
-      <section ref={spotlightRef} className="spotlight-host relative overflow-hidden isolate">
+      <section
+        ref={spotlightRef}
+        aria-labelledby="profile-hero-title"
+        className="spotlight-host relative overflow-hidden isolate"
+      >
         <div className="spotlight -z-10" aria-hidden />
         <div aria-hidden className="absolute inset-0 -z-20">
           <div className="absolute top-[-22%] left-[-12%] w-[55%] h-[60%] rounded-full bg-volt-200/60 dark:bg-volt-600/25 blur-3xl orb-drift" />
@@ -81,6 +94,7 @@ export default function ProfilePage() {
             </span>
             <div className="min-w-0 flex-1">
               <h1
+                id="profile-hero-title"
                 className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.035em] display-tight"
                 style={{ fontSize: 'var(--text-display-md)' }}
               >
@@ -107,7 +121,10 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1280px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2.5rem,5vw,4rem)]">
+      <section
+        aria-labelledby="profile-collection-title"
+        className="mx-auto max-w-[1280px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2.5rem,5vw,4rem)]"
+      >
         <div className="flex items-end justify-between gap-4 mb-7">
           <div className="space-y-1.5">
             <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
@@ -115,6 +132,7 @@ export default function ProfilePage() {
               {t('collection.eyebrow')}
             </p>
             <h2
+              id="profile-collection-title"
               className="font-display font-bold text-ink dark:text-bone leading-[0.95] tracking-[-0.03em] display-tight"
               style={{ fontSize: 'var(--text-display-sm)' }}
             >

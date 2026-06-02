@@ -4,6 +4,9 @@
     "description": "@{{name}}'s collection of listings."
   },
   "notFound": "We couldn't find that user.",
+  "error": {
+    "retry": "Try again"
+  },
   "eyebrow": "Maker profile",
   "stats": {
     "listings_one": "{{count}} listing",
