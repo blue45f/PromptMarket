@@ -10,6 +10,7 @@ build
 apps/api/prisma/dev.db
 apps/api/prisma/dev.db-journal
 apps/web/dist
+apps/web/storybook-static
 packages/shared/dist
 
 # Local dev artifacts — screenshots from browser-driven design verification

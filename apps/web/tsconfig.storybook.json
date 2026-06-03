@@ -1,0 +1,11 @@
+{
+  // Dedicated type-check pass for Storybook stories + .storybook config.
+  // Kept separate from the app's tsconfig.json so Storybook's vite/node-typed
+  // transitive deps never leak NodeJS globals into the app's strict DOM build.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vite/client"]
+  },
+  "include": [".storybook/**/*.ts", ".storybook/**/*.tsx", "src/**/*.stories.tsx"]
+}

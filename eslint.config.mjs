@@ -108,6 +108,27 @@ export default defineConfig([
     },
   },
 
+  // ── Storybook stories — a Story export is not a fast-refresh component ────
+  {
+    files: ['apps/web/src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+
+  // ── Storybook config (.storybook) — Node + ESM, no fast-refresh contract ──
+  {
+    files: ['apps/web/.storybook/**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: { ...globals.node, ...globals.browser, ...globals.es2022 },
+    },
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+
   // ── Root tooling / config files (Node, ESM or CJS) ───────────────────────
   {
     files: ['*.{js,mjs,cjs,ts}', 'scripts/**/*.{js,mjs,cjs}', '**/*.config.{js,mjs,cjs,ts}'],
