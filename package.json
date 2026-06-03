@@ -7,10 +7,6 @@
     "node": ">=22.12.0",
     "pnpm": ">=11"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "dev": "pnpm --filter @promptmarket/api --filter @promptmarket/web -r --parallel run dev",
     "prepare": "husky",
