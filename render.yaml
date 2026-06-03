@@ -1,0 +1,58 @@
+# Render Blueprint for the PromptMarket backend (NestJS API).
+#
+# This is the BACKEND counterpart to the existing frontend deploy
+# (.github/workflows/deploy-vercel-web.yml, which ships apps/web to Vercel).
+# The web SPA is hosted on Vercel; this blueprint hosts the API on Render.
+#
+# HOW TO USE (manual, one-time — Render Blueprints are not auto-applied by CI):
+#   1. In the Render dashboard: New > Blueprint, point it at this repo.
+#   2. Render reads this file, provisions the service + persistent disk.
+#   3. Fill in the `sync: false` secrets (JWT_SECRET, ALLOWED_ORIGINS) in the
+#      dashboard. The blueprint deliberately does NOT hard-code secrets.
+#   4. On the first deploy the `preDeployCommand` applies Prisma migrations to
+#      the SQLite file on the persistent disk; subsequent deploys re-run it
+#      (migrate deploy is idempotent).
+#
+# DATABASE NOTE (important, accurate to this repo):
+#   The runtime uses Prisma 7 with the better-sqlite3 driver adapter
+#   (apps/api/src/prisma/prisma.service.ts) — it is SQLite-only and coerces any
+#   DATABASE_URL to a `file:` path. So the API runs on SQLite even though
+#   docker-compose wires a local Postgres. On Render that SQLite file must live
+#   on a PERSISTENT DISK (below) or data is lost on every deploy/restart.
+#   To move to managed Postgres later you must swap the driver adapter first.
+
+services:
+  - type: web
+    name: promptmarket-api
+    runtime: docker
+    # Reuse the existing multi-stage production Dockerfile (node:22-alpine,
+    # prod-only deps via `pnpm deploy --prod`, CMD node dist/src/main.js).
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    plan: starter # free plan has no persistent disk; SQLite needs one
+    region: oregon
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /api/health # liveness endpoint added in apps/api/src/health
+    # Production image is pruned to prod deps only, so the Prisma CLI (a
+    # devDependency) is not present — fetch it on demand to apply migrations.
+    # The pruned package still ships apps/api/prisma (schema + migrations).
+    preDeployCommand: npx -y prisma@7 migrate deploy --schema ./prisma/schema.prisma
+    disk:
+      name: promptmarket-sqlite
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000 # Render routes external traffic to this port
+      - key: DATABASE_URL
+        # SQLite file on the persistent disk (survives deploys/restarts).
+        value: file:/app/data/prod.db
+      - key: JWT_SECRET
+        sync: false # set a strong secret in the Render dashboard
+      - key: ALLOWED_ORIGINS
+        # Comma-separated allowlist consumed by app.enableCors in main.ts.
+        # Set to your Vercel web origin(s), e.g. https://promptmarket.vercel.app
+        sync: false

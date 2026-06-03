@@ -1,0 +1,43 @@
+name: Deploy API to Render
+
+# Backend counterpart to deploy-vercel-web.yml. Mirrors the same "skip when the
+# secret is not configured" pattern so the workflow is safe to merge before the
+# maintainer wires up the provider. Render builds from render.yaml (Blueprint);
+# this job simply pings the service's deploy hook to trigger a new deploy.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/api/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'render.yaml'
+      - '.github/workflows/deploy-render-api.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+    steps:
+      - name: Skip deployment when Render deploy hook is not configured
+        if: env.RENDER_DEPLOY_HOOK_URL == ''
+        run: echo "RENDER_DEPLOY_HOOK_URL is not configured; skipping Render deployment."
+
+      - name: Trigger Render deploy
+        if: env.RENDER_DEPLOY_HOOK_URL != ''
+        run: |
+          status=$(curl -fsS -o /dev/null -w "%{http_code}" "$RENDER_DEPLOY_HOOK_URL")
+          echo "Render deploy hook responded with HTTP $status"

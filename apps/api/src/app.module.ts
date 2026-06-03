@@ -11,6 +11,7 @@ import { PurchasesModule } from './purchases/purchases.module'
 import { ReviewsModule } from './reviews/reviews.module'
 import { SeoModule } from './seo/seo.module'
 import { AdminModule } from './admin/admin.module'
+import { HealthModule } from './health/health.module'
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AdminModule } from './admin/admin.module'
     ReviewsModule,
     SeoModule,
     AdminModule,
+    HealthModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
