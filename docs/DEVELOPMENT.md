@@ -36,6 +36,15 @@
 - 스테이징/운영에 반영할 스키마 변경은 `apps/api/prisma/migrations`에 migration SQL을 남깁니다.
 - 기존 `db:push` 기반 DB를 migration 체계로 전환할 때는 baseline migration을 applied 상태로 표시한 뒤 `pnpm run db:migrate:deploy`를 사용합니다.
 
+## 배포와 헬스체크
+
+- 전체 배포 형상(프론트=Vercel, 백엔드=Render, 단일 호스트=docker-compose)과 필요한 시크릿/대시보드 절차는 `docs/DEPLOYMENT.md`를 따릅니다.
+- API에는 호스팅 헬스체크용 엔드포인트가 있습니다.
+  - `GET /api/health` — 의존성 없는 liveness 프로브.
+  - `GET /api/health/ready` — DB 연결을 확인하는 readiness 프로브(`SELECT 1`).
+- 두 라우트는 인증 가드가 없고 `@SkipThrottle()`이라 플랫폼 프로브가 레이트리밋에 걸리지 않습니다. 헬스 응답 형태를 바꾸면 `apps/api/src/health/health.service.spec.ts`도 함께 갱신합니다.
+- Docker 빌드 컨텍스트는 루트 `.dockerignore`로 슬림하게 유지합니다(`node_modules`/`dist`/`*.db`/`.env` 제외). 새 빌드 산출물·로컬 DB·시크릿 파일이 추가되면 이 목록도 점검합니다.
+
 ## PR 체크리스트
 
 - 변경 범위 요약

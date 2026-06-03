@@ -1,0 +1,38 @@
+# Keep the Docker build context small and free of host-only / secret files.
+# Applies to both apps/api/Dockerfile and apps/web/Dockerfile (build context is
+# the repo root in docker-compose.yml).
+
+# Dependencies & build output (rebuilt inside the image)
+**/node_modules
+**/dist
+**/build
+**/.turbo
+.turbo
+
+# Local SQLite databases and journals (never ship dev data into an image)
+**/*.db
+**/*.db-journal
+apps/api/dev.db
+apps/api/prisma/dev.db
+
+# Secrets & local env (image gets config via runtime env vars)
+**/.env
+**/.env.local
+.env
+.env.local
+
+# VCS / editor / OS noise
+.git
+.github
+.idea
+.vscode
+.husky
+*.log
+.DS_Store
+*.tsbuildinfo
+
+# Docs & test artifacts not needed at build time
+.playwright-mcp/
+**/*.png
+**/*.jpg
+**/*.jpeg
