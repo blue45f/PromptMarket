@@ -39,6 +39,10 @@
   "openMenu": "Open menu",
   "closeMenu": "Close menu",
   "skipToContent": "Skip to content",
+  "routeChange": {
+    "announce": "Navigated to {{title}}",
+    "announceGeneric": "Page changed"
+  },
   "footer": {
     "anthology": "Anthology · vol.01 · MMVI",
     "anthologyCycleLabel": "Cycle anthology label",

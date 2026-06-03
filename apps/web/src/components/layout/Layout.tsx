@@ -6,6 +6,7 @@ import Navbar from './Navbar'
 const CommandPalette = lazy(() => import('@components/CommandPalette'))
 import ShortcutsOverlay from '@components/ShortcutsOverlay'
 import ScrollToTop from '@components/ScrollToTop'
+import RouteAnnouncer from '@components/RouteAnnouncer'
 import { useMe, useStats } from '@features/marketplace/queries'
 import { useNavShortcuts } from '@hooks/useNavShortcuts'
 import { useSpotlight } from '@hooks/useSpotlight'
@@ -32,6 +33,9 @@ export default function Layout() {
         {t('skipToContent')}
       </a>
       <Navbar />
+      {/* Announces route changes to assistive tech and moves keyboard focus
+          to <main> on navigation. Renders a visually-hidden aria-live region. */}
+      <RouteAnnouncer />
       <Suspense fallback={null}>
         <CommandPalette />
       </Suspense>

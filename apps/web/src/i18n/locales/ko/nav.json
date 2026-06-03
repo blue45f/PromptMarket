@@ -37,6 +37,10 @@
   "openMenu": "메뉴 열기",
   "closeMenu": "메뉴 닫기",
   "skipToContent": "메인 콘텐츠로 건너뛰기",
+  "routeChange": {
+    "announce": "{{title}} 페이지로 이동했습니다",
+    "announceGeneric": "페이지가 바뀌었습니다"
+  },
   "footer": {
     "anthology": "앤솔로지 · vol.01 · MMVI",
     "anthologyCycleLabel": "앤솔로지 라벨 전환",
