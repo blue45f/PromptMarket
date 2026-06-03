@@ -27,5 +27,10 @@
       "@utils/*": ["./src/utils/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Stories are a dev-only tool. They pull Storybook's vite/node-typed deps,
+  // which would leak NodeJS globals (e.g. setTimeout → Timeout) into the app's
+  // strict DOM program. Type-check them in their own pass (tsconfig.storybook)
+  // and via `build-storybook`, keeping the app build hermetic.
+  "exclude": ["src/**/*.stories.tsx"]
 }
