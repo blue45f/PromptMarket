@@ -36,6 +36,13 @@ export default defineConfig([
       globals: { ...globals.browser, ...globals.es2022 },
     },
     rules: {
+      // 네이티브 window.confirm/alert/prompt 금지 — 브랜드 Dialog/Toast를 쓴다.
+      'no-restricted-globals': [
+        'error',
+        { name: 'confirm', message: '브랜드 확인 다이얼로그를 사용하세요 (window.confirm 금지).' },
+        { name: 'alert', message: 'Toast/Dialog를 사용하세요 (window.alert 금지).' },
+        { name: 'prompt', message: '입력 다이얼로그/폼을 사용하세요 (window.prompt 금지).' },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'warn',
