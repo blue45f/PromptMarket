@@ -4,6 +4,13 @@
 
 > 2026년 기준의 최신 스택인 **React 19** + **NestJS 11** + **Prisma 7**로 구축했으며, 공유 **Zod** 스키마 패키지로 API 계약의 단일 진실 공급원을 유지합니다.
 
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="PromptMarket 홈 — 마켓플레이스 그리드(타입별 커버·모델 배지·평점)" width="820" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/home-mobile.png" alt="PromptMarket 모바일 홈" width="240" />
+</p>
+
 ---
 
 ## 주요 기능
