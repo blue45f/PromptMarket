@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import compression from 'compression'
 import helmet from 'helmet'
 import { Logger } from 'nestjs-pino'
 import { ZodValidationPipe, cleanupOpenApiDoc } from 'nestjs-zod'
@@ -9,6 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true })
   app.useLogger(app.get(Logger))
 
+  app.use(compression())
   app.use(
     helmet({
       contentSecurityPolicy: {
