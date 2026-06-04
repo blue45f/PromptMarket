@@ -5,6 +5,13 @@
     "fallbackMessage": "We couldn't render this page.",
     "home": "Back home"
   },
+  "boundary": {
+    "eyebrow": "Runtime error",
+    "title": "We couldn't display this view",
+    "message": "Something unexpected happened. Try again or head back home.",
+    "retry": "Try again",
+    "home": "Back home"
+  },
   "notFound": {
     "metaTitle": "404 · This page isn't in the catalog · PromptMarket",
     "metaDescription": "The address is wrong or the page has moved. Browse the catalog or search fast with ⌘K.",
