@@ -294,6 +294,51 @@
     animation-delay: 0.42s;
   }
 
+  /* Skeleton shimmer — a directional sheen swept across loading blocks. Layered
+     over the existing animate-pulse so the surface reads as "data inbound"
+     rather than a flat opacity blink. The host keeps its tinted fill; this only
+     paints a travelling highlight, so it composites cleanly on either theme. */
+  @keyframes skeletonSweep {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0,
+      oklch(0.99 0.012 95 / 0.5) 50%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    animation: skeletonSweep 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    pointer-events: none;
+  }
+  html.dark .skeleton-shimmer::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0,
+      oklch(0.82 0.012 95 / 0.08) 50%,
+      transparent 100%
+    );
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-shimmer::after {
+      animation: none;
+      display: none;
+    }
+  }
+
   /* Pulse-glow on the live indicator dot */
   @keyframes voltPulse {
     0%,
@@ -684,6 +729,11 @@
     }
     .reveal {
       opacity: 1 !important;
+      transform: none !important;
+    }
+    /* Reveal-drawn rules (section overlines, wordmark bar) must show at full
+       width with no animation when motion is reduced. */
+    [data-bar] {
       transform: none !important;
     }
   }
