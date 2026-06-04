@@ -5,6 +5,13 @@
     "fallbackMessage": "페이지를 렌더할 수 없어요.",
     "home": "홈으로"
   },
+  "boundary": {
+    "eyebrow": "런타임 에러",
+    "title": "화면을 표시하지 못했어요",
+    "message": "예상치 못한 오류가 발생했어요. 다시 시도하거나 홈으로 돌아가 주세요.",
+    "retry": "다시 시도",
+    "home": "홈으로"
+  },
   "notFound": {
     "metaTitle": "404 · 이 페이지는 카탈로그에 없어요 · PromptMarket",
     "metaDescription": "주소가 잘못되었거나 페이지가 이동되었어요. 카탈로그를 둘러보거나 ⌘K로 빠르게 검색해 보세요.",
