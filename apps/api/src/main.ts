@@ -52,6 +52,10 @@ async function bootstrap() {
     jsonDocumentUrl: 'api/docs-json',
   })
 
+  // Let Nest run PrismaService.onModuleDestroy ($disconnect) on SIGTERM/SIGINT
+  // so Render shutdowns close the DB pool cleanly instead of leaking it.
+  app.enableShutdownHooks()
+
   const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
   await app.listen(port)
   console.log(`API listening on http://localhost:${port}/api`)
