@@ -27,14 +27,14 @@ export default function FeaturedCarousel({ items, loading }: FeaturedCarouselPro
       />
       <div
         tabIndex={0}
-        className="flex gap-4 lg:gap-5 overflow-x-auto snap-x snap-mandatory pb-5 scrollbar-hide"
+        className="flex gap-4 lg:gap-5 overflow-x-auto snap-x snap-mandatory pb-5 scrollbar-hide focus-volt rounded-[1.4rem] motion-safe:scroll-smooth"
         role="region"
         aria-label={t('carousel.aria')}
       >
         {loading
           ? Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="w-[280px] sm:w-[300px] shrink-0 snap-start">
-                <SkeletonCard />
+                <SkeletonCard seed={i} />
               </div>
             ))
           : items.map((l) => <ListingCard key={l.id} listing={l} fixedWidth />)}

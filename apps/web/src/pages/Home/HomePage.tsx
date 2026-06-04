@@ -96,7 +96,7 @@ export default function HomePage() {
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 auto-rows-[1fr]">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className={i === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}>
-                  <SkeletonCard />
+                  <SkeletonCard seed={i} />
                 </div>
               ))}
             </div>
@@ -293,7 +293,11 @@ function SectionHeader({
     >
       <div className="space-y-2">
         <p className="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-volt-700 dark:text-volt-300 inline-flex items-center gap-2">
-          <span aria-hidden className="w-6 h-px bg-volt-500" />
+          <span
+            aria-hidden
+            data-bar
+            className="w-6 h-px bg-volt-500 origin-left scale-x-0 motion-safe:transition-transform ease-expo motion-safe:duration-700"
+          />
           {chapter}
         </p>
         <h2
