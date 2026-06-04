@@ -1,17 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- PromptMarket sigil — lime "P" on a rotated cosmic-ink tile -->
-  <rect x="6" y="6" width="52" height="52" rx="14" fill="oklch(0.16 0.03 290)" />
-  <text
-    x="50%"
-    y="50%"
-    text-anchor="middle"
-    dominant-baseline="central"
-    fill="oklch(0.905 0.21 122)"
-    font-family="'Bricolage Grotesque', system-ui, sans-serif"
-    font-weight="800"
-    font-size="38"
-    letter-spacing="-2"
-  >P</text>
-  <!-- lime indicator dot bottom-right -->
-  <circle cx="52" cy="52" r="6" fill="oklch(0.83 0.23 124)" stroke="oklch(0.16 0.03 290)" stroke-width="2" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="PromptMarket">
+  <defs>
+    <linearGradient id="tile" x1="8" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#21183a" />
+      <stop offset="0.62" stop-color="#171329" />
+      <stop offset="1" stop-color="#0f1220" />
+    </linearGradient>
+    <linearGradient id="volt" x1="18" y1="14" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dff95f" />
+      <stop offset="1" stop-color="#62d55a" />
+    </linearGradient>
+  </defs>
+  <rect x="5" y="5" width="54" height="54" rx="15" fill="url(#tile)" />
+  <path d="M12 48L50 10" stroke="#f38a78" stroke-width="7" stroke-linecap="round" opacity="0.22" />
+  <path d="M20 15h17.5c8.5 0 14 5.1 14 12.6 0 7.7-5.9 12.8-14.8 12.8H30.6V51H20V15Zm10.6 9.1v12h6.3c3.7 0 6.1-2.2 6.1-6s-2.4-6-6.1-6h-6.3Z" fill="url(#volt)" />
+  <path d="M31 25h6c3.4 0 5.4 1.9 5.4 5.1 0 3.1-2.1 5-5.4 5h-6V25Z" fill="#18152a" opacity="0.9" />
+  <circle cx="51" cy="51" r="7" fill="#7ee85a" stroke="#171329" stroke-width="2.5" />
+  <path d="M47.5 51h7" stroke="#171329" stroke-width="1.8" stroke-linecap="round" />
 </svg>

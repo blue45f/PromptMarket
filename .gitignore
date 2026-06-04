@@ -17,5 +17,7 @@ packages/shared/dist
 *.png
 *.jpg
 *.jpeg
+# 단, README 문서용 스크린샷은 추적한다(위 *.png 무시의 예외)
+!docs/screenshots/*.png
 .playwright-mcp/
 apps/api/dev.db
