@@ -19,5 +19,7 @@ packages/shared/dist
 *.jpeg
 # 단, README 문서용 스크린샷은 추적한다(위 *.png 무시의 예외)
 !docs/screenshots/*.png
+# OG 공유 카드(소셜 미리보기)는 정적 자산이라 추적한다 — 미추적 시 프로덕션에서 og:image 404
+!apps/web/public/og.png
 .playwright-mcp/
 apps/api/dev.db

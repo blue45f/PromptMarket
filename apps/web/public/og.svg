@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="PromptMarket 공유 이미지">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#21183a" />
+      <stop offset="0.6" stop-color="#171329" />
+      <stop offset="1" stop-color="#0f1220" />
+    </linearGradient>
+    <linearGradient id="volt" x1="88" y1="120" x2="560" y2="380" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dff95f" />
+      <stop offset="1" stop-color="#62d55a" />
+    </linearGradient>
+    <linearGradient id="tile" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#21183a" />
+      <stop offset="0.62" stop-color="#171329" />
+      <stop offset="1" stop-color="#0f1220" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="1080" cy="92" r="240" fill="#dff95f" opacity="0.10" />
+  <circle cx="150" cy="560" r="220" fill="#f38a78" opacity="0.10" />
+  <path d="M0 524C220 460 380 588 560 524s320-70 640 14v92H0Z" fill="#0f1220" opacity="0.7" />
+
+  <!-- Brand logomark (PromptMarket icon) -->
+  <g transform="translate(88 74) scale(1.55)">
+    <rect x="5" y="5" width="54" height="54" rx="15" fill="url(#tile)" />
+    <rect x="6" y="6" width="52" height="52" rx="14" fill="none" stroke="#f9f3e8" opacity="0.12" />
+    <path d="M12 48L50 10" stroke="#f38a78" stroke-width="7" stroke-linecap="round" opacity="0.22" />
+    <path d="M20 15h17.5c8.5 0 14 5.1 14 12.6 0 7.7-5.9 12.8-14.8 12.8H30.6V51H20V15Zm10.6 9.1v12h6.3c3.7 0 6.1-2.2 6.1-6s-2.4-6-6.1-6h-6.3Z" fill="url(#volt)" />
+    <circle cx="51" cy="51" r="7" fill="#7ee85a" stroke="#171329" stroke-width="2.5" />
+    <path d="M47.5 51h7" stroke="#171329" stroke-width="1.8" stroke-linecap="round" />
+  </g>
+
+  <text x="190" y="118" fill="#f9f3e8" font-size="42" font-weight="800" font-family="Bricolage Grotesque, Pretendard, Apple SD Gothic Neo, system-ui, sans-serif">PromptMarket</text>
+  <text x="192" y="156" fill="#dff95f" font-size="20" font-weight="700" letter-spacing="6" font-family="JetBrains Mono, Space Grotesk, ui-monospace, monospace">PROMPTS · SKILLS · MCP · AGENTS</text>
+
+  <text x="88" y="296" fill="#f9f3e8" font-size="74" font-weight="800" letter-spacing="-2" font-family="Bricolage Grotesque, Apple SD Gothic Neo, Pretendard, system-ui, sans-serif">검증된 AI 프롬프트를,</text>
+  <text x="88" y="386" fill="#dff95f" font-size="78" font-weight="900" letter-spacing="-2" font-family="Bricolage Grotesque, Apple SD Gothic Neo, Pretendard, system-ui, sans-serif">바로 프로덕션으로.</text>
+
+  <text x="88" y="462" fill="#d8cfc0" font-size="29" font-weight="600" font-family="Pretendard, Hanken Grotesk, Apple SD Gothic Neo, system-ui, sans-serif">Claude · GPT-5 · Gemini로 프로덕션을 굽고 있는</text>
+  <text x="88" y="504" fill="#d8cfc0" font-size="29" font-weight="600" font-family="Pretendard, Hanken Grotesk, Apple SD Gothic Neo, system-ui, sans-serif">빌더들의 프롬프트 · 스킬 · MCP 서버 카탈로그.</text>
+
+  <circle cx="92" cy="566" r="4" fill="#dff95f" />
+  <text x="116" y="576" fill="#bcb1a3" font-size="23" font-weight="650" font-family="Pretendard, Hanken Grotesk, Apple SD Gothic Neo, system-ui, sans-serif">프롬프트 · CLAUDE.md · Claude Code 스킬 · MCP 서버 · 서브에이전트</text>
+</svg>

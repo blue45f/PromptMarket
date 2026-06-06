@@ -170,6 +170,7 @@ export default function ModelTabs() {
           </div>
         ) : items.length === 0 ? (
           <EmptyState
+            variant="discover"
             emoji="🛰️"
             title={t('models.emptyTitle', { family: activeLabel })}
             description={t('models.emptyDescription')}

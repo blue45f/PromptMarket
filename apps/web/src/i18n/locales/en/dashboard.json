@@ -25,6 +25,7 @@
     "empty": {
       "title": "You haven't listed anything yet",
       "description": "Publish your first listing and start earning.",
+      "hint": "List it free to build reputation first — you can change the price anytime.",
       "action": "Create your first listing"
     },
     "salesCount_one": "{{count}} sale",

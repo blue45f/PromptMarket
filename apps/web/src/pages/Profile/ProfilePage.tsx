@@ -144,9 +144,11 @@ export default function ProfilePage() {
         {listings.length === 0 ? (
           currentUser?.username === username ? (
             <EmptyState
+              variant="gated"
               emoji="🪺"
               title={t('empty.ownTitle')}
               description={t('empty.ownDescription')}
+              hint={t('empty.ownHint')}
               action={
                 <Link
                   to="/create"
@@ -157,7 +159,12 @@ export default function ProfilePage() {
               }
             />
           ) : (
-            <EmptyState emoji="🪺" title={t('empty.title')} description={t('empty.description')} />
+            <EmptyState
+              variant="discover"
+              emoji="🪺"
+              title={t('empty.title')}
+              description={t('empty.description')}
+            />
           )
         ) : (
           <div className="cards-fluid">
