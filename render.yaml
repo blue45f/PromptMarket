@@ -56,3 +56,6 @@ services:
         # Comma-separated allowlist consumed by app.enableCors in main.ts.
         # Set to your Vercel web origin(s), e.g. https://promptmarket.vercel.app
         sync: false
+      - key: GOOGLE_CLIENT_ID
+        # Google OAuth Web client id (public); empty -> Google button hidden.
+        sync: false

@@ -10,7 +10,9 @@ model User {
   id            String     @id @default(cuid())
   email         String     @unique
   username      String     @unique
-  passwordHash  String
+  passwordHash  String?    // null for OAuth-only accounts (e.g. Google sign-in)
+  provider      String     @default("local") // "local" | "google"
+  googleSub     String?    @unique // Google "sub" claim, set when an account is linked to Google
   isAdmin       Boolean    @default(false)
   bio           String?
   avatarUrl     String?

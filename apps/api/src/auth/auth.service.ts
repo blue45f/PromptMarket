@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import * as argon2 from 'argon2'
 import { PrismaService } from '../prisma/prisma.service'
@@ -10,7 +11,8 @@ import { LoginDto } from './dto/login.dto'
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwt: JwtService
+    private readonly jwt: JwtService,
+    private readonly config: ConfigService
   ) {}
 
   private signToken(user: { id: string; email: string; username: string; isAdmin: boolean }) {
@@ -58,7 +60,9 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     })
-    if (!user) {
+    // OAuth-only accounts (passwordHash null) cannot password-login; respond the
+    // same as a missing account so we never reveal that the email exists.
+    if (!user || !user.passwordHash) {
       throw new UnauthorizedException('Invalid credentials')
     }
     let ok: boolean
@@ -81,6 +85,71 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } })
     if (!user) throw new UnauthorizedException()
     return this.publicUser(user)
+  }
+
+  // Public config so the client can decide whether to show the Google button.
+  publicConfig() {
+    const googleClientId = this.config.get<string>('GOOGLE_CLIENT_ID')?.trim()
+    return { googleClientId: googleClientId ? googleClientId : null }
+  }
+
+  // Verify a Google ID token (GIS credential), then find-or-create the user by
+  // email and issue the same JWT as password login. The audience is always
+  // passed so the token must target our client, and email_verified is required.
+  async googleAuth(credential: string) {
+    const clientId = this.config.get<string>('GOOGLE_CLIENT_ID')?.trim()
+    if (!clientId) throw new UnauthorizedException('Google sign-in is not configured')
+
+    const { OAuth2Client } = await import('google-auth-library')
+    const client = new OAuth2Client(clientId)
+    let payload: import('google-auth-library').TokenPayload | undefined
+    try {
+      const ticket = await client.verifyIdToken({ idToken: credential, audience: clientId })
+      payload = ticket.getPayload()
+    } catch {
+      throw new UnauthorizedException('Google authentication failed')
+    }
+    if (!payload?.sub || !payload.email || !payload.email_verified) {
+      throw new UnauthorizedException('Google authentication failed')
+    }
+
+    const sub = payload.sub
+    const email = payload.email.toLowerCase()
+
+    const existing = await this.prisma.user.findUnique({ where: { email } })
+    if (existing) {
+      // Link the Google identity to the existing account on first use.
+      const user =
+        existing.googleSub === sub
+          ? existing
+          : await this.prisma.user.update({
+              where: { id: existing.id },
+              data: { googleSub: sub },
+            })
+      return { token: this.signToken(user), user: this.publicUser(user) }
+    }
+
+    const username = await this.uniqueUsername(payload.name ?? email.split('@')[0] ?? 'user')
+    const user = await this.prisma.user.create({
+      data: { email, username, provider: 'google', googleSub: sub, balanceCents: 0 },
+    })
+    return { token: this.signToken(user), user: this.publicUser(user) }
+  }
+
+  // Derive a unique username from a display name/email, appending a numeric
+  // suffix when the slug is already taken (username is unique + required).
+  private async uniqueUsername(seed: string) {
+    const base =
+      seed
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '')
+        .slice(0, 20) || 'user'
+    for (let i = 0; i < 50; i++) {
+      const candidate = i === 0 ? base : `${base}${i}`
+      const taken = await this.prisma.user.findUnique({ where: { username: candidate } })
+      if (!taken) return candidate
+    }
+    return `${base}${Date.now().toString(36)}`
   }
 
   private publicUser(user: {
