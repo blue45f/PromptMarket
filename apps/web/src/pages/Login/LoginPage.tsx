@@ -93,7 +93,7 @@ export default function LoginPage() {
   const [demoClicks, setDemoClicks] = useState(0)
   const demoReadiness = useMemo(
     () => [
-      { label: '데모 계정 선택', done: demoClicks > 0 },
+      { label: '시드 계정 선택', done: demoClicks > 0 },
       { label: '구매자/판매자 역할 비교', done: demoClicks >= 2 },
       { label: '약관 문구 확인', done: true },
     ],

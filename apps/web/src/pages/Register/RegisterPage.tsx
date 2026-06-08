@@ -38,7 +38,19 @@ export default function RegisterPage() {
     defaultValues: { email: '', username: '', password: '' },
   })
 
+  const [termsChecked, setTermsChecked] = useState({ service: false, privacy: false })
+  const [termsError, setTermsError] = useState(false)
+  const canSubmit = termsChecked.service && termsChecked.privacy
+  const busy = isSubmitting || registerMut.isPending
+
   const onSubmit = handleSubmit(async (values) => {
+    if (!canSubmit) {
+      setTermsError(true)
+      return
+    }
+
+    setTermsError(false)
+
     try {
       await registerMut.mutateAsync({
         email: values.email.trim(),
@@ -50,10 +62,6 @@ export default function RegisterPage() {
       /* toast handled in hook */
     }
   })
-
-  const [termsChecked, setTermsChecked] = useState({ service: false, privacy: false })
-  const canSubmit = termsChecked.service && termsChecked.privacy
-  const busy = isSubmitting || registerMut.isPending
 
   return (
     <AuthLayout
@@ -201,9 +209,10 @@ export default function RegisterPage() {
             <input
               type="checkbox"
               checked={termsChecked.service}
-              onChange={(event) =>
+              onChange={(event) => {
                 setTermsChecked((current) => ({ ...current, service: event.target.checked }))
-              }
+                if (event.target.checked && termsChecked.privacy) setTermsError(false)
+              }}
               className="mt-0.5"
             />
             <span>마켓 거래 규칙과 프롬프트 저작권·환불 기준을 확인했습니다.</span>
@@ -212,18 +221,25 @@ export default function RegisterPage() {
             <input
               type="checkbox"
               checked={termsChecked.privacy}
-              onChange={(event) =>
+              onChange={(event) => {
                 setTermsChecked((current) => ({ ...current, privacy: event.target.checked }))
-              }
+                if (event.target.checked && termsChecked.service) setTermsError(false)
+              }}
               className="mt-0.5"
             />
             <span>계정·결제·거래 알림에 필요한 개인정보 처리 범위를 확인했습니다.</span>
           </label>
+          {termsError && (
+            <p role="alert" className="mt-2 text-[0.76rem] text-coral-deep dark:text-coral">
+              두 확인 항목을 모두 체크해야 계정을 만들 수 있어요.
+            </p>
+          )}
         </div>
 
         <button
           type="submit"
-          disabled={busy || !canSubmit}
+          disabled={busy}
+          aria-disabled={!canSubmit ? true : undefined}
           className="group relative w-full inline-flex items-center justify-center gap-2 py-3 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight overflow-hidden motion-safe:transition ease-expo focus-volt disabled:opacity-60"
         >
           <span
