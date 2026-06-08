@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -50,6 +51,8 @@ export default function RegisterPage() {
     }
   })
 
+  const [termsChecked, setTermsChecked] = useState({ service: false, privacy: false })
+  const canSubmit = termsChecked.service && termsChecked.privacy
   const busy = isSubmitting || registerMut.isPending
 
   return (
@@ -192,9 +195,35 @@ export default function RegisterPage() {
           )}
         </div>
 
+        <div className="rounded-2xl border border-line dark:border-night-line bg-canvas/70 dark:bg-night/70 p-3 text-[0.78rem] text-ink-soft dark:text-bone-soft">
+          <p className="font-medium text-ink dark:text-bone mb-2">가입 전 확인</p>
+          <label className="flex items-start gap-2">
+            <input
+              type="checkbox"
+              checked={termsChecked.service}
+              onChange={(event) =>
+                setTermsChecked((current) => ({ ...current, service: event.target.checked }))
+              }
+              className="mt-0.5"
+            />
+            <span>마켓 거래 규칙과 프롬프트 저작권·환불 기준을 확인했습니다.</span>
+          </label>
+          <label className="mt-2 flex items-start gap-2">
+            <input
+              type="checkbox"
+              checked={termsChecked.privacy}
+              onChange={(event) =>
+                setTermsChecked((current) => ({ ...current, privacy: event.target.checked }))
+              }
+              className="mt-0.5"
+            />
+            <span>계정·결제·거래 알림에 필요한 개인정보 처리 범위를 확인했습니다.</span>
+          </label>
+        </div>
+
         <button
           type="submit"
-          disabled={busy}
+          disabled={busy || !canSubmit}
           className="group relative w-full inline-flex items-center justify-center gap-2 py-3 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight overflow-hidden motion-safe:transition ease-expo focus-volt disabled:opacity-60"
         >
           <span
