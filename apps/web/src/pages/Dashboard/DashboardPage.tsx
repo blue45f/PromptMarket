@@ -145,9 +145,11 @@ export default function DashboardPage() {
             <SkeletonGrid count={6} />
           ) : myListings.length === 0 ? (
             <EmptyState
+              variant="gated"
               emoji="🪺"
               title={t('listings.empty.title')}
               description={t('listings.empty.description')}
+              hint={t('listings.empty.hint')}
               action={
                 <Link
                   to="/sell"
@@ -354,6 +356,7 @@ function EmptyLibraryWithRecs() {
   return (
     <div className="space-y-7">
       <EmptyState
+        variant="discover"
         emoji="📚"
         title={t('library.empty.title')}
         description={t('library.empty.description')}
@@ -444,6 +447,7 @@ function WishlistTab() {
   if (slugs.length === 0) {
     return (
       <EmptyState
+        variant="discover"
         emoji="💗"
         title={t('wishlist.empty.title')}
         description={t('wishlist.empty.description')}

@@ -110,6 +110,7 @@ export default function HomePage() {
             <BentoFeatured items={featured} />
           ) : (
             <EmptyState
+              variant="discover"
               emoji="✨"
               title={t('featured.emptyTitle')}
               description={t('featured.emptyDescription')}
@@ -160,6 +161,7 @@ export default function HomePage() {
             </div>
           ) : (
             <EmptyState
+              variant="discover"
               emoji="🔥"
               title={t('trending.emptyTitle')}
               description={t('trending.emptyDescription')}

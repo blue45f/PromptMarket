@@ -22,6 +22,7 @@
     "description": "When this maker ships their first drop, it'll show up here.",
     "ownTitle": "Ship your first drop",
     "ownDescription": "Share a prompt, skill, or agent — and let other makers build with your work.",
+    "ownHint": "A battle-tested prompt, CLAUDE.md, or skill all work — most first drops take just a few minutes.",
     "createCta": "Create a listing"
   }
 }

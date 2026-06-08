@@ -12,6 +12,13 @@ interface PageMeta {
   canonical?: string
 }
 
+/**
+ * Site-wide share-card fallback. Mirrors the static og:image in index.html so
+ * routes that don't supply their own image still emit a large summary card on
+ * Slack / Kakao / Twitter / Facebook. Absolute URL because crawlers require it.
+ */
+const DEFAULT_OG_IMAGE = 'https://promptmarket.dev/og.png'
+
 function setMeta(selector: string, attr: 'content' | 'href', value: string | undefined) {
   if (typeof document === 'undefined') return
   let el = document.head.querySelector<HTMLMetaElement | HTMLLinkElement>(selector)
@@ -56,6 +63,18 @@ export function usePageMeta(meta: PageMeta) {
     const defaultTitle = i18n.t('home:meta.title')
     const defaultDescription = i18n.t('home:meta.description')
 
+    // Share image: per-route override, else the site-wide card. There's always
+    // an image, so the card stays summary_large_image across every route.
+    const ogImage = meta.ogImage ?? DEFAULT_OG_IMAGE
+
+    // og:url: prefer the page's canonical, else the live location (sans hash /
+    // query) so shares of any route resolve to a clean absolute URL.
+    const ogUrl =
+      meta.canonical ??
+      (typeof window !== 'undefined'
+        ? `${window.location.origin}${window.location.pathname}`
+        : undefined)
+
     // og:locale follows the active UI language (ko_KR / en_US) so social
     // crawlers and shares declare the right locale.
     setMeta('meta[property="og:locale"]', 'content', activeIntlLocale().replace('-', '_'))
@@ -67,19 +86,16 @@ export function usePageMeta(meta: PageMeta) {
       meta.ogDescription ?? meta.description ?? defaultDescription
     )
     setMeta('meta[property="og:type"]', 'content', meta.ogType ?? 'website')
-    setMeta('meta[property="og:image"]', 'content', meta.ogImage)
-    setMeta(
-      'meta[name="twitter:card"]',
-      'content',
-      meta.ogImage ? 'summary_large_image' : 'summary'
-    )
+    setMeta('meta[property="og:url"]', 'content', ogUrl)
+    setMeta('meta[property="og:image"]', 'content', ogImage)
+    setMeta('meta[name="twitter:card"]', 'content', 'summary_large_image')
     setMeta('meta[name="twitter:title"]', 'content', meta.ogTitle ?? meta.title ?? defaultTitle)
     setMeta(
       'meta[name="twitter:description"]',
       'content',
       meta.ogDescription ?? meta.description ?? defaultDescription
     )
-    setMeta('meta[name="twitter:image"]', 'content', meta.ogImage)
+    setMeta('meta[name="twitter:image"]', 'content', ogImage)
     setMeta('link[rel="canonical"]', 'href', meta.canonical)
 
     return () => {
