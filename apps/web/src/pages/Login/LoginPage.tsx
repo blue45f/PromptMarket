@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginSchema, type LoginInput } from '@promptmarket/shared'
 import { Loader2 } from 'lucide-react'
-import { useLogin } from '@features/marketplace/queries'
+import { useAuthConfig, useGoogleLogin, useLogin } from '@features/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
 import AuthLayout from '@components/AuthLayout'
+import GoogleSignInButton from '@components/GoogleSignInButton'
 import { cn } from '@utils/cn'
 
 interface LocationState {
@@ -33,7 +34,15 @@ export default function LoginPage() {
   const location = useLocation()
   const from = (location.state as LocationState | null)?.from ?? '/'
   const loginMut = useLogin()
+  const authConfig = useAuthConfig()
+  const googleLogin = useGoogleLogin()
   const { t } = useTranslation('auth')
+
+  const onGoogleCredential = (credential: string) => {
+    googleLogin.mutate(credential, {
+      onSuccess: () => navigate(from, { replace: true }),
+    })
+  }
 
   usePageMeta({
     title: t('login.meta.title'),
@@ -171,6 +180,22 @@ export default function LoginPage() {
           </span>
         </button>
       </form>
+
+      {authConfig.data?.googleClientId && (
+        <div className="mt-6">
+          <div className="flex items-center gap-3 text-[0.72rem] text-ink-mute dark:text-bone-mute">
+            <span className="h-px flex-1 bg-line dark:bg-night-line" />
+            {t('login.orDivider')}
+            <span className="h-px flex-1 bg-line dark:bg-night-line" />
+          </div>
+          <div className="mt-4">
+            <GoogleSignInButton
+              clientId={authConfig.data.googleClientId}
+              onCredential={onGoogleCredential}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="mt-6 pt-5 border-t border-line dark:border-night-line">
         <p className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute mb-2.5">

@@ -239,6 +239,12 @@ export const LoginSchema = z.object({
 })
 export type LoginInput = z.infer<typeof LoginSchema>
 
+// Google Identity Services ID token (the `credential` from the GIS callback).
+export const GoogleAuthSchema = z.object({
+  credential: z.string().min(1),
+})
+export type GoogleAuthInput = z.infer<typeof GoogleAuthSchema>
+
 export const UserDto = z.object({
   id: z.string(),
   email: z.string().email(),

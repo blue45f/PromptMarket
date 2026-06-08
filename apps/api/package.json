@@ -29,6 +29,7 @@
     "@promptmarket/shared": "workspace:*",
     "argon2": "^0.44.0",
     "compression": "^1.8.1",
+    "google-auth-library": "^10.7.0",
     "helmet": "^8.2.0",
     "nestjs-pino": "^4.6.1",
     "nestjs-zod": "^5.4.0",

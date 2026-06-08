@@ -45,6 +45,13 @@ function makeJwt(): JwtArg {
   return { sign: vi.fn().mockReturnValue('signed-token') } as unknown as JwtArg
 }
 
+type ConfigArg = ConstructorParameters<typeof AuthService>[2]
+
+// Password-path tests don't touch Google, so GOOGLE_CLIENT_ID can be undefined.
+function makeConfig(googleClientId?: string): ConfigArg {
+  return { get: vi.fn(() => googleClientId) } as unknown as ConfigArg
+}
+
 beforeEach(() => {
   vi.mocked(argon2.hash).mockClear()
   vi.mocked(argon2.verify).mockClear()
@@ -52,7 +59,7 @@ beforeEach(() => {
 
 describe('AuthService.register', () => {
   it('rejects when email or username already exists', async () => {
-    const svc = new AuthService(makePrisma({ findFirst: { id: 'taken' } }), makeJwt())
+    const svc = new AuthService(makePrisma({ findFirst: { id: 'taken' } }), makeJwt(), makeConfig())
     await expect(
       svc.register({
         email: 'a@b.com',
@@ -64,7 +71,7 @@ describe('AuthService.register', () => {
 
   it('hashes the password via argon2 before persisting', async () => {
     const prisma = makePrisma()
-    const svc = new AuthService(prisma, makeJwt())
+    const svc = new AuthService(prisma, makeJwt(), makeConfig())
     await svc.register({
       email: 'a@b.com',
       username: 'alex',
@@ -82,7 +89,7 @@ describe('AuthService.register', () => {
 
   it('returns a token + the public user (never the passwordHash)', async () => {
     const jwt = makeJwt()
-    const svc = new AuthService(makePrisma(), jwt)
+    const svc = new AuthService(makePrisma(), jwt, makeConfig())
     const out = await svc.register({
       email: 'a@b.com',
       username: 'alex',
@@ -109,14 +116,14 @@ describe('AuthService.register', () => {
 
 describe('AuthService.login', () => {
   it('returns 401 when the email is unknown', async () => {
-    const svc = new AuthService(makePrisma({ findUnique: null }), makeJwt())
+    const svc = new AuthService(makePrisma({ findUnique: null }), makeJwt(), makeConfig())
     await expect(svc.login({ email: 'no@one.com', password: 'x' } as never)).rejects.toBeInstanceOf(
       UnauthorizedException
     )
   })
 
   it('returns 401 when the password does not match', async () => {
-    const svc = new AuthService(makePrisma({ findUnique: baseUser }), makeJwt())
+    const svc = new AuthService(makePrisma({ findUnique: baseUser }), makeJwt(), makeConfig())
     await expect(
       svc.login({ email: 'a@b.com', password: 'wrong' } as never)
     ).rejects.toBeInstanceOf(UnauthorizedException)
@@ -124,14 +131,14 @@ describe('AuthService.login', () => {
 
   it('returns 401 even when argon2.verify throws (corrupt hash)', async () => {
     vi.mocked(argon2.verify).mockRejectedValueOnce(new Error('boom'))
-    const svc = new AuthService(makePrisma({ findUnique: baseUser }), makeJwt())
+    const svc = new AuthService(makePrisma({ findUnique: baseUser }), makeJwt(), makeConfig())
     await expect(
       svc.login({ email: 'a@b.com', password: 's3cret' } as never)
     ).rejects.toBeInstanceOf(UnauthorizedException)
   })
 
   it('returns a token + public user on success', async () => {
-    const svc = new AuthService(makePrisma({ findUnique: baseUser }), makeJwt())
+    const svc = new AuthService(makePrisma({ findUnique: baseUser }), makeJwt(), makeConfig())
     const out = await svc.login({
       email: 'a@b.com',
       password: 's3cret',
@@ -145,12 +152,12 @@ describe('AuthService.login', () => {
 
 describe('AuthService.me', () => {
   it('throws Unauthorized when the user is gone', async () => {
-    const svc = new AuthService(makePrisma({ findUnique: null }), makeJwt())
+    const svc = new AuthService(makePrisma({ findUnique: null }), makeJwt(), makeConfig())
     await expect(svc.me('u1')).rejects.toBeInstanceOf(UnauthorizedException)
   })
 
   it('returns the public user without the passwordHash', async () => {
-    const svc = new AuthService(makePrisma({ findUnique: baseUser }), makeJwt())
+    const svc = new AuthService(makePrisma({ findUnique: baseUser }), makeJwt(), makeConfig())
     const out = await svc.me('u1')
     expect(out).not.toHaveProperty('passwordHash')
     expect(out.id).toBe('u1')

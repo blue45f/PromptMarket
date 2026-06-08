@@ -200,6 +200,33 @@ export function useLogin() {
   })
 }
 
+// Public auth config (Google client id). null hides the Google button.
+export function useAuthConfig() {
+  return useQuery({
+    queryKey: ['auth', 'config'],
+    queryFn: () =>
+      api.get<{ googleClientId: string | null }, { googleClientId: string | null }>('/auth/config'),
+    staleTime: Infinity,
+  })
+}
+
+export function useGoogleLogin() {
+  const login = useAuthStore((s) => s.login)
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (credential: string) =>
+      api.post<AuthResponse, AuthResponse>('/auth/google', { credential }),
+    onSuccess: (res) => {
+      login(res.token, res.user)
+      qc.setQueryData(meKey, res.user)
+      toast.success(i18n.t('common:toasts.welcomeBack', { name: res.user.username }))
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err))
+    },
+  })
+}
+
 export function useRegister() {
   const login = useAuthStore((s) => s.login)
   const qc = useQueryClient()
