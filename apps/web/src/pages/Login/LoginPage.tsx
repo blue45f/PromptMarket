@@ -37,7 +37,9 @@ const appendDemoLog = (label: string, detail?: string) => {
       PROMPTMARKET_DEMO_LOG_KEY,
       JSON.stringify([...current, { at: Date.now(), label, detail }].slice(-40))
     )
-  } catch {}
+  } catch {
+    return
+  }
 }
 
 const DEMO_ACCOUNTS: Array<{ email: string; roleKey: string }> = [
