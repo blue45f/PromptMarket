@@ -7,7 +7,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { listingKey } from '@features/marketplace/queryKeys'
 import { api } from '@services/api'
 import type { ListingDetailResponse } from '@/types'
-import { LISTING_TYPE_META } from '@promptmarket/shared'
+import { LISTING_TYPE_META, MODELS } from '@promptmarket/shared'
 import { formatPrice } from '@utils/format'
 import { cn } from '@utils/cn'
 import { useSpotlight } from '@hooks/useSpotlight'
@@ -18,6 +18,12 @@ import StatsStrip from './StatsStrip'
  * spotlight, and a live "drops" marquee. The headline reveals letter-by-letter
  * via the .letter-in animation in index.css.
  * ------------------------------------------------------------------------- */
+
+/** Hero counts derived from the shared catalog (the same source the model
+ *  picker and type pickers render from), so the copy can never drift from
+ *  what the marketplace actually supports. */
+const MODEL_COUNT = MODELS.length
+const ARTIFACT_TYPE_COUNT = Object.keys(LISTING_TYPE_META).length
 
 const HEADLINE_TOKENS: Array<{
   textKey: string
@@ -123,7 +129,8 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
                 {t('hero.sellCta')}
               </Link>
               <span className="hidden sm:inline-flex items-center gap-2 ml-2 text-meta text-ink-mute dark:text-bone-mute font-mono">
-                <span aria-hidden>↓</span> {t('hero.modelCount')}
+                <span aria-hidden>↓</span>{' '}
+                {t('hero.modelCount', { models: MODEL_COUNT, types: ARTIFACT_TYPE_COUNT })}
               </span>
             </div>
 

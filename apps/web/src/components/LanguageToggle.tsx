@@ -16,7 +16,7 @@ export default function LanguageToggle() {
         <button
           type="button"
           aria-label={t('lang.switchLabel')}
-          className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub border border-transparent hover:border-line/70 dark:hover:border-night-line/60 focus-volt motion-safe:transition ease-expo active:scale-95"
+          className="relative inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub border border-transparent hover:border-line/70 dark:hover:border-night-line/60 focus-volt motion-safe:transition ease-expo active:scale-95 pointer-coarse:after:absolute pointer-coarse:after:-inset-1"
         >
           <Languages className="w-4 h-4" aria-hidden />
         </button>
