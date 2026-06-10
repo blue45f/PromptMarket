@@ -41,11 +41,15 @@ RUN GEN_SRC=$(node -e "const p=require.resolve('@prisma/client',{paths:['/repo/a
 FROM node:22-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
-RUN apk add --no-cache libc6-compat
-COPY --from=build /app ./
-RUN mkdir -p /app/data
+RUN apk add --no-cache libc6-compat \
+ && mkdir -p /app/data \
+ && chown -R node:node /app
+COPY --from=build --chown=node:node /app ./
+USER node
 ENV PORT=3000
 ENV DATABASE_URL=file:/app/data/prod.db
 EXPOSE 3000
 # main.ts: setGlobalPrefix('api'); JWT_SECRET env is required at runtime.
+# NOTE: the mounted volume at /app/data must be writable by uid 1000 (node) —
+# chown existing volume contents when upgrading from a root-run image.
 CMD ["node", "dist/src/main.js"]
