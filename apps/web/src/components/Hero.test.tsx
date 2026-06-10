@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { LISTING_TYPE_META, MODELS } from '@promptmarket/shared'
 import Hero from './Hero'
 
 vi.mock('@features/marketplace/queries', () => ({
@@ -49,6 +50,12 @@ describe('<Hero />', () => {
     render(withProviders(<Hero />))
     const link = screen.getByRole('link', { name: /프롬프트 판매하기/i })
     expect(link.getAttribute('href')).toBe('/sell')
+  })
+
+  it('derives the model/artifact counts in the hero copy from the shared catalog', () => {
+    render(withProviders(<Hero />))
+    const expected = `프론티어 모델 ${MODELS.length}종 · 아티팩트 ${Object.keys(LISTING_TYPE_META).length}종`
+    expect(screen.getByText(expected)).toBeTruthy()
   })
 
   it('shows a detail affordance inside the pauseable drops marquee', () => {

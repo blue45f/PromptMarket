@@ -125,7 +125,7 @@ export default function NotificationBell() {
         aria-label={triggerLabel}
         aria-expanded={open}
         aria-controls="notification-bell-panel"
-        className="relative inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:bg-canvas-sub dark:hover:bg-night-sub motion-safe:transition ease-expo focus-volt active:scale-95"
+        className="relative inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:text-ink dark:hover:text-bone hover:bg-canvas-sub dark:hover:bg-night-sub motion-safe:transition ease-expo focus-volt active:scale-95 pointer-coarse:after:absolute pointer-coarse:after:-inset-1"
       >
         {newCount ? (
           <BellRing className="w-4 h-4" aria-hidden />

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAuthStore } from '@store/auth'
@@ -99,5 +99,28 @@ describe('Navbar', () => {
     })
     render(withProviders(<Navbar />))
     expect(screen.queryByRole('link', { name: /관리자|admin/i })).toBeFalsy()
+  })
+
+  it('keeps the drawer panel in the DOM so aria-controls stays valid while closed', () => {
+    render(withProviders(<Navbar />))
+    const toggle = screen.getByRole('button', { name: /메뉴 열기|open menu/i })
+    const panel = document.getElementById('mobile-nav-panel')
+    expect(toggle.getAttribute('aria-controls')).toBe('mobile-nav-panel')
+    expect(panel).toBeTruthy()
+    expect(panel?.hidden).toBe(true)
+    expect(screen.queryByRole('navigation', { name: /모바일|mobile/i })).toBeNull()
+  })
+
+  it('opens the drawer from the toggle and closes it on Escape with focus restored', () => {
+    render(withProviders(<Navbar />))
+    const toggle = screen.getByRole('button', { name: /메뉴 열기|open menu/i })
+    fireEvent.click(toggle)
+    expect(screen.getByRole('navigation', { name: /모바일|mobile/i })).toBeTruthy()
+    expect(toggle.getAttribute('aria-expanded')).toBe('true')
+
+    fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' })
+    expect(screen.queryByRole('navigation', { name: /모바일|mobile/i })).toBeNull()
+    expect(toggle.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(toggle)
   })
 })

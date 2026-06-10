@@ -8,7 +8,7 @@
     "lead": "A collection built by people shipping production with Claude, GPT-5, and Gemini. Browse, buy, remix. A catalog that takes the agent era seriously.",
     "browseCta": "Browse the catalog",
     "sellCta": "Sell a prompt",
-    "modelCount": "21 frontier models · 8 artifact types",
+    "modelCount": "{{models}} frontier models · {{types}} artifact types",
     "headline": {
       "verified": "Verified",
       "prompts": "prompts,",

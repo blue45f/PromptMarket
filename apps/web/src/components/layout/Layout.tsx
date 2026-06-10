@@ -49,10 +49,20 @@ export default function Layout() {
   )
 }
 
+/* Mini-sitemap links keep their dense one-line look, but on coarse (touch)
+   pointers each one stretches to a ≥44px hit area; the px/-mx pair widens the
+   horizontal target into the column gap without shifting the visual rhythm. */
+const miniSitemapLinkClass =
+  'inline-flex items-center text-bone-mute hover:text-volt-300 motion-safe:transition ease-expo pointer-coarse:min-h-11 pointer-coarse:px-2 pointer-coarse:-mx-2'
+
 function SiteFooter() {
   const { t } = useTranslation('nav')
   const spotlightRef = useSpotlight<HTMLElement>()
   const { ref: wordmarkRef, revealed } = useReveal<HTMLDivElement>()
+  const TERMSDESK_BASE = 'https://termsdesk.vercel.app'
+  const TERMS_URL = `${TERMSDESK_BASE}/p/promptmarket/terms-of-service`
+  const PRIVACY_URL = `${TERMSDESK_BASE}/p/promptmarket/privacy-policy`
+  const SUPPORT_URL = `${TERMSDESK_BASE}/support/promptmarket`
   const miniSitemapLinks = [
     { to: '/', label: t('footer.sitemap.home') },
     { to: '/browse', label: t('footer.sitemap.browse') },
@@ -61,6 +71,13 @@ function SiteFooter() {
     { to: '/login', label: t('footer.sitemap.login') },
     { to: '/robots.txt', label: t('footer.sitemap.robots'), external: true },
     { to: '/sitemap.xml', label: t('footer.sitemap.sitemap'), external: true },
+    { to: TERMS_URL, label: t('footer.sitemap.terms'), external: true },
+    { to: PRIVACY_URL, label: t('footer.sitemap.privacy'), external: true },
+    {
+      to: `${SUPPORT_URL}?category=site-inquiry`,
+      label: t('footer.sitemap.support'),
+      external: true,
+    },
   ]
 
   return (
@@ -182,19 +199,11 @@ function SiteFooter() {
           >
             {miniSitemapLinks.map((link) =>
               link.external ? (
-                <a
-                  key={link.to}
-                  href={link.to}
-                  className="text-bone-mute hover:text-volt-300 motion-safe:transition ease-expo"
-                >
+                <a key={link.to} href={link.to} className={miniSitemapLinkClass}>
                   {link.label}
                 </a>
               ) : (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className="text-bone-mute hover:text-volt-300 motion-safe:transition ease-expo"
-                >
+                <Link key={link.to} to={link.to} className={miniSitemapLinkClass}>
                   {link.label}
                 </Link>
               )

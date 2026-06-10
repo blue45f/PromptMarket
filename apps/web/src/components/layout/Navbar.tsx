@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -51,13 +51,23 @@ export default function Navbar() {
   const { t } = useTranslation('nav')
   const { token, user, logout } = useAuthStore()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const mobileToggleRef = useRef<HTMLButtonElement>(null)
 
-  // Close the mobile menu on route changes
+  // Lock body scroll and close on Escape while the mobile menu is open
   useEffect(() => {
     if (!mobileOpen) return
     document.body.style.overflow = 'hidden'
+
+    function onEscape(e: KeyboardEvent) {
+      if (e.key !== 'Escape') return
+      setMobileOpen(false)
+      mobileToggleRef.current?.focus()
+    }
+
+    document.addEventListener('keydown', onEscape)
     return () => {
       document.body.style.overflow = ''
+      document.removeEventListener('keydown', onEscape)
     }
   }, [mobileOpen])
 
@@ -90,7 +100,10 @@ export default function Navbar() {
             P
             <span className="absolute -bottom-1 -right-1 w-2.5 h-2.5 rounded-full bg-volt-500 ring-2 ring-canvas dark:ring-night volt-pulse" />
           </span>
-          <span className="font-display font-bold text-[1.05rem] text-ink dark:text-bone tracking-tight display-tight">
+          {/* Wordmark — visually hidden below 400px so the signed-in icon
+              cluster fits a 360px viewport without horizontal overflow;
+              sr-only keeps the link's accessible name intact. */}
+          <span className="sr-only min-[400px]:not-sr-only font-display font-bold text-[1.05rem] text-ink dark:text-bone tracking-tight display-tight">
             PromptMarket
           </span>
         </Link>
@@ -212,18 +225,20 @@ export default function Navbar() {
           )}
         </nav>
 
-        {/* Mobile */}
-        <div className="ml-auto md:hidden flex items-center gap-1">
+        {/* Mobile — gap-2 keeps the 44px coarse-pointer hit areas of adjacent
+            icon buttons from overlapping (36px button + 4px slop each side) */}
+        <div className="ml-auto md:hidden flex items-center gap-2">
           {token && <NotificationBell />}
           <LanguageToggle />
           <ThemeToggle />
           <button
+            ref={mobileToggleRef}
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? t('closeMenu') : t('openMenu')}
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav-panel"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub focus-volt motion-safe:transition ease-expo active:scale-95"
+            className="relative inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-soft dark:text-bone-soft hover:bg-canvas-deep dark:hover:bg-night-sub focus-volt motion-safe:transition ease-expo active:scale-95 pointer-coarse:after:absolute pointer-coarse:after:-inset-1"
           >
             {mobileOpen ? (
               <X aria-hidden className="w-4 h-4" />
@@ -234,92 +249,91 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div
-          id="mobile-nav-panel"
-          className="md:hidden border-t border-line dark:border-night-line bg-canvas dark:bg-night animate-fade-in"
-        >
-          <div className="px-[clamp(1.25rem,4vw,3rem)] py-4 space-y-3">
-            <SearchBar onSubmit={handleSearch} />
-            <nav
-              aria-label={t('mobileLabel')}
-              className="flex flex-col text-[0.95rem] font-medium font-display divide-y divide-line dark:divide-night-line"
+      {/* Mobile drawer — always rendered so aria-controls stays valid while closed */}
+      <div
+        id="mobile-nav-panel"
+        hidden={!mobileOpen}
+        className="md:hidden border-t border-line dark:border-night-line bg-canvas dark:bg-night animate-fade-in"
+      >
+        <div className="px-[clamp(1.25rem,4vw,3rem)] py-4 space-y-3">
+          <SearchBar onSubmit={handleSearch} />
+          <nav
+            aria-label={t('mobileLabel')}
+            className="flex flex-col text-[0.95rem] font-medium font-display divide-y divide-line dark:divide-night-line"
+          >
+            <Link
+              onClick={() => setMobileOpen(false)}
+              to="/browse"
+              className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
             >
+              {t('browse')} <span aria-hidden>→</span>
+            </Link>
+            {token && (
               <Link
                 onClick={() => setMobileOpen(false)}
-                to="/browse"
+                to="/sell"
                 className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
               >
-                {t('browse')} <span aria-hidden>→</span>
+                {t('sellFull')} <span aria-hidden>→</span>
               </Link>
-              {token && (
+            )}
+            {token && (
+              <Link
+                onClick={() => setMobileOpen(false)}
+                to="/dashboard"
+                className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
+              >
+                {t('library')} <span aria-hidden>→</span>
+              </Link>
+            )}
+            {token && user?.isAdmin && (
+              <Link
+                onClick={() => setMobileOpen(false)}
+                to="/admin"
+                className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
+              >
+                {t('admin')} <span aria-hidden>→</span>
+              </Link>
+            )}
+            {token && user && (
+              <Link
+                onClick={() => setMobileOpen(false)}
+                to={`/users/${user.username}`}
+                className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
+              >
+                {t('profile')} <span aria-hidden>→</span>
+              </Link>
+            )}
+            {!token && (
+              <>
                 <Link
                   onClick={() => setMobileOpen(false)}
-                  to="/sell"
+                  to="/login"
                   className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
                 >
-                  {t('sellFull')} <span aria-hidden>→</span>
+                  {t('login')} <span aria-hidden>→</span>
                 </Link>
-              )}
-              {token && (
                 <Link
                   onClick={() => setMobileOpen(false)}
-                  to="/dashboard"
-                  className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
+                  to="/register"
+                  className="py-3 inline-flex items-center justify-between text-volt-700 dark:text-volt-300"
                 >
-                  {t('library')} <span aria-hidden>→</span>
+                  {t('register')} <span aria-hidden>→</span>
                 </Link>
-              )}
-              {token && user?.isAdmin && (
-                <Link
-                  onClick={() => setMobileOpen(false)}
-                  to="/admin"
-                  className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
-                >
-                  {t('admin')} <span aria-hidden>→</span>
-                </Link>
-              )}
-              {token && user && (
-                <Link
-                  onClick={() => setMobileOpen(false)}
-                  to={`/users/${user.username}`}
-                  className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
-                >
-                  {t('profile')} <span aria-hidden>→</span>
-                </Link>
-              )}
-              {!token && (
-                <>
-                  <Link
-                    onClick={() => setMobileOpen(false)}
-                    to="/login"
-                    className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
-                  >
-                    {t('login')} <span aria-hidden>→</span>
-                  </Link>
-                  <Link
-                    onClick={() => setMobileOpen(false)}
-                    to="/register"
-                    className="py-3 inline-flex items-center justify-between text-volt-700 dark:text-volt-300"
-                  >
-                    {t('register')} <span aria-hidden>→</span>
-                  </Link>
-                </>
-              )}
-              {token && (
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  className="py-3 inline-flex items-center justify-between text-coral-deep dark:text-coral"
-                >
-                  {t('logout')} <LogOut aria-hidden className="w-4 h-4" />
-                </button>
-              )}
-            </nav>
-          </div>
+              </>
+            )}
+            {token && (
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="py-3 inline-flex items-center justify-between text-coral-deep dark:text-coral"
+              >
+                {t('logout')} <LogOut aria-hidden className="w-4 h-4" />
+              </button>
+            )}
+          </nav>
         </div>
-      )}
+      </div>
     </header>
   )
 }

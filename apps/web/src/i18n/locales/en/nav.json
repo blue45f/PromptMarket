@@ -78,7 +78,10 @@
       "dashboard": "Dashboard",
       "login": "Log in",
       "robots": "Robots",
-      "sitemap": "Sitemap"
+      "sitemap": "Sitemap",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "support": "Support"
     }
   },
   "stats": {

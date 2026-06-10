@@ -8,7 +8,7 @@
     "lead": "Claude, GPT-5, Gemini로 프로덕션을 굽고 있는 빌더들이 만든 컬렉션. 둘러보고, 구매하고, 리믹스하세요. 에이전트 시대를 진지하게 다루는 카탈로그입니다.",
     "browseCta": "카탈로그 둘러보기",
     "sellCta": "프롬프트 판매하기",
-    "modelCount": "프론티어 모델 21종 · 아티팩트 8종",
+    "modelCount": "프론티어 모델 {{models}}종 · 아티팩트 {{types}}종",
     "headline": {
       "verified": "검증된",
       "prompts": "프롬프트,",

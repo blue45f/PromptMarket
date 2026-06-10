@@ -100,7 +100,7 @@ describe('Layout', () => {
     })
     const links = within(miniSitemap).getAllByRole('link')
 
-    expect(links).toHaveLength(7)
+    expect(links).toHaveLength(10)
     expect(links.map((link) => link.getAttribute('href'))).toEqual(
       expect.arrayContaining([
         '/browse',
@@ -110,8 +110,24 @@ describe('Layout', () => {
         '/',
         '/robots.txt',
         '/sitemap.xml',
+        'https://termsdesk.vercel.app/p/promptmarket/terms-of-service',
+        'https://termsdesk.vercel.app/p/promptmarket/privacy-policy',
+        'https://termsdesk.vercel.app/support/promptmarket?category=site-inquiry',
       ])
     )
+  })
+
+  it('gives every mini sitemap link a ≥44px hit area on coarse pointers', () => {
+    render(<TestLayout />)
+    const footer = screen.getByRole('contentinfo')
+    const miniSitemap = within(footer).getByRole('navigation', {
+      name: 'footer.sitemap.label',
+    })
+    const links = within(miniSitemap).getAllByRole('link')
+
+    for (const link of links) {
+      expect(link.className).toContain('pointer-coarse:min-h-11')
+    }
   })
 
   it('replays FooterLiveStats count-up when hovered', () => {
