@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { RegisterSchema, type RegisterInput } from '@promptmarket/shared'
 import { Loader2 } from 'lucide-react'
@@ -17,6 +17,9 @@ const inputClass = cn(
   'motion-safe:transition ease-expo',
   'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
 )
+const TERMSDESK_BASE = 'https://termsdesk.vercel.app'
+const TERMS_URL = `${TERMSDESK_BASE}/p/promptmarket/terms-of-service`
+const PRIVACY_URL = `${TERMSDESK_BASE}/p/promptmarket/privacy-policy`
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -208,7 +211,15 @@ export default function RegisterPage() {
         </button>
 
         <p className="text-[0.72rem] text-ink-mute dark:text-bone-mute leading-relaxed">
-          {t('register.terms')}
+          <Trans
+            i18nKey="register.terms"
+            components={{
+              terms: <a href={TERMS_URL} target="_blank" rel="noreferrer" className="underline" />,
+              privacy: (
+                <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="underline" />
+              ),
+            }}
+          />
         </p>
       </form>
     </AuthLayout>

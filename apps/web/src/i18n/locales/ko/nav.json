@@ -76,7 +76,10 @@
       "dashboard": "대시보드",
       "login": "로그인",
       "robots": "Robots",
-      "sitemap": "사이트맵"
+      "sitemap": "사이트맵",
+      "terms": "이용약관",
+      "privacy": "개인정보처리방침",
+      "support": "지원"
     }
   },
   "stats": {
