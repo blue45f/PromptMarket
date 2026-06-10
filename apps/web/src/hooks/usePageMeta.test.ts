@@ -78,7 +78,11 @@ describe('usePageMeta', () => {
   it('falls back to the site-wide og:image and a large card when none is supplied', () => {
     renderHook(() => usePageMeta({ title: 't' }))
     expect(metaContent('meta[name="twitter:card"]')).toBe('summary_large_image')
-    expect(metaContent('meta[property="og:image"]')).toBe('https://promptmarket.dev/og.png')
-    expect(metaContent('meta[name="twitter:image"]')).toBe('https://promptmarket.dev/og.png')
+    expect(metaContent('meta[property="og:image"]')).toBe(
+      'https://promptmarket-web.vercel.app/og.png'
+    )
+    expect(metaContent('meta[name="twitter:image"]')).toBe(
+      'https://promptmarket-web.vercel.app/og.png'
+    )
   })
 })

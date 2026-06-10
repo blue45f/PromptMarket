@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "corepack enable && pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @promptmarket/shared build && pnpm --filter @promptmarket/web build",
+  "outputDirectory": "apps/web/dist",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://promptmarket.3.107.235.143.nip.io/api/:path*"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "https://promptmarket.3.107.235.143.nip.io/api/seo/sitemap.xml"
+    },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

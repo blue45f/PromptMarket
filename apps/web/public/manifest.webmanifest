@@ -1,34 +1,25 @@
 {
   "name": "PromptMarket",
   "short_name": "PromptMarket",
-  "description": "검증된 AI 프롬프트, 스킬, MCP 서버, 에이전트 마켓플레이스.",
-  "lang": "ko",
+  "description": "프롬프트 마켓플레이스",
+  "lang": "ko-KR",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f9f3e8",
-  "theme_color": "#1a1230",
-  "categories": ["productivity", "developer", "shopping"],
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
   "icons": [
     {
       "src": "/icon.svg",
-      "sizes": "any",
+      "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "둘러보기",
-      "short_name": "둘러보기",
-      "url": "/browse",
-      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
     },
     {
-      "name": "프롬프트 판매",
-      "short_name": "판매",
-      "url": "/sell",
-      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }

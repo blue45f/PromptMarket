@@ -81,12 +81,12 @@ export default function EmptyState({
         title
       )}
       {description && (
-        <p className="mt-2 text-sm text-ink-mute dark:text-bone-mute max-w-md mx-auto leading-relaxed">
+        <p className="mt-2 text-sm text-ink-mute dark:text-bone-mute max-w-md mx-auto leading-relaxed [word-break:keep-all]">
           {description}
         </p>
       )}
       {hint && (
-        <p className="mt-3 text-[0.8rem] text-ink-soft dark:text-bone-soft max-w-md mx-auto leading-relaxed">
+        <p className="mt-3 text-[0.8rem] text-ink-soft dark:text-bone-soft max-w-md mx-auto leading-relaxed [word-break:keep-all]">
           {hint}
         </p>
       )}

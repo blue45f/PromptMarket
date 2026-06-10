@@ -15,7 +15,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="PromptMarket" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="canonical" href="https://promptmarket.dev/" />
+    <!-- canonical/og:url 정적 태그는 의도적으로 없다: SPA 폴백이 모든 딥링크에 이 문서를
+         서빙하므로, 정적 값이 있으면 비-JS 크롤러가 모든 경로를 홈으로 정규화해 버린다.
+         라우트별 canonical + og:url 은 src/hooks/usePageMeta.ts 가 런타임에 주입한다. -->
 
     <!-- Open Graph (Kakao·Facebook·Slack·Instagram 등 SNS 공유 미리보기).
          Facebook/Kakao 크롤러는 JS를 실행하지 않으므로 이 정적 기본값이 가장 중요하다.
@@ -27,8 +29,7 @@
       property="og:description"
       content="검증된 AI 프롬프트, 스킬, MCP 서버, 에이전트 마켓플레이스. 프론티어 모델로 프로덕션을 굽고 있는 빌더들의 카탈로그."
     />
-    <meta property="og:url" content="https://promptmarket.dev/" />
-    <meta property="og:image" content="https://promptmarket.dev/og.png" />
+    <meta property="og:image" content="https://promptmarket-web.vercel.app/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -44,7 +45,7 @@
       name="twitter:description"
       content="검증된 AI 프롬프트, 스킬, MCP 서버, 에이전트 마켓플레이스. 프론티어 모델로 프로덕션을 굽고 있는 빌더들의 카탈로그."
     />
-    <meta name="twitter:image" content="https://promptmarket.dev/og.png" />
+    <meta name="twitter:image" content="https://promptmarket-web.vercel.app/og.png" />
     <meta
       name="twitter:image:alt"
       content="PromptMarket — 검증된 AI 프롬프트·스킬·MCP·에이전트 마켓플레이스"
