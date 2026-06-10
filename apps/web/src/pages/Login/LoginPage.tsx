@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -22,6 +23,24 @@ const inputClass = cn(
   'motion-safe:transition ease-expo',
   'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
 )
+
+const PROMPTMARKET_DEMO_LOG_KEY = 'promptmarket-auth-demo-log-v1'
+
+const appendDemoLog = (label: string, detail?: string) => {
+  if (typeof window === 'undefined') return
+  try {
+    const raw = window.localStorage.getItem(PROMPTMARKET_DEMO_LOG_KEY)
+    const current = raw
+      ? (JSON.parse(raw) as Array<{ at: number; label: string; detail?: string }>)
+      : []
+    window.localStorage.setItem(
+      PROMPTMARKET_DEMO_LOG_KEY,
+      JSON.stringify([...current, { at: Date.now(), label, detail }].slice(-40))
+    )
+  } catch {
+    return
+  }
+}
 
 const DEMO_ACCOUNTS: Array<{ email: string; roleKey: string }> = [
   { email: 'alice@example.com', roleKey: 'demo.roles.seller' },
@@ -71,6 +90,18 @@ export default function LoginPage() {
     }
   })
 
+  const [demoClicks, setDemoClicks] = useState(0)
+  const demoReadiness = useMemo(
+    () => [
+      { label: '시드 계정 선택', done: demoClicks > 0 },
+      { label: '구매자/판매자 역할 비교', done: demoClicks >= 2 },
+      { label: '약관 문구 확인', done: true },
+    ],
+    [demoClicks]
+  )
+  const demoRate = Math.round(
+    (demoReadiness.filter((item) => item.done).length / demoReadiness.length) * 100
+  )
   const busy = isSubmitting || loginMut.isPending
 
   return (
@@ -209,6 +240,8 @@ export default function LoginPage() {
                 onClick={() => {
                   setValue('email', d.email, { shouldValidate: false })
                   setValue('password', 'password', { shouldValidate: false })
+                  setDemoClicks((count) => count + 1)
+                  appendDemoLog('데모 계정 선택', d.email)
                 }}
                 className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[0.78rem] border border-line dark:border-night-line bg-canvas dark:bg-night hover:border-volt-400 dark:hover:border-volt-500/60 text-ink-soft dark:text-bone-soft motion-safe:transition ease-expo focus-volt"
                 title={`${d.email} / password`}
@@ -220,6 +253,33 @@ export default function LoginPage() {
             </li>
           ))}
         </ul>
+        <div className="mt-4 rounded-2xl border border-line dark:border-night-line bg-canvas/80 dark:bg-night/80 p-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-ink-mute dark:text-bone-mute">
+              Demo checklist
+            </p>
+            <span className="font-mono text-xs text-ink dark:text-bone">{demoRate}%</span>
+          </div>
+          <div className="mt-2 grid gap-1.5">
+            {demoReadiness.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center justify-between rounded-xl border border-line/70 dark:border-night-line/70 px-2.5 py-1.5 text-[0.72rem]"
+              >
+                <span className="text-ink-soft dark:text-bone-soft">{item.label}</span>
+                <span
+                  className={
+                    item.done
+                      ? 'text-volt-600 dark:text-volt-300'
+                      : 'text-ink-mute dark:text-bone-mute'
+                  }
+                >
+                  {item.done ? '완료' : '대기'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </AuthLayout>
   )
