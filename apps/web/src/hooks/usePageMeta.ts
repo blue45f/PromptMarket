@@ -17,7 +17,7 @@ interface PageMeta {
  * routes that don't supply their own image still emit a large summary card on
  * Slack / Kakao / Twitter / Facebook. Absolute URL because crawlers require it.
  */
-const DEFAULT_OG_IMAGE = 'https://promptmarket.dev/og.png'
+const DEFAULT_OG_IMAGE = 'https://promptmarket-web.vercel.app/og.png'
 
 function setMeta(selector: string, attr: 'content' | 'href', value: string | undefined) {
   if (typeof document === 'undefined') return

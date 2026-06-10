@@ -72,7 +72,7 @@ function commands(slug: string, t: TFunction<'detail'>): Record<string, Target> 
       id: 'curl',
       label: 'cURL',
       hint: t('install.targets.curlHint'),
-      command: `curl -sSL https://promptmarket.dev/api/listings/${slug}/raw -o ${slug}.md`,
+      command: `curl -sSL ${window.location.origin}/api/listings/${slug}/raw -o ${slug}.md`,
       fits: () => true,
     },
   }
