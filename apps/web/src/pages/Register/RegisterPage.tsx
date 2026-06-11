@@ -22,6 +22,12 @@ const TERMSDESK_BASE = 'https://termsdesk.vercel.app'
 const TERMS_URL = `${TERMSDESK_BASE}/p/promptmarket/terms-of-service`
 const PRIVACY_URL = `${TERMSDESK_BASE}/p/promptmarket/privacy-policy`
 
+/* Consent fine print links — legal pages are internal routes (/terms, /privacy). */
+const consentLinkClass = cn(
+  'underline underline-offset-2 decoration-volt-400 hover:decoration-volt-500',
+  'hover:text-ink dark:hover:text-bone motion-safe:transition-colors ease-expo'
+)
+
 export default function RegisterPage() {
   const navigate = useNavigate()
   const registerMut = useRegister()
@@ -257,12 +263,11 @@ export default function RegisterPage() {
 
         <p className="text-[0.72rem] text-ink-mute dark:text-bone-mute leading-relaxed">
           <Trans
+            t={t}
             i18nKey="register.terms"
             components={{
-              terms: <a href={TERMS_URL} target="_blank" rel="noreferrer" className="underline" />,
-              privacy: (
-                <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="underline" />
-              ),
+              terms: <Link to="/terms" className={consentLinkClass} />,
+              privacy: <Link to="/privacy" className={consentLinkClass} />,
             }}
           />
         </p>

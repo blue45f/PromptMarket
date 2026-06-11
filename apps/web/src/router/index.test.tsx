@@ -15,6 +15,8 @@ describe('router routes', () => {
       'users/:username',
       'dashboard',
       'admin',
+      'terms',
+      'privacy',
       '*',
     ])
     expect(root.children?.every((route) => typeof route.lazy === 'function')).toBe(true)

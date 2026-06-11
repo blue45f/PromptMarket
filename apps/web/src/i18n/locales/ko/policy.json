@@ -1,0 +1,30 @@
+{
+  "eyebrow": "정책",
+  "terms": {
+    "title": "이용약관",
+    "metaTitle": "이용약관 · PromptMarket",
+    "metaDescription": "PromptMarket 서비스 이용약관."
+  },
+  "privacy": {
+    "title": "개인정보처리방침",
+    "metaTitle": "개인정보처리방침 · PromptMarket",
+    "metaDescription": "PromptMarket 개인정보처리방침."
+  },
+  "loading": "문서를 불러오는 중…",
+  "error": {
+    "title": "문서를 불러오지 못했어요",
+    "body": "일시적인 문제일 수 있어요. 다시 시도하거나 TermsDesk 원문으로 확인해 주세요.",
+    "retry": "다시 시도",
+    "openSource": "TermsDesk에서 원문 보기"
+  },
+  "trust": {
+    "version": "버전",
+    "effectiveAt": "시행일",
+    "hash": "해시",
+    "source": "TermsDesk 원문"
+  },
+  "nav": {
+    "label": "정책 문서 탐색",
+    "backHome": "홈으로"
+  }
+}

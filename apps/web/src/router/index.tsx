@@ -74,6 +74,10 @@ export const routes = [
         path: 'admin',
         lazy: lazyAdminProtectedPage(() => import('@pages/Admin')),
       },
+      // Legal documents — one lazy page module serves both paths and picks
+      // the policy slug from the pathname.
+      { path: 'terms', lazy: lazyPage(() => import('@pages/Policy')) },
+      { path: 'privacy', lazy: lazyPage(() => import('@pages/Policy')) },
       { path: '*', lazy: lazyPage(() => import('@pages/NotFound')) },
     ],
   },
