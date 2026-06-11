@@ -110,11 +110,27 @@ describe('Layout', () => {
         '/',
         '/robots.txt',
         '/sitemap.xml',
-        'https://termsdesk.vercel.app/p/promptmarket/terms-of-service',
-        'https://termsdesk.vercel.app/p/promptmarket/privacy-policy',
+        '/terms',
+        '/privacy',
         'https://termsdesk.vercel.app/support/promptmarket?category=site-inquiry',
       ])
     )
+  })
+
+  it('keeps terms and privacy as internal routes and only the support board external', () => {
+    render(<TestLayout />)
+    const footer = screen.getByRole('contentinfo')
+    const miniSitemap = within(footer).getByRole('navigation', {
+      name: 'footer.sitemap.label',
+    })
+
+    const terms = within(miniSitemap).getByRole('link', { name: 'footer.sitemap.terms' })
+    const privacy = within(miniSitemap).getByRole('link', { name: 'footer.sitemap.privacy' })
+    const support = within(miniSitemap).getByRole('link', { name: 'footer.sitemap.support' })
+
+    expect(terms).toHaveAttribute('href', '/terms')
+    expect(privacy).toHaveAttribute('href', '/privacy')
+    expect(support.getAttribute('href')).toMatch(/^https:\/\/termsdesk\.vercel\.app\/support\//)
   })
 
   it('gives every mini sitemap link a ≥44px hit area on coarse pointers', () => {

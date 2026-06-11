@@ -1,0 +1,30 @@
+{
+  "eyebrow": "Legal",
+  "terms": {
+    "title": "Terms of Service",
+    "metaTitle": "Terms of Service · PromptMarket",
+    "metaDescription": "PromptMarket terms of service."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "metaTitle": "Privacy Policy · PromptMarket",
+    "metaDescription": "PromptMarket privacy policy."
+  },
+  "loading": "Loading the document…",
+  "error": {
+    "title": "Couldn't load the document",
+    "body": "This may be temporary. Try again, or read the source copy on TermsDesk.",
+    "retry": "Try again",
+    "openSource": "View source on TermsDesk"
+  },
+  "trust": {
+    "version": "Version",
+    "effectiveAt": "Effective",
+    "hash": "Hash",
+    "source": "Source on TermsDesk"
+  },
+  "nav": {
+    "label": "Policy pages",
+    "backHome": "Back home"
+  }
+}
