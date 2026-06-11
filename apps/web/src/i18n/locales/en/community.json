@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "title": "Community",
+    "description": "Per-category discussion boards — ask questions, share results, refine techniques.",
+    "threadTitle": "{{title}} — Community"
+  },
+  "header": {
+    "title": "Community",
+    "subtitle": "Discussion boards split by category. Prompt questions, shared results, and technique talk live here.",
+    "newThread": "New thread"
+  },
+  "categories": {
+    "label": "Filter by category",
+    "all": "All"
+  },
+  "list": {
+    "label": "Thread list",
+    "unknownAuthor": "unknown",
+    "comments_one": "{{count}} comment",
+    "comments_other": "{{count}} comments",
+    "attachments_one": "{{count}} image",
+    "attachments_other": "{{count}} images"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "prev": "Previous",
+    "next": "Next",
+    "status": "Page {{page}} of {{totalPages}}"
+  },
+  "empty": {
+    "title": "No discussions yet",
+    "categoryTitle": "This board is still quiet",
+    "description": "Open the board with its first thread.",
+    "categoryDescription": "Start the first thread in {{category}}.",
+    "hint": "Prompt questions, experiment results, model comparisons — anything goes.",
+    "cta": "Start the first thread"
+  },
+  "detail": {
+    "notFound": "Thread not found",
+    "backToBoard": "Back to community",
+    "backToCategory": "Back to the {{category}} board",
+    "hiddenNotice": "Hidden by a moderator. Only you and admins can see this thread.",
+    "deleteThread": "Delete thread",
+    "deleteConfirm": "This removes the thread and all its comments. Continue?",
+    "deleteYes": "Delete",
+    "deleteNo": "Cancel"
+  },
+  "comments": {
+    "label": "Comments",
+    "heading_one": "{{count}} comment",
+    "heading_other": "{{count}} comments",
+    "composerLabel": "Write a comment",
+    "composerPlaceholder": "Share your take on this discussion…",
+    "post": "Post comment",
+    "posting": "Posting…",
+    "loginLink": "Log in",
+    "loginSuffix": "to join the discussion.",
+    "emptyTitle": "Waiting for the first comment",
+    "emptyDescription": "Share your results or thoughts with the author.",
+    "replyButton": "Reply",
+    "replyLabel": "Write a reply",
+    "replyPlaceholder": "Reply to this comment…",
+    "replyCancel": "Cancel",
+    "replyPost": "Post reply",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this?",
+    "deletedPlaceholder": "This comment was deleted."
+  },
+  "new": {
+    "meta": {
+      "title": "Start a discussion",
+      "description": "Start a new discussion thread in the community."
+    },
+    "title": "Start a discussion",
+    "subtitle": "Questions, experiment results, technique write-ups — pick a board and go.",
+    "categoryLabel": "Category",
+    "categoryHint": "Choose the board this thread belongs to.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "What do you want to talk about?",
+    "bodyLabel": "Body",
+    "bodyPlaceholder": "More context attracts better answers: the prompt you used, what you expected, what actually happened.",
+    "bodyHint": "At least 10 characters — rendered as plain text, no markdown.",
+    "attachmentsLabel": "Attach screenshots",
+    "validation": {
+      "title": "Titles need 3–140 characters.",
+      "body": "The body needs 10–8,000 characters."
+    },
+    "cancel": "Cancel",
+    "submit": "Publish",
+    "submitting": "Publishing…"
+  }
+}

@@ -17,11 +17,18 @@ model User {
   bio           String?
   avatarUrl     String?
   balanceCents  Int        @default(0)
+  suspendedAt   DateTime?  // set by admins; blocks login + community/marketplace writes
   createdAt     DateTime   @default(now())
   listings      Listing[]
   purchases     Purchase[]
   reviews       Review[]
   reviewReplies ReviewReply[]
+  discussionThreads  DiscussionThread[]
+  discussionComments DiscussionComment[]
+  attachments        Attachment[]
+  buyerMessageThreads  MessageThread[] @relation("MessageThreadBuyer")
+  sellerMessageThreads MessageThread[] @relation("MessageThreadSeller")
+  sentMessages         Message[]
 }
 
 model Listing {
@@ -48,6 +55,7 @@ model Listing {
   updatedAt    DateTime   @updatedAt
   purchases    Purchase[]
   reviews      Review[]
+  messageThreads MessageThread[]
 
   @@index([authorId])
   @@index([createdAt])
@@ -74,6 +82,7 @@ model ReviewReply {
   body      String
   userId    String
   reviewId  String
+  deletedAt DateTime? // soft delete — the row stays as a "deleted reply" placeholder
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
@@ -96,11 +105,111 @@ model Review {
   comment     String?
   userId      String
   listingId   String
+  hiddenAt    DateTime? // set by moderation; hidden reviews drop out of public lists + rating math
   createdAt   DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id])
   listing     Listing  @relation(fields: [listingId], references: [id])
   replies     ReviewReply[]
+  attachments Attachment[]
 
   @@unique([userId, listingId])
   @@index([listingId])
+}
+
+// ===========================================================================
+// Community — per-category discussion boards
+// ===========================================================================
+
+model DiscussionThread {
+  id        String    @id @default(cuid())
+  title     String
+  body      String
+  category  String    // prompt Category enum (see packages/shared)
+  authorId  String
+  hiddenAt  DateTime? // set by moderation; hidden threads drop out of public lists
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments    DiscussionComment[]
+  attachments Attachment[]
+
+  @@index([category, createdAt])
+  @@index([authorId, createdAt])
+}
+
+model DiscussionComment {
+  id        String    @id @default(cuid())
+  body      String
+  threadId  String
+  authorId  String
+  parentId  String?   // one level deep — replies cannot have replies
+  deletedAt DateTime? // soft delete — keeps the reply chain shape with a placeholder
+  createdAt DateTime  @default(now())
+  thread    DiscussionThread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  author    User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent    DiscussionComment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   DiscussionComment[] @relation("CommentReplies")
+  attachments Attachment[]
+
+  @@index([threadId, createdAt])
+  @@index([parentId])
+}
+
+// ===========================================================================
+// Direct messages — buyer ↔ seller Q&A scoped to a listing
+// ===========================================================================
+
+model MessageThread {
+  id        String   @id @default(cuid())
+  listingId String
+  buyerId   String   // the person who asked (never the listing author)
+  sellerId  String   // denormalized listing author for cheap inbox queries
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyer     User     @relation("MessageThreadBuyer", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller    User     @relation("MessageThreadSeller", fields: [sellerId], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@unique([listingId, buyerId])
+  @@index([buyerId, updatedAt])
+  @@index([sellerId, updatedAt])
+}
+
+model Message {
+  id        String    @id @default(cuid())
+  body      String
+  threadId  String
+  senderId  String
+  readAt    DateTime? // stamped when the counterparty opens the thread
+  createdAt DateTime  @default(now())
+  thread    MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender    User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([threadId, createdAt])
+}
+
+// ===========================================================================
+// Attachments — resized screenshot images stored as data URLs
+// ===========================================================================
+
+model Attachment {
+  id         String   @id @default(cuid())
+  dataUrl    String   // data:image/...;base64 — client resizes to ≤1600px before upload
+  byteSize   Int      // decoded size, server-computed from the base64 payload
+  width      Int?
+  height     Int?
+  uploaderId String
+  threadId   String?
+  commentId  String?
+  reviewId   String?
+  createdAt  DateTime @default(now())
+  uploader   User               @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  thread     DiscussionThread?  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  comment    DiscussionComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  review     Review?            @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@index([threadId])
+  @@index([commentId])
+  @@index([reviewId])
 }

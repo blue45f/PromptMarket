@@ -9,6 +9,8 @@ import { UsersModule } from './users/users.module'
 import { ListingsModule } from './listings/listings.module'
 import { PurchasesModule } from './purchases/purchases.module'
 import { ReviewsModule } from './reviews/reviews.module'
+import { CommunityModule } from './community/community.module'
+import { MessagesModule } from './messages/messages.module'
 import { SeoModule } from './seo/seo.module'
 import { AdminModule } from './admin/admin.module'
 import { HealthModule } from './health/health.module'
@@ -34,6 +36,8 @@ import { HealthModule } from './health/health.module'
     ListingsModule,
     PurchasesModule,
     ReviewsModule,
+    CommunityModule,
+    MessagesModule,
     SeoModule,
     AdminModule,
     HealthModule,

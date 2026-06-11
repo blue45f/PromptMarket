@@ -80,11 +80,23 @@
     "replySubmit": "답글 등록",
     "replyCancel": "취소",
     "replySubmitting": "등록 중…",
+    "attachmentsLabel": "스크린샷 첨부 (선택)",
+    "deletedReply": "삭제된 답글입니다.",
+    "deleteReply": "삭제",
+    "deleteReplyConfirm": "답글을 삭제할까요?",
     "validation": {
       "rating": "별점을 선택해 주세요.",
       "comment": "리뷰는 1,000자 이하로 작성해 주세요.",
       "reply": "답글은 1자 이상 1,000자 이하로 작성해 주세요."
     }
+  },
+  "contact": {
+    "cta": "판매자에게 질문",
+    "loginCta": "로그인하고 판매자에게 질문",
+    "label": "판매자에게 보낼 메시지",
+    "placeholder": "구매 전 궁금한 점을 물어보세요. 대화는 쪽지함으로 이어져요.",
+    "cancel": "취소",
+    "send": "보내기"
   },
   "sidebar": {
     "ariaLabel": "상세 정보",

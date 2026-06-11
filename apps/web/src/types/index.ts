@@ -15,6 +15,13 @@ export type {
   PromptTechnique,
   Difficulty,
   License,
+  AttachmentDto,
+  AttachmentInput,
+  DiscussionThreadCardDto,
+  DiscussionThreadListResponse,
+  MessageDto,
+  MessageThreadSummaryDto,
+  AdminMemberRow,
 } from '@promptmarket/shared'
 
 import type { ListingCard, ListingFull } from '@promptmarket/shared'
@@ -35,6 +42,13 @@ export interface Author {
   username: string
 }
 
+export interface ReviewAttachment {
+  id: string
+  dataUrl: string
+  width?: number | null
+  height?: number | null
+}
+
 export interface Review {
   id: string
   rating: number
@@ -43,11 +57,14 @@ export interface Review {
   author?: Author
   user?: Author
   replies?: ReviewReply[]
+  attachments?: ReviewAttachment[]
 }
 
 export interface ReviewReply {
   id: string
-  body: string
+  // null when the reply was soft-deleted (a placeholder row remains)
+  body: string | null
+  deleted?: boolean
   createdAt: string
   user?: Author
 }

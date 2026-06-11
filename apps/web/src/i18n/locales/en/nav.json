@@ -1,5 +1,9 @@
 {
   "browse": "Browse",
+  "community": "Community",
+  "messages": "Messages",
+  "messagesUnread_one": "Messages, {{count}} unread",
+  "messagesUnread_other": "Messages, {{count}} unread",
   "sell": "Sell",
   "sellFull": "Sell a prompt",
   "library": "Library",
@@ -74,6 +78,7 @@
       "label": "Mini sitemap",
       "home": "Home",
       "browse": "Browse",
+      "community": "Community",
       "sell": "Sell",
       "dashboard": "Dashboard",
       "login": "Log in",

@@ -78,7 +78,31 @@
     "purchaseComplete": "Purchase complete",
     "balanceToppedUp": "Balance topped up",
     "reviewPosted": "Review posted",
-    "replyPosted": "Reply posted"
+    "replyPosted": "Reply posted",
+    "replyDeleted": "Reply deleted",
+    "threadCreated": "Thread published",
+    "threadDeleted": "Thread deleted",
+    "commentPosted": "Comment posted",
+    "commentDeleted": "Comment deleted",
+    "messageSent": "Message sent"
+  },
+  "confirm": {
+    "cancel": "Cancel"
+  },
+  "attachments": {
+    "add": "Add",
+    "hint": "PNG·JPG·WebP, up to 2MB each · max {{max}} (auto-resized to 1600px)",
+    "limit": "You can attach up to {{max}} images",
+    "tooLarge": "Images must be 2MB or smaller",
+    "notImage": "Only image files can be attached",
+    "processFailed": "Couldn't process that image. Try another file.",
+    "inputLabel": "Attach screenshots",
+    "previewAlt": "Attachment preview {{index}}",
+    "removeLabel": "Remove attachment {{index}}",
+    "openLabel": "Zoom attachment {{index}}",
+    "imageAlt": "Attached image {{index}}",
+    "dialogTitle": "Attachment zoom view",
+    "closeLabel": "Close"
   },
   "errors": {
     "generic": "Something went wrong"

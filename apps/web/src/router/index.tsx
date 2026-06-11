@@ -74,6 +74,39 @@ export const routes = [
         path: 'admin',
         lazy: lazyAdminProtectedPage(() => import('@pages/Admin')),
       },
+      {
+        path: 'admin/moderation',
+        lazy: lazyAdminProtectedPage(() => import('@pages/AdminModeration')),
+      },
+      {
+        path: 'admin/reviews',
+        lazy: lazyAdminProtectedPage(() => import('@pages/AdminReviews')),
+      },
+      {
+        path: 'admin/members',
+        lazy: lazyAdminProtectedPage(() => import('@pages/AdminMembers')),
+      },
+      // Community boards — reading is public, posting requires a session.
+      { path: 'community', lazy: lazyPage(() => import('@pages/Community')) },
+      {
+        path: 'community/new',
+        lazy: lazyProtectedPage(() => import('@pages/CommunityNew')),
+      },
+      {
+        path: 'community/:id',
+        lazy: lazyPage(() => import('@pages/CommunityThread')),
+      },
+      // Buyer ↔ seller Q&A — strictly personal, so both routes are gated.
+      {
+        path: 'messages',
+        lazy: lazyProtectedPage(() => import('@pages/Messages')),
+      },
+      {
+        path: 'messages/:id',
+        lazy: lazyProtectedPage(() => import('@pages/MessageThread')),
+      },
+      // In-app inquiry form posting to the external TermsDesk intake.
+      { path: 'support', lazy: lazyPage(() => import('@pages/Support')) },
       // Legal documents — one lazy page module serves both paths and picks
       // the policy slug from the pathname.
       { path: 'terms', lazy: lazyPage(() => import('@pages/Policy')) },

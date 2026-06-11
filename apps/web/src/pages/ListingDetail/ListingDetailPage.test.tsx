@@ -16,6 +16,11 @@ vi.mock('@features/marketplace/queries', () => ({
   usePurchase: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
   useCreateReview: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
   useCreateReviewReply: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
+  useDeleteReviewReply: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
+}))
+
+vi.mock('@features/messages', () => ({
+  useStartMessageThread: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
 }))
 
 vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }))

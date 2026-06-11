@@ -26,11 +26,23 @@ describe('ReviewsController', () => {
   it('POST :id/reviews forwards the auth user id and body', async () => {
     const { controller, service } = makeController()
     const user: AuthUser = { id: 'u1', email: 'u1@example.com', username: 'user-u1' }
-    await controller.create(user, 'listing-1', { rating: 5, comment: 'good' })
+    await controller.create(user, 'listing-1', { rating: 5, comment: 'good', attachments: [] })
     expect(service.create).toHaveBeenCalledWith('u1', 'listing-1', {
       rating: 5,
       comment: 'good',
+      attachments: [],
     })
+  })
+
+  it('DELETE replies route forwards the full id chain', async () => {
+    const { controller, service } = makeController({
+      deleteReply: vi.fn().mockResolvedValue({ ok: true }),
+    })
+    const user: AuthUser = { id: 'u1', email: 'u1@example.com', username: 'user-u1' }
+    await controller.deleteReply(user, 'listing-1', 'review-1', 'reply-1')
+    expect(
+      (service as unknown as { deleteReply: ReturnType<typeof vi.fn> }).deleteReply
+    ).toHaveBeenCalledWith(user, 'listing-1', 'review-1', 'reply-1')
   })
 
   it('POST :id/reviews/:reviewId/replies forwards listing, review, user, and body', async () => {

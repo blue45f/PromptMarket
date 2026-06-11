@@ -75,7 +75,31 @@
     "purchaseComplete": "구매가 완료됐어요",
     "balanceToppedUp": "잔액이 충전됐어요",
     "reviewPosted": "리뷰가 등록됐어요",
-    "replyPosted": "답글이 등록됐어요"
+    "replyPosted": "답글이 등록됐어요",
+    "replyDeleted": "답글이 삭제됐어요",
+    "threadCreated": "토론이 게시됐어요",
+    "threadDeleted": "토론이 삭제됐어요",
+    "commentPosted": "댓글이 등록됐어요",
+    "commentDeleted": "댓글이 삭제됐어요",
+    "messageSent": "쪽지를 보냈어요"
+  },
+  "confirm": {
+    "cancel": "취소"
+  },
+  "attachments": {
+    "add": "추가",
+    "hint": "PNG·JPG·WebP, 장당 2MB 이하 · 최대 {{max}}장 (1600px로 자동 축소)",
+    "limit": "최대 {{max}}장까지 첨부할 수 있어요",
+    "tooLarge": "2MB 이하 이미지만 첨부할 수 있어요",
+    "notImage": "이미지 파일만 첨부할 수 있어요",
+    "processFailed": "이미지를 처리하지 못했어요. 다른 파일로 시도해 주세요.",
+    "inputLabel": "스크린샷 첨부",
+    "previewAlt": "첨부 미리보기 {{index}}",
+    "removeLabel": "첨부 {{index}} 제거",
+    "openLabel": "첨부 이미지 {{index}} 크게 보기",
+    "imageAlt": "첨부 이미지 {{index}}",
+    "dialogTitle": "첨부 이미지 확대 보기",
+    "closeLabel": "닫기"
   },
   "errors": {
     "generic": "문제가 발생했어요"
