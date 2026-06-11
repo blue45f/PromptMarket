@@ -18,10 +18,6 @@ const inputClass = cn(
   'motion-safe:transition ease-expo',
   'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
 )
-const TERMSDESK_BASE = 'https://termsdesk.vercel.app'
-const TERMS_URL = `${TERMSDESK_BASE}/p/promptmarket/terms-of-service`
-const PRIVACY_URL = `${TERMSDESK_BASE}/p/promptmarket/privacy-policy`
-
 /* Consent fine print links — legal pages are internal routes (/terms, /privacy). */
 const consentLinkClass = cn(
   'underline underline-offset-2 decoration-volt-400 hover:decoration-volt-500',

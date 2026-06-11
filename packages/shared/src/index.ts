@@ -366,12 +366,65 @@ export const ListingListResponse = z.object({
 export type ListingListResponse = z.infer<typeof ListingListResponse>
 
 // ===========================================================================
+// Attachments — screenshot images carried as data URLs
+// ===========================================================================
+
+/** Client-side source file cap (bytes) before resize/re-encode. */
+export const ATTACHMENT_MAX_SOURCE_BYTES = 2 * 1024 * 1024
+/** Longest edge after the client resize pass. */
+export const ATTACHMENT_MAX_EDGE_PX = 1600
+/** Max attachments per review / thread / comment. */
+export const ATTACHMENTS_PER_POST = 3
+/**
+ * Server-side cap on the encoded payload. Base64 inflates bytes by ~4/3, so
+ * this keeps the decoded image at ≈2MB even if a client skips the resize.
+ */
+export const ATTACHMENT_MAX_DATAURL_CHARS = 2_900_000
+
+const DATA_URL_PREFIX = /^data:image\/(png|jpe?g|webp);base64,/
+
+export function isImageDataUrl(value: string): boolean {
+  return DATA_URL_PREFIX.test(value)
+}
+
+/** Decoded byte size of a base64 data URL (0 when malformed). */
+export function dataUrlByteSize(dataUrl: string): number {
+  const comma = dataUrl.indexOf(',')
+  if (comma < 0) return 0
+  const b64 = dataUrl.slice(comma + 1)
+  const padding = b64.endsWith('==') ? 2 : b64.endsWith('=') ? 1 : 0
+  return Math.max(0, Math.floor((b64.length * 3) / 4) - padding)
+}
+
+export const AttachmentInputSchema = z.object({
+  dataUrl: z
+    .string()
+    .min(32)
+    .max(ATTACHMENT_MAX_DATAURL_CHARS)
+    .refine(isImageDataUrl, 'must be a png/jpeg/webp data URL'),
+  width: z.number().int().positive().max(10_000).optional(),
+  height: z.number().int().positive().max(10_000).optional(),
+})
+export type AttachmentInput = z.infer<typeof AttachmentInputSchema>
+
+const AttachmentListField = z.array(AttachmentInputSchema).max(ATTACHMENTS_PER_POST).default([])
+
+export const AttachmentDto = z.object({
+  id: z.string(),
+  dataUrl: z.string(),
+  width: z.number().int().nullable().optional(),
+  height: z.number().int().nullable().optional(),
+})
+export type AttachmentDto = z.infer<typeof AttachmentDto>
+
+// ===========================================================================
 // Reviews
 // ===========================================================================
 
 export const CreateReviewSchema = z.object({
   rating: z.number().int().min(1).max(5),
   comment: z.string().max(1000).optional(),
+  attachments: AttachmentListField,
 })
 export type CreateReviewInput = z.infer<typeof CreateReviewSchema>
 
@@ -382,7 +435,9 @@ export type CreateReviewReplyInput = z.infer<typeof CreateReviewReplySchema>
 
 export const ReviewReplyDto = z.object({
   id: z.string(),
-  body: z.string(),
+  // null once soft-deleted; the row remains as a placeholder in the thread
+  body: z.string().nullable(),
+  deleted: z.boolean().default(false),
   user: AuthorSummary,
   createdAt: z.string(),
 })
@@ -395,8 +450,145 @@ export const ReviewDto = z.object({
   user: AuthorSummary,
   createdAt: z.string(),
   replies: z.array(ReviewReplyDto).default([]),
+  attachments: z.array(AttachmentDto).default([]),
 })
 export type ReviewDto = z.infer<typeof ReviewDto>
+
+// ===========================================================================
+// Community — per-category discussion boards
+// ===========================================================================
+
+export const DISCUSSION_PAGE_SIZE = 20
+
+export const CreateDiscussionThreadSchema = z.object({
+  title: z.string().trim().min(3).max(140),
+  body: z.string().trim().min(10).max(8_000),
+  category: Category,
+  attachments: AttachmentListField,
+})
+export type CreateDiscussionThreadInput = z.infer<typeof CreateDiscussionThreadSchema>
+
+export const CreateDiscussionCommentSchema = z.object({
+  body: z.string().trim().min(1).max(2_000),
+  /** Present → this is a one-level reply to a top-level comment. */
+  parentId: z.string().min(1).optional(),
+  attachments: AttachmentListField,
+})
+export type CreateDiscussionCommentInput = z.infer<typeof CreateDiscussionCommentSchema>
+
+export const DiscussionThreadQuerySchema = z.object({
+  category: Category.optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(50).default(DISCUSSION_PAGE_SIZE),
+})
+export type DiscussionThreadQueryInput = z.infer<typeof DiscussionThreadQuerySchema>
+
+export const DiscussionCommentDto = z.object({
+  id: z.string(),
+  body: z.string().nullable(), // null once soft-deleted (placeholder row)
+  deleted: z.boolean().default(false),
+  author: AuthorSummary.nullable(),
+  parentId: z.string().nullable(),
+  createdAt: z.string(),
+  attachments: z.array(AttachmentDto).default([]),
+})
+export type DiscussionCommentDto = z.infer<typeof DiscussionCommentDto>
+
+export const DiscussionThreadCardDto = z.object({
+  id: z.string(),
+  title: z.string(),
+  category: z.string(),
+  excerpt: z.string(),
+  author: AuthorSummary.nullable(),
+  commentCount: z.number().int().nonnegative(),
+  attachmentCount: z.number().int().nonnegative(),
+  lastActivityAt: z.string(),
+  createdAt: z.string(),
+})
+export type DiscussionThreadCardDto = z.infer<typeof DiscussionThreadCardDto>
+
+export const DiscussionThreadListResponse = z.object({
+  items: z.array(DiscussionThreadCardDto),
+  total: z.number().int(),
+  page: z.number().int(),
+  pageSize: z.number().int(),
+  totalPages: z.number().int(),
+  categoryCounts: z.record(z.string(), z.number().int()).default({}),
+})
+export type DiscussionThreadListResponse = z.infer<typeof DiscussionThreadListResponse>
+
+// ===========================================================================
+// Messages — buyer ↔ seller Q&A scoped to a listing
+// ===========================================================================
+
+export const MESSAGE_BODY_MAX = 2_000
+
+export const StartMessageThreadSchema = z.object({
+  listingId: z.string().min(1),
+  body: z.string().trim().min(1).max(MESSAGE_BODY_MAX),
+})
+export type StartMessageThreadInput = z.infer<typeof StartMessageThreadSchema>
+
+export const SendMessageSchema = z.object({
+  body: z.string().trim().min(1).max(MESSAGE_BODY_MAX),
+})
+export type SendMessageInput = z.infer<typeof SendMessageSchema>
+
+export const MessageDto = z.object({
+  id: z.string(),
+  body: z.string(),
+  senderId: z.string(),
+  sender: AuthorSummary,
+  readAt: z.string().nullable(),
+  createdAt: z.string(),
+})
+export type MessageDto = z.infer<typeof MessageDto>
+
+export const MessageThreadSummaryDto = z.object({
+  id: z.string(),
+  listing: z.object({
+    id: z.string(),
+    slug: z.string(),
+    title: z.string(),
+    coverEmoji: z.string(),
+    priceCents: z.number().int(),
+  }),
+  counterpart: AuthorSummary,
+  role: z.enum(['buyer', 'seller']),
+  lastMessage: z
+    .object({ body: z.string(), senderId: z.string(), createdAt: z.string() })
+    .nullable(),
+  unreadCount: z.number().int().nonnegative(),
+  updatedAt: z.string(),
+})
+export type MessageThreadSummaryDto = z.infer<typeof MessageThreadSummaryDto>
+
+// ===========================================================================
+// Admin — moderation & member management
+// ===========================================================================
+
+export const ModerationVisibilitySchema = z.object({
+  hidden: z.boolean(),
+})
+export type ModerationVisibilityInput = z.infer<typeof ModerationVisibilitySchema>
+
+export const MemberSuspensionSchema = z.object({
+  suspended: z.boolean(),
+})
+export type MemberSuspensionInput = z.infer<typeof MemberSuspensionSchema>
+
+export const AdminMemberRowSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  email: z.string(),
+  isAdmin: z.boolean(),
+  suspendedAt: z.string().nullable(),
+  createdAt: z.string(),
+  listingCount: z.number().int().nonnegative(),
+  reviewCount: z.number().int().nonnegative(),
+  threadCount: z.number().int().nonnegative(),
+})
+export type AdminMemberRow = z.infer<typeof AdminMemberRowSchema>
 
 // ===========================================================================
 // Purchases / Wallet

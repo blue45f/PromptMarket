@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "title": "쪽지함",
+    "description": "구매자와 판매자가 리스팅에 대해 주고받는 1:1 문의 스레드입니다.",
+    "threadTitle": "@{{username}}님과의 대화"
+  },
+  "inbox": {
+    "title": "쪽지함",
+    "subtitle": "리스팅마다 판매자와 1:1로 이어지는 문의 스레드예요.",
+    "unreadLabel": "읽지 않은 메시지",
+    "roleBuyer": "· 내가 문의함",
+    "roleSeller": "· 내 리스팅",
+    "emptyTitle": "아직 주고받은 쪽지가 없어요",
+    "emptyDescription": "리스팅 상세의 ‘판매자에게 질문’ 버튼으로 첫 대화를 시작해 보세요.",
+    "emptyHint": "구매 전 궁금한 점은 판매자에게 직접 물어보는 게 가장 빨라요.",
+    "emptyCta": "리스팅 둘러보기"
+  },
+  "thread": {
+    "notFound": "대화를 찾을 수 없어요",
+    "backToInbox": "쪽지함으로 돌아가기",
+    "withUser": "@{{username}}님과의 대화",
+    "roleBuyer": "내가 문의함",
+    "roleSeller": "내 리스팅",
+    "viewListing": "리스팅 보기",
+    "logLabel": "대화 내역",
+    "empty": "첫 메시지를 보내 대화를 시작해 보세요.",
+    "read": "읽음",
+    "pollingNote": "{{seconds}}초마다 새 메시지를 확인합니다.",
+    "composerLabel": "메시지 입력",
+    "composerPlaceholder": "메시지를 입력하세요… (⌘+Enter로 전송)",
+    "send": "보내기"
+  }
+}

@@ -5,16 +5,38 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
+import type { AttachmentInput } from '@promptmarket/shared'
 import { PrismaService } from '../prisma/prisma.service'
 import { isPrismaP2002 } from '../prisma/prisma-errors'
+import { buildAttachmentCreates, serializeAttachment } from '../attachments/attachment.util'
 
 export interface CreateReviewInput {
   rating: number
   comment?: string
+  attachments?: AttachmentInput[]
 }
 
 export interface CreateReviewReplyInput {
   body: string
+}
+
+type ReplyRow = {
+  id: string
+  body: string
+  deletedAt: Date | null
+  createdAt: Date
+  user: { id: string; username: string }
+}
+
+/** Soft-deleted replies keep their slot but lose body + author identity. */
+function serializeReply(reply: ReplyRow) {
+  return {
+    id: reply.id,
+    body: reply.deletedAt ? null : reply.body,
+    deleted: !!reply.deletedAt,
+    createdAt: reply.createdAt,
+    user: reply.user,
+  }
 }
 
 @Injectable()
@@ -47,6 +69,8 @@ export class ReviewsService {
       throw new ConflictException('You have already reviewed this listing')
     }
 
+    const attachments = buildAttachmentCreates(userId, input.attachments)
+
     try {
       const review = await this.prisma.review.create({
         data: {
@@ -54,8 +78,12 @@ export class ReviewsService {
           listingId,
           rating: input.rating,
           comment: input.comment ?? null,
+          attachments: { create: attachments },
         },
-        include: { user: { select: { id: true, username: true } } },
+        include: {
+          user: { select: { id: true, username: true } },
+          attachments: true,
+        },
       })
       return {
         id: review.id,
@@ -64,6 +92,7 @@ export class ReviewsService {
         createdAt: review.createdAt,
         user: review.user,
         replies: [],
+        attachments: review.attachments.map(serializeAttachment),
       }
     } catch (err) {
       if (isPrismaP2002(err)) {
@@ -75,10 +104,11 @@ export class ReviewsService {
 
   async listForListing(listingId: string) {
     const reviews = await this.prisma.review.findMany({
-      where: { listingId },
+      where: { listingId, hiddenAt: null },
       orderBy: { createdAt: 'desc' },
       include: {
         user: { select: { id: true, username: true } },
+        attachments: true,
         replies: {
           orderBy: { createdAt: 'asc' },
           include: { user: { select: { id: true, username: true } } },
@@ -91,12 +121,8 @@ export class ReviewsService {
       comment: r.comment,
       createdAt: r.createdAt,
       user: r.user,
-      replies: r.replies.map((reply) => ({
-        id: reply.id,
-        body: reply.body,
-        createdAt: reply.createdAt,
-        user: reply.user,
-      })),
+      attachments: r.attachments.map(serializeAttachment),
+      replies: r.replies.map(serializeReply),
     }))
   }
 
@@ -127,7 +153,7 @@ export class ReviewsService {
     }
 
     const review = await this.prisma.review.findFirst({
-      where: { id: reviewId, listingId },
+      where: { id: reviewId, listingId, hiddenAt: null },
       select: { id: true },
     })
     if (!review) throw new NotFoundException('Review not found')
@@ -144,8 +170,34 @@ export class ReviewsService {
     return {
       id: reply.id,
       body: reply.body,
+      deleted: false,
       createdAt: reply.createdAt,
       user: reply.user,
     }
+  }
+
+  /**
+   * Soft delete — the reply stays as a placeholder ("deleted reply") so the
+   * conversation below a review keeps its shape.
+   */
+  async deleteReply(
+    user: { id: string; isAdmin?: boolean },
+    listingId: string,
+    reviewId: string,
+    replyId: string
+  ) {
+    const reply = await this.prisma.reviewReply.findFirst({
+      where: { id: replyId, reviewId, review: { listingId } },
+      select: { id: true, userId: true, deletedAt: true },
+    })
+    if (!reply || reply.deletedAt) throw new NotFoundException('Reply not found')
+    if (reply.userId !== user.id && !user.isAdmin) {
+      throw new ForbiddenException('Only the author can delete this reply')
+    }
+    await this.prisma.reviewReply.update({
+      where: { id: replyId },
+      data: { deletedAt: new Date() },
+    })
+    return { ok: true }
   }
 }

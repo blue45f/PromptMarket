@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "title": "Messages",
+    "description": "One-to-one Q&A threads between buyers and sellers, scoped to a listing.",
+    "threadTitle": "Conversation with @{{username}}"
+  },
+  "inbox": {
+    "title": "Messages",
+    "subtitle": "Each thread is a private Q&A with a seller about one listing.",
+    "unreadLabel": "unread messages",
+    "roleBuyer": "· I asked",
+    "roleSeller": "· my listing",
+    "emptyTitle": "No messages yet",
+    "emptyDescription": "Start a conversation from a listing page with the “Ask the seller” button.",
+    "emptyHint": "Pre-purchase questions go fastest straight to the seller.",
+    "emptyCta": "Browse listings"
+  },
+  "thread": {
+    "notFound": "Conversation not found",
+    "backToInbox": "Back to messages",
+    "withUser": "Conversation with @{{username}}",
+    "roleBuyer": "I asked",
+    "roleSeller": "my listing",
+    "viewListing": "View listing",
+    "logLabel": "Conversation log",
+    "empty": "Send the first message to start the conversation.",
+    "read": "Read",
+    "pollingNote": "Checks for new messages every {{seconds}} seconds.",
+    "composerLabel": "Message input",
+    "composerPlaceholder": "Write a message… (⌘+Enter to send)",
+    "send": "Send"
+  }
+}

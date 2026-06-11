@@ -334,7 +334,7 @@ describe('ListingsService.list signal filters', () => {
     } as never)
 
     const where = count.mock.calls[0][0].where
-    expect(where.reviews).toEqual({ some: {} })
+    expect(where.reviews).toEqual({ some: { hiddenAt: null } })
     expect(where.downloads).toEqual({ gt: 0 })
     expect(where.AND).toContainEqual({ models: { contains: ',' } })
     expect(where.updatedAt.gte).toBeInstanceOf(Date)
