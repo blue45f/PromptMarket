@@ -14,11 +14,11 @@
       <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#171225" flood-opacity=".34"/>
     </filter>
   </defs>
-  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
-  <rect width="512" height="512" rx="116" fill="url(#glow)"/>
+  <rect width="512" height="512" rx="94" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="94" fill="url(#glow)"/>
   <path d="M46 342C154 278 238 414 466 292" fill="none" stroke="#f8f1df" stroke-opacity=".1" stroke-width="26" stroke-linecap="round"/>
   <g filter="url(#shadow)">
-        <g transform="translate(0 0) scale(1)">
+        <g transform="translate(-20 -20) scale(1.08)">
           <rect x="112" y="142" width="288" height="214" rx="40" fill="#f8f1df" opacity=".96"/>
           <rect x="142" y="176" width="118" height="28" rx="14" fill="#ffb454"/>
           <rect x="142" y="225" width="228" height="22" rx="11" fill="#171225" opacity=".68"/>

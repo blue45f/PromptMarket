@@ -1,54 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="PromptMarket 공유 이미지">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="PromptMarket">
   <defs>
-    <!-- Deep space cyber gradient -->
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0b0f19" />
-      <stop offset="0.6" stop-color="#0f172a" />
-      <stop offset="1" stop-color="#1e1b4b" />
+      <stop stop-color="#171225"/>
+      <stop offset=".58" stop-color="#31204a"/>
+      <stop offset="1" stop-color="#ffb454"/>
     </linearGradient>
-    <!-- Cyber electric gradient (lime to cyan) -->
-    <linearGradient id="volt" x1="88" y1="120" x2="560" y2="380" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#a3e635" />
-      <stop offset="1" stop-color="#22d3ee" />
-    </linearGradient>
-    <!-- Logo tile background -->
-    <linearGradient id="tile" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0b0f19" />
-      <stop offset="0.6" stop-color="#0d1527" />
-      <stop offset="1" stop-color="#1e1b4b" />
-    </linearGradient>
-    <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#06b6d4" flood-opacity="0.25" />
+    <radialGradient id="halo" cx="78%" cy="19%" r="62%">
+      <stop stop-color="#39d5c8" stop-opacity=".82"/>
+      <stop offset=".56" stop-color="#ffb454" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#171225" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#171225" flood-opacity=".26"/>
     </filter>
   </defs>
-
-  <!-- Base canvas -->
-  <rect width="1200" height="630" fill="url(#bg)" />
-  <circle cx="1080" cy="92" r="240" fill="#22d3ee" opacity="0.08" />
-  <circle cx="150" cy="560" r="220" fill="#a3e635" opacity="0.06" />
-  <path d="M0 524C220 460 380 588 560 524s320-70 640 14v92H0Z" fill="#020617" opacity="0.8" />
-
-  <!-- Brand logomark (matches updated icon.svg) -->
-  <g transform="translate(88 74) scale(1.55)" filter="url(#glow)">
-    <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#tile)" stroke="#1e293b" stroke-width="1.5" />
-    <path d="M20 15h17.5c8.5 0 14 5.1 14 12.6 0 7.7-5.9 12.8-14.8 12.8H30.6V51H20V15Zm10.6 9.1v12h6.3c3.7 0 6.1-2.2 6.1-6s-2.4-6-6.1-6h-6.3Z" fill="url(#volt)" />
-    <path d="M31 24.5h6c3.4 0 5.4 1.9 5.4 5.1 0 3.1-2.1 5-5.4 5h-6V24.5Z" fill="#0b0f19" />
-    <circle cx="51" cy="51" r="5" fill="#22d3ee" stroke="#0b0f19" stroke-width="2" />
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#halo)"/>
+  <path d="M0 498C166 430 340 458 512 512c176 54 336 44 504-54 72-42 126-57 184-54v226H0Z" fill="#f8f1df" opacity=".12"/>
+  <path d="M74 96h216M74 542h412" stroke="#f8f1df" stroke-opacity=".16" stroke-width="16" stroke-linecap="round"/>
+  <g transform="translate(84 86)" filter="url(#soft)">
+    <svg width="104" height="104" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="116" fill="url(#glow)"/>
+  <path d="M46 342C154 278 238 414 466 292" fill="none" stroke="#f8f1df" stroke-opacity=".1" stroke-width="26" stroke-linecap="round"/>
+  <g filter="url(#shadow)">
+        <g transform="translate(0 0) scale(1)">
+          <rect x="112" y="142" width="288" height="214" rx="40" fill="#f8f1df" opacity=".96"/>
+          <rect x="142" y="176" width="118" height="28" rx="14" fill="#ffb454"/>
+          <rect x="142" y="225" width="228" height="22" rx="11" fill="#171225" opacity=".68"/>
+          <rect x="142" y="266" width="166" height="22" rx="11" fill="#171225" opacity=".34"/>
+          <path d="M314 154l22 46 50 7-36 35 8 50-44-24-45 24 9-50-37-35 51-7z" fill="#39d5c8"/>
+          <path d="M160 324l42-40 24 24 42-50" fill="none" stroke="#31204a" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+        </g></g>
+</svg>
   </g>
-
-  <!-- Wordmarks -->
-  <text x="190" y="118" fill="#f8fafc" font-size="42" font-weight="800" font-family="Pretendard, Apple SD Gothic Neo, system-ui, sans-serif">PromptMarket</text>
-  <text x="192" y="156" fill="#22d3ee" font-size="19" font-weight="700" letter-spacing="6" font-family="JetBrains Mono, ui-monospace, monospace">PROMPTS · SKILLS · MCP · AGENTS</text>
-
-  <!-- Copy texts -->
-  <text x="88" y="296" fill="#f8fafc" font-size="74" font-weight="800" letter-spacing="-2" font-family="Pretendard, Apple SD Gothic Neo, system-ui, sans-serif">검증된 AI 프롬프트를,</text>
-  <text x="88" y="386" fill="#a3e635" font-size="78" font-weight="900" letter-spacing="-2" font-family="Pretendard, Apple SD Gothic Neo, system-ui, sans-serif">바로 프로덕션으로.</text>
-
-  <!-- Description -->
-  <text x="88" y="462" fill="#94a3b8" font-size="28" font-weight="600" font-family="Pretendard, Apple SD Gothic Neo, system-ui, sans-serif">Claude · GPT-5 · Gemini로 서비스를 고도화하는</text>
-  <text x="88" y="504" fill="#94a3b8" font-size="28" font-weight="600" font-family="Pretendard, Apple SD Gothic Neo, system-ui, sans-serif">빌더들의 프롬프트 · 스킬 · MCP 서버 마켓플레이스.</text>
-
-  <!-- Info footer -->
-  <circle cx="92" cy="566" r="4.5" fill="#22d3ee" />
-  <text x="116" y="575" fill="#64748b" font-size="22" font-weight="600" font-family="Pretendard, Apple SD Gothic Neo, system-ui, sans-serif">프롬프트 · CLAUDE.md · Claude Code 스킬 · MCP 서버 · 서브에이전트</text>
+  <text x="214" y="148" font-family="Inter, Pretendard, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="34" font-weight="900" fill="#f8f1df">PromptMarket</text>
+  <text x="92" y="270" font-family="Inter, Pretendard, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="62" font-weight="900" fill="#f8f1df">PromptMarket</text>
+  <text x="94" y="335" font-family="Pretendard, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="27" font-weight="700" fill="#f8f1df" opacity=".86">검증된 AI 프롬프트, 스킬, MCP, 에이전트 마켓플레이스</text>
+  <g transform="translate(92 485)"><rect width="166" height="44" rx="22" fill="#f8f1df" opacity=".13" stroke="#f8f1df" stroke-opacity=".26"/><text x="83" y="28" text-anchor="middle" font-size="15" font-weight="800" fill="#f8f1df">프롬프트 큐레이션</text></g><g transform="translate(282 485)"><rect width="166" height="44" rx="22" fill="#f8f1df" opacity=".13" stroke="#f8f1df" stroke-opacity=".26"/><text x="83" y="28" text-anchor="middle" font-size="15" font-weight="800" fill="#f8f1df">스킬 거래</text></g><g transform="translate(472 485)"><rect width="166" height="44" rx="22" fill="#f8f1df" opacity=".13" stroke="#f8f1df" stroke-opacity=".26"/><text x="83" y="28" text-anchor="middle" font-size="15" font-weight="800" fill="#f8f1df">에이전트 카탈로그</text></g>
+  <g filter="url(#soft)">
+    <g transform="translate(722 116)">
+      <rect width="342" height="330" rx="46" fill="#f8f1df" opacity=".94"/>
+      <rect x="34" y="36" width="176" height="22" rx="11" fill="#171225" opacity=".84"/>
+      <rect x="34" y="82" width="252" height="14" rx="7" fill="#171225" opacity=".22"/>
+      <rect x="34" y="112" width="206" height="14" rx="7" fill="#171225" opacity=".14"/>
+      <g transform="translate(34 156) scale(.56)">
+        <g transform="translate(0 0) scale(1)">
+          <rect x="112" y="142" width="288" height="214" rx="40" fill="#f8f1df" opacity=".96"/>
+          <rect x="142" y="176" width="118" height="28" rx="14" fill="#ffb454"/>
+          <rect x="142" y="225" width="228" height="22" rx="11" fill="#171225" opacity=".68"/>
+          <rect x="142" y="266" width="166" height="22" rx="11" fill="#171225" opacity=".34"/>
+          <path d="M314 154l22 46 50 7-36 35 8 50-44-24-45 24 9-50-37-35 51-7z" fill="#39d5c8"/>
+          <path d="M160 324l42-40 24 24 42-50" fill="none" stroke="#31204a" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+        </g></g>
+      <rect x="216" y="177" width="72" height="118" rx="24" fill="#ffb454" opacity=".88"/>
+      <rect x="104" y="252" width="184" height="22" rx="11" fill="#39d5c8" opacity=".82"/>
+    </g></g>
 </svg>
