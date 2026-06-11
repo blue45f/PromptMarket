@@ -51,6 +51,16 @@ describe('RegisterPage', () => {
     expect(screen.getByRole('button', { name: /계정 만들기/i })).toBeTruthy()
   })
 
+  it('links the consent fine print to the internal policy routes', () => {
+    render(withProviders(<RegisterPage />))
+
+    expect(screen.getByRole('link', { name: '셀러 약관' })).toHaveAttribute('href', '/terms')
+    expect(screen.getByRole('link', { name: '개인정보 처리 방침' })).toHaveAttribute(
+      'href',
+      '/privacy'
+    )
+  })
+
   it('surfaces rule-specific, accessible validation on invalid submit', async () => {
     render(withProviders(<RegisterPage />))
     const username = document.querySelector('input[autocomplete="username"]') as HTMLInputElement

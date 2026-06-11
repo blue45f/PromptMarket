@@ -8,6 +8,7 @@ import ShortcutsOverlay from '@components/ShortcutsOverlay'
 import ScrollToTop from '@components/ScrollToTop'
 import RouteAnnouncer from '@components/RouteAnnouncer'
 import { useMe, useStats } from '@features/marketplace/queries'
+import { TERMSDESK_SUPPORT_URL } from '@features/policies'
 import { useNavShortcuts } from '@hooks/useNavShortcuts'
 import { useSpotlight } from '@hooks/useSpotlight'
 import { useReveal } from '@hooks/useReveal'
@@ -71,13 +72,11 @@ function SiteFooter() {
     { to: '/login', label: t('footer.sitemap.login') },
     { to: '/robots.txt', label: t('footer.sitemap.robots'), external: true },
     { to: '/sitemap.xml', label: t('footer.sitemap.sitemap'), external: true },
-    { to: TERMS_URL, label: t('footer.sitemap.terms'), external: true },
-    { to: PRIVACY_URL, label: t('footer.sitemap.privacy'), external: true },
-    {
-      to: `${SUPPORT_URL}?category=site-inquiry`,
-      label: t('footer.sitemap.support'),
-      external: true,
-    },
+    // Legal pages are first-party routes; only the support board stays on
+    // the external TermsDesk host.
+    { to: '/terms', label: t('footer.sitemap.terms') },
+    { to: '/privacy', label: t('footer.sitemap.privacy') },
+    { to: TERMSDESK_SUPPORT_URL, label: t('footer.sitemap.support'), external: true },
   ]
 
   return (
