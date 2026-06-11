@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import type { StartThreadDto } from './dto/start-thread.dto'
 import type { SendMessageDto } from './dto/send-message.dto'
@@ -95,14 +96,31 @@ export class MessagesService {
       select: { id: true },
     })
 
-    const threadId = existing
-      ? existing.id
-      : (
+    let threadId: string
+    if (existing) {
+      threadId = existing.id
+    } else {
+      try {
+        threadId = (
           await this.prisma.messageThread.create({
             data: { listingId: listing.id, buyerId: userId, sellerId: listing.authorId },
             select: { id: true },
           })
         ).id
+      } catch (e) {
+        // 같은 구매자가 동시에 첫 질문을 두 번 보내면 unique 제약과 경합한다 — 승자 스레드를 재사용.
+        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+          const winner = await this.prisma.messageThread.findUnique({
+            where: { listingId_buyerId: { listingId: listing.id, buyerId: userId } },
+            select: { id: true },
+          })
+          if (!winner) throw e
+          threadId = winner.id
+        } else {
+          throw e
+        }
+      }
+    }
 
     await this.prisma.$transaction([
       this.prisma.message.create({

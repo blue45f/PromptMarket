@@ -54,7 +54,7 @@ export class ListingsController {
     return this.listings.create(user.id, dto)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, SuspensionGuard)
   @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: 'Update an owned listing' })
@@ -62,7 +62,7 @@ export class ListingsController {
     return this.listings.update(user.id, id, dto)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, SuspensionGuard)
   @ApiBearerAuth()
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an owned listing' })

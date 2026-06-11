@@ -23,13 +23,26 @@ export class ModerationService {
         _count: { select: { comments: true, attachments: true } },
       },
     })
+    // 첨부 패널은 count===0 이면 비활성화되므로 댓글에만 달린 첨부도 합산해야 한다.
+    const ids = threads.map((t) => t.id)
+    const commentAttachments = ids.length
+      ? await this.prisma.attachment.findMany({
+          where: { comment: { threadId: { in: ids } } },
+          select: { comment: { select: { threadId: true } } },
+        })
+      : []
+    const commentAttachmentCount = new Map<string, number>()
+    for (const a of commentAttachments) {
+      const tid = a.comment?.threadId
+      if (tid) commentAttachmentCount.set(tid, (commentAttachmentCount.get(tid) ?? 0) + 1)
+    }
     return threads.map((t) => ({
       id: t.id,
       title: t.title,
       category: t.category,
       author: t.author,
       commentCount: t._count.comments,
-      attachmentCount: t._count.attachments,
+      attachmentCount: t._count.attachments + (commentAttachmentCount.get(t.id) ?? 0),
       hiddenAt: t.hiddenAt,
       createdAt: t.createdAt,
     }))

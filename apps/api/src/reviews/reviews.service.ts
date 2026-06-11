@@ -35,7 +35,8 @@ function serializeReply(reply: ReplyRow) {
     body: reply.deletedAt ? null : reply.body,
     deleted: !!reply.deletedAt,
     createdAt: reply.createdAt,
-    user: reply.user,
+    // 삭제된 답글은 본문과 함께 작성자 신원도 감춘다 (공개 엔드포인트 노출 방지)
+    user: reply.deletedAt ? null : reply.user,
   }
 }
 
