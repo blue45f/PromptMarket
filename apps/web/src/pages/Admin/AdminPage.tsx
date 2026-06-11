@@ -20,6 +20,7 @@ import {
 } from '@features/marketplace/queries'
 import { getErrorMessage } from '@services/api'
 import { usePageMeta } from '@hooks/usePageMeta'
+import AdminNav from '@components/AdminNav'
 import EmptyState from '@components/EmptyState'
 import { formatDollars } from '@utils/format'
 import type {
@@ -600,6 +601,8 @@ export default function AdminPage() {
         </h1>
         <p className="text-ink-soft dark:text-bone-soft max-w-[58ch]">{t('header.subtitle')}</p>
       </header>
+
+      <AdminNav />
 
       {error && (
         <p className="mb-6 text-sm text-coral-deep dark:text-coral font-mono" role="status">

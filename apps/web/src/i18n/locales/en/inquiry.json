@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "Contact support",
+    "description": "Reach the PromptMarket team — bug reports, partnerships, and general questions welcome."
+  },
+  "header": {
+    "title": "Contact support",
+    "subtitle": "Send an inquiry without leaving the site. Leave an email if you want a reply."
+  },
+  "categories": {
+    "contact": "General contact",
+    "partnership": "Partnership",
+    "bug": "Bug report",
+    "qa": "Quality / QA",
+    "question": "Question"
+  },
+  "form": {
+    "categoryLabel": "Inquiry type",
+    "categoryHint": "Pick the closest type — faster triage means a faster answer.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Sum up your inquiry in one line",
+    "bodyLabel": "Details",
+    "bodyPlaceholder": "What's on your mind? For bugs, reproduction steps plus expected vs. actual behavior help a lot.",
+    "bodyHint": "{{count}} / {{max}} characters",
+    "emailLabel": "Reply-to email",
+    "emailOptional": "(optional)",
+    "emailPlaceholder": "you@example.com",
+    "emailHint": "Leave it and we'll follow up by email.",
+    "validation": {
+      "title": "Titles need 2–140 characters.",
+      "body": "Details need 10–4,000 characters.",
+      "email": "Enter a valid email address."
+    },
+    "submit": "Send inquiry",
+    "submitting": "Sending…",
+    "submitError": "Sending failed. Try again in a moment or use the external support board.",
+    "fallbackLink": "Open the external support board",
+    "externalFallback": "External support board"
+  },
+  "receipt": {
+    "title": "Inquiry received",
+    "subtitle": "The team reviews submissions in order.",
+    "subtitleWithEmail": "We'll follow up at {{email}}.",
+    "fields": {
+      "category": "Type",
+      "title": "Title",
+      "submittedAt": "Submitted",
+      "reference": "Reference"
+    },
+    "again": "Send another inquiry",
+    "home": "Back home"
+  }
+}

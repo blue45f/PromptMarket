@@ -129,7 +129,7 @@ export class ListingsService {
     if (query.free === 'true') where.priceCents = 0
     if (query.free === 'false') where.priceCents = { gt: 0 }
     const signals = query.signal ?? []
-    if (signals.includes('reviewed')) where.reviews = { some: {} }
+    if (signals.includes('reviewed')) where.reviews = { some: { hiddenAt: null } }
     if (signals.includes('used')) where.downloads = { gt: 0 }
     if (signals.includes('multi-model')) addAnd(where, { models: { contains: ',' } })
     if (signals.includes('fresh')) {
@@ -149,7 +149,7 @@ export class ListingsService {
         orderBy: [{ downloads: 'desc' }, { createdAt: 'desc' }],
         include: {
           author: { select: { id: true, username: true } },
-          reviews: { select: { rating: true } },
+          reviews: { where: { hiddenAt: null }, select: { rating: true } },
         },
       })
       const scored = all.map((l) => {
@@ -184,7 +184,7 @@ export class ListingsService {
         take: pageSize,
         include: {
           author: { select: { id: true, username: true } },
-          reviews: { select: { rating: true } },
+          reviews: { where: { hiddenAt: null }, select: { rating: true } },
         },
       }),
     ])
@@ -204,8 +204,10 @@ export class ListingsService {
       include: {
         author: { select: { id: true, username: true, bio: true, avatarUrl: true } },
         reviews: {
+          where: { hiddenAt: null },
           include: {
             user: { select: { id: true, username: true } },
+            attachments: true,
             replies: {
               orderBy: { createdAt: 'asc' },
               include: { user: { select: { id: true, username: true } } },
@@ -258,9 +260,17 @@ export class ListingsService {
         comment: r.comment,
         createdAt: r.createdAt,
         user: r.user,
+        attachments: (r.attachments ?? []).map((a) => ({
+          id: a.id,
+          dataUrl: a.dataUrl,
+          width: a.width,
+          height: a.height,
+        })),
         replies: (r.replies ?? []).map((reply) => ({
           id: reply.id,
-          body: reply.body,
+          // Soft-deleted replies keep their slot as a placeholder.
+          body: reply.deletedAt ? null : reply.body,
+          deleted: !!reply.deletedAt,
           createdAt: reply.createdAt,
           user: reply.user,
         })),
@@ -289,7 +299,7 @@ export class ListingsService {
       take: safeLimit,
       include: {
         author: { select: { id: true, username: true } },
-        reviews: { select: { rating: true } },
+        reviews: { where: { hiddenAt: null }, select: { rating: true } },
       },
     })
     return { items: items.map((l) => this.serializeCard(l)) }
@@ -341,7 +351,7 @@ export class ListingsService {
       },
       include: {
         author: { select: { id: true, username: true } },
-        reviews: { select: { rating: true } },
+        reviews: { where: { hiddenAt: null }, select: { rating: true } },
       },
     })
     return this.serializeCard(listing)
@@ -376,7 +386,7 @@ export class ListingsService {
       data,
       include: {
         author: { select: { id: true, username: true } },
-        reviews: { select: { rating: true } },
+        reviews: { where: { hiddenAt: null }, select: { rating: true } },
       },
     })
     return this.serializeCard(updated)

@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReviewsService } from './reviews.service'
 import { CreateReviewDto } from './dto/create-review.dto'
 import { CreateReviewReplyDto } from './dto/create-review-reply.dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { SuspensionGuard } from '../auth/suspension.guard'
 import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
 
 @ApiTags('reviews')
@@ -17,7 +18,7 @@ export class ReviewsController {
     return this.reviews.listForListing(id)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, SuspensionGuard)
   @ApiBearerAuth()
   @Post(':id/reviews')
   @ApiOperation({ summary: 'Create a review for a purchased listing' })
@@ -25,7 +26,7 @@ export class ReviewsController {
     return this.reviews.create(user.id, id, dto)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, SuspensionGuard)
   @ApiBearerAuth()
   @Post(':id/reviews/:reviewId/replies')
   @ApiOperation({ summary: 'Reply to a review thread' })
@@ -36,5 +37,18 @@ export class ReviewsController {
     @Body() dto: CreateReviewReplyDto
   ) {
     return this.reviews.createReply(user.id, id, reviewId, dto)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete(':id/reviews/:reviewId/replies/:replyId')
+  @ApiOperation({ summary: 'Soft-delete an own reply (placeholder remains)' })
+  deleteReply(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Param('reviewId') reviewId: string,
+    @Param('replyId') replyId: string
+  ) {
+    return this.reviews.deleteReply(user, id, reviewId, replyId)
   }
 }

@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common'
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import * as argon2 from 'argon2'
@@ -74,10 +79,18 @@ export class AuthService {
     if (!ok) {
       throw new UnauthorizedException('Invalid credentials')
     }
+    this.assertNotSuspended(user)
     const token = this.signToken(user)
     return {
       token,
       user: this.publicUser(user),
+    }
+  }
+
+  /** Suspended members keep their data but cannot start new sessions. */
+  private assertNotSuspended(user: { suspendedAt?: Date | null }) {
+    if (user.suspendedAt) {
+      throw new ForbiddenException('This account is suspended')
     }
   }
 
@@ -118,6 +131,7 @@ export class AuthService {
 
     const existing = await this.prisma.user.findUnique({ where: { email } })
     if (existing) {
+      this.assertNotSuspended(existing)
       // Link the Google identity to the existing account on first use.
       const user =
         existing.googleSub === sub

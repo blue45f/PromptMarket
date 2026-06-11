@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { AdminGuard } from './admin.guard'
 import { OptionalAuthGuard } from './optional-auth.guard'
+import { SuspensionGuard } from './suspension.guard'
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { OptionalAuthGuard } from './optional-auth.guard'
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard, OptionalAuthGuard, AdminGuard],
-  exports: [JwtAuthGuard, OptionalAuthGuard, AdminGuard, JwtModule],
+  providers: [AuthService, JwtAuthGuard, OptionalAuthGuard, AdminGuard, SuspensionGuard],
+  exports: [JwtAuthGuard, OptionalAuthGuard, AdminGuard, SuspensionGuard, JwtModule],
 })
 export class AuthModule {}

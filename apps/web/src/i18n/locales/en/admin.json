@@ -126,5 +126,99 @@
       "seller": "Seller",
       "platform": "Platform"
     }
+  },
+  "nav": {
+    "label": "Admin sections",
+    "revenue": "Revenue",
+    "moderation": "Community",
+    "reviews": "Reviews",
+    "members": "Members"
+  },
+  "moderation": {
+    "meta": {
+      "title": "Community moderation",
+      "description": "Hide or delete community threads and strip attached images."
+    },
+    "title": "Community moderation",
+    "subtitle": "Hide, restore, or delete threads and clean up attachments in one place.",
+    "emptyTitle": "Nothing to moderate",
+    "emptyDescription": "Threads will show up here as the community posts.",
+    "table": {
+      "thread": "Thread",
+      "author": "Author",
+      "activity": "Activity",
+      "activityValue": "{{comments}} comments · {{attachments}} images",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "visible": "Visible",
+      "hidden": "Hidden"
+    },
+    "actions": {
+      "hide": "Hide",
+      "show": "Unhide",
+      "attachments": "Images {{count}}",
+      "delete": "Delete",
+      "deleteConfirm": "Delete permanently?"
+    },
+    "attachments": {
+      "empty": "No attached images.",
+      "alt": "Attachment {{index}} by @{{username}}",
+      "remove": "Remove image",
+      "removeConfirm": "Remove this image?"
+    },
+    "toasts": {
+      "hidden": "Hidden from the public",
+      "shown": "Made visible again",
+      "threadDeleted": "Thread deleted",
+      "reviewDeleted": "Review deleted",
+      "attachmentDeleted": "Image removed"
+    }
+  },
+  "reviews": {
+    "meta": {
+      "title": "Review moderation",
+      "description": "Hide or delete reviews and strip attached images."
+    },
+    "title": "Review moderation",
+    "subtitle": "Hidden reviews drop out of public lists and the rating math.",
+    "emptyTitle": "Nothing to moderate",
+    "emptyDescription": "Reviews will show up here as buyers post them.",
+    "onListing": "On listing:"
+  },
+  "members": {
+    "meta": {
+      "title": "Member management",
+      "description": "Search members, check activity, and suspend or reinstate accounts."
+    },
+    "title": "Member management",
+    "subtitle": "Suspended members can't log in or write. Their data stays intact.",
+    "searchLabel": "Search members",
+    "searchPlaceholder": "Search by username or email…",
+    "emptyTitle": "No matching members",
+    "emptyDescription": "Try a different username or email.",
+    "adminBadge": "Admin",
+    "table": {
+      "member": "Member",
+      "joined": "Joined",
+      "activity": "Activity",
+      "activityValue": "{{listings}} listings · {{reviews}} reviews · {{threads}} threads",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "actions": {
+      "suspend": "Suspend",
+      "suspendConfirm": "Suspend this member?",
+      "reinstate": "Reinstate"
+    },
+    "toasts": {
+      "suspended": "Member suspended",
+      "reinstated": "Member reinstated"
+    }
   }
 }

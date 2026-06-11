@@ -8,7 +8,6 @@ import ShortcutsOverlay from '@components/ShortcutsOverlay'
 import ScrollToTop from '@components/ScrollToTop'
 import RouteAnnouncer from '@components/RouteAnnouncer'
 import { useMe, useStats } from '@features/marketplace/queries'
-import { TERMSDESK_SUPPORT_URL } from '@features/policies'
 import { useNavShortcuts } from '@hooks/useNavShortcuts'
 import { useSpotlight } from '@hooks/useSpotlight'
 import { useReveal } from '@hooks/useReveal'
@@ -60,23 +59,20 @@ function SiteFooter() {
   const { t } = useTranslation('nav')
   const spotlightRef = useSpotlight<HTMLElement>()
   const { ref: wordmarkRef, revealed } = useReveal<HTMLDivElement>()
-  const TERMSDESK_BASE = 'https://termsdesk.vercel.app'
-  const TERMS_URL = `${TERMSDESK_BASE}/p/promptmarket/terms-of-service`
-  const PRIVACY_URL = `${TERMSDESK_BASE}/p/promptmarket/privacy-policy`
-  const SUPPORT_URL = `${TERMSDESK_BASE}/support/promptmarket`
   const miniSitemapLinks = [
     { to: '/', label: t('footer.sitemap.home') },
     { to: '/browse', label: t('footer.sitemap.browse') },
+    { to: '/community', label: t('footer.sitemap.community') },
     { to: '/sell', label: t('footer.sitemap.sell') },
     { to: '/dashboard', label: t('footer.sitemap.dashboard') },
     { to: '/login', label: t('footer.sitemap.login') },
     { to: '/robots.txt', label: t('footer.sitemap.robots'), external: true },
     { to: '/sitemap.xml', label: t('footer.sitemap.sitemap'), external: true },
-    // Legal pages are first-party routes; only the support board stays on
-    // the external TermsDesk host.
+    // Legal pages and support are first-party routes; the in-app support
+    // form still links out to the TermsDesk board as a fallback.
     { to: '/terms', label: t('footer.sitemap.terms') },
     { to: '/privacy', label: t('footer.sitemap.privacy') },
-    { to: TERMSDESK_SUPPORT_URL, label: t('footer.sitemap.support'), external: true },
+    { to: '/support', label: t('footer.sitemap.support') },
   ]
 
   return (

@@ -4,11 +4,13 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as Tabs from '@radix-ui/react-tabs'
+import { z } from 'zod'
 import {
   CreateReviewReplySchema,
   CreateReviewSchema,
+  MESSAGE_BODY_MAX,
   typeGradient,
-  type CreateReviewInput,
+  type AttachmentInput as AttachmentDraft,
 } from '@promptmarket/shared'
 import type { ListingDetailResponse } from '@/types'
 import {
@@ -19,7 +21,9 @@ import {
   Download,
   Loader2,
   MessageCircle,
+  MessageSquare,
   PanelRight,
+  Send,
   Share2,
   ShoppingCart,
 } from 'lucide-react'
@@ -28,7 +32,9 @@ import {
   usePurchase,
   useCreateReview,
   useCreateReviewReply,
+  useDeleteReviewReply,
 } from '@features/marketplace/queries'
+import { useStartMessageThread } from '@features/messages'
 import { getErrorMessage } from '@services/api'
 import { formatDate, formatPrice, formatRelative } from '@utils/format'
 import toast from 'react-hot-toast'
@@ -53,7 +59,15 @@ import { usePageMeta } from '@hooks/usePageMeta'
 import { useStructuredData } from '@hooks/useStructuredData'
 import { useWishlist } from '@hooks/useWishlist'
 import { useAuthStore } from '@store/auth'
+import AttachmentGallery from '@components/AttachmentGallery'
+import AttachmentInput from '@components/AttachmentInput'
+import ConfirmActionButton from '@components/ConfirmActionButton'
 import { cn } from '@utils/cn'
+
+// Screenshot attachments live outside react-hook-form (the picker resizes
+// files asynchronously), so the form schema covers only rating + comment.
+const reviewFormSchema = CreateReviewSchema.omit({ attachments: true })
+type ReviewFormValues = z.infer<typeof reviewFormSchema>
 
 export default function ListingDetailPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -71,12 +85,17 @@ export default function ListingDetailPage() {
   const purchaseMut = usePurchase(listing?.id, slug)
   const reviewMut = useCreateReview(listing?.id, slug)
   const replyMut = useCreateReviewReply(listing?.id, slug)
+  const deleteReplyMut = useDeleteReviewReply(listing?.id, slug)
+  const askSellerMut = useStartMessageThread()
 
   const [copied, setCopied] = useState(false)
   const [shareState, setShareState] = useState<'idle' | 'shared' | 'copied'>('idle')
   const [activeReplyReviewId, setActiveReplyReviewId] = useState<string | null>(null)
   const [replyDraft, setReplyDraft] = useState('')
   const [replyError, setReplyError] = useState<string | null>(null)
+  const [reviewAttachments, setReviewAttachments] = useState<AttachmentDraft[]>([])
+  const [askOpen, setAskOpen] = useState(false)
+  const [askDraft, setAskDraft] = useState('')
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const shareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const replyTextareaRef = useRef<HTMLTextAreaElement | null>(null)
@@ -223,8 +242,8 @@ export default function ListingDetailPage() {
     watch,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<CreateReviewInput>({
-    resolver: zodResolver(CreateReviewSchema),
+  } = useForm<ReviewFormValues>({
+    resolver: zodResolver(reviewFormSchema),
     defaultValues: { rating: 5, comment: '' },
   })
   const rating = watch('rating')
@@ -324,12 +343,32 @@ export default function ListingDetailPage() {
       await reviewMut.mutateAsync({
         rating: values.rating,
         comment: values.comment?.trim() || undefined,
+        attachments: reviewAttachments,
       })
       reset({ rating: 5, comment: '' })
+      setReviewAttachments([])
     } catch {
       /* toast handled in hook */
     }
   })
+
+  async function handleAskSeller() {
+    if (!listing) return
+    if (!token) {
+      navigate('/login', { state: { from: `/listings/${listing.slug}` } })
+      return
+    }
+    const body = askDraft.trim()
+    if (!body || askSellerMut.isPending) return
+    try {
+      const thread = await askSellerMut.mutateAsync({ listingId: listing.id, body })
+      setAskOpen(false)
+      setAskDraft('')
+      navigate(`/messages/${thread.id}`)
+    } catch {
+      /* toast handled in hook */
+    }
+  }
 
   function startReply(reviewId: string) {
     if (!token) {
@@ -716,6 +755,16 @@ export default function ListingDetailPage() {
                         {t('reviews.validation.comment')}
                       </p>
                     )}
+                    <div className="mt-3">
+                      <span className="mb-1.5 block text-xs font-medium text-ink-soft dark:text-bone-soft">
+                        {t('reviews.attachmentsLabel')}
+                      </span>
+                      <AttachmentInput
+                        value={reviewAttachments}
+                        onChange={setReviewAttachments}
+                        disabled={reviewSubmitting}
+                      />
+                    </div>
                     <div className="mt-3 flex justify-end">
                       <button
                         type="submit"
@@ -778,6 +827,13 @@ export default function ListingDetailPage() {
                                   {r.comment}
                                 </p>
                               )}
+                              {(r.attachments?.length ?? 0) > 0 && (
+                                <AttachmentGallery
+                                  attachments={r.attachments ?? []}
+                                  size="sm"
+                                  className="mt-3"
+                                />
+                              )}
                             </div>
                             <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
                               <span
@@ -799,29 +855,52 @@ export default function ListingDetailPage() {
 
                           {replies.length > 0 && (
                             <ol className="mt-4 space-y-3 border-l border-line/80 pl-4 dark:border-night-line/80 sm:ml-8">
-                              {replies.map((reply) => (
-                                <li key={reply.id} className="min-w-0">
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <span className="text-xs font-semibold text-ink dark:text-bone">
-                                      @{reply.user?.username ?? t('reviews.anonymous')}
-                                    </span>
-                                    {reply.user?.id === listing.author?.id && (
-                                      <span className="inline-flex items-center rounded-full border border-volt-300/70 bg-volt-100 px-2 py-0.5 text-[0.66rem] font-semibold text-volt-900 dark:border-volt-700/60 dark:bg-volt-900/35 dark:text-volt-200">
-                                        {t('reviews.makerBadge')}
+                              {replies.map((reply) =>
+                                reply.deleted ? (
+                                  /* Soft-deleted reply — the placeholder keeps
+                                     the conversation's shape. */
+                                  <li key={reply.id} className="min-w-0">
+                                    <p className="text-sm italic text-ink-mute dark:text-bone-mute">
+                                      {t('reviews.deletedReply')}
+                                    </p>
+                                  </li>
+                                ) : (
+                                  <li key={reply.id} className="min-w-0">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <span className="text-xs font-semibold text-ink dark:text-bone">
+                                        @{reply.user?.username ?? t('reviews.anonymous')}
                                       </span>
-                                    )}
-                                    <span
-                                      className="text-[0.7rem] text-ink-mute dark:text-bone-mute"
-                                      title={formatDate(reply.createdAt)}
-                                    >
-                                      {formatRelative(reply.createdAt)}
-                                    </span>
-                                  </div>
-                                  <p className="mt-1 max-w-[68ch] whitespace-pre-wrap break-words text-sm leading-relaxed text-ink-soft dark:text-bone-soft">
-                                    {reply.body}
-                                  </p>
-                                </li>
-                              ))}
+                                      {reply.user?.id === listing.author?.id && (
+                                        <span className="inline-flex items-center rounded-full border border-volt-300/70 bg-volt-100 px-2 py-0.5 text-[0.66rem] font-semibold text-volt-900 dark:border-volt-700/60 dark:bg-volt-900/35 dark:text-volt-200">
+                                          {t('reviews.makerBadge')}
+                                        </span>
+                                      )}
+                                      <span
+                                        className="text-[0.7rem] text-ink-mute dark:text-bone-mute"
+                                        title={formatDate(reply.createdAt)}
+                                      >
+                                        {formatRelative(reply.createdAt)}
+                                      </span>
+                                      {(user?.id === reply.user?.id || user?.isAdmin) && (
+                                        <ConfirmActionButton
+                                          label={t('reviews.deleteReply')}
+                                          confirmLabel={t('reviews.deleteReplyConfirm')}
+                                          pending={deleteReplyMut.isPending}
+                                          onConfirm={() =>
+                                            deleteReplyMut
+                                              .mutateAsync({ reviewId: r.id, replyId: reply.id })
+                                              .catch(() => undefined)
+                                          }
+                                          className="ml-auto"
+                                        />
+                                      )}
+                                    </div>
+                                    <p className="mt-1 max-w-[68ch] whitespace-pre-wrap break-words text-sm leading-relaxed text-ink-soft dark:text-bone-soft">
+                                      {reply.body}
+                                    </p>
+                                  </li>
+                                )
+                              )}
                             </ol>
                           )}
 
@@ -1086,6 +1165,81 @@ export default function ListingDetailPage() {
                   {t('sidebar.profile')}
                 </Link>
               </div>
+
+              {/* Buyer → seller Q&A entry. The thread lives in /messages and
+                  polls there; this is only the doorway. */}
+              {!isOwner && (
+                <div className="mt-4 border-t border-line/70 pt-4 dark:border-night-line/70">
+                  {askOpen && token ? (
+                    <form
+                      onSubmit={(event) => {
+                        event.preventDefault()
+                        void handleAskSeller()
+                      }}
+                      noValidate
+                    >
+                      <label
+                        htmlFor="ask-seller-body"
+                        className="mb-1.5 block text-xs font-medium text-ink-soft dark:text-bone-soft"
+                      >
+                        {t('contact.label')}
+                      </label>
+                      <textarea
+                        id="ask-seller-body"
+                        value={askDraft}
+                        onChange={(event) => setAskDraft(event.target.value)}
+                        maxLength={MESSAGE_BODY_MAX}
+                        rows={3}
+                        autoFocus
+                        placeholder={t('contact.placeholder')}
+                        className="w-full resize-y rounded-xl border border-line bg-canvas px-3 py-2 text-sm leading-relaxed text-ink placeholder:text-ink-mute focus:border-volt-500 focus:outline-none focus:ring-2 focus:ring-volt-500/60 dark:border-night-line dark:bg-night dark:text-bone dark:placeholder:text-bone-mute"
+                      />
+                      <div className="mt-2 flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAskOpen(false)
+                            setAskDraft('')
+                          }}
+                          className="inline-flex min-h-8 items-center rounded-full px-3 py-1 text-xs font-medium text-ink-soft hover:text-ink dark:text-bone-soft dark:hover:text-bone focus-volt"
+                        >
+                          {t('contact.cancel')}
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={askSellerMut.isPending || askDraft.trim().length === 0}
+                          className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-ink px-3.5 py-1 text-xs font-semibold text-bone disabled:cursor-not-allowed disabled:opacity-60 dark:bg-bone dark:text-ink motion-safe:transition ease-expo focus-volt"
+                        >
+                          {askSellerMut.isPending ? (
+                            <Loader2
+                              aria-hidden="true"
+                              className="h-3 w-3 motion-safe:animate-spin"
+                            />
+                          ) : (
+                            <Send aria-hidden="true" className="h-3 w-3" />
+                          )}
+                          {t('contact.send')}
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!token) {
+                          navigate('/login', { state: { from: `/listings/${listing.slug}` } })
+                          return
+                        }
+                        setAskOpen(true)
+                      }}
+                      className="inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-full border border-line px-4 py-1.5 text-sm font-medium text-ink-soft hover:border-volt-400 hover:text-ink dark:border-night-line dark:text-bone-soft dark:hover:border-volt-500/60 dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
+                    >
+                      <MessageSquare aria-hidden="true" className="h-4 w-4" />
+                      {token ? t('contact.cta') : t('contact.loginCta')}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             <ArtifactSignals listing={listing} variant="panel" />

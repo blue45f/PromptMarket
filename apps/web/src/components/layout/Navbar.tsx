@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import {
   LogOut,
+  Mail,
   Menu,
   PlusCircle,
   ShieldCheck,
@@ -13,6 +14,7 @@ import {
   X,
 } from 'lucide-react'
 import { useAuthStore } from '@store/auth'
+import { useUnreadMessages } from '@features/messages'
 import SearchBar from '@components/SearchBar'
 import ThemeToggle from '@components/ThemeToggle'
 import LanguageToggle from '@components/LanguageToggle'
@@ -52,6 +54,9 @@ export default function Navbar() {
   const { token, user, logout } = useAuthStore()
   const [mobileOpen, setMobileOpen] = useState(false)
   const mobileToggleRef = useRef<HTMLButtonElement>(null)
+  // Unread Q&A messages — drives the inbox badge; polls only while signed in.
+  const { data: unreadData } = useUnreadMessages(!!token)
+  const unreadCount = unreadData?.count ?? 0
 
   // Lock body scroll and close on Escape while the mobile menu is open
   useEffect(() => {
@@ -116,6 +121,37 @@ export default function Navbar() {
           <NavLink to="/browse" className={navLinkClass}>
             {({ isActive }) => <NavLinkInner isActive={isActive}>{t('browse')}</NavLinkInner>}
           </NavLink>
+          <NavLink to="/community" className={navLinkClass}>
+            {({ isActive }) => <NavLinkInner isActive={isActive}>{t('community')}</NavLinkInner>}
+          </NavLink>
+          {token && (
+            <NavLink
+              to="/messages"
+              className={navLinkClass}
+              aria-label={
+                unreadCount > 0
+                  ? t('messagesUnread', { count: unreadCount })
+                  : t('messages', { defaultValue: 'Messages' })
+              }
+            >
+              {({ isActive }) => (
+                <NavLinkInner isActive={isActive}>
+                  <span className="relative inline-flex">
+                    <Mail aria-hidden className="w-4 h-4" />
+                    {unreadCount > 0 && (
+                      <span
+                        aria-hidden
+                        className="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-volt-400 px-0.5 font-mono text-[0.56rem] font-bold tabular-nums text-ink"
+                      >
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </span>
+                  <span className="hidden lg:inline">{t('messages')}</span>
+                </NavLinkInner>
+              )}
+            </NavLink>
+          )}
           {token && (
             <NavLink to="/sell" className={navLinkClass}>
               {({ isActive }) => (
@@ -268,6 +304,31 @@ export default function Navbar() {
             >
               {t('browse')} <span aria-hidden>→</span>
             </Link>
+            <Link
+              onClick={() => setMobileOpen(false)}
+              to="/community"
+              className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
+            >
+              {t('community')} <span aria-hidden>→</span>
+            </Link>
+            {token && (
+              <Link
+                onClick={() => setMobileOpen(false)}
+                to="/messages"
+                className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
+              >
+                <span className="inline-flex items-center gap-2">
+                  {t('messages')}
+                  {unreadCount > 0 && (
+                    <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-volt-400 px-1 font-mono text-[0.66rem] font-bold tabular-nums text-ink">
+                      <span className="sr-only">{t('messagesUnread', { count: unreadCount })}</span>
+                      <span aria-hidden>{unreadCount > 9 ? '9+' : unreadCount}</span>
+                    </span>
+                  )}
+                </span>
+                <span aria-hidden>→</span>
+              </Link>
+            )}
             {token && (
               <Link
                 onClick={() => setMobileOpen(false)}

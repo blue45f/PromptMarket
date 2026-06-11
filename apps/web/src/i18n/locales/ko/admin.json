@@ -126,5 +126,99 @@
       "seller": "판매자",
       "platform": "플랫폼"
     }
+  },
+  "nav": {
+    "label": "관리자 메뉴",
+    "revenue": "매출",
+    "moderation": "커뮤니티",
+    "reviews": "리뷰",
+    "members": "회원"
+  },
+  "moderation": {
+    "meta": {
+      "title": "커뮤니티 운영",
+      "description": "커뮤니티 토론 글을 숨기거나 삭제하고 첨부 이미지를 정리합니다."
+    },
+    "title": "커뮤니티 운영",
+    "subtitle": "토론 글 숨김·삭제와 첨부 이미지 정리를 한 곳에서 처리합니다.",
+    "emptyTitle": "운영할 글이 없어요",
+    "emptyDescription": "커뮤니티에 글이 올라오면 여기에서 관리할 수 있어요.",
+    "table": {
+      "thread": "글",
+      "author": "작성자",
+      "activity": "활동",
+      "activityValue": "댓글 {{comments}} · 이미지 {{attachments}}",
+      "status": "상태",
+      "actions": "조치"
+    },
+    "status": {
+      "visible": "공개",
+      "hidden": "숨김"
+    },
+    "actions": {
+      "hide": "숨기기",
+      "show": "공개로 전환",
+      "attachments": "이미지 {{count}}",
+      "delete": "삭제",
+      "deleteConfirm": "영구 삭제할까요?"
+    },
+    "attachments": {
+      "empty": "첨부 이미지가 없어요.",
+      "alt": "@{{username}}님의 첨부 {{index}}",
+      "remove": "이미지 제거",
+      "removeConfirm": "이 이미지를 제거할까요?"
+    },
+    "toasts": {
+      "hidden": "숨김 처리했어요",
+      "shown": "공개로 전환했어요",
+      "threadDeleted": "글을 삭제했어요",
+      "reviewDeleted": "리뷰를 삭제했어요",
+      "attachmentDeleted": "이미지를 제거했어요"
+    }
+  },
+  "reviews": {
+    "meta": {
+      "title": "리뷰 운영",
+      "description": "리뷰를 숨기거나 삭제하고 첨부 이미지를 정리합니다."
+    },
+    "title": "리뷰 운영",
+    "subtitle": "숨긴 리뷰는 공개 목록과 평점 계산에서 제외됩니다.",
+    "emptyTitle": "운영할 리뷰가 없어요",
+    "emptyDescription": "리뷰가 등록되면 여기에서 관리할 수 있어요.",
+    "onListing": "리스팅:"
+  },
+  "members": {
+    "meta": {
+      "title": "회원 관리",
+      "description": "회원을 검색하고 활동을 확인하며 계정을 정지하거나 복구합니다."
+    },
+    "title": "회원 관리",
+    "subtitle": "정지된 회원은 로그인과 쓰기 활동이 차단됩니다. 데이터는 유지돼요.",
+    "searchLabel": "회원 검색",
+    "searchPlaceholder": "아이디 또는 이메일 검색…",
+    "emptyTitle": "검색 결과가 없어요",
+    "emptyDescription": "다른 아이디나 이메일로 다시 검색해 보세요.",
+    "adminBadge": "관리자",
+    "table": {
+      "member": "회원",
+      "joined": "가입일",
+      "activity": "활동",
+      "activityValue": "리스팅 {{listings}} · 리뷰 {{reviews}} · 글 {{threads}}",
+      "status": "상태",
+      "actions": "조치"
+    },
+    "status": {
+      "active": "활성",
+      "suspended": "정지됨"
+    },
+    "actions": {
+      "suspend": "정지",
+      "suspendConfirm": "이 회원을 정지할까요?",
+      "reinstate": "정지 해제"
+    },
+    "toasts": {
+      "suspended": "회원을 정지했어요",
+      "reinstated": "정지를 해제했어요"
+    }
   }
 }

@@ -100,10 +100,11 @@ describe('Layout', () => {
     })
     const links = within(miniSitemap).getAllByRole('link')
 
-    expect(links).toHaveLength(10)
+    expect(links).toHaveLength(11)
     expect(links.map((link) => link.getAttribute('href'))).toEqual(
       expect.arrayContaining([
         '/browse',
+        '/community',
         '/sell',
         '/dashboard',
         '/login',
@@ -112,12 +113,12 @@ describe('Layout', () => {
         '/sitemap.xml',
         '/terms',
         '/privacy',
-        'https://termsdesk.vercel.app/support/promptmarket?category=site-inquiry',
+        '/support',
       ])
     )
   })
 
-  it('keeps terms and privacy as internal routes and only the support board external', () => {
+  it('keeps terms, privacy, and support as internal routes', () => {
     render(<TestLayout />)
     const footer = screen.getByRole('contentinfo')
     const miniSitemap = within(footer).getByRole('navigation', {
@@ -130,7 +131,9 @@ describe('Layout', () => {
 
     expect(terms).toHaveAttribute('href', '/terms')
     expect(privacy).toHaveAttribute('href', '/privacy')
-    expect(support.getAttribute('href')).toMatch(/^https:\/\/termsdesk\.vercel\.app\/support\//)
+    // The in-app inquiry form replaced the external TermsDesk board here;
+    // the external link survives as a fallback inside /support itself.
+    expect(support).toHaveAttribute('href', '/support')
   })
 
   it('gives every mini sitemap link a ≥44px hit area on coarse pointers', () => {

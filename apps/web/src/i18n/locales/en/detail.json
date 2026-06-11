@@ -80,11 +80,23 @@
     "replySubmit": "Post reply",
     "replyCancel": "Cancel",
     "replySubmitting": "Posting…",
+    "attachmentsLabel": "Attach screenshots (optional)",
+    "deletedReply": "This reply was deleted.",
+    "deleteReply": "Delete",
+    "deleteReplyConfirm": "Delete this reply?",
     "validation": {
       "rating": "Please select a rating.",
       "comment": "Keep your review to 1,000 characters or fewer.",
       "reply": "Keep replies between 1 and 1,000 characters."
     }
+  },
+  "contact": {
+    "cta": "Ask the seller",
+    "loginCta": "Log in to ask the seller",
+    "label": "Message to the seller",
+    "placeholder": "Ask anything before you buy. The conversation continues in your inbox.",
+    "cancel": "Cancel",
+    "send": "Send"
   },
   "sidebar": {
     "ariaLabel": "Listing details",

@@ -341,6 +341,24 @@ export function useCreateReviewReply(listingId: string | undefined, slug?: strin
   })
 }
 
+export function useDeleteReviewReply(listingId: string | undefined, slug?: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: { reviewId: string; replyId: string }) => {
+      if (!listingId) throw new Error('Listing ID is missing')
+      return api.delete(`/listings/${listingId}/reviews/${input.reviewId}/replies/${input.replyId}`)
+    },
+    onSuccess: () => {
+      if (slug) void qc.invalidateQueries({ queryKey: listingKey(slug) })
+      if (listingId) void qc.invalidateQueries({ queryKey: reviewsKey(listingId) })
+      toast.success(i18n.t('common:toasts.replyDeleted'))
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err))
+    },
+  })
+}
+
 export function useUpdateRevenueSettings() {
   const qc = useQueryClient()
   return useMutation({
