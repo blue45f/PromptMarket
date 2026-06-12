@@ -65,7 +65,7 @@
     },
     "fresh": {
       "title": "최근 유지보수",
-      "description": "최근 {{days}}일 내 업데이트"
+      "description_other": "최근 {{count}}일 내 업데이트"
     }
   },
   "toasts": {

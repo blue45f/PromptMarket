@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -69,9 +69,41 @@ import { cn } from '@utils/cn'
 const reviewFormSchema = CreateReviewSchema.omit({ attachments: true })
 type ReviewFormValues = z.infer<typeof reviewFormSchema>
 
+// Detail tabs are deep-linkable via `?tab=` so search results and shared
+// links can land directly on Reviews or Related (e.g. `?tab=reviews`).
+const DETAIL_TABS = ['overview', 'reviews', 'related'] as const
+type DetailTab = (typeof DETAIL_TABS)[number]
+const DEFAULT_TAB: DetailTab = 'overview'
+
+function normalizeTab(value: string | null): DetailTab {
+  return DETAIL_TABS.includes(value as DetailTab) ? (value as DetailTab) : DEFAULT_TAB
+}
+
 export default function ListingDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  // Honor a `?tab=` deep link on entry and keep the URL in sync as the
+  // visitor switches tabs (so the selection survives reloads + back/forward).
+  const activeTab = normalizeTab(searchParams.get('tab'))
+  const handleTabChange = useCallback(
+    (next: string) => {
+      const tab = normalizeTab(next)
+      setSearchParams(
+        (prev) => {
+          const params = new URLSearchParams(prev)
+          if (tab === DEFAULT_TAB) {
+            params.delete('tab')
+          } else {
+            params.set('tab', tab)
+          }
+          return params
+        },
+        { replace: true }
+      )
+    },
+    [setSearchParams]
+  )
   const { t } = useTranslation('detail')
   const { token, user } = useAuthStore()
   const { data, isPending, error } = useListing(slug)
@@ -243,7 +275,7 @@ export default function ListingDetailPage() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ReviewFormValues>({
-    resolver: zodResolver(reviewFormSchema),
+    resolver: zodResolver(reviewFormSchema as any),
     defaultValues: { rating: 5, comment: '' },
   })
   const rating = watch('rating')
@@ -531,7 +563,7 @@ export default function ListingDetailPage() {
             </div>
           </section>
 
-          <Tabs.Root defaultValue="overview" className="w-full">
+          <Tabs.Root value={activeTab} onValueChange={handleTabChange} className="w-full">
             <Tabs.List
               aria-label={t('tabs.aria')}
               className="flex gap-1 border-b border-line dark:border-night-line overflow-x-auto scrollbar-hide -mx-[clamp(1.25rem,4vw,3rem)] sm:mx-0 px-[clamp(1.25rem,4vw,3rem)] sm:px-0"

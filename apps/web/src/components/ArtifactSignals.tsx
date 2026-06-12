@@ -96,7 +96,9 @@ export function getArtifactSignals(listing: ArtifactSignalListing, now = new Dat
     signals.push({
       key: 'fresh',
       Icon: RefreshCw,
-      params: { days },
+      // `count` (not `days`) so i18next applies plural rules — "1 day" vs
+      // "N days" — instead of always rendering the plural noun.
+      params: { count: days },
       tone: 'text-coral-deep bg-coral/10 border-coral/25 dark:text-coral dark:bg-coral/10 dark:border-coral/30',
     })
   }

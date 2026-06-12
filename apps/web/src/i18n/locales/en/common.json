@@ -68,7 +68,8 @@
     },
     "fresh": {
       "title": "Recently maintained",
-      "description": "Updated within {{days}} days"
+      "description_one": "Updated within {{count}} day",
+      "description_other": "Updated within {{count}} days"
     }
   },
   "toasts": {
