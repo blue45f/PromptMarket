@@ -123,4 +123,41 @@ describe('Navbar', () => {
     expect(toggle.getAttribute('aria-expanded')).toBe('false')
     expect(document.activeElement).toBe(toggle)
   })
+
+  it('keeps icon-collapsed nav actions reachable by name at mid widths', () => {
+    ;(useAuthStore as unknown as Mock).mockReturnValue({
+      token: 'tok',
+      user: { id: 'u1', username: 'alice', isAdmin: true, balanceCents: 5000 },
+      logout: vi.fn(),
+    })
+    render(withProviders(<Navbar />))
+    // Below lg/xl these render icon-only — aria-labels must keep the names alive.
+    expect(screen.getByRole('link', { name: '판매' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: '라이브러리' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: '관리자' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: '프로필' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: '로그아웃' })).toBeTruthy()
+  })
+
+  it('defers wide-only chrome to breakpoints with room (mid-breakpoint guard)', () => {
+    ;(useAuthStore as unknown as Mock).mockReturnValue({
+      token: 'tok',
+      user: { id: 'u1', username: 'alice', isAdmin: false, balanceCents: 5000 },
+      logout: vi.fn(),
+    })
+    render(withProviders(<Navbar />))
+    // Wallet pill and logout label only from xl — at md~lg the row has no room.
+    expect(screen.getByText('$50.00').parentElement?.className).toContain('hidden xl:inline-flex')
+    const logout = screen.getByRole('button', { name: '로그아웃' })
+    expect(logout.querySelector('span:not([aria-hidden])')?.className).toContain('hidden xl:inline')
+    // Sell collapses its label below lg, matching library/profile.
+    const sell = screen.getByRole('link', { name: '판매' })
+    expect(sell.querySelector('span:not([aria-hidden])')?.className).toContain('hidden lg:inline')
+    // The search zone must be allowed to shrink so nav labels never fold.
+    expect(
+      screen
+        .getAllByTestId('search-bar')
+        .some((searchBar) => searchBar.parentElement?.className.includes('min-w-0'))
+    ).toBe(true)
+  })
 })

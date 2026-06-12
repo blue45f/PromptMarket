@@ -98,8 +98,10 @@ function SiteFooter() {
       <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] pt-16 pb-8">
         <FooterLiveStats />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 lg:gap-x-10">
-          {/* Left: link columns */}
-          <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10 text-sm">
+          {/* Left: link columns. Gutters narrow at lg only: inside the
+              lg:col-span-7 split each column is ~103px at 1024px with gap-10,
+              which folds labels like "프롬프트 등록" — xl restores the wide gutter. */}
+          <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-x-6 xl:gap-x-10 text-sm">
             <FooterCol
               chapter="01"
               title={t('footer.col.marketplace')}

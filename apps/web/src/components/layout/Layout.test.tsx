@@ -195,4 +195,21 @@ describe('Layout', () => {
     expect(wordmark?.textContent).toContain('PromptMarket')
     expect(wordmark?.querySelector('[data-wordmark-accelerator]')).toBeTruthy()
   })
+
+  it('guards the footer mid-breakpoint layout (sitemap wrap, lg column gutters)', () => {
+    const { container } = render(<TestLayout />)
+    const footer = screen.getByRole('contentinfo')
+
+    // The 7-link mini sitemap must be allowed to wrap on narrow widths.
+    const miniSitemap = within(footer).getByRole('navigation', {
+      name: 'footer.sitemap.label',
+    })
+    expect(miniSitemap.className).toContain('flex-wrap')
+
+    // Link columns go 4-up from md; gutters narrow at lg (gap-10 leaves ~103px
+    // columns that fold labels like "프롬프트 등록") and widen back at xl.
+    const columns = container.querySelector('[class*="md:grid-cols-4"]')
+    expect(columns?.className).toContain('lg:gap-x-6')
+    expect(columns?.className).toContain('xl:gap-x-10')
+  })
 })

@@ -113,7 +113,9 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="flex-1 max-w-md hidden md:block">
+        {/* min-w-0 drops the input's intrinsic min-content floor so the search
+            zone absorbs the squeeze at md~lg instead of folding nav labels. */}
+        <div className="flex-1 min-w-0 max-w-md hidden md:block">
           <SearchBar onSubmit={handleSearch} />
         </div>
 
@@ -153,10 +155,15 @@ export default function Navbar() {
             </NavLink>
           )}
           {token && (
-            <NavLink to="/sell" className={navLinkClass}>
+            <NavLink
+              to="/sell"
+              className={navLinkClass}
+              aria-label={t('sell', { defaultValue: 'Sell' })}
+            >
               {({ isActive }) => (
                 <NavLinkInner isActive={isActive}>
-                  <PlusCircle aria-hidden className="w-4 h-4" /> {t('sell')}
+                  <PlusCircle aria-hidden className="w-4 h-4" />
+                  <span className="hidden lg:inline">{t('sell')}</span>
                 </NavLinkInner>
               )}
             </NavLink>
@@ -216,7 +223,7 @@ export default function Navbar() {
           {token ? (
             <div className="flex items-center gap-2 ml-1">
               {user && typeof user.balanceCents === 'number' && (
-                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.72rem] font-mono font-medium bg-volt-100 text-volt-800 ring-1 ring-volt-200 dark:bg-volt-900/60 dark:text-volt-200 dark:ring-volt-800">
+                <span className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.72rem] font-mono font-medium bg-volt-100 text-volt-800 ring-1 ring-volt-200 dark:bg-volt-900/60 dark:text-volt-200 dark:ring-volt-800">
                   <Wallet aria-hidden className="w-3.5 h-3.5" />
                   <span
                     aria-label={t('walletBalance', {
@@ -231,10 +238,11 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={handleSignOut}
+                aria-label={t('logout')}
                 className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full text-ink-soft dark:text-bone-soft hover:text-coral-deep dark:hover:text-coral motion-safe:transition ease-expo focus-volt"
               >
                 <LogOut aria-hidden className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('logout')}</span>
+                <span className="hidden xl:inline">{t('logout')}</span>
               </button>
             </div>
           ) : (
