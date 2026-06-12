@@ -17,14 +17,42 @@ type PageModule = {
 // failure falls through to the route error boundary instead of reload-looping.
 export const CHUNK_RETRY_KEY = 'promptmarket-chunk-retry'
 
+// Web Storage can throw a SecurityError on mere access (sandboxed embeds,
+// strict privacy modes). Treat unreadable storage as "already retried" so we
+// never enter a reload loop we cannot guard, and only reload when the guard
+// was actually persisted.
+function hasRetryGuard(): boolean {
+  try {
+    return sessionStorage.getItem(CHUNK_RETRY_KEY) !== null
+  } catch {
+    return true
+  }
+}
+
+function armRetryGuard(): boolean {
+  try {
+    sessionStorage.setItem(CHUNK_RETRY_KEY, '1')
+    return true
+  } catch {
+    return false
+  }
+}
+
+function clearRetryGuard(): void {
+  try {
+    sessionStorage.removeItem(CHUNK_RETRY_KEY)
+  } catch {
+    // storage unavailable — nothing persisted, nothing to clear
+  }
+}
+
 export async function importWithRetry<T>(factory: () => Promise<T>): Promise<T> {
   try {
     const mod = await factory()
-    sessionStorage.removeItem(CHUNK_RETRY_KEY)
+    clearRetryGuard()
     return mod
   } catch (err) {
-    if (!sessionStorage.getItem(CHUNK_RETRY_KEY)) {
-      sessionStorage.setItem(CHUNK_RETRY_KEY, '1')
+    if (!hasRetryGuard() && armRetryGuard()) {
       window.location.reload()
       // Never settle: keep the current fallback on screen while the browser
       // tears the document down for the reload.
