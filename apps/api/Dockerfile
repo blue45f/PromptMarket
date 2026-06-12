@@ -13,7 +13,7 @@
 # (no datasource url) and the committed migrations lag the schema, so the
 # deploy flow creates/seeds prod.db locally (db push + seed) and ships it
 # into the volume mounted at /app/data. The container just runs node.
-FROM node:22-alpine AS deps
+FROM node:24-alpine AS deps
 WORKDIR /repo
 RUN corepack enable
 RUN apk add --no-cache python3 make g++ libc6-compat
@@ -38,7 +38,7 @@ RUN GEN_SRC=$(node -e "const p=require.resolve('@prisma/client',{paths:['/repo/a
  && echo "copying generated client: $GEN_SRC -> $DEST" \
  && rm -rf "$DEST" && cp -R "$GEN_SRC" "$DEST"
 
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 RUN apk add --no-cache libc6-compat \
