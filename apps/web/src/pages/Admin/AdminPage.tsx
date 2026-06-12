@@ -284,12 +284,16 @@ export default function AdminPage() {
   useEffect(() => {
     if (!settingsQ.data) return
 
-    setPlatformFeePercent(settingsQ.data.platformFeePercent)
-    setPremiumFeePercent(settingsQ.data.premiumFeePercent)
-    setUltraPremiumFeePercent(settingsQ.data.ultraPremiumFeePercent)
-    setPremiumThresholdDollars(formatMoneyInput(settingsQ.data.premiumThresholdCents))
-    setUltraPremiumThresholdDollars(formatMoneyInput(settingsQ.data.ultraPremiumThresholdCents))
-    setPlatformFeeFloorDollars(formatMoneyInput(settingsQ.data.platformFeeFloorCents))
+    const settings = settingsQ.data
+    const frame = requestAnimationFrame(() => {
+      setPlatformFeePercent(settings.platformFeePercent)
+      setPremiumFeePercent(settings.premiumFeePercent)
+      setUltraPremiumFeePercent(settings.ultraPremiumFeePercent)
+      setPremiumThresholdDollars(formatMoneyInput(settings.premiumThresholdCents))
+      setUltraPremiumThresholdDollars(formatMoneyInput(settings.ultraPremiumThresholdCents))
+      setPlatformFeeFloorDollars(formatMoneyInput(settings.platformFeeFloorCents))
+    })
+    return () => cancelAnimationFrame(frame)
   }, [settingsQ.data])
 
   const settings = settingsQ.data ?? ZERO_SETTINGS

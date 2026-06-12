@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { activeIntlLocale, default as i18n } from '@/i18n'
+import { activeIntlLocale } from '@/i18n'
 import type { TFunction } from 'i18next'
 import { useScrollRestore } from '@hooks/useScrollRestore'
 import { useSavedFilters } from '@hooks/useSavedFilters'
@@ -29,11 +29,13 @@ import { modelLabel } from '@utils/format'
 import type { ListingCard as ListingCardType } from '@/types'
 import ListingCard from '@components/ListingCard'
 import CompareTray from '@components/CompareTray'
-import FilterPanel, { countActive, emptyFilters, type FilterState } from '@components/FilterPanel'
+import FilterPanel from '@components/FilterPanel'
+import { countActive, type FilterState } from '@components/filterState'
 import FilterDrawer from '@components/FilterDrawer'
 import SearchBar from '@components/SearchBar'
 import { SkeletonGrid } from '@components/SkeletonCard'
-import BrowseEmptyState, { buildActiveFilterRows } from '@components/BrowseEmptyState'
+import BrowseEmptyState from '@components/BrowseEmptyState'
+import { buildActiveFilterRows } from '@components/browseEmptyStateUtils'
 import { cn } from '@utils/cn'
 
 const VALID_TYPES = new Set<ListingType>(ListingTypeEnum.options)
@@ -60,7 +62,7 @@ export default function BrowsePage() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [compareItems, setCompareItems] = useState<ListingCardType[]>([])
   const navigate = useNavigate()
-  const { record: recordSearch, ...searchHistory } = useSearchHistory()
+  const { record: recordSearch } = useSearchHistory()
   // Destructure the stable useCallback refs — depending on the whole hook
   // object (a fresh literal each render) made the persist effect below re-run
   // every commit, writing to localStorage in an infinite loop once 2+ filters
@@ -252,7 +254,7 @@ export default function BrowsePage() {
 
   const activeCount = countActive(filters)
   const appliedCount = activeCount + signalFilters.length + (vendor ? 1 : 0)
-  const fmt = useMemo(() => new Intl.NumberFormat(activeIntlLocale()), [i18n.resolvedLanguage])
+  const fmt = new Intl.NumberFormat(activeIntlLocale())
 
   // Result-density rhythm: on the first page of a non-search browse, promote the
   // top listing to a full-width "lead drop" so the grid isn't a uniform wall of

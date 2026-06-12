@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { RegisterSchema, type RegisterInput } from '@promptmarket/shared'
 import { Loader2 } from 'lucide-react'
 import { useRegister } from '@features/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
 import AuthLayout from '@components/AuthLayout'
 import { cn } from '@utils/cn'
+import { zodFormResolver } from '@utils/zodFormResolver'
 
 const inputClass = cn(
   'w-full rounded-xl px-3.5 py-2.5 text-sm',
@@ -39,7 +39,7 @@ export default function RegisterPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterInput>({
-    resolver: zodResolver(RegisterSchema as any),
+    resolver: zodFormResolver(RegisterSchema),
     defaultValues: { email: '', username: '', password: '' },
   })
 

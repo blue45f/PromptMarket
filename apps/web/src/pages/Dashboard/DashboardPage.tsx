@@ -44,7 +44,10 @@ export default function DashboardPage() {
   const topupMut = useTopup()
   const [pendingAmount, setPendingAmount] = useState<number | null>(null)
 
-  const myListings = Array.isArray(listingsQ.data) ? listingsQ.data : []
+  const myListings = useMemo(
+    () => (Array.isArray(listingsQ.data) ? listingsQ.data : []),
+    [listingsQ.data]
+  )
   // Purchases come back as wrappers ({ id, pricePaidCents, createdAt, listing });
   // unwrap to the flat card the grid renders. Filter out any purchase whose
   // listing is absent (soft-deleted race) to prevent a crash on p.listing.id.
@@ -421,7 +424,7 @@ function WishlistTab() {
   // Resolve each saved slug. A 404 means the listing was deleted, so it can be
   // pruned safely; transient errors (500/offline) are NOT treated as gone, to
   // avoid silently dropping saved items the user can still recover.
-  const { resolved, items, deadSlugs } = useMemo(() => {
+  const { items, deadSlugs } = useMemo(() => {
     const resolved = results.map((r, i) => ({
       slug: visibleSlugs[i],
       listing: r.data,

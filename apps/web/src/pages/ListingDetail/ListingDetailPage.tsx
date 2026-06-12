@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { zodResolver } from '@hookform/resolvers/zod'
 import * as Tabs from '@radix-ui/react-tabs'
 import { z } from 'zod'
 import {
@@ -63,6 +62,7 @@ import AttachmentGallery from '@components/AttachmentGallery'
 import AttachmentInput from '@components/AttachmentInput'
 import ConfirmActionButton from '@components/ConfirmActionButton'
 import { cn } from '@utils/cn'
+import { zodFormResolver } from '@utils/zodFormResolver'
 
 // Screenshot attachments live outside react-hook-form (the picker resizes
 // files asynchronously), so the form schema covers only rating + comment.
@@ -109,7 +109,7 @@ export default function ListingDetailPage() {
   const { data, isPending, error } = useListing(slug)
 
   const listing: ListingDetailResponse | undefined = data
-  const reviews = data?.reviews ?? []
+  const reviews = useMemo(() => data?.reviews ?? [], [data?.reviews])
   const isOwner = !!data?.isOwner
   const isPurchased = !!data?.isPurchased
   const canViewBody = !!data?.canViewBody
@@ -189,37 +189,47 @@ export default function ListingDetailPage() {
   // (recently-viewed / wishlist) re-renders the tree. Stabilising the value
   // collapses it back to one effect run per actual data change.
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const listingTitle = listing?.title
+  const listingDescription = listing?.description
+  const listingSlug = listing?.slug
+  const listingCategory = listing?.category
+  const listingAuthorUsername = listing?.author?.username
+  const listingUpdatedAt = listing?.updatedAt
+  const listingCreatedAt = listing?.createdAt
+  const listingPriceCents = listing?.priceCents
+  const listingReviewCount = listing?.reviewCount
+  const listingAvgRating = listing?.avgRating
   const structuredData = useMemo(
     () =>
-      listing && origin
+      listingSlug && origin
         ? {
             '@context': 'https://schema.org',
             '@type': 'Product',
-            name: listing.title,
-            description: listing.description,
-            url: `${origin}/listings/${listing.slug}`,
-            category: listing.category,
+            name: listingTitle,
+            description: listingDescription,
+            url: `${origin}/listings/${listingSlug}`,
+            category: listingCategory,
             brand: { '@type': 'Brand', name: 'PromptMarket' },
             author: {
               '@type': 'Person',
-              name: listing.author?.username
-                ? `@${listing.author.username}`
+              name: listingAuthorUsername
+                ? `@${listingAuthorUsername}`
                 : t('jsonLd.makerType', { defaultValue: 'PromptMarket maker' }),
             },
-            dateModified: listing.updatedAt ?? listing.createdAt,
+            dateModified: listingUpdatedAt ?? listingCreatedAt,
             offers: {
               '@type': 'Offer',
-              price: ((listing.priceCents ?? 0) / 100).toFixed(2),
+              price: ((listingPriceCents ?? 0) / 100).toFixed(2),
               priceCurrency: 'USD',
               availability: 'https://schema.org/InStock',
-              url: `${origin}/listings/${listing.slug}`,
+              url: `${origin}/listings/${listingSlug}`,
             },
             aggregateRating:
-              (listing.reviewCount ?? 0) > 0
+              (listingReviewCount ?? 0) > 0
                 ? {
                     '@type': 'AggregateRating',
-                    ratingValue: (listing.avgRating ?? 0).toFixed(1),
-                    reviewCount: listing.reviewCount,
+                    ratingValue: (listingAvgRating ?? 0).toFixed(1),
+                    reviewCount: listingReviewCount,
                     bestRating: '5',
                     worstRating: '1',
                   }
@@ -228,16 +238,17 @@ export default function ListingDetailPage() {
         : null,
     [
       origin,
-      listing?.title,
-      listing?.description,
-      listing?.slug,
-      listing?.category,
-      listing?.author?.username,
-      listing?.updatedAt,
-      listing?.createdAt,
-      listing?.priceCents,
-      listing?.reviewCount,
-      listing?.avgRating,
+      listingTitle,
+      listingDescription,
+      listingSlug,
+      listingCategory,
+      listingAuthorUsername,
+      listingUpdatedAt,
+      listingCreatedAt,
+      listingPriceCents,
+      listingReviewCount,
+      listingAvgRating,
+      t,
     ]
   )
   useStructuredData(structuredData)
@@ -270,15 +281,15 @@ export default function ListingDetailPage() {
   const {
     register,
     handleSubmit,
+    control,
     setValue,
-    watch,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ReviewFormValues>({
-    resolver: zodResolver(reviewFormSchema as any),
+    resolver: zodFormResolver(reviewFormSchema),
     defaultValues: { rating: 5, comment: '' },
   })
-  const rating = watch('rating')
+  const rating = useWatch({ control, name: 'rating' }) ?? 5
 
   const ownReview = useMemo(
     () =>

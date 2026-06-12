@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import ArtifactReadiness, { extractTemplateVariables } from './ArtifactReadiness'
+import ArtifactReadiness from './ArtifactReadiness'
+import { extractTemplateVariables } from './artifactReadinessUtils'
 
 describe('extractTemplateVariables', () => {
   it('dedupes double-brace template variables in reading order', () => {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import ListingQualityChecklist, { evaluateListingQuality } from './ListingQualityChecklist'
+import ListingQualityChecklist from './ListingQualityChecklist'
+import { evaluateListingQuality } from './listingQualityUtils'
 
 describe('evaluateListingQuality', () => {
   it('marks a listing ready when use case, body, inputs, and metadata are strong', () => {

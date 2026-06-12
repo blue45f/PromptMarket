@@ -13,17 +13,18 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>(
 ) {
   const ref = useRef<T | null>(null)
   const [revealed, setRevealed] = useState(false)
+  const { threshold, root, rootMargin } = options
 
   useEffect(() => {
     const reduced =
       typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) {
-      setRevealed(true)
-      return
+      const frame = requestAnimationFrame(() => setRevealed(true))
+      return () => cancelAnimationFrame(frame)
     }
     const node = ref.current
     if (!node) return
-    const currentOptions = { ...DEFAULT_OPTIONS, ...options }
+    const currentOptions = { ...DEFAULT_OPTIONS, threshold, root, rootMargin }
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         setRevealed(true)
@@ -32,7 +33,7 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>(
     }, currentOptions)
     obs.observe(node)
     return () => obs.disconnect()
-  }, [])
+  }, [threshold, root, rootMargin])
 
   return { ref, revealed }
 }

@@ -21,9 +21,9 @@ export function useCountUp(
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) {
-      setValue(target)
       valueRef.current = target
-      return
+      const frame = requestAnimationFrame(() => setValue(target))
+      return () => cancelAnimationFrame(frame)
     }
 
     let frame: number | undefined

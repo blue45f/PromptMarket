@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import i18n from '@/i18n'
-import type { AdminMemberRow } from '@promptmarket/shared'
+import type {
+  AdminMemberRow,
+  CreateForbiddenWordInput,
+  ForbiddenWordRow,
+  UpdateForbiddenWordInput,
+} from '@promptmarket/shared'
 import { api, getErrorMessage } from '@services/api'
 
 // --- Row shapes (moderation endpoints) ---------------------------------------
@@ -14,6 +19,7 @@ export interface AdminThreadRow {
   commentCount: number
   attachmentCount: number
   hiddenAt: string | null
+  needsReviewAt: string | null
   createdAt: string
 }
 
@@ -48,6 +54,7 @@ export const adminModerationKeys = {
   reviews: ['admin', 'moderation', 'reviews'] as const,
   attachments: (target: AttachmentTarget) =>
     ['admin', 'moderation', 'attachments', target] as const,
+  forbiddenWords: (q: string) => ['admin', 'moderation', 'forbidden-words', q] as const,
   members: (q: string) => ['admin', 'members', q] as const,
 }
 
@@ -84,6 +91,16 @@ export function useAdminMembers(q: string) {
     queryKey: adminModerationKeys.members(q),
     queryFn: () =>
       api.get<AdminMemberRow[], AdminMemberRow[]>('/admin/members', {
+        params: { q: q || undefined },
+      }),
+  })
+}
+
+export function useAdminForbiddenWords(q: string) {
+  return useQuery({
+    queryKey: adminModerationKeys.forbiddenWords(q),
+    queryFn: () =>
+      api.get<ForbiddenWordRow[], ForbiddenWordRow[]>('/admin/forbidden-words', {
         params: { q: q || undefined },
       }),
   })
@@ -164,6 +181,44 @@ export function useAdminDeleteAttachment() {
     onSuccess: () => {
       invalidateModeration(qc)
       toast.success(i18n.t('admin:moderation.toasts.attachmentDeleted'))
+    },
+    onError: (err) => toast.error(getErrorMessage(err)),
+  })
+}
+
+export function useCreateForbiddenWord() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: CreateForbiddenWordInput) =>
+      api.post<ForbiddenWordRow, ForbiddenWordRow>('/admin/forbidden-words', input),
+    onSuccess: () => {
+      invalidateModeration(qc)
+      toast.success(i18n.t('admin:moderation.forbiddenWords.toasts.created'))
+    },
+    onError: (err) => toast.error(getErrorMessage(err)),
+  })
+}
+
+export function useUpdateForbiddenWord() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: UpdateForbiddenWordInput }) =>
+      api.patch<ForbiddenWordRow, ForbiddenWordRow>(`/admin/forbidden-words/${id}`, input),
+    onSuccess: () => {
+      invalidateModeration(qc)
+      toast.success(i18n.t('admin:moderation.forbiddenWords.toasts.updated'))
+    },
+    onError: (err) => toast.error(getErrorMessage(err)),
+  })
+}
+
+export function useDeleteForbiddenWord() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/admin/forbidden-words/${id}`),
+    onSuccess: () => {
+      invalidateModeration(qc)
+      toast.success(i18n.t('admin:moderation.forbiddenWords.toasts.deleted'))
     },
     onError: (err) => toast.error(getErrorMessage(err)),
   })

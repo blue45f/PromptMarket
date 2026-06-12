@@ -4,7 +4,7 @@ import type { TFunction } from 'i18next'
 import { Layers3, X } from 'lucide-react'
 import { LISTING_TYPE_META } from '@promptmarket/shared'
 import type { ListingCard as ListingCardType } from '@/types'
-import { getArtifactSignals } from './ArtifactSignals'
+import { getArtifactSignals } from './artifactSignalsUtils'
 import { formatPrice, modelLabel } from '@utils/format'
 import { cn } from '@utils/cn'
 

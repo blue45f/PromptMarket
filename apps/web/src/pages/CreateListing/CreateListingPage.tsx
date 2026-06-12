@@ -10,8 +10,7 @@ import React, {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useForm, type Resolver } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, useWatch } from 'react-hook-form'
 import * as Tabs from '@radix-ui/react-tabs'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
@@ -36,11 +35,11 @@ import { usePageMeta } from '@hooks/usePageMeta'
 import MarkdownView from '@components/MarkdownView'
 import ModelPicker from '@components/ModelPicker'
 import ListingCard from '@components/ListingCard'
-import ListingQualityChecklist, {
-  evaluateListingQuality,
-} from '@components/ListingQualityChecklist'
+import ListingQualityChecklist from '@components/ListingQualityChecklist'
+import { evaluateListingQuality } from '@components/listingQualityUtils'
 import { cn } from '@utils/cn'
 import { formatPrice, modelLabel } from '@utils/format'
+import { zodFormResolver } from '@utils/zodFormResolver'
 import type { ListingCard as ListingCardType } from '@/types'
 
 const QUICK_EMOJIS = ['✨', '🤖', '🧠', '🎨', '📝', '🚀', '⚡', '🛠️', '🧩', '🔌']
@@ -80,7 +79,9 @@ function buildFormSchema(messages: { price: string; models: string }) {
     modelsArr: z.array(z.string()).min(1, messages.models),
   })
 }
-type FormShape = z.infer<ReturnType<typeof buildFormSchema>>
+type FormSchema = ReturnType<typeof buildFormSchema>
+type FormInput = z.input<FormSchema>
+type FormShape = z.output<FormSchema>
 
 const DRAFT_KEY = 'pm.sellDraft'
 
@@ -150,39 +151,33 @@ export default function CreateListingPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormShape>({
-    resolver: zodResolver(FormSchema as any) as unknown as Resolver<FormShape>,
+  } = useForm<FormInput, unknown, FormShape>({
+    resolver: zodFormResolver(FormSchema),
     defaultValues: initialDraft,
   })
 
-  const v = watch()
+  const watchedValues = useWatch({ control }) as Partial<FormShape>
+  const v = useMemo<FormShape>(() => ({ ...DEFAULTS, ...watchedValues }), [watchedValues])
+  const draftJson = useMemo(() => JSON.stringify(v), [v])
 
-  // Debounced autosave — subscribe to form value changes and write to
-  // localStorage 600ms after the visitor stops typing. Using the subscription
-  // API avoids the new-reference-on-every-render problem of calling watch()
-  // in a dep array.
+  // Debounced autosave — write the watched form snapshot after typing settles.
   useEffect(() => {
     if (typeof window === 'undefined') return
-    let timerId: ReturnType<typeof window.setTimeout>
-    const subscription = watch((data) => {
-      window.clearTimeout(timerId)
-      timerId = window.setTimeout(() => {
-        try {
-          window.localStorage.setItem(DRAFT_KEY, JSON.stringify(data))
-        } catch {
-          /* quota — silently drop */
-        }
-      }, 600)
-    })
+    const timerId = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(DRAFT_KEY, draftJson)
+      } catch {
+        /* quota — silently drop */
+      }
+    }, 600)
     return () => {
       window.clearTimeout(timerId)
-      subscription.unsubscribe()
     }
-  }, [watch])
+  }, [draftJson])
 
   function discardDraft() {
     try {
@@ -844,7 +839,7 @@ const TrendingCategoryHint = memo(function TrendingCategoryHint({
 }) {
   const { t } = useTranslation('create')
   const { data } = useListings({ sort: 'trending', pageSize: 12 })
-  const items = data?.items ?? []
+  const items = useMemo(() => data?.items ?? [], [data?.items])
   const top = useMemo(() => {
     const counts = new Map<string, number>()
     for (const l of items) {

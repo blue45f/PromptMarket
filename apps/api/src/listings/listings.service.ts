@@ -1,9 +1,19 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import type { Prisma } from '@prisma/client'
 import { MODELS } from '@promptmarket/shared'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateListingDto } from './dto/create-listing.dto'
 import { UpdateListingDto } from './dto/update-listing.dto'
 import { QueryListingsDto } from './dto/query-listings.dto'
+
+type ListingWhereInput = Prisma.ListingWhereInput
+type ListingOrderBy = Prisma.ListingOrderByWithRelationInput[]
+type ListingCardRecord = Prisma.ListingGetPayload<{
+  include: {
+    author: { select: { id: true; username: true } }
+    reviews: { select: { rating: true } }
+  }
+}>
 
 function slugify(title: string): string {
   const base = title
@@ -35,12 +45,23 @@ function slugsForVendor(vendor: string): string[] {
   return MODELS.filter((m) => m.vendor.toLowerCase() === needle).map((m) => m.slug)
 }
 
-function addAnd(where: Record<string, any>, clause: Record<string, any>) {
-  where.AND = [...(Array.isArray(where.AND) ? where.AND : []), clause]
+function normalizeWhereList(
+  value: ListingWhereInput | ListingWhereInput[] | undefined
+): ListingWhereInput[] {
+  if (!value) return []
+  return Array.isArray(value) ? value : [value]
+}
+
+function addAnd(where: ListingWhereInput, clause: ListingWhereInput) {
+  where.AND = [...normalizeWhereList(where.AND), clause]
+}
+
+function addOr(where: ListingWhereInput, clauses: ListingWhereInput[]) {
+  where.OR = [...normalizeWhereList(where.OR), ...clauses]
 }
 
 /** Exact-token match for a slug stored in a comma-separated models field. */
-function modelSlugMatch(slug: string): Record<string, any> {
+function modelSlugMatch(slug: string): ListingWhereInput {
   return {
     OR: [
       { models: { equals: slug } },
@@ -65,8 +86,8 @@ export class ListingsService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  private serializeCard(l: any) {
-    const ratings: number[] = (l.reviews ?? []).map((r: any) => r.rating)
+  private serializeCard(l: ListingCardRecord) {
+    const ratings = (l.reviews ?? []).map((r) => r.rating)
     const avgRating =
       ratings.length > 0 ? ratings.reduce((a: number, b: number) => a + b, 0) / ratings.length : 0
     return {
@@ -95,7 +116,7 @@ export class ListingsService {
   async list(query: QueryListingsDto) {
     const page = query.page ?? 1
     const pageSize = query.pageSize ?? 12
-    const where: any = {}
+    const where: ListingWhereInput = {}
     if (query.type) where.type = query.type
     if (query.category) where.category = query.category
     if (query.technique) where.technique = query.technique
@@ -107,12 +128,12 @@ export class ListingsService {
         // unknown vendor → guarantee empty result set
         where.id = '__no_match__'
       } else {
-        where.OR = (where.OR ?? []).concat(slugs.map(modelSlugMatch))
+        addOr(where, slugs.map(modelSlugMatch))
       }
     }
     if (query.q) {
       const q = query.q
-      const qFilter = [
+      const qFilter: ListingWhereInput[] = [
         { title: { contains: q } },
         { description: { contains: q } },
         { tags: { contains: q } },
@@ -120,7 +141,7 @@ export class ListingsService {
       ]
       if (where.OR && Array.isArray(where.OR) && where.OR.length > 0) {
         // Combine vendor OR with q OR via AND so we don't accidentally widen.
-        where.AND = [...(where.AND ?? []), { OR: where.OR }, { OR: qFilter }]
+        where.AND = [...normalizeWhereList(where.AND), { OR: where.OR }, { OR: qFilter }]
         delete where.OR
       } else {
         where.OR = qFilter
@@ -172,7 +193,7 @@ export class ListingsService {
       }
     }
 
-    const orderBy: any =
+    const orderBy: ListingOrderBy =
       sort === 'trending' ? [{ downloads: 'desc' }, { createdAt: 'desc' }] : [{ createdAt: 'desc' }]
 
     const [total, items] = await Promise.all([
@@ -363,7 +384,7 @@ export class ListingsService {
     if (existing.authorId !== userId) {
       throw new ForbiddenException('Not the owner of this listing')
     }
-    const data: any = {}
+    const data: Prisma.ListingUpdateInput = {}
     if (dto.title !== undefined) data.title = dto.title
     if (dto.type !== undefined) data.type = dto.type
     if (dto.description !== undefined) data.description = dto.description

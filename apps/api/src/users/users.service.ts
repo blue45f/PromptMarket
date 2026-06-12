@@ -1,14 +1,33 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { isPrismaP2025 } from '../prisma/prisma-errors'
+
+interface SerializableListing {
+  id: string
+  slug: string
+  title: string
+  type: string
+  description: string
+  category: string
+  tags: string | null
+  models: string | null
+  technique: string | null
+  difficulty: string
+  license: string
+  version: string
+  priceCents: number
+  coverEmoji: string
+  downloads: number
+  createdAt: Date
+  reviews?: { rating: number }[] | null
+}
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  private serializeListing(l: any) {
-    const ratings: number[] = (l.reviews ?? []).map((r: any) => r.rating)
+  private serializeListing(l: SerializableListing) {
+    const ratings = (l.reviews ?? []).map((r) => r.rating)
     const avgRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0
     const splitCsv = (csv: string | null | undefined): string[] =>
       csv

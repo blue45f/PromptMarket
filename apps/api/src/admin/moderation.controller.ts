@@ -1,10 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { ModerationService } from './moderation.service'
 import { AdminGuard } from '../auth/admin.guard'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
-import { MemberSuspensionDto, ModerationVisibilityDto } from './dto/moderation.dto'
+import {
+  CreateForbiddenWordDto,
+  MemberSuspensionDto,
+  ModerationVisibilityDto,
+  UpdateForbiddenWordDto,
+} from './dto/moderation.dto'
 
 @ApiTags('admin')
 @UseGuards(JwtAuthGuard, AdminGuard)
@@ -63,6 +68,32 @@ export class ModerationController {
   @ApiOperation({ summary: 'Remove a single attachment from any post' })
   deleteAttachment(@Param('id') id: string) {
     return this.moderation.deleteAttachment(id)
+  }
+
+  @Get('forbidden-words')
+  @ApiOperation({ summary: 'List forbidden-word/profanity rules' })
+  @ApiQuery({ name: 'includeDisabled', required: false, type: Boolean })
+  @ApiQuery({ name: 'q', required: false, type: String })
+  listForbiddenWords(@Query('includeDisabled') includeDisabled?: string, @Query('q') q?: string) {
+    return this.moderation.listForbiddenWords(includeDisabled !== 'false', q)
+  }
+
+  @Post('forbidden-words')
+  @ApiOperation({ summary: 'Create a forbidden-word/profanity rule' })
+  createForbiddenWord(@Body() dto: CreateForbiddenWordDto) {
+    return this.moderation.createForbiddenWord(dto)
+  }
+
+  @Patch('forbidden-words/:id')
+  @ApiOperation({ summary: 'Update a forbidden-word/profanity rule' })
+  updateForbiddenWord(@Param('id') id: string, @Body() dto: UpdateForbiddenWordDto) {
+    return this.moderation.updateForbiddenWord(id, dto)
+  }
+
+  @Delete('forbidden-words/:id')
+  @ApiOperation({ summary: 'Delete a forbidden-word/profanity rule' })
+  deleteForbiddenWord(@Param('id') id: string) {
+    return this.moderation.deleteForbiddenWord(id)
   }
 
   @Get('members')

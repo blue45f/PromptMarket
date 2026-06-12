@@ -33,7 +33,6 @@ import type {
   AdminRevenueSummary,
   ListingCard,
   ListingDetailResponse,
-  ListingFull,
   ListingsListResponse,
   MyListingItem,
   Review,

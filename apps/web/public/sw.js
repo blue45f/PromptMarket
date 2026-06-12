@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const CACHE_NAME = 'PromptMarket-pwa-v1'
 
 self.addEventListener('install', () => {

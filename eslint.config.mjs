@@ -44,25 +44,21 @@ export default defineConfig([
         { name: 'alert', message: 'Toast/Dialog를 사용하세요 (window.alert 금지).' },
         { name: 'prompt', message: '입력 다이얼로그/폼을 사용하세요 (window.prompt 금지).' },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      'react-hooks/exhaustive-deps': 'warn',
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      // react-hooks v7 ships React Compiler lint rules that default to error.
-      // They flag working-but-not-Compiler-ideal patterns (effect setState,
-      // ref reads, RHF watch(), Date.now in render) that would need broad
-      // manual refactors with no behavior change. Mirror the sibling resume
-      // repo and keep them as advisory warnings, not a hard gate.
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/purity': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
-      'react-hooks/static-components': 'warn',
-      'react-hooks/incompatible-library': 'warn',
+      'react-hooks/exhaustive-deps': 'error',
+      'react-refresh/only-export-components': ['error', { allowConstantExport: true }],
+      // react-hooks v7 ships React Compiler lint rules; enforce them as hard gates.
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/purity': 'error',
+      'react-hooks/refs': 'error',
+      'react-hooks/immutability': 'error',
+      'react-hooks/preserve-manual-memoization': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/incompatible-library': 'error',
     },
   },
 
@@ -76,11 +72,10 @@ export default defineConfig([
       globals: { ...globals.node, ...globals.es2022 },
     },
     rules: {
-      // The api tsconfig sets noImplicitAny:false; Nest/Prisma plumbing leans
-      // on `any` in a few spots, so keep it a warning rather than an error.
-      '@typescript-eslint/no-explicit-any': 'warn',
+      // Nest/Prisma plumbing must stay explicitly typed under the strict gate.
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
     },
@@ -96,9 +91,9 @@ export default defineConfig([
       globals: { ...globals.node, ...globals.es2022 },
     },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
     },
@@ -149,9 +144,8 @@ export default defineConfig([
   },
 
   // ── React Compiler gate — apps/web must stay compilable ──────────────────
-  // Unlike the advisory react-hooks/* warnings above, this rule runs the
-  // actual compiler frontend; an error means the component bails out of
-  // React Compiler optimization entirely, so it is enforced as a hard gate.
+  // This rule runs the actual compiler frontend; an error means the component
+  // bails out of React Compiler optimization entirely.
   {
     files: ['apps/web/**/*.{ts,tsx}'],
     plugins: {

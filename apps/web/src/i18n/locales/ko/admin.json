@@ -153,7 +153,8 @@
     },
     "status": {
       "visible": "공개",
-      "hidden": "숨김"
+      "hidden": "숨김",
+      "needsReview": "검토 필요"
     },
     "actions": {
       "hide": "숨기기",
@@ -167,6 +168,53 @@
       "alt": "@{{username}}님의 첨부 {{index}}",
       "remove": "이미지 제거",
       "removeConfirm": "이 이미지를 제거할까요?"
+    },
+    "forbiddenWords": {
+      "title": "금칙어",
+      "subtitle": "커뮤니티 게시글을 차단하거나 검토 대상으로 표시할 문구를 관리합니다.",
+      "searchLabel": "금칙어 검색",
+      "searchPlaceholder": "규칙 검색...",
+      "empty": "검색 조건에 맞는 규칙이 없어요.",
+      "fields": {
+        "phrase": "문구",
+        "action": "동작",
+        "matchType": "매칭",
+        "enabled": "활성",
+        "status": "상태",
+        "updated": "수정일",
+        "note": "메모"
+      },
+      "actions": {
+        "BLOCK": "차단",
+        "REVIEW": "검토",
+        "create": "추가",
+        "edit": "수정",
+        "save": "저장",
+        "cancel": "취소",
+        "enable": "활성화",
+        "disable": "비활성화",
+        "delete": "삭제",
+        "deleteConfirm": "규칙을 삭제할까요?"
+      },
+      "matchTypes": {
+        "WHOLE_WORD": "단어 기준",
+        "CONTAINS": "포함"
+      },
+      "options": {
+        "BLOCK": "차단",
+        "REVIEW": "검토",
+        "WHOLE_WORD": "단어 기준",
+        "CONTAINS": "포함"
+      },
+      "status": {
+        "enabled": "활성",
+        "disabled": "비활성"
+      },
+      "toasts": {
+        "created": "규칙을 추가했어요",
+        "updated": "규칙을 저장했어요",
+        "deleted": "규칙을 삭제했어요"
+      }
     },
     "toasts": {
       "hidden": "숨김 처리했어요",
