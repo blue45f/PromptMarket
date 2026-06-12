@@ -42,7 +42,7 @@ export default function SupportPage() {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<InquiryFormInput>({
-    resolver: zodResolver(inquiryFormSchema),
+    resolver: zodResolver(inquiryFormSchema as any),
     defaultValues: { category: 'question', title: '', body: '', contactEmail: '', website: '' },
   })
 
