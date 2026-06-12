@@ -39,7 +39,7 @@ export default function RegisterPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterInput>({
-    resolver: zodResolver(RegisterSchema),
+    resolver: zodResolver(RegisterSchema as any),
     defaultValues: { email: '', username: '', password: '' },
   })
 

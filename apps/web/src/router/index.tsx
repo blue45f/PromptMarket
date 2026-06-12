@@ -1,23 +1,77 @@
 import type { ComponentType } from 'react'
-import { createBrowserRouter, type RouteObject } from 'react-router-dom'
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom'
 import App from '@/App'
 import { RequireAdmin, RequireAuth } from '@components/route'
 import RouteError from '@components/common/RouteError/RouteError'
+import RouteFallback from '@components/common/RouteFallback/RouteFallback'
 
 type PageModule = {
   default: ComponentType
 }
 
+// Vite emits content-hashed chunk filenames, so a redeploy mid-session can
+// 404 the lazy chunks an already-open tab still references. On the first
+// failed page-chunk load, force one full reload to pick up the fresh asset
+// graph. The sessionStorage guard deliberately survives that reload — it is
+// cleared only after a chunk loads successfully — so a second consecutive
+// failure falls through to the route error boundary instead of reload-looping.
+export const CHUNK_RETRY_KEY = 'promptmarket-chunk-retry'
+
+// Web Storage can throw a SecurityError on mere access (sandboxed embeds,
+// strict privacy modes). Treat unreadable storage as "already retried" so we
+// never enter a reload loop we cannot guard, and only reload when the guard
+// was actually persisted.
+function hasRetryGuard(): boolean {
+  try {
+    return sessionStorage.getItem(CHUNK_RETRY_KEY) !== null
+  } catch {
+    return true
+  }
+}
+
+function armRetryGuard(): boolean {
+  try {
+    sessionStorage.setItem(CHUNK_RETRY_KEY, '1')
+    return true
+  } catch {
+    return false
+  }
+}
+
+function clearRetryGuard(): void {
+  try {
+    sessionStorage.removeItem(CHUNK_RETRY_KEY)
+  } catch {
+    // storage unavailable — nothing persisted, nothing to clear
+  }
+}
+
+export async function importWithRetry<T>(factory: () => Promise<T>): Promise<T> {
+  try {
+    const mod = await factory()
+    clearRetryGuard()
+    return mod
+  } catch (err) {
+    if (!hasRetryGuard() && armRetryGuard()) {
+      window.location.reload()
+      // Never settle: keep the current fallback on screen while the browser
+      // tears the document down for the reload.
+      return new Promise<never>(() => {})
+    }
+    throw err
+  }
+}
+
 function lazyPage(loader: () => Promise<PageModule>) {
   return async () => {
-    const { default: Component } = await loader()
+    const { default: Component } = await importWithRetry(loader)
     return { Component }
   }
 }
 
 function lazyProtectedPage(loader: () => Promise<PageModule>) {
   return async () => {
-    const { default: Page } = await loader()
+    const { default: Page } = await importWithRetry(loader)
 
     function ProtectedPage() {
       return (
@@ -33,7 +87,7 @@ function lazyProtectedPage(loader: () => Promise<PageModule>) {
 
 function lazyAdminProtectedPage(loader: () => Promise<PageModule>) {
   return async () => {
-    const { default: Page } = await loader()
+    const { default: Page } = await importWithRetry(loader)
 
     function ProtectedPage() {
       return (
@@ -52,9 +106,15 @@ export const routes = [
     path: '/',
     element: <App />,
     errorElement: <RouteError />,
+    // Rendered during the initial route resolution / hydration; without it
+    // React Router logs a "No `HydrateFallback` element provided" warning.
+    HydrateFallback: RouteFallback,
     children: [
       { index: true, lazy: lazyPage(() => import('@pages/Home')) },
       { path: 'browse', lazy: lazyPage(() => import('@pages/Browse')) },
+      // The catalog index lives at /browse; /listings has no own page, so
+      // treat the bare path as a common typo and redirect instead of 404ing.
+      { path: 'listings', element: <Navigate to="/browse" replace /> },
       {
         path: 'listings/:slug',
         lazy: lazyPage(() => import('@pages/ListingDetail')),

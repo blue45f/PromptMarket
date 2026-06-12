@@ -253,10 +253,15 @@ function FooterAnthologyLabel() {
 
 function FooterLiveStats() {
   const { t } = useTranslation('nav')
-  const { data } = useStats()
+  const { data, isPending, isError } = useStats()
   const totalListings = data?.totalListings ?? 0
   const totalDownloads = data?.totalDownloads ?? 0
   const totalCreators = data?.totalCreators ?? 0
+  // Only show real figures once the stats query resolves. Otherwise the
+  // count-up sits at 0 and reads as "0 listings / 0 makers" — a credibility
+  // own-goal next to a catalog that clearly has entries. Render a neutral
+  // placeholder while loading or on error instead.
+  const ready = !isPending && !isError && !!data
   const [replayToken, setReplayToken] = useState(0)
 
   const handleMouseEnter = () => {
@@ -272,9 +277,27 @@ function FooterLiveStats() {
       onMouseEnter={handleMouseEnter}
       className="mb-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
     >
-      <FooterStat refEl={a.ref} value={a.value} label={t('stats.listings')} dot="bg-volt-400" />
-      <FooterStat refEl={b.ref} value={b.value} label={t('stats.downloads')} dot="bg-violet" />
-      <FooterStat refEl={c.ref} value={c.value} label={t('stats.makers')} dot="bg-coral" />
+      <FooterStat
+        refEl={a.ref}
+        value={a.value}
+        ready={ready}
+        label={t('stats.listings')}
+        dot="bg-volt-400"
+      />
+      <FooterStat
+        refEl={b.ref}
+        value={b.value}
+        ready={ready}
+        label={t('stats.downloads')}
+        dot="bg-violet"
+      />
+      <FooterStat
+        refEl={c.ref}
+        value={c.value}
+        ready={ready}
+        label={t('stats.makers')}
+        dot="bg-coral"
+      />
     </div>
   )
 }
@@ -282,11 +305,13 @@ function FooterLiveStats() {
 function FooterStat({
   refEl,
   value,
+  ready,
   label,
   dot,
 }: {
   refEl: React.RefObject<HTMLElement | null>
   value: number
+  ready: boolean
   label: string
   dot: string
 }) {
@@ -307,7 +332,7 @@ function FooterStat({
           className="font-mono font-bold text-bone tabular-nums tracking-[-0.02em] leading-none mt-1"
           style={{ fontSize: 'clamp(1.4rem, 1.5vw + 0.9rem, 1.85rem)' }}
         >
-          {formatCompact(value)}
+          {ready ? formatCompact(value) : <span aria-hidden>—</span>}
         </p>
       </div>
     </div>

@@ -44,7 +44,7 @@ export default function CommunityNewPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<ThreadFormValues>({
-    resolver: zodResolver(threadFormSchema),
+    resolver: zodResolver(threadFormSchema as any),
     defaultValues: {
       title: '',
       body: '',

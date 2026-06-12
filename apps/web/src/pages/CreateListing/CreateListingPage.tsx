@@ -155,7 +155,7 @@ export default function CreateListingPage() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormShape>({
-    resolver: zodResolver(FormSchema) as unknown as Resolver<FormShape>,
+    resolver: zodResolver(FormSchema as any) as unknown as Resolver<FormShape>,
     defaultValues: initialDraft,
   })
 

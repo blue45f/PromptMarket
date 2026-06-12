@@ -1,18 +1,23 @@
-import { act, render, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { useNavShortcuts } from './useNavShortcuts'
 import { useAuthStore } from '@store/auth'
 
-function LocationReader({ to }: { to: { value: string } }) {
+// Report the current pathname through the DOM instead of mutating a prop —
+// writing to props during render is a react-compiler error.
+function LocationProbe() {
   const loc = useLocation()
-  to.value = loc.pathname
-  return null
+  return <span data-testid="pathname">{loc.pathname}</span>
 }
 
-function Harness({ to }: { to: { value: string } }) {
+function Harness() {
   useNavShortcuts()
-  return <LocationReader to={to} />
+  return <LocationProbe />
+}
+
+function pathname() {
+  return screen.getByTestId('pathname').textContent
 }
 
 async function press(key: string) {
@@ -36,59 +41,54 @@ afterEach(() => {
 
 describe('useNavShortcuts', () => {
   it('routes "g b" to /browse', async () => {
-    const to = { value: '' }
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Harness to={to} />
+        <Harness />
       </MemoryRouter>
     )
     await press('g')
     await press('b')
-    await waitFor(() => expect(to.value).toBe('/browse'))
+    await waitFor(() => expect(pathname()).toBe('/browse'))
   })
 
   it('routes "g h" back to /', async () => {
-    const to = { value: '' }
     render(
       <MemoryRouter initialEntries={['/browse']}>
-        <Harness to={to} />
+        <Harness />
       </MemoryRouter>
     )
     await press('g')
     await press('h')
-    await waitFor(() => expect(to.value).toBe('/'))
+    await waitFor(() => expect(pathname()).toBe('/'))
   })
 
   it('routes single "c" to /sell when authed', async () => {
     act(() => {
       useAuthStore.setState({ token: 'jwt', user: null })
     })
-    const to = { value: '' }
     render(
       <MemoryRouter initialEntries={['/browse']}>
-        <Harness to={to} />
+        <Harness />
       </MemoryRouter>
     )
     await press('c')
-    await waitFor(() => expect(to.value).toBe('/sell'))
+    await waitFor(() => expect(pathname()).toBe('/sell'))
   })
 
   it('ignores single "c" when signed out', async () => {
-    const to = { value: '' }
     render(
       <MemoryRouter initialEntries={['/browse']}>
-        <Harness to={to} />
+        <Harness />
       </MemoryRouter>
     )
     await press('c')
-    expect(to.value).toBe('/browse')
+    expect(pathname()).toBe('/browse')
   })
 
   it('does not arm "g" when the event target is an input', async () => {
-    const to = { value: '' }
     render(
       <MemoryRouter initialEntries={['/']}>
-        <Harness to={to} />
+        <Harness />
       </MemoryRouter>
     )
     const input = document.createElement('input')
@@ -98,7 +98,7 @@ describe('useNavShortcuts', () => {
       input.dispatchEvent(new KeyboardEvent('keydown', { key: 'g', bubbles: true }))
       input.dispatchEvent(new KeyboardEvent('keydown', { key: 'b', bubbles: true }))
     })
-    expect(to.value).toBe('/')
+    expect(pathname()).toBe('/')
     input.remove()
   })
 })

@@ -1,4 +1,5 @@
 import js from '@eslint/js'
+import reactCompiler from 'eslint-plugin-react-compiler'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
@@ -144,6 +145,20 @@ export default defineConfig([
       ecmaVersion: 2022,
       sourceType: 'module',
       globals: { ...globals.node, ...globals.es2022 },
+    },
+  },
+
+  // ── React Compiler gate — apps/web must stay compilable ──────────────────
+  // Unlike the advisory react-hooks/* warnings above, this rule runs the
+  // actual compiler frontend; an error means the component bails out of
+  // React Compiler optimization entirely, so it is enforced as a hard gate.
+  {
+    files: ['apps/web/**/*.{ts,tsx}'],
+    plugins: {
+      'react-compiler': reactCompiler,
+    },
+    rules: {
+      'react-compiler/react-compiler': 'error',
     },
   },
 ])
