@@ -6,9 +6,9 @@ import {
   useDeleteThread,
   useThread,
   type DiscussionCommentView,
-} from '@features/community'
+} from '@domains/community'
 import { usePageMeta } from '@hooks/usePageMeta'
-import { getErrorMessage } from '@services/api'
+import { getErrorMessage } from '@infrastructure/api'
 import { useAuthStore } from '@store/auth'
 import { cn } from '@utils/cn'
 import { formatDate, formatRelative } from '@utils/format'

@@ -1,7 +1,7 @@
 import AuthLayout from '@components/AuthLayout'
 import GoogleSignInButton from '@components/GoogleSignInButton'
 import { Field, Input } from '@components/ui'
-import { useAuthConfig, useGoogleLogin, useLogin } from '@features/marketplace/queries'
+import { useAuthConfig, useGoogleLogin, useLogin } from '@domains/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { LoginSchema, type LoginInput } from '@promptmarket/shared'
 import { zodFormResolver } from '@utils/zodFormResolver'

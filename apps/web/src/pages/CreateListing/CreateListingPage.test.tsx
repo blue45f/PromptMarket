@@ -14,7 +14,7 @@ const toastSuccess = vi.fn()
 const toastError = vi.fn()
 const toastCustom = vi.fn()
 
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useCreateListing: vi.fn(() => ({ mutateAsync: createMutateAsync, isPending: false })),
   useListings: vi.fn(() => ({ data: { items: [] }, isPending: false })),
 }))

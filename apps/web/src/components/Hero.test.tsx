@@ -6,7 +6,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import Hero from './Hero'
 
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useListings: vi.fn(() => ({ data: { items: [] }, isPending: false })),
   useStats: vi.fn(() => ({ data: undefined, isPending: false })),
 }))

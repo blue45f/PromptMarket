@@ -1,4 +1,4 @@
-import { useListings } from '@features/marketplace/queries'
+import { useListings } from '@domains/marketplace/queries'
 import { MODELS } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
 import { ArrowUpRight } from 'lucide-react'

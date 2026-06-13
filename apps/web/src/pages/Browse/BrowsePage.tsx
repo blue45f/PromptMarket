@@ -7,18 +7,18 @@ import { countActive, type FilterState } from '@components/filterState'
 import ListingCard from '@components/ListingCard'
 import SearchBar from '@components/SearchBar'
 import { SkeletonGrid } from '@components/SkeletonCard'
-import { useListings } from '@features/marketplace/queries'
+import { useListings } from '@domains/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { useSavedFilters } from '@hooks/useSavedFilters'
 import { useScrollRestore } from '@hooks/useScrollRestore'
 import { useSearchHistory } from '@hooks/useSearchHistory'
+import { getErrorMessage } from '@infrastructure/api'
 import {
   LISTING_TYPE_META,
   ListingType as ListingTypeEnum,
   PromptTechnique as PromptTechniqueEnum,
   TECHNIQUE_META,
 } from '@promptmarket/shared'
-import { getErrorMessage } from '@services/api'
 import { cn } from '@utils/cn'
 import { modelLabel } from '@utils/format'
 import {

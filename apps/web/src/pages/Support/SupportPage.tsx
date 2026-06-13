@@ -7,8 +7,8 @@ import {
   useSubmitInquiry,
   type InquiryFormInput,
   type InquiryReceipt,
-} from '@features/inquiry'
-import { TERMSDESK_SUPPORT_URL } from '@features/policies'
+} from '@domains/inquiry'
+import { TERMSDESK_SUPPORT_URL } from '@domains/policies'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { cn } from '@utils/cn'
 import { formatDate } from '@utils/format'

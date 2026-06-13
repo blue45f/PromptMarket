@@ -1,4 +1,4 @@
-import { useRelated } from '@features/marketplace/queries'
+import { useRelated } from '@domains/marketplace/queries'
 import { useTranslation } from 'react-i18next'
 
 import ListingCard from './ListingCard'

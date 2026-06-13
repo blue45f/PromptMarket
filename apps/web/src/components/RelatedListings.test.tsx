@@ -9,7 +9,7 @@ import { describe, expect, it, vi } from 'vitest'
 import RelatedListings from './RelatedListings'
 
 const mockUseRelated = vi.fn()
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useRelated: (...args: unknown[]) => mockUseRelated(...args),
 }))
 

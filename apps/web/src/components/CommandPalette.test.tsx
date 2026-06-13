@@ -12,7 +12,7 @@ vi.mock('@store/auth', () => ({
   ),
 }))
 
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useListings: vi.fn(() => ({ data: null, isPending: false })),
 }))
 

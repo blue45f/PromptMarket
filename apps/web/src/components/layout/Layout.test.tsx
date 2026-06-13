@@ -29,7 +29,7 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useMe: vi.fn(),
   useStats: vi.fn(() => ({ data: null })),
   useListings: vi.fn(() => ({ data: null })),

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import StatsStrip from './StatsStrip'
 
 const mockUseStats = vi.fn()
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useStats: () => mockUseStats(),
 }))
 

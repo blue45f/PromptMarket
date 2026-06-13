@@ -1,6 +1,6 @@
 import AttachmentInput from '@components/AttachmentInput'
 import { Field, Input, Textarea } from '@components/ui'
-import { useCreateThread } from '@features/community'
+import { useCreateThread } from '@domains/community'
 import { usePageMeta } from '@hooks/usePageMeta'
 import {
   CATEGORIES,

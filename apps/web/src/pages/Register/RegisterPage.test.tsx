@@ -5,7 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import RegisterPage from './RegisterPage'
 
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useRegister: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
 }))
 

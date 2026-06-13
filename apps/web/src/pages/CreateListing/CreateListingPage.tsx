@@ -4,7 +4,7 @@ import { evaluateListingQuality } from '@components/listingQualityUtils'
 import MarkdownView from '@components/MarkdownView'
 import ModelPicker from '@components/ModelPicker'
 import { Field as UiField, Input, Textarea } from '@components/ui'
-import { useCreateListing, useListings } from '@features/marketplace/queries'
+import { useCreateListing, useListings } from '@domains/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
 import {
   CATEGORIES,

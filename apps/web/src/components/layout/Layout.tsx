@@ -1,7 +1,7 @@
 import RouteAnnouncer from '@components/RouteAnnouncer'
 import ScrollToTop from '@components/ScrollToTop'
 import ShortcutsOverlay from '@components/ShortcutsOverlay'
-import { useMe, useStats } from '@features/marketplace/queries'
+import { useMe, useStats } from '@domains/marketplace/queries'
 import { useCountUp } from '@hooks/useCountUp'
 import { useNavShortcuts } from '@hooks/useNavShortcuts'
 import { useReveal } from '@hooks/useReveal'

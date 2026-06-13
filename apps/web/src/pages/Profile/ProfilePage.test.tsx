@@ -1,4 +1,4 @@
-import { useUserProfile } from '@features/marketplace/queries'
+import { useUserProfile } from '@domains/marketplace/queries'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
@@ -6,7 +6,7 @@ import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest'
 
 import ProfilePage from './ProfilePage'
 
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useUserProfile: vi.fn(),
 }))
 vi.mock('@hooks/usePageMeta', () => ({ usePageMeta: vi.fn() }))

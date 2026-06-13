@@ -3,7 +3,7 @@ import {
   useAdminRevenueSettingsHistory,
   useAdminRevenueSummary,
   useUpdateRevenueSettings,
-} from '@features/marketplace/queries'
+} from '@domains/marketplace/queries'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
@@ -11,7 +11,7 @@ import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
 
 import AdminPage from './AdminPage'
 
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useAdminRevenueSettings: vi.fn(),
   useAdminRevenueSettingsHistory: vi.fn(),
   useAdminRevenueSummary: vi.fn(),

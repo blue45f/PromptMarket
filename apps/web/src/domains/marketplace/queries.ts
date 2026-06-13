@@ -1,5 +1,5 @@
+import { api, getErrorMessage } from '@infrastructure/api'
 import { UserDto } from '@promptmarket/shared'
-import { api, getErrorMessage } from '@services/api'
 import { useAuthStore } from '@store/auth'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'

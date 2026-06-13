@@ -7,7 +7,7 @@ import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest'
 import DashboardPage from './DashboardPage'
 
 vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }))
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useMyListings: vi.fn(() => ({ data: [], isPending: false, error: null })),
   useMyPurchases: vi.fn(() => ({ data: [], isPending: false, error: null })),
   useTopup: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),

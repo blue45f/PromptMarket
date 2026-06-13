@@ -1,6 +1,6 @@
 import AuthLayout from '@components/AuthLayout'
 import { Field, Input } from '@components/ui'
-import { useRegister } from '@features/marketplace/queries'
+import { useRegister } from '@domains/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { RegisterSchema, type RegisterInput } from '@promptmarket/shared'
 import { cn } from '@utils/cn'

@@ -5,7 +5,7 @@ import {
   usePolicy,
   type PolicyBlock,
   type PolicySlug,
-} from '@features/policies'
+} from '@domains/policies'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { formatDate } from '@utils/format'
 import { ArrowUpRight, RotateCcw } from 'lucide-react'

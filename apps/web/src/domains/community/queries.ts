@@ -1,4 +1,4 @@
-import { api, getErrorMessage } from '@services/api'
+import { api, getErrorMessage } from '@infrastructure/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 

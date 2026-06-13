@@ -1,4 +1,4 @@
-import { base, react, plugin, defineConfig } from '@heejun/eslint-config'
+import { base, react, plugin, boundaries, defineConfig } from '@heejun/eslint-config'
 import { globalIgnores } from 'eslint/config'
 import globals from 'globals'
 
@@ -67,6 +67,56 @@ export default defineConfig(
     files: ['apps/web/.storybook/**/*.{ts,tsx}'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
     rules: { 'react-refresh/only-export-components': 'off' },
+  },
+
+  // apps/web 계층 경계 — app/domains/shared/infrastructure 4계층.
+  // components/hooks/utils/store/i18n/types 는 물리적으로 옮기지 않고 shared 로 매핑한다.
+  ...boundaries({
+    files: ['apps/web/src/**/*.{ts,tsx}'],
+    elements: [
+      { type: 'app', pattern: 'apps/web/src/{app,router,pages}/**/*', mode: 'full' },
+      { type: 'domains', pattern: 'apps/web/src/domains/*/**/*', mode: 'full' },
+      {
+        type: 'shared',
+        pattern: 'apps/web/src/{components,hooks,utils,store,i18n,types}/**/*',
+        mode: 'full',
+      },
+      { type: 'infrastructure', pattern: 'apps/web/src/infrastructure/**/*', mode: 'full' },
+    ],
+    rules: [
+      { from: ['app'], allow: ['app', 'domains', 'shared', 'infrastructure'] },
+      { from: ['domains'], allow: ['domains', 'shared', 'infrastructure'] },
+      { from: ['infrastructure'], allow: ['shared', 'infrastructure'] },
+      { from: ['shared'], allow: ['shared'] },
+    ],
+  }),
+  // boundaries 는 TS 임포트를 분류하려면 리졸버가 필요하다(없으면 조용히 no-op).
+  {
+    files: ['apps/web/src/**/*.{ts,tsx}'],
+    settings: {
+      'import/resolver': { typescript: { project: 'apps/web/tsconfig.json' }, node: true },
+    },
+  },
+  // 기술부채 완화(차기 패스에서 도메인으로 이동 예정): components/ 루트의 일부 파일은
+  // 사실상 도메인 결합 피처 컴포넌트라 domains/infrastructure 를 직접 import 한다
+  // (marketplace 쿼리/queryKeys 를 쓰는 카드·캐러셀·검색팔레트·통계 위젯, admin 첨부
+  // 패널, layout 헤더/네비의 알림·통계 상태). 이들을 도메인으로 물리 이동하는 것은
+  // ListingCard 같은 공용 빌딩블록까지 얽힌 대규모 리팩터라 이번 패스 범위 밖이다.
+  // pure shared(components/ui·common·route 의 나머지·hooks·utils·store·i18n·types)는
+  // 계속 strict 하게 강제한다.
+  {
+    files: [
+      'apps/web/src/components/AdminAttachmentsPanel.tsx',
+      'apps/web/src/components/CommandPalette.tsx',
+      'apps/web/src/components/Hero.tsx',
+      'apps/web/src/components/ListingCard.tsx',
+      'apps/web/src/components/ModelTabs.tsx',
+      'apps/web/src/components/RecentlyViewed.tsx',
+      'apps/web/src/components/RelatedListings.tsx',
+      'apps/web/src/components/StatsStrip.tsx',
+      'apps/web/src/components/layout/{Layout,Navbar}.tsx',
+    ],
+    rules: { 'boundaries/element-types': 'off' },
   },
 
   // apps/api — NestJS (Node). 데코레이터 + 빈 생성자/클래스 관용.

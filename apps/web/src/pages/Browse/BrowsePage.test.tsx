@@ -18,7 +18,7 @@ const { mockUseSearchHistory } = vi.hoisted(() => ({
   })),
 }))
 
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useListings: mockUseListings,
 }))
 

@@ -5,9 +5,9 @@ import {
   useAdminRevenueSettingsHistory,
   useAdminRevenueSummary,
   useUpdateRevenueSettings,
-} from '@features/marketplace/queries'
+} from '@domains/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
-import { getErrorMessage } from '@services/api'
+import { getErrorMessage } from '@infrastructure/api'
 import { cn } from '@utils/cn'
 import { formatDollars } from '@utils/format'
 import {

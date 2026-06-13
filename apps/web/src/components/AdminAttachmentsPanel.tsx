@@ -3,8 +3,8 @@ import {
   useAdminAttachments,
   useAdminDeleteAttachment,
   type AttachmentTarget,
-} from '@features/admin'
-import { getErrorMessage } from '@services/api'
+} from '@domains/admin'
+import { getErrorMessage } from '@infrastructure/api'
 import { Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 

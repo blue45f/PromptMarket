@@ -24,12 +24,13 @@ import {
   useCreateReview,
   useCreateReviewReply,
   useDeleteReviewReply,
-} from '@features/marketplace/queries'
-import { useStartMessageThread } from '@features/messages'
+} from '@domains/marketplace/queries'
+import { useStartMessageThread } from '@domains/messages'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
 import { useStructuredData } from '@hooks/useStructuredData'
 import { useWishlist } from '@hooks/useWishlist'
+import { getErrorMessage } from '@infrastructure/api'
 import {
   CreateReviewReplySchema,
   CreateReviewSchema,
@@ -38,7 +39,6 @@ import {
   type AttachmentInput as AttachmentDraft,
 } from '@promptmarket/shared'
 import * as Tabs from '@radix-ui/react-tabs'
-import { getErrorMessage } from '@services/api'
 import { useAuthStore } from '@store/auth'
 import { cn } from '@utils/cn'
 import { formatDate, formatPrice, formatRelative } from '@utils/format'

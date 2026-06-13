@@ -1,4 +1,4 @@
-import { useStats } from '@features/marketplace/queries'
+import { useStats } from '@domains/marketplace/queries'
 import { useCountUp } from '@hooks/useCountUp'
 import { useReveal } from '@hooks/useReveal'
 import { cn } from '@utils/cn'

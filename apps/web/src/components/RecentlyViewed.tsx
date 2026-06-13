@@ -1,6 +1,6 @@
-import { listingKey } from '@features/marketplace/queryKeys'
+import { listingKey } from '@domains/marketplace/queryKeys'
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
-import { api } from '@services/api'
+import { api } from '@infrastructure/api'
 import { useQueries } from '@tanstack/react-query'
 import { cn } from '@utils/cn'
 import { Eye, X } from 'lucide-react'

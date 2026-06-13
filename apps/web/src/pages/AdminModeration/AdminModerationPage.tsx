@@ -10,9 +10,9 @@ import {
   useDeleteForbiddenWord,
   useSetThreadVisibility,
   useUpdateForbiddenWord,
-} from '@features/admin'
+} from '@domains/admin'
 import { usePageMeta } from '@hooks/usePageMeta'
-import { getErrorMessage } from '@services/api'
+import { getErrorMessage } from '@infrastructure/api'
 import { cn } from '@utils/cn'
 import { formatDate } from '@utils/format'
 import { Edit3, Eye, EyeOff, ImageIcon, Plus, Save, Search, Trash2, X } from 'lucide-react'
