@@ -18,3 +18,4 @@ minimumReleaseAgeExclude:
   - react-router-dom
   - tldts-core
   - zustand
+  - '@heejun/prettier-config@3.0.0'
