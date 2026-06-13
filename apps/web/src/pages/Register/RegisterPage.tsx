@@ -209,34 +209,74 @@ export default function RegisterPage() {
         </div>
 
         <div className="rounded-2xl border border-line dark:border-night-line bg-canvas/70 dark:bg-night/70 p-3 text-[0.78rem] text-ink-soft dark:text-bone-soft">
-          <p className="font-medium text-ink dark:text-bone mb-2">가입 전 확인</p>
-          <label className="flex items-start gap-2">
+          <p className="font-medium text-ink dark:text-bone mb-2">
+            {t('register.consent.heading')}
+          </p>
+          <div className="flex items-start gap-2">
             <input
+              id="register-consent-service"
               type="checkbox"
               checked={termsChecked.service}
+              aria-invalid={termsError ? true : undefined}
+              aria-describedby={termsError ? 'register-consent-error' : undefined}
               onChange={(event) => {
                 setTermsChecked((current) => ({ ...current, service: event.target.checked }))
                 if (event.target.checked && termsChecked.privacy) setTermsError(false)
               }}
               className="mt-0.5"
             />
-            <span>마켓 거래 규칙과 프롬프트 저작권·환불 기준을 확인했습니다.</span>
-          </label>
-          <label className="mt-2 flex items-start gap-2">
+            <label htmlFor="register-consent-service">
+              <Trans
+                t={t}
+                i18nKey="register.consent.service"
+                components={{
+                  terms: (
+                    <Link
+                      to="/terms"
+                      className={consentLinkClass}
+                      onClick={(event) => event.stopPropagation()}
+                    />
+                  ),
+                }}
+              />
+            </label>
+          </div>
+          <div className="mt-2 flex items-start gap-2">
             <input
+              id="register-consent-privacy"
               type="checkbox"
               checked={termsChecked.privacy}
+              aria-invalid={termsError ? true : undefined}
+              aria-describedby={termsError ? 'register-consent-error' : undefined}
               onChange={(event) => {
                 setTermsChecked((current) => ({ ...current, privacy: event.target.checked }))
                 if (event.target.checked && termsChecked.service) setTermsError(false)
               }}
               className="mt-0.5"
             />
-            <span>계정·결제·거래 알림에 필요한 개인정보 처리 범위를 확인했습니다.</span>
-          </label>
+            <label htmlFor="register-consent-privacy">
+              <Trans
+                t={t}
+                i18nKey="register.consent.privacy"
+                components={{
+                  privacy: (
+                    <Link
+                      to="/privacy"
+                      className={consentLinkClass}
+                      onClick={(event) => event.stopPropagation()}
+                    />
+                  ),
+                }}
+              />
+            </label>
+          </div>
           {termsError && (
-            <p role="alert" className="mt-2 text-[0.76rem] text-coral-deep dark:text-coral">
-              두 확인 항목을 모두 체크해야 계정을 만들 수 있어요.
+            <p
+              id="register-consent-error"
+              role="alert"
+              className="mt-2 text-[0.76rem] text-coral-deep dark:text-coral"
+            >
+              {t('register.consent.error')}
             </p>
           )}
         </div>

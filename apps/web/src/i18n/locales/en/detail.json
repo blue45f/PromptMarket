@@ -96,7 +96,8 @@
     "label": "Message to the seller",
     "placeholder": "Ask anything before you buy. The conversation continues in your inbox.",
     "cancel": "Cancel",
-    "send": "Send"
+    "send": "Send",
+    "help": "{{count}}/{{max}} characters · Ctrl/⌘ Enter to send"
   },
   "sidebar": {
     "ariaLabel": "Listing details",
