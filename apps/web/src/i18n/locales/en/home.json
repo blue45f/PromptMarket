@@ -65,6 +65,25 @@
   "common": {
     "viewAll": "View all"
   },
+  "trust": {
+    "label": "Why builders ship from here",
+    "rating": {
+      "value": "{{value}} avg",
+      "caption": "across {{count}} verified reviews"
+    },
+    "downloads": {
+      "value": "{{value}} pulls",
+      "caption": "into real, shipping codebases"
+    },
+    "free": {
+      "value": "{{count}} free to start",
+      "caption": "open drops, no card required"
+    },
+    "models": {
+      "value": "{{count}} frontier models",
+      "caption": "Claude, GPT, Gemini and more"
+    }
+  },
   "sections": {
     "featured": {
       "chapter": "01 / Featured",
