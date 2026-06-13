@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowUpRight, Sparkles } from 'lucide-react'
-import { useListings } from '@features/marketplace/queries'
+import { ArrowUpRight, Download, Sparkles, Star, Tag, Layers } from 'lucide-react'
+import { useListings, useStats } from '@features/marketplace/queries'
 import { getErrorMessage } from '@services/api'
 import { useReveal } from '@hooks/useReveal'
 import { useSpotlight } from '@hooks/useSpotlight'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { useStructuredData } from '@hooks/useStructuredData'
-import { LISTING_TYPE_META } from '@promptmarket/shared'
-import { typeGradient } from '@utils/format'
+import { LISTING_TYPE_META, MODELS } from '@promptmarket/shared'
+import { typeGradient, formatCompact } from '@utils/format'
 import { cn } from '@utils/cn'
 import Hero from '@components/Hero'
 import CategoryChips from '@components/CategoryChips'
@@ -75,6 +75,9 @@ export default function HomePage() {
 
       {/* Marquee strip — horizontal infinite-scrolling section anchor */}
       <MarqueeStrip />
+
+      {/* Trust band — honest social proof derived from already-fetched data */}
+      <TrustSignals pools={[featured, trending, recent]} />
 
       <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(3rem,6vw,5rem)] space-y-[clamp(3.5rem,7vw,7rem)]">
         {error && (
@@ -526,6 +529,149 @@ function MarqueeStrip() {
         ))}
       </div>
     </div>
+  )
+}
+
+/* ---------- Trust signals band ----------------------------------------- */
+
+type TrustListing = {
+  priceCents: number
+  avgRating: number
+  reviewCount: number
+  downloads: number
+}
+
+/**
+ * Honest social-proof band sitting between the hero and the catalog. Every
+ * number is derived from data the page already fetched (the featured /
+ * trending / recent pools) plus the public stats aggregate — no extra
+ * requests, no fabricated testimonials. Renders nothing until there is at
+ * least one rated listing to summarise, so empty / loading states stay clean.
+ */
+function TrustSignals({ pools }: { pools: Array<ReadonlyArray<TrustListing>> }) {
+  const { t } = useTranslation('home')
+  const { data: stats } = useStats()
+  const { ref, revealed } = useReveal<HTMLDivElement>()
+
+  const agg = useMemo(() => {
+    // De-dupe across pools by identity so an item appearing in two pools is
+    // only counted once in the rating average.
+    const seen = new Set<TrustListing>()
+    let ratingSum = 0
+    let ratedCount = 0
+    let reviewTotal = 0
+    let freeCount = 0
+    for (const pool of pools) {
+      for (const l of pool) {
+        if (seen.has(l)) continue
+        seen.add(l)
+        if (l.reviewCount > 0 && l.avgRating > 0) {
+          ratingSum += l.avgRating
+          ratedCount += 1
+          reviewTotal += l.reviewCount
+        }
+        if ((l.priceCents ?? 0) === 0) freeCount += 1
+      }
+    }
+    return {
+      avgRating: ratedCount ? ratingSum / ratedCount : 0,
+      reviewTotal,
+      ratedCount,
+      freeCount,
+    }
+  }, [pools])
+
+  // Nothing trustworthy to show yet — stay out of the way.
+  if (agg.ratedCount === 0) return null
+
+  const downloads = stats?.totalDownloads ?? 0
+
+  const signals: Array<{
+    key: string
+    icon: typeof Star
+    value: string
+    caption: string
+    accent: string
+  }> = [
+    {
+      key: 'rating',
+      icon: Star,
+      value: t('trust.rating.value', { value: agg.avgRating.toFixed(1) }),
+      caption: t('trust.rating.caption', { count: agg.reviewTotal }),
+      accent: 'text-volt-700 dark:text-volt-300',
+    },
+    ...(downloads > 0
+      ? [
+          {
+            key: 'downloads',
+            icon: Download,
+            value: t('trust.downloads.value', { value: formatCompact(downloads) }),
+            caption: t('trust.downloads.caption'),
+            accent: 'text-violet-deep dark:text-violet-soft',
+          },
+        ]
+      : []),
+    ...(agg.freeCount > 0
+      ? [
+          {
+            key: 'free',
+            icon: Tag,
+            value: t('trust.free.value', { count: agg.freeCount }),
+            caption: t('trust.free.caption'),
+            accent: 'text-coral-deep dark:text-coral',
+          },
+        ]
+      : []),
+    {
+      key: 'models',
+      icon: Layers,
+      value: t('trust.models.value', { count: MODELS.length }),
+      caption: t('trust.models.caption'),
+      accent: 'text-ink dark:text-bone',
+    },
+  ]
+
+  return (
+    <section
+      aria-labelledby="home-trust-heading"
+      className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] pt-[clamp(2rem,4vw,3rem)]"
+    >
+      <div
+        ref={ref}
+        data-revealed={revealed}
+        className="reveal surface-card border border-line dark:border-night-line rounded-3xl overflow-hidden"
+      >
+        <h2
+          id="home-trust-heading"
+          className="flex items-center gap-2 px-6 sm:px-8 pt-5 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink-mute dark:text-bone-mute"
+        >
+          <span aria-hidden className="w-6 h-px bg-volt-500" />
+          {t('trust.label')}
+        </h2>
+        <dl className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-line dark:divide-night-line">
+          {signals.map((s) => {
+            const Icon = s.icon
+            return (
+              <div key={s.key} className="flex flex-col gap-1.5 px-6 sm:px-8 py-5 sm:py-6 min-w-0">
+                <dt
+                  className={cn(
+                    'inline-flex items-center gap-2 font-display font-bold leading-none tracking-[-0.03em] tabular-nums',
+                    s.accent
+                  )}
+                  style={{ fontSize: 'var(--text-display-sm)' }}
+                >
+                  <Icon aria-hidden className="w-[0.7em] h-[0.7em] shrink-0" />
+                  {s.value}
+                </dt>
+                <dd className="text-[0.8rem] text-ink-mute dark:text-bone-mute leading-snug max-w-[22ch] m-0">
+                  {s.caption}
+                </dd>
+              </div>
+            )
+          })}
+        </dl>
+      </div>
+    </section>
   )
 }
 

@@ -65,6 +65,25 @@
   "common": {
     "viewAll": "전체 보기"
   },
+  "trust": {
+    "label": "빌더들이 여기서 받아 쓰는 이유",
+    "rating": {
+      "value": "평균 {{value}}",
+      "caption": "검증된 리뷰 {{count}}건 기준"
+    },
+    "downloads": {
+      "value": "{{value}}회 사용",
+      "caption": "실제 운영 코드베이스에 적용"
+    },
+    "free": {
+      "value": "{{count}}개 무료로 시작",
+      "caption": "카드 없이 받는 공개 드롭"
+    },
+    "models": {
+      "value": "프런티어 모델 {{count}}종",
+      "caption": "Claude, GPT, Gemini 등"
+    }
+  },
   "sections": {
     "featured": {
       "chapter": "01 / 추천",
