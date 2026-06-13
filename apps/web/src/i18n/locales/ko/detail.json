@@ -96,7 +96,8 @@
     "label": "판매자에게 보낼 메시지",
     "placeholder": "구매 전 궁금한 점을 물어보세요. 대화는 쪽지함으로 이어져요.",
     "cancel": "취소",
-    "send": "보내기"
+    "send": "보내기",
+    "help": "{{count}}/{{max}}자 · Ctrl/⌘ Enter로 전송"
   },
   "sidebar": {
     "ariaLabel": "상세 정보",

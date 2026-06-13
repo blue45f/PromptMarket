@@ -1231,38 +1231,56 @@ export default function ListingDetailPage() {
                         id="ask-seller-body"
                         value={askDraft}
                         onChange={(event) => setAskDraft(event.target.value)}
+                        onKeyDown={(event) => {
+                          if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+                            event.preventDefault()
+                            void handleAskSeller()
+                          }
+                        }}
                         maxLength={MESSAGE_BODY_MAX}
                         rows={3}
                         autoFocus
+                        aria-describedby="ask-seller-help"
                         placeholder={t('contact.placeholder')}
                         className="w-full resize-y rounded-xl border border-line bg-canvas px-3 py-2 text-sm leading-relaxed text-ink placeholder:text-ink-mute focus:border-volt-500 focus:outline-none focus:ring-2 focus:ring-volt-500/60 dark:border-night-line dark:bg-night dark:text-bone dark:placeholder:text-bone-mute"
                       />
-                      <div className="mt-2 flex items-center justify-end gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setAskOpen(false)
-                            setAskDraft('')
-                          }}
-                          className="inline-flex min-h-8 items-center rounded-full px-3 py-1 text-xs font-medium text-ink-soft hover:text-ink dark:text-bone-soft dark:hover:text-bone focus-volt"
+                      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                        <p
+                          id="ask-seller-help"
+                          className="text-xs text-ink-mute dark:text-bone-mute"
                         >
-                          {t('contact.cancel')}
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={askSellerMut.isPending || askDraft.trim().length === 0}
-                          className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-ink px-3.5 py-1 text-xs font-semibold text-bone disabled:cursor-not-allowed disabled:opacity-60 dark:bg-bone dark:text-ink motion-safe:transition ease-expo focus-volt"
-                        >
-                          {askSellerMut.isPending ? (
-                            <Loader2
-                              aria-hidden="true"
-                              className="h-3 w-3 motion-safe:animate-spin"
-                            />
-                          ) : (
-                            <Send aria-hidden="true" className="h-3 w-3" />
-                          )}
-                          {t('contact.send')}
-                        </button>
+                          {t('contact.help', {
+                            count: askDraft.length,
+                            max: MESSAGE_BODY_MAX,
+                          })}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAskOpen(false)
+                              setAskDraft('')
+                            }}
+                            className="inline-flex min-h-8 items-center rounded-full px-3 py-1 text-xs font-medium text-ink-soft hover:text-ink dark:text-bone-soft dark:hover:text-bone focus-volt"
+                          >
+                            {t('contact.cancel')}
+                          </button>
+                          <button
+                            type="submit"
+                            disabled={askSellerMut.isPending || askDraft.trim().length === 0}
+                            className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-ink px-3.5 py-1 text-xs font-semibold text-bone disabled:cursor-not-allowed disabled:opacity-60 dark:bg-bone dark:text-ink motion-safe:transition ease-expo focus-volt"
+                          >
+                            {askSellerMut.isPending ? (
+                              <Loader2
+                                aria-hidden="true"
+                                className="h-3 w-3 motion-safe:animate-spin"
+                              />
+                            ) : (
+                              <Send aria-hidden="true" className="h-3 w-3" />
+                            )}
+                            {t('contact.send')}
+                          </button>
+                        </div>
                       </div>
                     </form>
                   ) : (
