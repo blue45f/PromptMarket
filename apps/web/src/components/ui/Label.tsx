@@ -1,6 +1,6 @@
-import { forwardRef, type ComponentPropsWithoutRef } from 'react'
 import { Root as LabelRoot } from '@radix-ui/react-label'
 import { cn } from '@utils/cn'
+import { forwardRef, type ComponentPropsWithoutRef } from 'react'
 
 /**
  * Label — Radix-backed form label. Clicking it focuses its associated control

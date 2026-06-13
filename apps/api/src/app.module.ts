@@ -1,19 +1,20 @@
 import { Module } from '@nestjs/common'
-import { APP_GUARD } from '@nestjs/core'
 import { ConfigModule } from '@nestjs/config'
+import { APP_GUARD } from '@nestjs/core'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { LoggerModule } from 'nestjs-pino'
-import { PrismaModule } from './prisma/prisma.module'
+
+import { AdminModule } from './admin/admin.module'
 import { AuthModule } from './auth/auth.module'
-import { UsersModule } from './users/users.module'
+import { CommunityModule } from './community/community.module'
+import { HealthModule } from './health/health.module'
 import { ListingsModule } from './listings/listings.module'
+import { MessagesModule } from './messages/messages.module'
+import { PrismaModule } from './prisma/prisma.module'
 import { PurchasesModule } from './purchases/purchases.module'
 import { ReviewsModule } from './reviews/reviews.module'
-import { CommunityModule } from './community/community.module'
-import { MessagesModule } from './messages/messages.module'
 import { SeoModule } from './seo/seo.module'
-import { AdminModule } from './admin/admin.module'
-import { HealthModule } from './health/health.module'
+import { UsersModule } from './users/users.module'
 
 @Module({
   imports: [

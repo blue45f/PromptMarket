@@ -1,12 +1,12 @@
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { Inbox } from 'lucide-react'
+import EmptyState from '@components/EmptyState'
 import { useMessageThreads } from '@features/messages'
 import { usePageMeta } from '@hooks/usePageMeta'
-import EmptyState from '@components/EmptyState'
 import { getErrorMessage } from '@services/api'
-import { formatRelative } from '@utils/format'
 import { cn } from '@utils/cn'
+import { formatRelative } from '@utils/format'
+import { Inbox } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 export default function MessagesPage() {
   const { t } = useTranslation('messages')

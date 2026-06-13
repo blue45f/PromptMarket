@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { SkipThrottle } from '@nestjs/throttler'
+
 import { HealthService, type HealthStatus } from './health.service'
 
 /**

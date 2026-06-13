@@ -1,8 +1,9 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { cn } from '@utils/cn'
 import { Languages } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+
 import { SUPPORTED_LANGS, normalizeLang, type Lang } from '@/i18n'
-import { cn } from '@utils/cn'
 
 /** Language switcher. Mirrors ThemeToggle so the nav chrome keeps one
  *  control vocabulary: same trigger footprint, same active-dot affordance. */

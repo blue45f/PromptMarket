@@ -1,8 +1,10 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
+
 import { PrismaService } from '../prisma/prisma.service'
-import type { StartThreadDto } from './dto/start-thread.dto'
+
 import type { SendMessageDto } from './dto/send-message.dto'
+import type { StartThreadDto } from './dto/start-thread.dto'
 
 type ThreadWithParties = {
   id: string

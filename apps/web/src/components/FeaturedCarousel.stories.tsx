@@ -1,6 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { ListingCard as ListingCardType } from '@/types'
 import FeaturedCarousel from './FeaturedCarousel'
+
+import type { ListingCard as ListingCardType } from '@/types'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 /**
  * Horizontally-scrollable, snap-aligned strip of featured ListingCards with

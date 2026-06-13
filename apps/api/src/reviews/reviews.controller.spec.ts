@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { AuthUser } from '../auth/current-user.decorator'
+
 import { ReviewsController } from './reviews.controller'
+
+import type { AuthUser } from '../auth/current-user.decorator'
 
 describe('ReviewsController', () => {
   function makeController(serviceOverrides: Record<string, unknown> = {}) {

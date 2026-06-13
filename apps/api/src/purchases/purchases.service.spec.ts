@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { describe, expect, it, vi } from 'vitest'
+
 import { PurchasesService } from './purchases.service'
 
 type PrismaMock = ConstructorParameters<typeof PurchasesService>[0]

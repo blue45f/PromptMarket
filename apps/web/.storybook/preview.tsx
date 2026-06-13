@@ -1,6 +1,6 @@
+import { withThemeByClassName } from '@storybook/addon-themes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
-import { withThemeByClassName } from '@storybook/addon-themes'
 
 import type { Preview } from '@storybook/react-vite'
 

@@ -5,8 +5,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+
 import { isPrismaP2002, isPrismaP2025 } from '../prisma/prisma-errors'
+import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class PurchasesService {

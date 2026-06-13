@@ -1,9 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { useAuthStore } from '@store/auth'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useAuthStore } from '@store/auth'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { type Mock } from 'vitest'
+
 import Navbar from './Navbar'
 
 vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }))

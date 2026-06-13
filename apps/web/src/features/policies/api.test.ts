@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+
 import { fetchPolicy, policyApiUrl, policyPublicUrl, TERMSDESK_SUPPORT_URL } from './api'
 
 const fetchMock = vi.fn()

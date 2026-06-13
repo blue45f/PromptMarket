@@ -1,8 +1,5 @@
-import { useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { ArrowLeft, CornerDownRight, EyeOff, Loader2, MessageCircle, Trash2 } from 'lucide-react'
-import type { AttachmentInput as AttachmentDraft } from '@promptmarket/shared'
+import AttachmentGallery from '@components/AttachmentGallery'
+import AttachmentInput from '@components/AttachmentInput'
 import {
   useCreateComment,
   useDeleteComment,
@@ -11,12 +8,16 @@ import {
   type DiscussionCommentView,
 } from '@features/community'
 import { usePageMeta } from '@hooks/usePageMeta'
-import { useAuthStore } from '@store/auth'
 import { getErrorMessage } from '@services/api'
-import { formatDate, formatRelative } from '@utils/format'
-import AttachmentGallery from '@components/AttachmentGallery'
-import AttachmentInput from '@components/AttachmentInput'
+import { useAuthStore } from '@store/auth'
 import { cn } from '@utils/cn'
+import { formatDate, formatRelative } from '@utils/format'
+import { ArrowLeft, CornerDownRight, EyeOff, Loader2, MessageCircle, Trash2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+
+import type { AttachmentInput as AttachmentDraft } from '@promptmarket/shared'
 
 export default function CommunityThreadPage() {
   const { id } = useParams<{ id: string }>()
@@ -342,6 +343,10 @@ export default function CommunityThreadPage() {
                       onChange={(event) => setReplyDraft(event.target.value)}
                       maxLength={2000}
                       rows={2}
+                      // Reply box is a disclosure revealed only on an explicit
+                      // "reply" click; focusing the freshly shown input is the
+                      // expected UX, not an unsolicited page-load focus steal.
+                      // eslint-disable-next-line jsx-a11y/no-autofocus -- focus on user-triggered reply disclosure
                       autoFocus
                       aria-label={t('comments.replyLabel')}
                       placeholder={t('comments.replyPlaceholder')}

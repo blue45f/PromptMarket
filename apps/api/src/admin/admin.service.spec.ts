@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common'
 import { describe, expect, it, vi } from 'vitest'
+
 import { AdminService } from './admin.service'
 
 type PrismaMock = ConstructorParameters<typeof AdminService>[0]

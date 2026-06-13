@@ -1,5 +1,5 @@
-import { createElement, type ComponentType, type ReactNode } from 'react'
 import { cn } from '@utils/cn'
+import { createElement, type ComponentType, type ReactNode } from 'react'
 
 /**
  * EmptyState — the kit's "nothing here" surface. Unlike the legacy emoji

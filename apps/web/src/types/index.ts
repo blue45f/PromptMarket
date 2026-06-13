@@ -1,6 +1,8 @@
 // Re-export shared DTOs where the shape matches what the frontend already consumes.
 // Local interfaces are kept for response shapes that the API returns in a form
 // the shared Zod schemas don't fully describe (e.g. composite "detail" endpoints).
+import type { ListingCard, ListingFull } from '@promptmarket/shared'
+
 export type {
   ListingCard,
   ListingFull,
@@ -23,8 +25,6 @@ export type {
   MessageThreadSummaryDto,
   AdminMemberRow,
 } from '@promptmarket/shared'
-
-import type { ListingCard, ListingFull } from '@promptmarket/shared'
 
 export interface User {
   id: string

@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MODEL_SLUGS } from '@promptmarket/shared'
+
 import ModelBadge from './ModelBadge'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const meta = {
   title: 'Badges/ModelBadge',

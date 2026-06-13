@@ -1,7 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+import { listingsKey, listingKey } from '@features/marketplace/queryKeys'
+import { useDebounce } from '@hooks/useDebounce'
+import { useSavedFilters } from '@hooks/useSavedFilters'
+import { useSearchHistory } from '@hooks/useSearchHistory'
+import { useWishlist } from '@hooks/useWishlist'
+import { LISTING_TYPE_META } from '@promptmarket/shared'
 import * as Dialog from '@radix-ui/react-dialog'
+import { api } from '@services/api'
+import { useAuthStore } from '@store/auth'
+import { useQueries, useQuery } from '@tanstack/react-query'
+import { cn } from '@utils/cn'
+import { formatPrice } from '@utils/format'
 import {
   ArrowRight,
   Compass,
@@ -13,18 +21,11 @@ import {
   Sparkles,
   User,
 } from 'lucide-react'
-import { LISTING_TYPE_META } from '@promptmarket/shared'
-import { useQueries, useQuery } from '@tanstack/react-query'
-import { listingsKey, listingKey } from '@features/marketplace/queryKeys'
-import { api } from '@services/api'
-import { useDebounce } from '@hooks/useDebounce'
-import { useWishlist } from '@hooks/useWishlist'
-import { useSavedFilters } from '@hooks/useSavedFilters'
-import { useSearchHistory } from '@hooks/useSearchHistory'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+
 import type { ListingDetailResponse, ListingsListResponse } from '@/types'
-import { formatPrice } from '@utils/format'
-import { useAuthStore } from '@store/auth'
-import { cn } from '@utils/cn'
 
 /* ---------------------------------------------------------------------------
  * Command Palette — global ⌘K / Ctrl+K / "/" launcher. Opens a fluid search
@@ -545,11 +546,17 @@ const Row = React.memo(function Row({
   rowIndex: number
 }) {
   return (
+    // Keyboard nav is owned by the combobox input via aria-activedescendant
+    // (ArrowDown/Enter on the input drives selection), so per-option key
+    // listeners are intentionally absent; tabIndex=-1 keeps it programmatically
+    // focusable per the ARIA listbox pattern.
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- combobox input handles Enter via aria-activedescendant
     <div
       role="option"
       id={`palette-row-${rowIndex}`}
       aria-selected={active}
       data-row={rowIndex}
+      tabIndex={-1}
       onClick={() => go(href)}
       onMouseEnter={() => setActive(rowIndex)}
       className={cn(

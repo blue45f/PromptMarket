@@ -1,12 +1,13 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Throttle } from '@nestjs/throttler'
+
 import { AuthService } from './auth.service'
-import { RegisterDto } from './dto/register.dto'
-import { LoginDto } from './dto/login.dto'
-import { GoogleAuthDto } from './dto/google-auth.dto'
-import { JwtAuthGuard } from './jwt-auth.guard'
 import { CurrentUser, AuthUser } from './current-user.decorator'
+import { GoogleAuthDto } from './dto/google-auth.dto'
+import { LoginDto } from './dto/login.dto'
+import { RegisterDto } from './dto/register.dto'
+import { JwtAuthGuard } from './jwt-auth.guard'
 
 @ApiTags('auth')
 @Controller('auth')

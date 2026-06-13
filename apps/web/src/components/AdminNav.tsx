@@ -1,7 +1,7 @@
-import { NavLink } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { LineChart, MessagesSquare, Star, Users } from 'lucide-react'
 import { cn } from '@utils/cn'
+import { LineChart, MessagesSquare, Star, Users } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { NavLink } from 'react-router-dom'
 
 const items = [
   { to: '/admin', end: true, icon: LineChart, key: 'revenue' },

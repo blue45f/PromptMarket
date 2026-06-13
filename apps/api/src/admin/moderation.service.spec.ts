@@ -1,5 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { describe, expect, it, vi } from 'vitest'
+
 import { ModerationService } from './moderation.service'
 
 type PrismaMock = ConstructorParameters<typeof ModerationService>[0]

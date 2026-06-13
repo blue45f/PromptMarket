@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import type { ComponentProps } from 'react'
-import type { Meta, StoryObj } from '@storybook/react-vite'
+
 import StarRating from './StarRating'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { ComponentProps } from 'react'
 
 /** Stateful wrapper so the interactive story can hold + update the rating. */
 function InteractiveStarRating(args: ComponentProps<typeof StarRating>) {

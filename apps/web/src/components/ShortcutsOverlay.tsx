@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { Keyboard, X } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@store/auth'
 import { cn } from '@utils/cn'
+import { Keyboard, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 /* ---------------------------------------------------------------------------
  * ShortcutsOverlay — `?` opens a sheet listing every global keyboard

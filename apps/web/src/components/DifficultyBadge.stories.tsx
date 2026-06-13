@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Difficulty } from '@promptmarket/shared'
+
 import DifficultyBadge from './DifficultyBadge'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const meta = {
   title: 'Badges/DifficultyBadge',

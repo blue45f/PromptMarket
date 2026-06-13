@@ -7,6 +7,7 @@ import {
   Terminal,
   type LucideIcon,
 } from 'lucide-react'
+
 import type { ListingType } from '@promptmarket/shared'
 
 export type SignalKey = 'verified' | 'install' | 'usage' | 'models' | 'version' | 'fresh'

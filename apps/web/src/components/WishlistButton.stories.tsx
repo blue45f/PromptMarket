@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import WishlistButton from './WishlistButton'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 /**
  * Heart toggle backed by the global wishlist zustand store (localStorage).

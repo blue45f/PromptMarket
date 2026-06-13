@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import Highlight from './Highlight'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const meta = {
   title: 'Data Display/Highlight',

@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
+
 import { fetchPolicy } from './api'
+
 import type { PolicySlug } from './schema'
 
 export const policiesKeys = {

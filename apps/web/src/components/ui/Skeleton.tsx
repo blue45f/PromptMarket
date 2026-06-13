@@ -1,5 +1,5 @@
-import { type HTMLAttributes } from 'react'
 import { cn } from '@utils/cn'
+import { type HTMLAttributes } from 'react'
 
 /**
  * Skeleton — a loading placeholder block. Uses the repo's `skeleton-shimmer`

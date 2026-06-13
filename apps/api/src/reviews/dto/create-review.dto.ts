@@ -1,4 +1,4 @@
-import { createZodDto } from 'nestjs-zod';
-import { CreateReviewSchema } from '@promptmarket/shared';
+import { CreateReviewSchema } from '@promptmarket/shared'
+import { createZodDto } from 'nestjs-zod'
 
 export class CreateReviewDto extends createZodDto(CreateReviewSchema) {}

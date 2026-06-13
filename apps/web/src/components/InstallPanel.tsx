@@ -1,10 +1,11 @@
-import { useMemo, useState, useRef, useEffect } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
-import { useTranslation } from 'react-i18next'
-import type { TFunction } from 'i18next'
-import { Check, Copy, Terminal } from 'lucide-react'
-import type { ListingType } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
+import { Check, Copy, Terminal } from 'lucide-react'
+import { useMemo, useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import type { ListingType } from '@promptmarket/shared'
+import type { TFunction } from 'i18next'
 
 /* ---------------------------------------------------------------------------
  * InstallPanel — Smithery-style "drop this into your editor" panel. The

@@ -1,7 +1,7 @@
+import { cn } from '@utils/cn'
+import { Star } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Star } from 'lucide-react'
-import { cn } from '@utils/cn'
 
 interface StarRatingProps {
   value: number

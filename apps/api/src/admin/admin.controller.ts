@@ -1,8 +1,10 @@
 import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { AdminService } from './admin.service'
+
 import { AdminGuard } from '../auth/admin.guard'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+
+import { AdminService } from './admin.service'
 import { UpdateRevenueSettingsDto } from './dto/update-revenue-settings.dto'
 
 @ApiTags('admin')

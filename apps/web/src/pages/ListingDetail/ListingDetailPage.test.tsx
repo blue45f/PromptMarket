@@ -1,10 +1,11 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import ListingDetailPage from './ListingDetailPage'
 import { useListing, useCreateReviewReply } from '@features/marketplace/queries'
 import { useAuthStore } from '@store/auth'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
+
+import ListingDetailPage from './ListingDetailPage'
 
 vi.mock('@features/marketplace/queries', () => ({
   useListing: vi.fn(),

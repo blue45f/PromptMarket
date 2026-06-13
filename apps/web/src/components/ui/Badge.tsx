@@ -1,5 +1,5 @@
-import { forwardRef, type HTMLAttributes } from 'react'
 import { cn } from '@utils/cn'
+import { forwardRef, type HTMLAttributes } from 'react'
 
 /**
  * Badge — a compact status / metadata pill. Tones reuse the brand accents so

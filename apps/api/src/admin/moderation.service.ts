@@ -4,10 +4,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import type { CreateForbiddenWordInput, UpdateForbiddenWordInput } from '@promptmarket/shared'
-import { PrismaService } from '../prisma/prisma.service'
-import { isPrismaP2002 } from '../prisma/prisma-errors'
+
 import { normalizeForbiddenPhrase } from '../community/forbidden-word.util'
+import { isPrismaP2002 } from '../prisma/prisma-errors'
+import { PrismaService } from '../prisma/prisma.service'
+
+import type { CreateForbiddenWordInput, UpdateForbiddenWordInput } from '@promptmarket/shared'
 
 const LIST_TAKE = 100
 

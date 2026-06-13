@@ -4,6 +4,7 @@ import compression from 'compression'
 import helmet from 'helmet'
 import { Logger } from 'nestjs-pino'
 import { ZodValidationPipe, cleanupOpenApiDoc } from 'nestjs-zod'
+
 import { AppModule } from './app.module'
 
 async function bootstrap() {

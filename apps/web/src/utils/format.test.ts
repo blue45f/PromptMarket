@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { formatCompact, formatDate, formatDollars } from './format'
+
+import { formatCompact, formatDate, formatDollars, formatRelative } from './format'
 
 describe('formatDollars', () => {
   it.each([
@@ -57,8 +58,6 @@ describe('formatCompact', () => {
     expect(m).not.toMatch(/M/i)
   })
 })
-
-import { formatRelative } from './format'
 
 describe('formatRelative', () => {
   it('returns "방금" for sub-minute deltas', () => {

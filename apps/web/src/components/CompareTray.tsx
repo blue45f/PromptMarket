@@ -1,12 +1,14 @@
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import type { TFunction } from 'i18next'
-import { Layers3, X } from 'lucide-react'
 import { LISTING_TYPE_META } from '@promptmarket/shared'
-import type { ListingCard as ListingCardType } from '@/types'
-import { getArtifactSignals } from './artifactSignalsUtils'
-import { formatPrice, modelLabel } from '@utils/format'
 import { cn } from '@utils/cn'
+import { formatPrice, modelLabel } from '@utils/format'
+import { Layers3, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
+import { getArtifactSignals } from './artifactSignalsUtils'
+
+import type { ListingCard as ListingCardType } from '@/types'
+import type { TFunction } from 'i18next'
 
 interface CompareTrayProps {
   items: ListingCardType[]

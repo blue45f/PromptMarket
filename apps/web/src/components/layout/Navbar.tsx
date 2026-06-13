@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import LanguageToggle from '@components/LanguageToggle'
+import NotificationBell from '@components/NotificationBell'
+import SearchBar from '@components/SearchBar'
+import ThemeToggle from '@components/ThemeToggle'
+import { useUnreadMessages } from '@features/messages'
+import { useAuthStore } from '@store/auth'
 import { useQueryClient } from '@tanstack/react-query'
-import { useTranslation } from 'react-i18next'
+import { cn } from '@utils/cn'
+import { formatDollars } from '@utils/format'
 import {
   LogOut,
   Mail,
@@ -13,14 +18,9 @@ import {
   Wallet,
   X,
 } from 'lucide-react'
-import { useAuthStore } from '@store/auth'
-import { useUnreadMessages } from '@features/messages'
-import SearchBar from '@components/SearchBar'
-import ThemeToggle from '@components/ThemeToggle'
-import LanguageToggle from '@components/LanguageToggle'
-import NotificationBell from '@components/NotificationBell'
-import { formatDollars } from '@utils/format'
-import { cn } from '@utils/cn'
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(

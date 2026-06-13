@@ -1,17 +1,14 @@
-import js from '@eslint/js'
-import reactCompiler from 'eslint-plugin-react-compiler'
+import { base, react, plugin, defineConfig } from '@heejun/eslint-config'
+import { globalIgnores } from 'eslint/config'
 import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-import { defineConfig, globalIgnores } from 'eslint/config'
 
-// Flat config for the PromptMarket pnpm monorepo. Modeled on the sibling
-// resume repo (React 19 + Vite) for portfolio consistency, then widened to
-// also cover the NestJS api and the shared package. Prettier owns formatting
-// (see .prettierrc + the `format:check` step), so this config only enforces
-// correctness/quality rules, not stylistic ones.
-export default defineConfig([
+// PromptMarket pnpm monorepo flat config. Adopts the shared
+// @heejun/eslint-config (TS + import 위생 + React 19/RC + jsx-a11y + 커스텀
+// 규칙 + prettier 충돌 비활성) as the single source of lint rules, then layers
+// only the repo-specific overrides on top. Prettier owns formatting via the
+// package.json "prettier" field + the `format:check` step; this config enforces
+// correctness/quality only.
+export default defineConfig(
   globalIgnores([
     '**/dist',
     '**/build',
@@ -22,137 +19,80 @@ export default defineConfig([
     'apps/api/prisma/migrations/**',
   ]),
 
-  // ── apps/web — React 19 + Vite ───────────────────────────────────────────
+  // 공유 베이스(TS + import 위생 + 커스텀 규칙 + prettier 충돌 비활성).
+  base({ files: ['**/*.{ts,tsx}'] }),
+
+  // apps/web — React 19 + Vite + RC + jsx-a11y.
+  react({ files: ['apps/web/**/*.{ts,tsx}'] }),
+
+  // heejun 개인 테스트/목 컨벤션 규칙은 비활성 — 횡단 일관성 대상이 아니라
+  // PromptMarket 자체 테스트 스타일과 충돌한다(shared base 의 일반 규칙만 채택).
+  {
+    plugins: { '@heejun': plugin },
+    rules: {
+      '@heejun/vitest-mock-import': 'off',
+      '@heejun/vitest-mock-import-original': 'off',
+      '@heejun/mock-response-naming': 'off',
+      '@heejun/no-js-interface-direct-access': 'off',
+    },
+  },
+
+  // apps/web 레포 정책: 네이티브 confirm/alert/prompt 금지.
   {
     files: ['apps/web/**/*.{ts,tsx}'],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
-      globals: { ...globals.browser, ...globals.es2022 },
-    },
     rules: {
-      // 네이티브 window.confirm/alert/prompt 금지 — 브랜드 Dialog/Toast를 쓴다.
       'no-restricted-globals': [
         'error',
         { name: 'confirm', message: '브랜드 확인 다이얼로그를 사용하세요 (window.confirm 금지).' },
         { name: 'alert', message: 'Toast/Dialog를 사용하세요 (window.alert 금지).' },
         { name: 'prompt', message: '입력 다이얼로그/폼을 사용하세요 (window.prompt 금지).' },
       ],
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
-      ],
-      'react-hooks/exhaustive-deps': 'error',
-      'react-refresh/only-export-components': ['error', { allowConstantExport: true }],
-      // react-hooks v7 ships React Compiler lint rules; enforce them as hard gates.
-      'react-hooks/set-state-in-effect': 'error',
-      'react-hooks/purity': 'error',
-      'react-hooks/refs': 'error',
-      'react-hooks/immutability': 'error',
-      'react-hooks/preserve-manual-memoization': 'error',
-      'react-hooks/static-components': 'error',
-      'react-hooks/incompatible-library': 'error',
     },
   },
 
-  // ── apps/api — NestJS (decorators, CommonJS) ─────────────────────────────
+  // 라우트 테이블은 lazy 컴포넌트 + router export 혼재.
+  {
+    files: ['apps/web/src/router/index.tsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+
+  // Storybook 스토리 — Story export 는 fast-refresh 컴포넌트가 아니다.
+  {
+    files: ['apps/web/src/**/*.stories.{ts,tsx}'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+
+  // Storybook 설정(.storybook) — Node + ESM, fast-refresh 계약 없음.
+  {
+    files: ['apps/web/.storybook/**/*.{ts,tsx}'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+
+  // apps/api — NestJS (Node). 데코레이터 + 빈 생성자/클래스 관용.
   {
     files: ['apps/api/**/*.ts'],
-    extends: [js.configs.recommended, tseslint.configs.recommended],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
-      globals: { ...globals.node, ...globals.es2022 },
-    },
+    languageOptions: { globals: globals.node },
     rules: {
-      // Nest/Prisma plumbing must stay explicitly typed under the strict gate.
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-extraneous-class': 'off',
     },
   },
 
-  // ── packages/shared — framework-agnostic TS ──────────────────────────────
+  // packages/shared — framework-agnostic (Node).
   {
     files: ['packages/shared/**/*.ts'],
-    extends: [js.configs.recommended, tseslint.configs.recommended],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
-      globals: { ...globals.node, ...globals.es2022 },
-    },
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
-      ],
-    },
+    languageOptions: { globals: globals.node },
   },
 
-  // ── Test files — relax fast-refresh & allow test-runner globals ──────────
+  // 테스트 — Vitest globals; fast-refresh 제약 완화.
   {
-    files: ['**/*.{test,spec}.{ts,tsx}', 'apps/web/src/test/**/*.{ts,tsx}'],
-    languageOptions: {
-      globals: { ...globals.vitest },
-    },
+    files: ['**/*.{test,spec}.{ts,tsx}', '**/test/**/*.{ts,tsx}'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser, ...globals.vitest } },
     rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
       'react-hooks/rules-of-hooks': 'off',
       'react-refresh/only-export-components': 'off',
     },
-  },
-
-  // ── Storybook stories — a Story export is not a fast-refresh component ────
-  {
-    files: ['apps/web/src/**/*.stories.{ts,tsx}'],
-    rules: {
-      'react-refresh/only-export-components': 'off',
-    },
-  },
-
-  // ── Storybook config (.storybook) — Node + ESM, no fast-refresh contract ──
-  {
-    files: ['apps/web/.storybook/**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
-      globals: { ...globals.node, ...globals.browser, ...globals.es2022 },
-    },
-    rules: {
-      'react-refresh/only-export-components': 'off',
-    },
-  },
-
-  // ── Root tooling / config files (Node, ESM or CJS) ───────────────────────
-  {
-    files: ['*.{js,mjs,cjs,ts}', 'scripts/**/*.{js,mjs,cjs}', '**/*.config.{js,mjs,cjs,ts}'],
-    extends: [js.configs.recommended],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
-      globals: { ...globals.node, ...globals.es2022 },
-    },
-  },
-
-  // ── React Compiler gate — apps/web must stay compilable ──────────────────
-  // This rule runs the actual compiler frontend; an error means the component
-  // bails out of React Compiler optimization entirely.
-  {
-    files: ['apps/web/**/*.{ts,tsx}'],
-    plugins: {
-      'react-compiler': reactCompiler,
-    },
-    rules: {
-      'react-compiler/react-compiler': 'error',
-    },
-  },
-])
+  }
+)

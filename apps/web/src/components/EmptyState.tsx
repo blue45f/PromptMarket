@@ -1,5 +1,5 @@
-import { createElement, type ReactNode } from 'react'
 import { cn } from '@utils/cn'
+import { createElement, type ReactNode } from 'react'
 
 /**
  * EmptyState tunes the "nothing here" screen to the page's *register* via

@@ -1,14 +1,7 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { Edit3, Eye, EyeOff, ImageIcon, Plus, Save, Search, Trash2, X } from 'lucide-react'
-import type {
-  CreateForbiddenWordInput,
-  ForbiddenWordAction,
-  ForbiddenWordMatchType,
-  ForbiddenWordRow,
-  UpdateForbiddenWordInput,
-} from '@promptmarket/shared'
+import AdminAttachmentsPanel from '@components/AdminAttachmentsPanel'
+import AdminNav from '@components/AdminNav'
+import ConfirmActionButton from '@components/ConfirmActionButton'
+import EmptyState from '@components/EmptyState'
 import {
   useAdminDeleteThread,
   useAdminForbiddenWords,
@@ -19,13 +12,21 @@ import {
   useUpdateForbiddenWord,
 } from '@features/admin'
 import { usePageMeta } from '@hooks/usePageMeta'
-import AdminNav from '@components/AdminNav'
-import AdminAttachmentsPanel from '@components/AdminAttachmentsPanel'
-import ConfirmActionButton from '@components/ConfirmActionButton'
-import EmptyState from '@components/EmptyState'
 import { getErrorMessage } from '@services/api'
-import { formatDate } from '@utils/format'
 import { cn } from '@utils/cn'
+import { formatDate } from '@utils/format'
+import { Edit3, Eye, EyeOff, ImageIcon, Plus, Save, Search, Trash2, X } from 'lucide-react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
+import type {
+  CreateForbiddenWordInput,
+  ForbiddenWordAction,
+  ForbiddenWordMatchType,
+  ForbiddenWordRow,
+  UpdateForbiddenWordInput,
+} from '@promptmarket/shared'
 
 const ruleActions: ForbiddenWordAction[] = ['BLOCK', 'REVIEW']
 const ruleMatchTypes: ForbiddenWordMatchType[] = ['WHOLE_WORD', 'CONTAINS']

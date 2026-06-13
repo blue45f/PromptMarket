@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Loader2, Send } from 'lucide-react'
-import { MESSAGE_BODY_MAX } from '@promptmarket/shared'
+import { Textarea } from '@components/ui'
 import { useMessageThread, useSendMessage, THREAD_POLL_MS } from '@features/messages'
 import { usePageMeta } from '@hooks/usePageMeta'
-import { useAuthStore } from '@store/auth'
+import { MESSAGE_BODY_MAX } from '@promptmarket/shared'
 import { getErrorMessage } from '@services/api'
-import { formatDate, formatRelative } from '@utils/format'
+import { useAuthStore } from '@store/auth'
 import { cn } from '@utils/cn'
-import { Textarea } from '@components/ui'
+import { formatDate, formatRelative } from '@utils/format'
+import { ArrowLeft, Loader2, Send } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useParams } from 'react-router-dom'
 
 export default function MessageThreadPage() {
   const { id } = useParams<{ id: string }>()

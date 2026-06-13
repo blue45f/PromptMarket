@@ -1,5 +1,5 @@
-import { Loader2 } from 'lucide-react'
 import { cn } from '@utils/cn'
+import { Loader2 } from 'lucide-react'
 
 interface SpinnerProps {
   size?: number

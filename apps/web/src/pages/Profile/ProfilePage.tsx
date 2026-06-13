@@ -1,13 +1,13 @@
-import { Link, useParams } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useUserProfile } from '@features/marketplace/queries'
-import { getErrorMessage } from '@services/api'
-import { usePageMeta } from '@hooks/usePageMeta'
-import { useSpotlight } from '@hooks/useSpotlight'
-import { useAuthStore } from '@store/auth'
+import EmptyState from '@components/EmptyState'
 import ListingCard from '@components/ListingCard'
 import { SkeletonGrid } from '@components/SkeletonCard'
-import EmptyState from '@components/EmptyState'
+import { useUserProfile } from '@features/marketplace/queries'
+import { usePageMeta } from '@hooks/usePageMeta'
+import { useSpotlight } from '@hooks/useSpotlight'
+import { getErrorMessage } from '@services/api'
+import { useAuthStore } from '@store/auth'
+import { useTranslation } from 'react-i18next'
+import { Link, useParams } from 'react-router-dom'
 
 export default function ProfilePage() {
   const { t } = useTranslation('profile')

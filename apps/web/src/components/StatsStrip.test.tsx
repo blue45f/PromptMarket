@@ -1,12 +1,12 @@
-import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+
+import StatsStrip from './StatsStrip'
 
 const mockUseStats = vi.fn()
 vi.mock('@features/marketplace/queries', () => ({
   useStats: () => mockUseStats(),
 }))
-
-import StatsStrip from './StatsStrip'
 
 describe('<StatsStrip />', () => {
   it('renders three stat cells with their Korean labels', () => {

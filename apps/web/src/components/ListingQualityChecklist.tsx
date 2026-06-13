@@ -1,7 +1,8 @@
+import { cn } from '@utils/cn'
+import { ArrowRight, Check, CircleAlert, ListChecks } from 'lucide-react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Check, CircleAlert, ListChecks } from 'lucide-react'
-import { cn } from '@utils/cn'
+
 import {
   TARGET_SECTION_BY_QUALITY,
   evaluateListingQuality,

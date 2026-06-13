@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
 import { ATTACHMENT_MAX_SOURCE_BYTES } from '@promptmarket/shared'
+import { describe, expect, it } from 'vitest'
+
 import { AttachmentError, prepareImageAttachment } from './image'
 
 // jsdom has no real canvas, so these tests cover the validation guards that

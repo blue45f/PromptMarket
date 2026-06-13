@@ -1,6 +1,7 @@
-import { useTranslation } from 'react-i18next'
-import type { Difficulty } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
+import { useTranslation } from 'react-i18next'
+
+import type { Difficulty } from '@promptmarket/shared'
 
 interface DifficultyBadgeProps {
   difficulty: Difficulty

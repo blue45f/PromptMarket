@@ -1,6 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { describe, expect, it, vi } from 'vitest'
+
 import { UsersService } from './users.service'
 
 type PrismaArg = ConstructorParameters<typeof UsersService>[0]

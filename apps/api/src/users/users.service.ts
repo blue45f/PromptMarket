@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+
 import { isPrismaP2025 } from '../prisma/prisma-errors'
+import { PrismaService } from '../prisma/prisma.service'
 
 interface SerializableListing {
   id: string

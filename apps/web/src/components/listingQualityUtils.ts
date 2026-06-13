@@ -1,5 +1,6 @@
-import type { ListingType } from '@promptmarket/shared'
 import { extractTemplateVariables } from './artifactReadinessUtils'
+
+import type { ListingType } from '@promptmarket/shared'
 
 export interface ListingQualityInput {
   title?: string | null

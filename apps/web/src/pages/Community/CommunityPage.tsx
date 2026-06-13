@@ -1,13 +1,13 @@
-import { Link, useSearchParams } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { ChevronLeft, ChevronRight, ImageIcon, MessageCircle, PenLine } from 'lucide-react'
-import { CATEGORIES } from '@promptmarket/shared'
+import EmptyState from '@components/EmptyState'
 import { useThreads } from '@features/community'
 import { usePageMeta } from '@hooks/usePageMeta'
-import EmptyState from '@components/EmptyState'
+import { CATEGORIES } from '@promptmarket/shared'
 import { getErrorMessage } from '@services/api'
-import { formatRelative } from '@utils/format'
 import { cn } from '@utils/cn'
+import { formatRelative } from '@utils/format'
+import { ChevronLeft, ChevronRight, ImageIcon, MessageCircle, PenLine } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Link, useSearchParams } from 'react-router-dom'
 
 export default function CommunityPage() {
   const { t } = useTranslation('community')

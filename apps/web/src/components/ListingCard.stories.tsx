@@ -1,6 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { ListingCard as ListingCardType } from '@/types'
 import ListingCard from './ListingCard'
+
+import type { ListingCard as ListingCardType } from '@/types'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 /**
  * The marketplace's primary catalog tile. Wraps in a router Link, renders the

@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, fireEvent, screen, waitFor } from 'storybook/test'
+
 import CommandPalette from './CommandPalette'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 /**
  * Global ⌘K / Ctrl+K / "/" launcher (Linear / Raycast style). It mounts

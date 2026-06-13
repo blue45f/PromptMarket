@@ -1,10 +1,4 @@
-import { createElement } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { ArrowUpRight, RotateCcw } from 'lucide-react'
 import EmptyState from '@components/EmptyState'
-import { usePageMeta } from '@hooks/usePageMeta'
-import { formatDate } from '@utils/format'
 import {
   parsePolicyBody,
   policyPublicUrl,
@@ -12,6 +6,12 @@ import {
   type PolicyBlock,
   type PolicySlug,
 } from '@features/policies'
+import { usePageMeta } from '@hooks/usePageMeta'
+import { formatDate } from '@utils/format'
+import { ArrowUpRight, RotateCcw } from 'lucide-react'
+import { createElement } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useLocation } from 'react-router-dom'
 
 /** Trust-surface hash is truncated to its first 12 hex chars; full value stays in `title`. */
 const SHORT_HASH_LENGTH = 12

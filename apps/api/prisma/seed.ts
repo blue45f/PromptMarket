@@ -1,5 +1,5 @@
-import { Listing, PrismaClient, Review } from '@prisma/client'
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import { Listing, PrismaClient, Review } from '@prisma/client'
 import * as argon2 from 'argon2'
 
 // Prisma 7 requires an explicit driver adapter — mirror PrismaService so the

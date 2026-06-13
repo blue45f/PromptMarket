@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { ArrowUpRight, Compass, Filter, Flame, Gift, Plug, SearchX, Sparkles } from 'lucide-react'
 import { cn } from '@utils/cn'
+import { ArrowUpRight, Compass, Filter, Flame, Gift, Plug, SearchX, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
 import type { ActiveFilter } from './browseEmptyStateUtils'
 
 /* Curated entry points so an empty result is never a dead end. These reset the

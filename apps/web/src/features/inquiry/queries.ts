@@ -1,5 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
+
 import { submitInquiry } from './api'
+
 import type { InquiryFormValues } from './schema'
 
 export function useSubmitInquiry() {

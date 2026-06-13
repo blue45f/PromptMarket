@@ -1,8 +1,8 @@
+import { MODELS } from '@promptmarket/shared'
+import { cn } from '@utils/cn'
+import { Search, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MODELS } from '@promptmarket/shared'
-import { Search, X } from 'lucide-react'
-import { cn } from '@utils/cn'
 
 interface ModelPickerProps {
   /** Currently selected model slugs. */

@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ListingType } from '@promptmarket/shared'
+
 import TypeBadge from './TypeBadge'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const meta = {
   title: 'Badges/TypeBadge',

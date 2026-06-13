@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next'
 import Spinner from '@components/Spinner'
+import { useTranslation } from 'react-i18next'
 
 /**
  * Initial-hydration / route-loading fallback for the data router.

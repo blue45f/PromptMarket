@@ -5,10 +5,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import type { AttachmentInput } from '@promptmarket/shared'
-import { PrismaService } from '../prisma/prisma.service'
-import { isPrismaP2002 } from '../prisma/prisma-errors'
+
 import { buildAttachmentCreates, serializeAttachment } from '../attachments/attachment.util'
+import { isPrismaP2002 } from '../prisma/prisma-errors'
+import { PrismaService } from '../prisma/prisma.service'
+
+import type { AttachmentInput } from '@promptmarket/shared'
 
 export interface CreateReviewInput {
   rating: number

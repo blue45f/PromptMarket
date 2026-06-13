@@ -1,7 +1,8 @@
-import type { ListingType } from '@promptmarket/shared'
 import { LISTING_TYPE_META } from '@promptmarket/shared'
-import { useTranslation } from 'react-i18next'
 import { cn } from '@utils/cn'
+import { useTranslation } from 'react-i18next'
+
+import type { ListingType } from '@promptmarket/shared'
 
 interface TypeBadgeProps {
   type: ListingType

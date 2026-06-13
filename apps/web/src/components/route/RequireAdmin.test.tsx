@@ -1,10 +1,11 @@
-import { describe, expect, it, vi, type Mock } from 'vitest'
+import { useAuthStore } from '@store/auth'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { describe, expect, it, vi, type Mock } from 'vitest'
+
 import RequireAdmin from './RequireAdmin'
 
 vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }))
-import { useAuthStore } from '@store/auth'
 
 function mockAuthState(state: { token: string | null; user: { isAdmin: boolean } | null }) {
   ;(useAuthStore as unknown as Mock).mockImplementation((selector) => selector(state))

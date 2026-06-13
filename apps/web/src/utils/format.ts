@@ -1,4 +1,6 @@
 // Re-export formatting helpers from the shared package so all surfaces match.
+import { activeIntlLocale } from '@/i18n'
+
 export {
   typeLabel,
   typeColor,
@@ -10,8 +12,6 @@ export {
   modelVendor,
   modelFamily,
 } from '@promptmarket/shared'
-
-import { activeIntlLocale } from '@/i18n'
 
 const rtfCache = new Map<string, Intl.RelativeTimeFormat>()
 const nfCompactCache = new Map<string, Intl.NumberFormat>()

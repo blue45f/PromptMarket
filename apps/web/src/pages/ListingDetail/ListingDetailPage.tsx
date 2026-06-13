@@ -1,9 +1,35 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import * as Tabs from '@radix-ui/react-tabs'
-import { z } from 'zod'
+import ArtifactReadiness from '@components/ArtifactReadiness'
+import ArtifactSignals from '@components/ArtifactSignals'
+import AttachmentGallery from '@components/AttachmentGallery'
+import AttachmentInput from '@components/AttachmentInput'
+import AudienceMatch from '@components/AudienceMatch'
+import ConfirmActionButton from '@components/ConfirmActionButton'
+import DifficultyBadge from '@components/DifficultyBadge'
+import InstallPanel from '@components/InstallPanel'
+import LicenseBadge from '@components/LicenseBadge'
+import MarkdownToc from '@components/MarkdownToc'
+import MarkdownView from '@components/MarkdownView'
+import ModelBadge from '@components/ModelBadge'
+import RecentlyViewed from '@components/RecentlyViewed'
+import RelatedListings from '@components/RelatedListings'
+import SkeletonDetail from '@components/SkeletonDetail'
+import StarRating from '@components/StarRating'
+import TechniqueBadge from '@components/TechniqueBadge'
+import TypeBadge from '@components/TypeBadge'
+import { Textarea } from '@components/ui'
+import WishlistButton from '@components/WishlistButton'
+import {
+  useListing,
+  usePurchase,
+  useCreateReview,
+  useCreateReviewReply,
+  useDeleteReviewReply,
+} from '@features/marketplace/queries'
+import { useStartMessageThread } from '@features/messages'
+import { usePageMeta } from '@hooks/usePageMeta'
+import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
+import { useStructuredData } from '@hooks/useStructuredData'
+import { useWishlist } from '@hooks/useWishlist'
 import {
   CreateReviewReplySchema,
   CreateReviewSchema,
@@ -11,7 +37,12 @@ import {
   typeGradient,
   type AttachmentInput as AttachmentDraft,
 } from '@promptmarket/shared'
-import type { ListingDetailResponse } from '@/types'
+import * as Tabs from '@radix-ui/react-tabs'
+import { getErrorMessage } from '@services/api'
+import { useAuthStore } from '@store/auth'
+import { cn } from '@utils/cn'
+import { formatDate, formatPrice, formatRelative } from '@utils/format'
+import { zodFormResolver } from '@utils/zodFormResolver'
 import {
   BookOpen,
   Check,
@@ -26,44 +57,14 @@ import {
   Share2,
   ShoppingCart,
 } from 'lucide-react'
-import {
-  useListing,
-  usePurchase,
-  useCreateReview,
-  useCreateReviewReply,
-  useDeleteReviewReply,
-} from '@features/marketplace/queries'
-import { useStartMessageThread } from '@features/messages'
-import { getErrorMessage } from '@services/api'
-import { formatDate, formatPrice, formatRelative } from '@utils/format'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { Textarea } from '@components/ui'
-import TypeBadge from '@components/TypeBadge'
-import ModelBadge from '@components/ModelBadge'
-import TechniqueBadge from '@components/TechniqueBadge'
-import DifficultyBadge from '@components/DifficultyBadge'
-import LicenseBadge from '@components/LicenseBadge'
-import StarRating from '@components/StarRating'
-import MarkdownView from '@components/MarkdownView'
-import SkeletonDetail from '@components/SkeletonDetail'
-import RelatedListings from '@components/RelatedListings'
-import RecentlyViewed from '@components/RecentlyViewed'
-import WishlistButton from '@components/WishlistButton'
-import MarkdownToc from '@components/MarkdownToc'
-import InstallPanel from '@components/InstallPanel'
-import AudienceMatch from '@components/AudienceMatch'
-import ArtifactSignals from '@components/ArtifactSignals'
-import ArtifactReadiness from '@components/ArtifactReadiness'
-import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
-import { usePageMeta } from '@hooks/usePageMeta'
-import { useStructuredData } from '@hooks/useStructuredData'
-import { useWishlist } from '@hooks/useWishlist'
-import { useAuthStore } from '@store/auth'
-import AttachmentGallery from '@components/AttachmentGallery'
-import AttachmentInput from '@components/AttachmentInput'
-import ConfirmActionButton from '@components/ConfirmActionButton'
-import { cn } from '@utils/cn'
-import { zodFormResolver } from '@utils/zodFormResolver'
+import { useTranslation } from 'react-i18next'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { z } from 'zod'
+
+import type { ListingDetailResponse } from '@/types'
 
 // Screenshot attachments live outside react-hook-form (the picker resizes
 // files asynchronously), so the form schema covers only rating + comment.
@@ -1240,6 +1241,11 @@ export default function ListingDetailPage() {
                         }}
                         maxLength={MESSAGE_BODY_MAX}
                         rows={3}
+                        // Ask-seller box is a disclosure revealed only when the
+                        // user opens the Q&A doorway (askOpen); focusing the
+                        // freshly shown input is the expected UX, not a load-time
+                        // focus steal.
+                        // eslint-disable-next-line jsx-a11y/no-autofocus -- focus on user-triggered ask-seller disclosure
                         autoFocus
                         aria-describedby="ask-seller-help"
                         placeholder={t('contact.placeholder')}

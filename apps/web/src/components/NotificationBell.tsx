@@ -1,8 +1,8 @@
+import { cn } from '@utils/cn'
 import { Bell, BellRing, CheckCircle2, ChevronRight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@utils/cn'
 
 const READ_IDS_STORAGE_KEY = 'pm.notificationReadIds'
 const notificationIds = ['wishlist-watchers', 'release-notes'] as const
@@ -181,7 +181,7 @@ export default function NotificationBell() {
             </div>
           </div>
 
-          <ul className="max-h-64 overflow-auto py-1" role="list">
+          <ul className="max-h-64 overflow-auto py-1">
             {notifications.map((note) => {
               const read = readIds.has(note.id)
               return (

@@ -9,6 +9,7 @@ allowBuilds:
   better-sqlite3: true
   esbuild: true
   prisma: true
+  unrs-resolver: true
 
 minimumReleaseAgeExclude:
   - enhanced-resolve
@@ -18,3 +19,4 @@ minimumReleaseAgeExclude:
   - react-router-dom
   - tldts-core
   - zustand
+  - '@heejun/eslint-config@4.0.0'

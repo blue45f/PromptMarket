@@ -1,5 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common'
 import { describe, expect, it, vi } from 'vitest'
+
 import { ListingsService } from './listings.service'
 
 type PrismaMock = ConstructorParameters<typeof ListingsService>[0]

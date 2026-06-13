@@ -1,13 +1,13 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common'
+import * as argon2 from 'argon2'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { AuthService } from './auth.service'
 
 vi.mock('argon2', () => ({
   hash: vi.fn(async (pw: string) => `hashed:${pw}`),
   verify: vi.fn(async (hash: string, pw: string) => hash === `hashed:${pw}`),
 }))
-
-import * as argon2 from 'argon2'
-import { AuthService } from './auth.service'
 
 type PrismaArg = ConstructorParameters<typeof AuthService>[0]
 type JwtArg = ConstructorParameters<typeof AuthService>[1]

@@ -1,8 +1,10 @@
-import { useTranslation } from 'react-i18next'
 import { useRelated } from '@features/marketplace/queries'
-import type { ListingCard as ListingCardType } from '@/types'
+import { useTranslation } from 'react-i18next'
+
 import ListingCard from './ListingCard'
 import SkeletonCard from './SkeletonCard'
+
+import type { ListingCard as ListingCardType } from '@/types'
 
 interface RelatedListingsProps {
   listingId: string | undefined

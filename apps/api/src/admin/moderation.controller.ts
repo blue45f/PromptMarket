@@ -1,15 +1,17 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import { ModerationService } from './moderation.service'
+
 import { AdminGuard } from '../auth/admin.guard'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+
 import {
   CreateForbiddenWordDto,
   MemberSuspensionDto,
   ModerationVisibilityDto,
   UpdateForbiddenWordDto,
 } from './dto/moderation.dto'
+import { ModerationService } from './moderation.service'
 
 @ApiTags('admin')
 @UseGuards(JwtAuthGuard, AdminGuard)
