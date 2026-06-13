@@ -1,16 +1,15 @@
 import { Listing, PrismaClient, Review } from '@prisma/client'
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import { PrismaPg } from '@prisma/adapter-pg'
 import * as argon2 from 'argon2'
 
 // Prisma 7 requires an explicit driver adapter — mirror PrismaService so the
-// documented `pnpm seed` flow works against the same SQLite file as the API.
+// documented `pnpm seed` flow works against the same Postgres DB as the API.
 function resolveUrl(): string {
-  const raw = process.env.DATABASE_URL ?? 'file:./dev.db'
-  return raw.startsWith('file:') ? raw : `file:${raw}`
+  return process.env.DATABASE_URL ?? 'postgresql://localhost:5432/promptmarket'
 }
 
 const prisma = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({ url: resolveUrl() }),
+  adapter: new PrismaPg({ connectionString: resolveUrl() }),
 })
 
 function rand(): string {

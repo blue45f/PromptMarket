@@ -1,32 +1,27 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common'
+import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
 /**
  * Prisma 7 requires an explicit driver adapter on the PrismaClient
- * constructor — the datasource URL no longer lives in schema.prisma. We
- * default the URL to the dev SQLite file so seeded local installs keep
- * working without a .env present.
+ * constructor — the datasource URL no longer lives in schema.prisma. We default to a local Postgres URL so installs work without a .env;
+ * production/dev set DATABASE_URL to the Neon connection string.
  */
 function resolveUrl(): string {
-  const raw = process.env.DATABASE_URL ?? 'file:./prisma/dev.db';
-  return raw.startsWith('file:') ? raw : `file:${raw}`;
+  return process.env.DATABASE_URL ?? 'postgresql://localhost:5432/promptmarket'
 }
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
-    super({ adapter: new PrismaBetterSqlite3({ url: resolveUrl() }) });
+    super({ adapter: new PrismaPg({ connectionString: resolveUrl() }) })
   }
 
   async onModuleInit() {
-    await this.$connect();
+    await this.$connect()
   }
 
   async onModuleDestroy() {
-    await this.$disconnect();
+    await this.$disconnect()
   }
 }
