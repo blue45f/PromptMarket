@@ -37,6 +37,7 @@ import { useStartMessageThread } from '@features/messages'
 import { getErrorMessage } from '@services/api'
 import { formatDate, formatPrice, formatRelative } from '@utils/format'
 import toast from 'react-hot-toast'
+import { Textarea } from '@components/ui'
 import TypeBadge from '@components/TypeBadge'
 import ModelBadge from '@components/ModelBadge'
 import TechniqueBadge from '@components/TechniqueBadge'
@@ -780,14 +781,14 @@ export default function ListingDetailPage() {
                         {t('reviews.validation.rating')}
                       </p>
                     )}
-                    <textarea
+                    <Textarea
                       {...register('comment')}
                       placeholder={t('reviews.commentPlaceholder')}
                       aria-label={t('reviews.commentLabel')}
                       rows={3}
-                      aria-invalid={errors.comment ? true : undefined}
+                      invalid={Boolean(errors.comment)}
                       aria-describedby={errors.comment ? 'review-comment-error' : undefined}
-                      className="mt-3 w-full rounded-lg border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500"
+                      className="mt-3"
                     />
                     {errors.comment && (
                       <p
@@ -961,7 +962,7 @@ export default function ListingDetailPage() {
                                   username: user?.username ?? t('reviews.anonymous'),
                                 })}
                               </p>
-                              <textarea
+                              <Textarea
                                 ref={replyTextareaRef}
                                 value={replyDraft}
                                 onChange={(event) => {
@@ -977,10 +978,10 @@ export default function ListingDetailPage() {
                                 maxLength={1000}
                                 rows={3}
                                 aria-label={t('reviews.replyLabel')}
-                                aria-invalid={replyError ? true : undefined}
+                                invalid={Boolean(replyError)}
                                 aria-describedby={replyError ? replyErrorId : replyHelpId}
                                 placeholder={t('reviews.replyPlaceholder')}
-                                className="mt-2 min-h-24 w-full resize-y rounded-xl border border-line dark:border-night-line bg-canvas dark:bg-night px-3 py-2 text-sm leading-relaxed text-ink dark:text-bone placeholder:text-ink-mute dark:placeholder:text-bone-mute focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500 disabled:cursor-not-allowed disabled:opacity-70"
+                                className="mt-2 min-h-24"
                                 disabled={replySubmitting}
                               />
                               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
@@ -1227,7 +1228,7 @@ export default function ListingDetailPage() {
                       >
                         {t('contact.label')}
                       </label>
-                      <textarea
+                      <Textarea
                         id="ask-seller-body"
                         value={askDraft}
                         onChange={(event) => setAskDraft(event.target.value)}
@@ -1242,7 +1243,6 @@ export default function ListingDetailPage() {
                         autoFocus
                         aria-describedby="ask-seller-help"
                         placeholder={t('contact.placeholder')}
-                        className="w-full resize-y rounded-xl border border-line bg-canvas px-3 py-2 text-sm leading-relaxed text-ink placeholder:text-ink-mute focus:border-volt-500 focus:outline-none focus:ring-2 focus:ring-volt-500/60 dark:border-night-line dark:bg-night dark:text-bone dark:placeholder:text-bone-mute"
                       />
                       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                         <p
