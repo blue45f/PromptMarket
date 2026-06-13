@@ -11,7 +11,7 @@ import type {
   RevenueSettings,
   RevenueSettingsHistory,
 } from '@promptmarket/shared'
-import axios from 'axios'
+import { isHTTPError } from 'ky'
 import { api, getErrorMessage } from '@services/api'
 import {
   listingKey,
@@ -136,7 +136,7 @@ export function useMe() {
         setUser(u)
         return u
       } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.status === 401) logout()
+        if (isHTTPError(err) && err.response?.status === 401) logout()
         throw err
       }
     },

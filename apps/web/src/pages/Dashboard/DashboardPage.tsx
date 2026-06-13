@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQueries } from '@tanstack/react-query'
-import axios from 'axios'
+import { isHTTPError } from 'ky'
 import { ArrowUpRight, Copy, Heart, Loader2, PlusCircle, Wallet } from 'lucide-react'
 import { api, getErrorMessage } from '@services/api'
 import { useMyListings, useMyPurchases, useTopup, useListings } from '@features/marketplace/queries'
@@ -428,7 +428,7 @@ function WishlistTab() {
     const resolved = results.map((r, i) => ({
       slug: visibleSlugs[i],
       listing: r.data,
-      gone: axios.isAxiosError(r.error) && r.error.response?.status === 404,
+      gone: isHTTPError(r.error) && r.error.response?.status === 404,
     }))
     return {
       resolved,
