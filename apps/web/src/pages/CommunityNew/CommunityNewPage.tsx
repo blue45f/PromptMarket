@@ -12,6 +12,7 @@ import {
 import { useCreateThread } from '@features/community'
 import { usePageMeta } from '@hooks/usePageMeta'
 import AttachmentInput from '@components/AttachmentInput'
+import { Field, Input, Textarea } from '@components/ui'
 import { cn } from '@utils/cn'
 import { zodFormResolver } from '@utils/zodFormResolver'
 
@@ -109,68 +110,40 @@ export default function CommunityNewPage() {
           </p>
         </div>
 
-        <div>
-          <label
-            htmlFor="thread-title"
-            className="mb-1.5 block text-[0.82rem] font-medium text-ink dark:text-bone"
-          >
-            {t('new.titleLabel')}
-          </label>
-          <input
-            id="thread-title"
-            type="text"
-            maxLength={140}
-            placeholder={t('new.titlePlaceholder')}
-            aria-invalid={errors.title ? true : undefined}
-            aria-describedby={errors.title ? 'thread-title-error' : undefined}
-            {...register('title')}
-            className={fieldClass}
-          />
-          {errors.title && (
-            <p
-              id="thread-title-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t('new.validation.title')}
-            </p>
+        <Field
+          id="thread-title"
+          label={t('new.titleLabel')}
+          error={errors.title ? t('new.validation.title') : undefined}
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register('title')}
+              type="text"
+              maxLength={140}
+              placeholder={t('new.titlePlaceholder')}
+              invalid={Boolean(errors.title)}
+            />
           )}
-        </div>
+        </Field>
 
-        <div>
-          <label
-            htmlFor="thread-body"
-            className="mb-1.5 block text-[0.82rem] font-medium text-ink dark:text-bone"
-          >
-            {t('new.bodyLabel')}
-          </label>
-          <textarea
-            id="thread-body"
-            rows={8}
-            maxLength={8000}
-            placeholder={t('new.bodyPlaceholder')}
-            aria-invalid={errors.body ? true : undefined}
-            aria-describedby={errors.body ? 'thread-body-error' : 'thread-body-hint'}
-            {...register('body')}
-            className={cn(fieldClass, 'resize-y leading-relaxed')}
-          />
-          {errors.body ? (
-            <p
-              id="thread-body-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t('new.validation.body')}
-            </p>
-          ) : (
-            <p
-              id="thread-body-hint"
-              className="mt-1 text-[0.72rem] text-ink-mute dark:text-bone-mute"
-            >
-              {t('new.bodyHint')}
-            </p>
+        <Field
+          id="thread-body"
+          label={t('new.bodyLabel')}
+          description={t('new.bodyHint')}
+          error={errors.body ? t('new.validation.body') : undefined}
+        >
+          {(control) => (
+            <Textarea
+              {...control}
+              {...register('body')}
+              rows={8}
+              maxLength={8000}
+              placeholder={t('new.bodyPlaceholder')}
+              invalid={Boolean(errors.body)}
+            />
           )}
-        </div>
+        </Field>
 
         <div>
           <span className="mb-1.5 block text-[0.82rem] font-medium text-ink dark:text-bone">

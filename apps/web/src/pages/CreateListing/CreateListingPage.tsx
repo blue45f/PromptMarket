@@ -37,6 +37,7 @@ import ModelPicker from '@components/ModelPicker'
 import ListingCard from '@components/ListingCard'
 import ListingQualityChecklist from '@components/ListingQualityChecklist'
 import { evaluateListingQuality } from '@components/listingQualityUtils'
+import { Field as UiField, Input, Textarea } from '@components/ui'
 import { cn } from '@utils/cn'
 import { formatPrice, modelLabel } from '@utils/format'
 import { zodFormResolver } from '@utils/zodFormResolver'
@@ -474,14 +475,20 @@ export default function CreateListingPage() {
             </Tabs.List>
 
             <Tabs.Content value="basics" className="space-y-4 focus-visible:outline-none">
-              <Field label={t('fields.title')} error={errors.title?.message as string | undefined}>
-                <input
-                  type="text"
-                  {...register('title')}
-                  className={inputClass}
-                  placeholder={t('fields.titlePlaceholder')}
-                />
-              </Field>
+              <UiField
+                label={t('fields.title')}
+                error={errors.title?.message as string | undefined}
+              >
+                {(control) => (
+                  <Input
+                    {...control}
+                    {...register('title')}
+                    type="text"
+                    placeholder={t('fields.titlePlaceholder')}
+                    invalid={Boolean(errors.title)}
+                  />
+                )}
+              </UiField>
 
               <div className="grid grid-cols-2 gap-4">
                 <Field label={t('fields.type')}>
@@ -507,17 +514,20 @@ export default function CreateListingPage() {
 
               <TrendingCategoryHint current={v.category} onPick={handleCategoryPick} />
 
-              <Field
+              <UiField
                 label={t('fields.description')}
                 error={errors.description?.message as string | undefined}
               >
-                <textarea
-                  rows={3}
-                  {...register('description')}
-                  placeholder={t('fields.descriptionPlaceholder')}
-                  className={inputClass}
-                />
-              </Field>
+                {(control) => (
+                  <Textarea
+                    {...control}
+                    {...register('description')}
+                    rows={3}
+                    placeholder={t('fields.descriptionPlaceholder')}
+                    invalid={Boolean(errors.description)}
+                  />
+                )}
+              </UiField>
 
               <Field label={t('fields.coverEmoji')}>
                 <div role="group" className="flex items-center gap-2 flex-wrap">
@@ -552,14 +562,18 @@ export default function CreateListingPage() {
             </Tabs.Content>
 
             <Tabs.Content value="content" className="space-y-4 focus-visible:outline-none">
-              <Field label={t('fields.body')} error={errors.body?.message as string | undefined}>
-                <textarea
-                  rows={16}
-                  {...register('body')}
-                  placeholder={t('fields.bodyPlaceholder')}
-                  className={cn(inputClass, 'font-mono text-xs leading-relaxed')}
-                />
-              </Field>
+              <UiField label={t('fields.body')} error={errors.body?.message as string | undefined}>
+                {(control) => (
+                  <Textarea
+                    {...control}
+                    {...register('body')}
+                    rows={16}
+                    placeholder={t('fields.bodyPlaceholder')}
+                    className="font-mono text-xs leading-relaxed"
+                    invalid={Boolean(errors.body)}
+                  />
+                )}
+              </UiField>
 
               <Field label={t('fields.price')}>
                 <div role="group">
@@ -695,17 +709,21 @@ export default function CreateListingPage() {
                     ))}
                   </select>
                 </Field>
-                <Field
+                <UiField
                   label={t('fields.version')}
                   error={errors.version?.message as string | undefined}
                 >
-                  <input
-                    type="text"
-                    {...register('version')}
-                    className={cn(inputClass, 'font-mono')}
-                    placeholder="1.0.0"
-                  />
-                </Field>
+                  {(control) => (
+                    <Input
+                      {...control}
+                      {...register('version')}
+                      type="text"
+                      className="font-mono"
+                      placeholder="1.0.0"
+                      invalid={Boolean(errors.version)}
+                    />
+                  )}
+                </UiField>
               </div>
             </Tabs.Content>
           </Tabs.Root>
