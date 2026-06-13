@@ -9,6 +9,7 @@ import { useAuthStore } from '@store/auth'
 import { getErrorMessage } from '@services/api'
 import { formatDate, formatRelative } from '@utils/format'
 import { cn } from '@utils/cn'
+import { Textarea } from '@components/ui'
 
 export default function MessageThreadPage() {
   const { id } = useParams<{ id: string }>()
@@ -165,7 +166,7 @@ export default function MessageThreadPage() {
         }}
         noValidate
       >
-        <textarea
+        <Textarea
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {
@@ -178,7 +179,7 @@ export default function MessageThreadPage() {
           rows={2}
           aria-label={t('thread.composerLabel')}
           placeholder={t('thread.composerPlaceholder')}
-          className="min-h-[3.25rem] w-full flex-1 resize-y rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-sm leading-relaxed text-ink placeholder:text-ink-mute focus:border-volt-500 focus:outline-none focus:ring-2 focus:ring-volt-500/60 dark:border-night-line dark:bg-night dark:text-bone dark:placeholder:text-bone-mute"
+          className="min-h-[3.25rem] flex-1"
         />
         <button
           type="submit"
