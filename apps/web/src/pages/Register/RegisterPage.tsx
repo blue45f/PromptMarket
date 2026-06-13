@@ -230,7 +230,13 @@ export default function RegisterPage() {
                 t={t}
                 i18nKey="register.consent.service"
                 components={{
-                  terms: <Link to="/terms" className={consentLinkClass} />,
+                  terms: (
+                    <Link
+                      to="/terms"
+                      className={consentLinkClass}
+                      onClick={(event) => event.stopPropagation()}
+                    />
+                  ),
                 }}
               />
             </label>
@@ -253,7 +259,13 @@ export default function RegisterPage() {
                 t={t}
                 i18nKey="register.consent.privacy"
                 components={{
-                  privacy: <Link to="/privacy" className={consentLinkClass} />,
+                  privacy: (
+                    <Link
+                      to="/privacy"
+                      className={consentLinkClass}
+                      onClick={(event) => event.stopPropagation()}
+                    />
+                  ),
                 }}
               />
             </label>

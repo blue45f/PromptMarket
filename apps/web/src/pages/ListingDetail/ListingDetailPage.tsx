@@ -1247,7 +1247,7 @@ export default function ListingDetailPage() {
                       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                         <p
                           id="ask-seller-help"
-                          className="text-xs text-ink-mute dark:text-bone-mute"
+                          className="break-keep text-xs text-ink-mute dark:text-bone-mute"
                         >
                           {t('contact.help', {
                             count: askDraft.length,
