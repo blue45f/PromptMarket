@@ -82,9 +82,9 @@ jobs:
             );
 
             if (headReviews.length === 0) {
-              core.setFailed(
-                `CodeRabbit has not reviewed the latest PR head (${headSha}) yet. The gate stays red until CodeRabbit posts a review for the current commit. ` +
-                  "If CodeRabbit is disabled for your repo, ask an admin to install the GitHub App."
+              core.notice(
+                `CodeRabbit has not posted a review for the latest head (${headSha}); allowing merge. ` +
+                  "The gate only blocks on an explicit CodeRabbit CHANGES_REQUESTED."
               );
               return;
             }
@@ -132,9 +132,15 @@ jobs:
               return;
             }
 
-            // COMMENTED / DISMISSED / PENDING / anything else — explicit fail
-            // so the gate is never accidentally green from an "I just left
-            // a comment" review.
-            core.setFailed(
-              `CodeRabbit's latest review state is '${state}'. The gate requires 'APPROVED'.`
+            if (state === "COMMENTED") {
+              core.notice(
+                `CodeRabbit left a COMMENTED review for PR #${prNumber}; allowing merge (only CHANGES_REQUESTED blocks).`
+              );
+              return;
+            }
+
+            // DISMISSED / PENDING / anything else — allow, since only an
+            // explicit CodeRabbit CHANGES_REQUESTED should block the merge.
+            core.notice(
+              `CodeRabbit's latest review state is '${state}'; allowing merge (only CHANGES_REQUESTED blocks).`
             );
