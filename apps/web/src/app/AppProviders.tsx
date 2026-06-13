@@ -1,7 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { RouterProvider } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from 'sonner'
 import { appQueryClient } from './queryClient'
 import { router } from '@router/index'
 import { initTheme } from '@store/theme'
@@ -14,7 +14,7 @@ export default function AppProviders() {
     <QueryClientProvider client={appQueryClient}>
       <Toaster
         position="top-right"
-        gutter={10}
+        gap={10}
         toastOptions={{
           duration: 3000,
           // Base toast — neutral surface, matches the design system tokens.
@@ -31,28 +31,6 @@ export default function AppProviders() {
             fontSize: '0.86rem',
             lineHeight: 1.45,
             letterSpacing: '-0.005em',
-          },
-          // Success — lime check on canvas.
-          success: {
-            iconTheme: {
-              primary: 'oklch(0.58 0.17 128)',
-              secondary: 'oklch(0.975 0.012 95)',
-            },
-          },
-          // Error — coral, never bright red.
-          error: {
-            iconTheme: {
-              primary: 'oklch(0.6 0.18 35)',
-              secondary: 'oklch(0.975 0.012 95)',
-            },
-          },
-          // Loading spinner picks up the brand lime so it reads as "live"
-          // rather than "neutral".
-          loading: {
-            iconTheme: {
-              primary: 'oklch(0.74 0.21 126)',
-              secondary: 'oklch(0.205 0.024 290)',
-            },
           },
         }}
       />
