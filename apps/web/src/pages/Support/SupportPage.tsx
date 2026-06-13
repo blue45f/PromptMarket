@@ -15,17 +15,9 @@ import {
 import { TERMSDESK_SUPPORT_URL } from '@features/policies'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { formatDate } from '@utils/format'
+import { Field, Input, Textarea } from '@components/ui'
 import { cn } from '@utils/cn'
 import { zodFormResolver } from '@utils/zodFormResolver'
-
-const fieldClass = cn(
-  'w-full rounded-xl px-3.5 py-2.5 text-sm',
-  'border border-line dark:border-night-line',
-  'bg-canvas dark:bg-night text-ink dark:text-bone',
-  'placeholder:text-ink-mute dark:placeholder:text-bone-mute',
-  'motion-safe:transition ease-expo',
-  'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
-)
 
 export default function SupportPage() {
   const { t } = useTranslation('inquiry')
@@ -124,106 +116,65 @@ export default function SupportPage() {
           </p>
         </fieldset>
 
-        <div>
-          <label
-            htmlFor="inquiry-title"
-            className="mb-1.5 block text-[0.82rem] font-medium text-ink dark:text-bone"
-          >
-            {t('form.titleLabel')}
-          </label>
-          <input
-            id="inquiry-title"
-            type="text"
-            maxLength={INQUIRY_TITLE_MAX}
-            placeholder={t('form.titlePlaceholder')}
-            aria-invalid={errors.title ? true : undefined}
-            aria-describedby={errors.title ? 'inquiry-title-error' : undefined}
-            {...register('title')}
-            className={fieldClass}
-          />
-          {errors.title && (
-            <p
-              id="inquiry-title-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t('form.validation.title')}
-            </p>
+        <Field
+          id="inquiry-title"
+          label={t('form.titleLabel')}
+          error={errors.title ? t('form.validation.title') : undefined}
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register('title')}
+              type="text"
+              maxLength={INQUIRY_TITLE_MAX}
+              placeholder={t('form.titlePlaceholder')}
+              invalid={Boolean(errors.title)}
+            />
           )}
-        </div>
+        </Field>
 
-        <div>
-          <label
-            htmlFor="inquiry-body"
-            className="mb-1.5 block text-[0.82rem] font-medium text-ink dark:text-bone"
-          >
-            {t('form.bodyLabel')}
-          </label>
-          <textarea
-            id="inquiry-body"
-            rows={7}
-            maxLength={INQUIRY_BODY_MAX}
-            placeholder={t('form.bodyPlaceholder')}
-            aria-invalid={errors.body ? true : undefined}
-            aria-describedby={errors.body ? 'inquiry-body-error' : 'inquiry-body-hint'}
-            {...register('body')}
-            className={cn(fieldClass, 'resize-y leading-relaxed')}
-          />
-          {errors.body ? (
-            <p
-              id="inquiry-body-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t('form.validation.body')}
-            </p>
-          ) : (
-            <p
-              id="inquiry-body-hint"
-              className="mt-1 text-[0.72rem] tabular-nums text-ink-mute dark:text-bone-mute"
-            >
-              {t('form.bodyHint', { count: bodyLength, max: INQUIRY_BODY_MAX })}
-            </p>
+        <Field
+          id="inquiry-body"
+          label={t('form.bodyLabel')}
+          description={t('form.bodyHint', { count: bodyLength, max: INQUIRY_BODY_MAX })}
+          error={errors.body ? t('form.validation.body') : undefined}
+        >
+          {(control) => (
+            <Textarea
+              {...control}
+              {...register('body')}
+              rows={7}
+              maxLength={INQUIRY_BODY_MAX}
+              placeholder={t('form.bodyPlaceholder')}
+              invalid={Boolean(errors.body)}
+            />
           )}
-        </div>
+        </Field>
 
-        <div>
-          <label
-            htmlFor="inquiry-email"
-            className="mb-1.5 block text-[0.82rem] font-medium text-ink dark:text-bone"
-          >
-            {t('form.emailLabel')}
-            <span className="ml-1.5 font-normal text-ink-mute dark:text-bone-mute">
-              {t('form.emailOptional')}
-            </span>
-          </label>
-          <input
-            id="inquiry-email"
-            type="email"
-            autoComplete="email"
-            placeholder={t('form.emailPlaceholder')}
-            aria-invalid={errors.contactEmail ? true : undefined}
-            aria-describedby={errors.contactEmail ? 'inquiry-email-error' : 'inquiry-email-hint'}
-            {...register('contactEmail')}
-            className={fieldClass}
-          />
-          {errors.contactEmail ? (
-            <p
-              id="inquiry-email-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t('form.validation.email')}
-            </p>
-          ) : (
-            <p
-              id="inquiry-email-hint"
-              className="mt-1 text-[0.72rem] text-ink-mute dark:text-bone-mute"
-            >
-              {t('form.emailHint')}
-            </p>
+        <Field
+          id="inquiry-email"
+          label={
+            <>
+              {t('form.emailLabel')}
+              <span className="ml-1.5 font-normal text-ink-mute dark:text-bone-mute">
+                {t('form.emailOptional')}
+              </span>
+            </>
+          }
+          description={t('form.emailHint')}
+          error={errors.contactEmail ? t('form.validation.email') : undefined}
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register('contactEmail')}
+              type="email"
+              autoComplete="email"
+              placeholder={t('form.emailPlaceholder')}
+              invalid={Boolean(errors.contactEmail)}
+            />
           )}
-        </div>
+        </Field>
 
         {/* Honeypot — invisible to humans, irresistible to naive bots. */}
         <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
