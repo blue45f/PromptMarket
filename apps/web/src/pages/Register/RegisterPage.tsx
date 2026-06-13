@@ -7,17 +7,10 @@ import { Loader2 } from 'lucide-react'
 import { useRegister } from '@features/marketplace/queries'
 import { usePageMeta } from '@hooks/usePageMeta'
 import AuthLayout from '@components/AuthLayout'
+import { Field, Input } from '@components/ui'
 import { cn } from '@utils/cn'
 import { zodFormResolver } from '@utils/zodFormResolver'
 
-const inputClass = cn(
-  'w-full rounded-xl px-3.5 py-2.5 text-sm',
-  'border border-line dark:border-night-line',
-  'bg-canvas dark:bg-night text-ink dark:text-bone',
-  'placeholder:text-ink-mute dark:placeholder:text-bone-mute',
-  'motion-safe:transition ease-expo',
-  'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
-)
 /* Consent fine print links — legal pages are internal routes (/terms, /privacy). */
 const consentLinkClass = cn(
   'underline underline-offset-2 decoration-volt-400 hover:decoration-volt-500',
@@ -105,108 +98,78 @@ export default function RegisterPage() {
       }
     >
       <form onSubmit={onSubmit} noValidate className="space-y-5">
-        <div>
-          <label
-            htmlFor="register-email"
-            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
-          >
-            {t('common.email')}
-          </label>
-          <input
-            id="register-email"
-            type="email"
-            autoComplete="email"
-            placeholder={t('common.emailPlaceholder')}
-            aria-invalid={errors.email ? true : undefined}
-            aria-describedby={errors.email ? 'register-email-error' : undefined}
-            {...register('email')}
-            className={inputClass}
-          />
-          {errors.email && (
-            <p
-              id="register-email-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t('validation.email')}
-            </p>
+        <Field
+          id="register-email"
+          label={t('common.email')}
+          error={errors.email ? t('validation.email') : undefined}
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register('email')}
+              type="email"
+              autoComplete="email"
+              placeholder={t('common.emailPlaceholder')}
+              invalid={Boolean(errors.email)}
+            />
           )}
-        </div>
-        <div>
-          <label
-            htmlFor="register-username"
-            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
-          >
-            {t('register.username')}
-          </label>
-          <input
-            id="register-username"
-            type="text"
-            autoComplete="username"
-            placeholder={t('register.usernamePlaceholder')}
-            aria-invalid={errors.username ? true : undefined}
-            aria-describedby={
-              errors.username
-                ? 'register-username-error register-username-hint'
-                : 'register-username-hint'
-            }
-            {...register('username')}
-            className={inputClass}
-          />
-          {errors.username && (
-            <p
-              id="register-username-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t(
-                `validation.username.${
-                  errors.username.type === 'too_small'
-                    ? 'tooShort'
-                    : errors.username.type === 'too_big'
-                      ? 'tooLong'
-                      : 'format'
-                }`
-              )}
-            </p>
+        </Field>
+        <Field
+          id="register-username"
+          label={t('register.username')}
+          description={
+            <>
+              {t('register.usernameHintPrefix')}
+              <span className="font-mono">{t('register.usernameHintToken')}</span>
+            </>
+          }
+          error={
+            errors.username
+              ? t(
+                  `validation.username.${
+                    errors.username.type === 'too_small'
+                      ? 'tooShort'
+                      : errors.username.type === 'too_big'
+                        ? 'tooLong'
+                        : 'format'
+                  }`
+                )
+              : undefined
+          }
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register('username')}
+              type="text"
+              autoComplete="username"
+              placeholder={t('register.usernamePlaceholder')}
+              invalid={Boolean(errors.username)}
+            />
           )}
-          <p
-            id="register-username-hint"
-            className="mt-1 text-[0.72rem] text-ink-mute dark:text-bone-mute"
-          >
-            {t('register.usernameHintPrefix')}
-            <span className="font-mono">{t('register.usernameHintToken')}</span>
-          </p>
-        </div>
-        <div>
-          <label
-            htmlFor="register-password"
-            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
-          >
-            {t('common.password')}
-          </label>
-          <input
-            id="register-password"
-            type="password"
-            autoComplete="new-password"
-            placeholder={t('register.passwordPlaceholder')}
-            aria-invalid={errors.password ? true : undefined}
-            aria-describedby={errors.password ? 'register-password-error' : undefined}
-            {...register('password')}
-            className={inputClass}
-          />
-          {errors.password && (
-            <p
-              id="register-password-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t(
-                `validation.password.${errors.password.type === 'too_big' ? 'tooLong' : 'tooShort'}`
-              )}
-            </p>
+        </Field>
+        <Field
+          id="register-password"
+          label={t('common.password')}
+          error={
+            errors.password
+              ? t(
+                  `validation.password.${errors.password.type === 'too_big' ? 'tooLong' : 'tooShort'}`
+                )
+              : undefined
+          }
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register('password')}
+              type="password"
+              autoComplete="new-password"
+              placeholder={t('register.passwordPlaceholder')}
+              invalid={Boolean(errors.password)}
+            />
           )}
-        </div>
+        </Field>
 
         <div className="rounded-2xl border border-line dark:border-night-line bg-canvas/70 dark:bg-night/70 p-3 text-[0.78rem] text-ink-soft dark:text-bone-soft">
           <p className="font-medium text-ink dark:text-bone mb-2">

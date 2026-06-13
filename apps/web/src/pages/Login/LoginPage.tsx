@@ -8,21 +8,12 @@ import { useAuthConfig, useGoogleLogin, useLogin } from '@features/marketplace/q
 import { usePageMeta } from '@hooks/usePageMeta'
 import AuthLayout from '@components/AuthLayout'
 import GoogleSignInButton from '@components/GoogleSignInButton'
-import { cn } from '@utils/cn'
+import { Field, Input } from '@components/ui'
 import { zodFormResolver } from '@utils/zodFormResolver'
 
 interface LocationState {
   from?: string
 }
-
-const inputClass = cn(
-  'w-full rounded-xl px-3.5 py-2.5 text-sm',
-  'border border-line dark:border-night-line',
-  'bg-canvas dark:bg-night text-ink dark:text-bone',
-  'placeholder:text-ink-mute dark:placeholder:text-bone-mute',
-  'motion-safe:transition ease-expo',
-  'focus:outline-none focus:ring-2 focus:ring-volt-500/60 focus:border-volt-500'
-)
 
 const PROMPTMARKET_DEMO_LOG_KEY = 'promptmarket-auth-demo-log-v1'
 
@@ -141,60 +132,33 @@ export default function LoginPage() {
       }
     >
       <form onSubmit={onSubmit} noValidate className="space-y-5">
-        <div>
-          <label
-            htmlFor="login-email"
-            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
-          >
-            {t('common.email')}
-          </label>
-          <input
-            id="login-email"
-            type="email"
-            autoComplete="email"
-            placeholder={t('common.emailPlaceholder')}
-            aria-invalid={errors.email ? true : undefined}
-            aria-describedby={errors.email ? 'login-email-error' : undefined}
-            {...register('email')}
-            className={inputClass}
-          />
-          {errors.email && (
-            <p
-              id="login-email-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t('validation.email')}
-            </p>
+        <Field label={t('common.email')} error={errors.email ? t('validation.email') : undefined}>
+          {(control) => (
+            <Input
+              {...control}
+              {...register('email')}
+              type="email"
+              autoComplete="email"
+              placeholder={t('common.emailPlaceholder')}
+              invalid={Boolean(errors.email)}
+            />
           )}
-        </div>
-        <div>
-          <label
-            htmlFor="login-password"
-            className="block text-[0.82rem] font-medium text-ink dark:text-bone mb-1.5"
-          >
-            {t('common.password')}
-          </label>
-          <input
-            id="login-password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="••••••••"
-            aria-invalid={errors.password ? true : undefined}
-            aria-describedby={errors.password ? 'login-password-error' : undefined}
-            {...register('password')}
-            className={inputClass}
-          />
-          {errors.password && (
-            <p
-              id="login-password-error"
-              role="alert"
-              className="mt-1.5 text-[0.78rem] text-coral-deep dark:text-coral"
-            >
-              {t('validation.passwordRequired')}
-            </p>
+        </Field>
+        <Field
+          label={t('common.password')}
+          error={errors.password ? t('validation.passwordRequired') : undefined}
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register('password')}
+              type="password"
+              autoComplete="current-password"
+              placeholder="••••••••"
+              invalid={Boolean(errors.password)}
+            />
           )}
-        </div>
+        </Field>
 
         <button
           type="submit"
