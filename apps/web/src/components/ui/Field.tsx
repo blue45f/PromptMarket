@@ -48,7 +48,12 @@ export function Field({
 
   // Point the control at whichever helper line is actually rendered so screen
   // readers announce the right text and never a stale/empty node.
-  const describedBy = invalid ? errorId : description ? descId : undefined
+  let describedBy: string | undefined
+  if (invalid) {
+    describedBy = errorId
+  } else if (description) {
+    describedBy = descId
+  }
 
   const control: FieldControlProps = {
     id: fieldId,
