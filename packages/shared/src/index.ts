@@ -577,6 +577,49 @@ export const MemberSuspensionSchema = z.object({
 })
 export type MemberSuspensionInput = z.infer<typeof MemberSuspensionSchema>
 
+export const ForbiddenWordAction = z.enum(['BLOCK', 'REVIEW'])
+export type ForbiddenWordAction = z.infer<typeof ForbiddenWordAction>
+
+export const ForbiddenWordMatchType = z.enum(['WHOLE_WORD', 'CONTAINS'])
+export type ForbiddenWordMatchType = z.infer<typeof ForbiddenWordMatchType>
+
+const ForbiddenWordPhrase = z.string().trim().min(1).max(100)
+const ForbiddenWordNote = z.string().trim().max(500).optional().nullable()
+
+export const CreateForbiddenWordSchema = z.object({
+  phrase: ForbiddenWordPhrase,
+  action: ForbiddenWordAction.default('BLOCK'),
+  matchType: ForbiddenWordMatchType.default('WHOLE_WORD'),
+  enabled: z.boolean().default(true),
+  note: ForbiddenWordNote,
+})
+export type CreateForbiddenWordInput = z.infer<typeof CreateForbiddenWordSchema>
+
+export const UpdateForbiddenWordSchema = z
+  .object({
+    phrase: ForbiddenWordPhrase.optional(),
+    action: ForbiddenWordAction.optional(),
+    matchType: ForbiddenWordMatchType.optional(),
+    enabled: z.boolean().optional(),
+    note: ForbiddenWordNote,
+  })
+  .refine((value) => Object.values(value).some((field) => field !== undefined), {
+    message: 'at least one field is required',
+  })
+export type UpdateForbiddenWordInput = z.infer<typeof UpdateForbiddenWordSchema>
+
+export const ForbiddenWordRowSchema = z.object({
+  id: z.string(),
+  phrase: z.string(),
+  action: ForbiddenWordAction,
+  matchType: ForbiddenWordMatchType,
+  enabled: z.boolean(),
+  note: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+export type ForbiddenWordRow = z.infer<typeof ForbiddenWordRowSchema>
+
 export const AdminMemberRowSchema = z.object({
   id: z.string(),
   username: z.string(),

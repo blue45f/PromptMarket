@@ -113,6 +113,12 @@ export default function CommandPalette() {
   const token = useAuthStore((s) => s.token)
   const user = useAuthStore((s) => s.user)
 
+  const resetPaletteState = useCallback(() => {
+    submittedRef.current = false
+    setQ('')
+    setActive(0)
+  }, [])
+
   // Global shortcut: ⌘K / Ctrl+K / "/"
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -129,21 +135,31 @@ export default function CommandPalette() {
         )
       if (isModK || isSlash) {
         e.preventDefault()
-        setOpen((v) => !v)
+        if (open) {
+          setOpen(false)
+        } else {
+          resetPaletteState()
+          setOpen(true)
+        }
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  }, [open, resetPaletteState])
 
-  // Reset state on open
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean) => {
+      if (nextOpen) resetPaletteState()
+      setOpen(nextOpen)
+    },
+    [resetPaletteState]
+  )
+
+  // Focus the search box after the opening animation starts.
   useEffect(() => {
-    if (open) {
-      setQ('')
-      setActive(0)
-      const id = requestAnimationFrame(() => inputRef.current?.focus())
-      return () => cancelAnimationFrame(id)
-    }
+    if (!open) return
+    const id = requestAnimationFrame(() => inputRef.current?.focus())
+    return () => cancelAnimationFrame(id)
   }, [open])
 
   const trimmed = q.trim()
@@ -164,7 +180,7 @@ export default function CommandPalette() {
       }),
     enabled: open,
   })
-  const listings = listingsQ.data?.items ?? []
+  const listings = useMemo(() => listingsQ.data?.items ?? [], [listingsQ.data?.items])
 
   // Wishlist surfacing — hydrate up to 5 saved slugs so visitors can jump
   // from the palette into a previously saved listing.
@@ -172,8 +188,11 @@ export default function CommandPalette() {
   const { entries: savedFilterEntries } = useSavedFilters()
   const history = useSearchHistory()
   const showHistory = !trimmed && history.entries.length > 0
-  const visibleWishlist = wishlistSlugs.slice(0, 5)
-  const visibleSavedFilters = trimmed ? [] : savedFilterEntries
+  const visibleWishlist = useMemo(() => wishlistSlugs.slice(0, 5), [wishlistSlugs])
+  const visibleSavedFilters = useMemo(
+    () => (trimmed ? [] : savedFilterEntries),
+    [trimmed, savedFilterEntries]
+  )
   const wishlistResults = useQueries({
     queries: debouncedQ
       ? []
@@ -184,9 +203,10 @@ export default function CommandPalette() {
           enabled: open,
         })),
   })
-  const wishlistListings = wishlistResults
-    .map((r) => r.data)
-    .filter((l): l is NonNullable<typeof l> => !!l)
+  const wishlistListings = useMemo(
+    () => wishlistResults.map((r) => r.data).filter((l): l is NonNullable<typeof l> => !!l),
+    [wishlistResults]
+  )
 
   const actions = useMemo(() => {
     const filtered = STATIC_ACTIONS.filter((a) => {
@@ -201,17 +221,14 @@ export default function CommandPalette() {
   // Flat-index navigation across all sections.
   const total =
     actions.length + wishlistListings.length + visibleSavedFilters.length + listings.length
-
-  useEffect(() => {
-    if (active >= total) setActive(Math.max(0, total - 1))
-  }, [total, active])
+  const activeIndex = total > 0 ? Math.min(active, total - 1) : 0
 
   // Keep the selected row in view
   useEffect(() => {
     if (!open) return
-    const el = listRef.current?.querySelector<HTMLElement>(`[data-row="${active}"]`)
+    const el = listRef.current?.querySelector<HTMLElement>(`[data-row="${activeIndex}"]`)
     el?.scrollIntoView({ block: 'nearest' })
-  }, [active, open])
+  }, [activeIndex, open])
 
   const go = useCallback(
     (to: string) => {
@@ -232,27 +249,32 @@ export default function CommandPalette() {
         setActive((i) => (i - 1 + Math.max(1, total)) % Math.max(1, total))
       } else if (e.key === 'Enter') {
         e.preventDefault()
-        if (active < actions.length) {
-          const a = actions[active]
+        if (activeIndex < actions.length) {
+          const a = actions[activeIndex]
           if (a) go(a.to)
-        } else if (active < actions.length + wishlistListings.length) {
-          const w = wishlistListings[active - actions.length]
+        } else if (activeIndex < actions.length + wishlistListings.length) {
+          const w = wishlistListings[activeIndex - actions.length]
           if (w) go(`/listings/${w.slug}`)
-        } else if (active < actions.length + wishlistListings.length + visibleSavedFilters.length) {
-          const f = visibleSavedFilters[active - actions.length - wishlistListings.length]
+        } else if (
+          activeIndex <
+          actions.length + wishlistListings.length + visibleSavedFilters.length
+        ) {
+          const f = visibleSavedFilters[activeIndex - actions.length - wishlistListings.length]
           if (f) go(`/browse?${f.search}`)
         } else {
           const l =
-            listings[active - actions.length - wishlistListings.length - visibleSavedFilters.length]
+            listings[
+              activeIndex - actions.length - wishlistListings.length - visibleSavedFilters.length
+            ]
           if (l) go(`/listings/${l.slug}`)
         }
       }
     },
-    [active, total, actions, wishlistListings, visibleSavedFilters, listings, go]
+    [activeIndex, total, actions, wishlistListings, visibleSavedFilters, listings, go]
   )
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
+    <Dialog.Root open={open} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/50 dark:bg-night/70 backdrop-blur-md data-[state=open]:motion-safe:animate-in data-[state=open]:fade-in data-[state=closed]:motion-safe:animate-out data-[state=closed]:fade-out" />
         <Dialog.Content
@@ -291,7 +313,7 @@ export default function CommandPalette() {
               aria-expanded={true}
               aria-controls="palette-listbox"
               aria-autocomplete="list"
-              aria-activedescendant={total > 0 ? `palette-row-${active}` : undefined}
+              aria-activedescendant={total > 0 ? `palette-row-${activeIndex}` : undefined}
               autoComplete="off"
               spellCheck={false}
             />
@@ -360,7 +382,7 @@ export default function CommandPalette() {
                 {actions.map((a, i) => (
                   <Row
                     key={a.id}
-                    active={i === active}
+                    active={i === activeIndex}
                     href={a.to}
                     go={go}
                     setActive={setActive}
@@ -382,7 +404,7 @@ export default function CommandPalette() {
                   return (
                     <Row
                       key={l.id}
-                      active={rowIdx === active}
+                      active={rowIdx === activeIndex}
                       href={`/listings/${l.slug}`}
                       go={go}
                       setActive={setActive}
@@ -404,7 +426,7 @@ export default function CommandPalette() {
                   return (
                     <Row
                       key={f.search}
-                      active={rowIdx === active}
+                      active={rowIdx === activeIndex}
                       href={`/browse?${f.search}`}
                       go={go}
                       setActive={setActive}
@@ -430,7 +452,7 @@ export default function CommandPalette() {
                   return (
                     <Row
                       key={l.id}
-                      active={rowIdx === active}
+                      active={rowIdx === activeIndex}
                       href={`/listings/${l.slug}`}
                       go={go}
                       setActive={setActive}

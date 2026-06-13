@@ -1,5 +1,4 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common'
-import type { JwtService } from '@nestjs/jwt'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('argon2', () => ({

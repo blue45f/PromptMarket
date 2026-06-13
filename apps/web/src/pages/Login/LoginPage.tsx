@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginSchema, type LoginInput } from '@promptmarket/shared'
 import { Loader2 } from 'lucide-react'
 import { useAuthConfig, useGoogleLogin, useLogin } from '@features/marketplace/queries'
@@ -10,6 +9,7 @@ import { usePageMeta } from '@hooks/usePageMeta'
 import AuthLayout from '@components/AuthLayout'
 import GoogleSignInButton from '@components/GoogleSignInButton'
 import { cn } from '@utils/cn'
+import { zodFormResolver } from '@utils/zodFormResolver'
 
 interface LocationState {
   from?: string
@@ -74,7 +74,7 @@ export default function LoginPage() {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({
-    resolver: zodResolver(LoginSchema as any),
+    resolver: zodFormResolver(LoginSchema),
     defaultValues: { email: '', password: '' },
   })
 

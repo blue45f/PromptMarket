@@ -127,6 +127,7 @@ model DiscussionThread {
   category  String    // prompt Category enum (see packages/shared)
   authorId  String
   hiddenAt  DateTime? // set by moderation; hidden threads drop out of public lists
+  needsReviewAt DateTime? // set by enabled REVIEW forbidden-word rules
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -135,6 +136,7 @@ model DiscussionThread {
 
   @@index([category, createdAt])
   @@index([authorId, createdAt])
+  @@index([needsReviewAt, createdAt])
 }
 
 model DiscussionComment {
@@ -144,6 +146,7 @@ model DiscussionComment {
   authorId  String
   parentId  String?   // one level deep — replies cannot have replies
   deletedAt DateTime? // soft delete — keeps the reply chain shape with a placeholder
+  needsReviewAt DateTime? // set by enabled REVIEW forbidden-word rules
   createdAt DateTime  @default(now())
   thread    DiscussionThread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
   author    User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -153,6 +156,22 @@ model DiscussionComment {
 
   @@index([threadId, createdAt])
   @@index([parentId])
+  @@index([needsReviewAt, createdAt])
+}
+
+model ForbiddenWord {
+  id               String   @id @default(cuid())
+  phrase           String
+  normalizedPhrase String   @unique
+  action           String   @default("BLOCK") // BLOCK | REVIEW
+  matchType        String   @default("WHOLE_WORD") // WHOLE_WORD | CONTAINS
+  enabled          Boolean  @default(true)
+  note             String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([enabled, action])
+  @@index([createdAt])
 }
 
 // ===========================================================================

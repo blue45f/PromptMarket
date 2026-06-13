@@ -109,6 +109,7 @@ export function usePageMeta(meta: PageMeta) {
     meta.ogType,
     meta.ogImage,
     meta.canonical,
+    i18n,
     i18n.language,
   ])
 }

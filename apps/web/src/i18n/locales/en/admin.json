@@ -153,7 +153,8 @@
     },
     "status": {
       "visible": "Visible",
-      "hidden": "Hidden"
+      "hidden": "Hidden",
+      "needsReview": "Needs review"
     },
     "actions": {
       "hide": "Hide",
@@ -167,6 +168,53 @@
       "alt": "Attachment {{index}} by @{{username}}",
       "remove": "Remove image",
       "removeConfirm": "Remove this image?"
+    },
+    "forbiddenWords": {
+      "title": "Forbidden words",
+      "subtitle": "Manage community phrases that block posts or flag them for manual review.",
+      "searchLabel": "Search forbidden words",
+      "searchPlaceholder": "Search rules...",
+      "empty": "No rules match this search.",
+      "fields": {
+        "phrase": "Phrase",
+        "action": "Action",
+        "matchType": "Match",
+        "enabled": "Enabled",
+        "status": "Status",
+        "updated": "Updated",
+        "note": "Note"
+      },
+      "actions": {
+        "BLOCK": "Block",
+        "REVIEW": "Review",
+        "create": "Add",
+        "edit": "Edit",
+        "save": "Save",
+        "cancel": "Cancel",
+        "enable": "Enable",
+        "disable": "Disable",
+        "delete": "Delete",
+        "deleteConfirm": "Delete rule?"
+      },
+      "matchTypes": {
+        "WHOLE_WORD": "Whole word",
+        "CONTAINS": "Contains"
+      },
+      "options": {
+        "BLOCK": "Block",
+        "REVIEW": "Review",
+        "WHOLE_WORD": "Whole word",
+        "CONTAINS": "Contains"
+      },
+      "status": {
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      },
+      "toasts": {
+        "created": "Rule added",
+        "updated": "Rule updated",
+        "deleted": "Rule deleted"
+      }
     },
     "toasts": {
       "hidden": "Hidden from the public",

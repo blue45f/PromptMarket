@@ -141,7 +141,7 @@ export default function PolicyPage() {
               <a
                 href={externalUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-ink/15 dark:border-bone/20 text-ink dark:text-bone font-medium tracking-tight hover:border-ink dark:hover:border-bone motion-safe:transition ease-expo focus-volt"
               >
                 {t('error.openSource')}
@@ -195,7 +195,7 @@ export default function PolicyPage() {
               <a
                 href={externalUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="group inline-flex items-center gap-1.5 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink-mute dark:text-bone-mute hover:text-volt-700 dark:hover:text-volt-300 motion-safe:transition ease-expo focus-volt"
               >
                 {t('trust.source')}

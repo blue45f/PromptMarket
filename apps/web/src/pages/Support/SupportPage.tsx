@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowUpRight, CheckCircle2, Loader2, LifeBuoy } from 'lucide-react'
 import {
   INQUIRY_BODY_MAX,
@@ -17,6 +16,7 @@ import { TERMSDESK_SUPPORT_URL } from '@features/policies'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { formatDate } from '@utils/format'
 import { cn } from '@utils/cn'
+import { zodFormResolver } from '@utils/zodFormResolver'
 
 const fieldClass = cn(
   'w-full rounded-xl px-3.5 py-2.5 text-sm',
@@ -39,15 +39,14 @@ export default function SupportPage() {
     control,
     handleSubmit,
     reset,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<InquiryFormInput>({
-    resolver: zodResolver(inquiryFormSchema as any),
+    resolver: zodFormResolver(inquiryFormSchema),
     defaultValues: { category: 'question', title: '', body: '', contactEmail: '', website: '' },
   })
 
   const busy = isSubmitting || submitMut.isPending
-  const bodyLength = (watch('body') ?? '').length
+  const bodyLength = (useWatch({ control, name: 'body' }) ?? '').length
 
   const onSubmit = handleSubmit(async (values) => {
     try {
@@ -247,7 +246,7 @@ export default function SupportPage() {
             <a
               href={TERMSDESK_SUPPORT_URL}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="mt-1 inline-flex items-center gap-1 font-medium underline focus-volt"
             >
               {t('form.fallbackLink')}
@@ -260,7 +259,7 @@ export default function SupportPage() {
           <a
             href={TERMSDESK_SUPPORT_URL}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-1 text-[0.78rem] text-ink-mute hover:text-ink dark:text-bone-mute dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
           >
             <LifeBuoy aria-hidden="true" className="h-3.5 w-3.5" />

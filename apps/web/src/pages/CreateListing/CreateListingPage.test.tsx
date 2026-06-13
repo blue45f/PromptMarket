@@ -24,9 +24,13 @@ vi.mock('react-hot-toast', () => ({
 }))
 vi.mock('@hooks/usePageMeta', () => ({ usePageMeta: vi.fn() }))
 vi.mock('@components/ModelPicker', () => ({
-  default: ({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) => (
-    <div data-testid="model-picker" />
-  ),
+  default: ({
+    value: _value,
+    onChange: _onChange,
+  }: {
+    value: string[]
+    onChange: (v: string[]) => void
+  }) => <div data-testid="model-picker" />,
 }))
 vi.mock('@components/ListingCard', () => ({
   default: () => <div data-testid="listing-card" />,

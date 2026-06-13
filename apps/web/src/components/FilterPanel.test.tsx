@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import FilterPanel, { countActive, emptyFilters, type FilterState } from './FilterPanel'
+import FilterPanel from './FilterPanel'
+import { countActive, emptyFilters, type FilterState } from './filterState'
 
 describe('emptyFilters', () => {
   it('returns the zero state', () => {

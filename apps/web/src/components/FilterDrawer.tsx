@@ -2,7 +2,8 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
-import FilterPanel, { type FilterState } from './FilterPanel'
+import FilterPanel from './FilterPanel'
+import type { FilterState } from './filterState'
 import { useSavedFilters } from '@hooks/useSavedFilters'
 
 interface FilterDrawerProps {

@@ -10,6 +10,7 @@ import { buildAttachmentCreates, serializeAttachment } from '../attachments/atta
 import type { CreateThreadDto } from './dto/create-thread.dto'
 import type { CreateCommentDto } from './dto/create-comment.dto'
 import type { QueryThreadsDto } from './dto/query-threads.dto'
+import { matchesForbiddenWord } from './forbidden-word.util'
 
 const EXCERPT_LENGTH = 180
 
@@ -127,6 +128,7 @@ export class CommunityService {
   }
 
   async createThread(userId: string, dto: CreateThreadDto) {
+    const moderation = await this.evaluateContentModeration([dto.title, dto.body])
     const attachments = buildAttachmentCreates(userId, dto.attachments)
     const thread = await this.prisma.discussionThread.create({
       data: {
@@ -134,6 +136,7 @@ export class CommunityService {
         body: dto.body,
         category: dto.category,
         authorId: userId,
+        needsReviewAt: moderation.needsReview ? new Date() : null,
         attachments: { create: attachments },
       },
       include: { author: { select: { id: true, username: true } } },
@@ -162,6 +165,7 @@ export class CommunityService {
       }
     }
 
+    const moderation = await this.evaluateContentModeration([dto.body])
     const attachments = buildAttachmentCreates(userId, dto.attachments)
     const comment = await this.prisma.discussionComment.create({
       data: {
@@ -169,6 +173,7 @@ export class CommunityService {
         threadId,
         authorId: userId,
         parentId: dto.parentId ?? null,
+        needsReviewAt: moderation.needsReview ? new Date() : null,
         attachments: { create: attachments },
       },
       include: {
@@ -221,5 +226,22 @@ export class CommunityService {
     }
     await this.prisma.discussionThread.delete({ where: { id: threadId } })
     return { ok: true }
+  }
+
+  private async evaluateContentModeration(parts: string[]) {
+    const rules = await this.prisma.forbiddenWord.findMany({
+      where: { enabled: true },
+      select: { action: true, normalizedPhrase: true, matchType: true },
+    })
+    const text = parts.join('\n')
+    let needsReview = false
+    for (const rule of rules) {
+      if (!matchesForbiddenWord(text, rule)) continue
+      if (rule.action === 'BLOCK') {
+        throw new BadRequestException('Your post contains a blocked word or phrase')
+      }
+      if (rule.action === 'REVIEW') needsReview = true
+    }
+    return { needsReview }
   }
 }

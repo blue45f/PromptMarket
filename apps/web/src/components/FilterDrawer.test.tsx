@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import FilterDrawer from './FilterDrawer'
-import { emptyFilters } from './FilterPanel'
+import { emptyFilters } from './filterState'
 
 const navigate = vi.fn()
 vi.mock('react-router-dom', async () => {

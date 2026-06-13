@@ -12,6 +12,7 @@ interface MockOptions {
   comment?: unknown
   createdThread?: unknown
   createdComment?: unknown
+  forbiddenWords?: unknown[]
 }
 
 function makePrisma(opts: MockOptions = {}) {
@@ -32,6 +33,9 @@ function makePrisma(opts: MockOptions = {}) {
     },
     attachment: {
       deleteMany: vi.fn().mockResolvedValue({ count: 0 }),
+    },
+    forbiddenWord: {
+      findMany: vi.fn().mockResolvedValue(opts.forbiddenWords ?? []),
     },
     $transaction: vi.fn(async (ops: unknown[]) => Promise.all(ops as Promise<unknown>[])),
   }
@@ -139,6 +143,19 @@ describe('CommunityService.getThread', () => {
 })
 
 describe('CommunityService.createComment', () => {
+  it('blocks comments that match an enabled block rule', async () => {
+    const prisma = makePrisma({
+      thread: { id: 't1', hiddenAt: null },
+      forbiddenWords: [{ action: 'BLOCK', normalizedPhrase: 'spoiler', matchType: 'WHOLE_WORD' }],
+    })
+    const svc = new CommunityService(prisma)
+
+    await expect(
+      svc.createComment('u1', 't1', { body: 'That is a spoiler.', attachments: [] } as never)
+    ).rejects.toBeInstanceOf(BadRequestException)
+    expect(prisma.discussionComment.create).not.toHaveBeenCalled()
+  })
+
   it('404s when the thread is hidden', async () => {
     const svc = new CommunityService(makePrisma({ thread: { id: 't1', hiddenAt: new Date() } }))
     await expect(
@@ -190,6 +207,54 @@ describe('CommunityService.createComment', () => {
     } as never)
 
     expect(out).toMatchObject({ id: 'c1', deleted: false, parentId: null })
+    expect(prisma.forbiddenWord.findMany).toHaveBeenCalledWith({
+      where: { enabled: true },
+      select: { action: true, normalizedPhrase: true, matchType: true },
+    })
+    expect(prisma.discussionComment.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ needsReviewAt: null }),
+      include: expect.any(Object),
+    })
+  })
+})
+
+describe('CommunityService.createThread', () => {
+  it('blocks threads that match an enabled block rule', async () => {
+    const prisma = makePrisma({
+      forbiddenWords: [{ action: 'BLOCK', normalizedPhrase: 'leak', matchType: 'CONTAINS' }],
+    })
+    const svc = new CommunityService(prisma)
+
+    await expect(
+      svc.createThread('u1', {
+        title: 'Prompt draft',
+        body: 'Contains leaked credentials',
+        category: 'Coding',
+        attachments: [],
+      } as never)
+    ).rejects.toBeInstanceOf(BadRequestException)
+    expect(prisma.discussionThread.create).not.toHaveBeenCalled()
+  })
+
+  it('marks threads that match an enabled review rule', async () => {
+    const prisma = makePrisma({
+      forbiddenWords: [{ action: 'REVIEW', normalizedPhrase: 'spoiler', matchType: 'WHOLE_WORD' }],
+      createdThread: { id: 't2', title: 'Prompt draft', category: 'Coding' },
+    })
+    const svc = new CommunityService(prisma)
+
+    await expect(
+      svc.createThread('u1', {
+        title: 'Spoiler discussion',
+        body: 'Long enough body',
+        category: 'Coding',
+        attachments: [],
+      } as never)
+    ).resolves.toEqual({ id: 't2', title: 'Prompt draft', category: 'Coding' })
+    expect(prisma.discussionThread.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ needsReviewAt: expect.any(Date) }),
+      include: expect.any(Object),
+    })
   })
 })
 

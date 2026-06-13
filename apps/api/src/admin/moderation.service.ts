@@ -1,7 +1,20 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
+import type { CreateForbiddenWordInput, UpdateForbiddenWordInput } from '@promptmarket/shared'
 import { PrismaService } from '../prisma/prisma.service'
+import { isPrismaP2002 } from '../prisma/prisma-errors'
+import { normalizeForbiddenPhrase } from '../community/forbidden-word.util'
 
 const LIST_TAKE = 100
+
+function cleanNote(note: string | null | undefined): string | null {
+  const trimmed = note?.trim()
+  return trimmed ? trimmed : null
+}
 
 /**
  * Moderation backend for the admin surfaces: discussion threads, reviews,
@@ -44,6 +57,7 @@ export class ModerationService {
       commentCount: t._count.comments,
       attachmentCount: t._count.attachments + (commentAttachmentCount.get(t.id) ?? 0),
       hiddenAt: t.hiddenAt,
+      needsReviewAt: t.needsReviewAt,
       createdAt: t.createdAt,
     }))
   }
@@ -153,6 +167,113 @@ export class ModerationService {
     })
     if (!attachment) throw new NotFoundException('Attachment not found')
     await this.prisma.attachment.delete({ where: { id } })
+    return { ok: true }
+  }
+
+  async listForbiddenWords(includeDisabled: boolean, q?: string) {
+    const needle = q ? normalizeForbiddenPhrase(q) : ''
+    const rules = await this.prisma.forbiddenWord.findMany({
+      where: {
+        ...(includeDisabled ? {} : { enabled: true }),
+        ...(needle ? { normalizedPhrase: { contains: needle } } : {}),
+      },
+      orderBy: [{ enabled: 'desc' }, { createdAt: 'desc' }],
+      take: LIST_TAKE,
+    })
+    return rules.map((rule) => ({
+      id: rule.id,
+      phrase: rule.phrase,
+      action: rule.action,
+      matchType: rule.matchType,
+      enabled: rule.enabled,
+      note: rule.note,
+      createdAt: rule.createdAt,
+      updatedAt: rule.updatedAt,
+    }))
+  }
+
+  async createForbiddenWord(dto: CreateForbiddenWordInput) {
+    const phrase = dto.phrase.trim()
+    try {
+      const rule = await this.prisma.forbiddenWord.create({
+        data: {
+          phrase,
+          normalizedPhrase: normalizeForbiddenPhrase(phrase),
+          action: dto.action,
+          matchType: dto.matchType,
+          enabled: dto.enabled,
+          note: cleanNote(dto.note),
+        },
+      })
+      return {
+        id: rule.id,
+        phrase: rule.phrase,
+        action: rule.action,
+        matchType: rule.matchType,
+        enabled: rule.enabled,
+        note: rule.note,
+        createdAt: rule.createdAt,
+        updatedAt: rule.updatedAt,
+      }
+    } catch (err) {
+      if (isPrismaP2002(err)) throw new ConflictException('Forbidden word already exists')
+      throw err
+    }
+  }
+
+  async updateForbiddenWord(id: string, dto: UpdateForbiddenWordInput) {
+    const existing = await this.prisma.forbiddenWord.findUnique({
+      where: { id },
+      select: { id: true },
+    })
+    if (!existing) throw new NotFoundException('Forbidden word not found')
+
+    const data: {
+      phrase?: string
+      normalizedPhrase?: string
+      action?: string
+      matchType?: string
+      enabled?: boolean
+      note?: string | null
+    } = {}
+    if (dto.phrase !== undefined) {
+      const phrase = dto.phrase.trim()
+      data.phrase = phrase
+      data.normalizedPhrase = normalizeForbiddenPhrase(phrase)
+    }
+    if (dto.action !== undefined) data.action = dto.action
+    if (dto.matchType !== undefined) data.matchType = dto.matchType
+    if (dto.enabled !== undefined) data.enabled = dto.enabled
+    if (dto.note !== undefined) data.note = cleanNote(dto.note)
+
+    try {
+      const rule = await this.prisma.forbiddenWord.update({
+        where: { id },
+        data,
+      })
+      return {
+        id: rule.id,
+        phrase: rule.phrase,
+        action: rule.action,
+        matchType: rule.matchType,
+        enabled: rule.enabled,
+        note: rule.note,
+        createdAt: rule.createdAt,
+        updatedAt: rule.updatedAt,
+      }
+    } catch (err) {
+      if (isPrismaP2002(err)) throw new ConflictException('Forbidden word already exists')
+      throw err
+    }
+  }
+
+  async deleteForbiddenWord(id: string) {
+    const rule = await this.prisma.forbiddenWord.findUnique({
+      where: { id },
+      select: { id: true },
+    })
+    if (!rule) throw new NotFoundException('Forbidden word not found')
+    await this.prisma.forbiddenWord.delete({ where: { id } })
     return { ok: true }
   }
 

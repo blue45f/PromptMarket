@@ -19,16 +19,16 @@ export default function SearchBar({
 }: SearchBarProps) {
   const { t } = useTranslation('common')
   const resolvedPlaceholder = placeholder ?? t('search.placeholder')
-  const [value, setValue] = useState(initialValue)
+  const [valueState, setValueState] = useState({ initialValue, value: initialValue })
   const [focused, setFocused] = useState(false)
   const [activeIdx, setActiveIdx] = useState(-1)
   const wrapRef = useRef<HTMLFormElement>(null)
-  const prevInitialRef = useRef(initialValue)
-  if (prevInitialRef.current !== initialValue) {
-    prevInitialRef.current = initialValue
-    setValue(initialValue)
-  }
+  const value = valueState.initialValue === initialValue ? valueState.value : initialValue
   const history = useSearchHistory()
+
+  function setSearchValue(next: string) {
+    setValueState({ initialValue, value: next })
+  }
 
   // Close history when clicking anywhere outside the form.
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function SearchBar({
       e.preventDefault()
       const picked = history.entries[activeIdx]
       if (picked) {
-        setValue(picked)
+        setSearchValue(picked)
         commit(picked)
       }
     } else if (e.key === 'Escape') {
@@ -88,7 +88,7 @@ export default function SearchBar({
         type="text"
         value={value}
         onChange={(e) => {
-          setValue(e.target.value)
+          setSearchValue(e.target.value)
           setActiveIdx(-1)
         }}
         onFocus={() => setFocused(true)}
@@ -164,7 +164,7 @@ export default function SearchBar({
                     // mouseDown fires before blur so the option stays clickable.
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
-                      setValue(q)
+                      setSearchValue(q)
                       commit(q)
                     }}
                     className="flex items-center gap-2 min-w-0 flex-1 cursor-pointer focus-volt rounded"

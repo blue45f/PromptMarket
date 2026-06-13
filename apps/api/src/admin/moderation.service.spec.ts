@@ -12,6 +12,8 @@ interface MockOptions {
   attachment?: unknown
   users?: unknown[]
   user?: unknown
+  forbiddenWords?: unknown[]
+  forbiddenWord?: unknown
 }
 
 function makePrisma(opts: MockOptions = {}) {
@@ -41,6 +43,29 @@ function makePrisma(opts: MockOptions = {}) {
       findUnique: vi.fn().mockResolvedValue(opts.attachment ?? null),
       delete: vi.fn().mockResolvedValue({}),
       deleteMany: vi.fn().mockResolvedValue({ count: 0 }),
+    },
+    forbiddenWord: {
+      findMany: vi.fn().mockResolvedValue(opts.forbiddenWords ?? []),
+      findUnique: vi.fn().mockResolvedValue(opts.forbiddenWord ?? null),
+      create: vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({
+        id: 'fw1',
+        createdAt: new Date('2026-06-01T00:00:00Z'),
+        updatedAt: new Date('2026-06-01T00:00:00Z'),
+        ...data,
+      })),
+      update: vi.fn().mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({
+        id: 'fw1',
+        phrase: 'old',
+        normalizedPhrase: 'old',
+        action: 'BLOCK',
+        matchType: 'WHOLE_WORD',
+        enabled: true,
+        note: null,
+        createdAt: new Date('2026-06-01T00:00:00Z'),
+        updatedAt: new Date('2026-06-02T00:00:00Z'),
+        ...data,
+      })),
+      delete: vi.fn().mockResolvedValue({}),
     },
     user: {
       findMany: vi.fn().mockResolvedValue(opts.users ?? []),
@@ -97,6 +122,61 @@ describe('ModerationService.deleteAttachment', () => {
       ok: true,
     })
     expect(prisma.attachment.delete).toHaveBeenCalledWith({ where: { id: 'a1' } })
+  })
+})
+
+describe('ModerationService forbidden words', () => {
+  it('lists rules with enabled filtering and normalized search', async () => {
+    const createdAt = new Date('2026-06-01T00:00:00Z')
+    const updatedAt = new Date('2026-06-02T00:00:00Z')
+    const prisma = makePrisma({
+      forbiddenWords: [
+        {
+          id: 'fw1',
+          phrase: 'Bad Word',
+          normalizedPhrase: 'bad word',
+          action: 'BLOCK',
+          matchType: 'WHOLE_WORD',
+          enabled: true,
+          note: null,
+          createdAt,
+          updatedAt,
+        },
+      ],
+    })
+    const out = await new ModerationService(prisma).listForbiddenWords(false, ' BAD   WORD ')
+
+    expect(out[0]).toMatchObject({ id: 'fw1', phrase: 'Bad Word', action: 'BLOCK' })
+    expect(prisma.forbiddenWord.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { enabled: true, normalizedPhrase: { contains: 'bad word' } },
+      })
+    )
+  })
+
+  it('normalizes created phrases and trims empty notes to null', async () => {
+    const prisma = makePrisma()
+    const out = await new ModerationService(prisma).createForbiddenWord({
+      phrase: '  Bad   Word  ',
+      action: 'BLOCK',
+      matchType: 'WHOLE_WORD',
+      enabled: true,
+      note: '   ',
+    })
+
+    expect(out.phrase).toBe('Bad   Word')
+    expect(prisma.forbiddenWord.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        phrase: 'Bad   Word',
+        normalizedPhrase: 'bad word',
+        note: null,
+      }),
+    })
+  })
+
+  it('404s when deleting a missing rule', async () => {
+    const svc = new ModerationService(makePrisma({ forbiddenWord: null }))
+    await expect(svc.deleteForbiddenWord('missing')).rejects.toBeInstanceOf(NotFoundException)
   })
 })
 

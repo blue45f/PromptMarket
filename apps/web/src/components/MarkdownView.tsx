@@ -1,11 +1,32 @@
 import { useState, useRef, useEffect, type ReactNode } from 'react'
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown, {
+  defaultUrlTransform,
+  type Components,
+  type UrlTransform,
+} from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-
-const REMARK_PLUGINS = [remarkGfm]
 import { useTranslation } from 'react-i18next'
 import { Check, Copy } from 'lucide-react'
 import { cn } from '@utils/cn'
+
+const REMARK_PLUGINS = [remarkGfm]
+const MARKDOWN_COMPONENTS: Components = {
+  pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+  a: ({ node: _node, href, children, ...props }) => {
+    const external = isExternalHref(href)
+    return (
+      <a
+        {...props}
+        href={href}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
+      >
+        {children}
+      </a>
+    )
+  },
+}
+const SAFE_RELATIVE_PREFIXES = ['/', './', '../', '#']
 
 interface MarkdownViewProps {
   source: string
@@ -79,6 +100,36 @@ function CodeBlock({ children }: { children: ReactNode }) {
   )
 }
 
+function isExternalHref(href: string | undefined): boolean {
+  return !!href && /^(?:https?:)?\/\//i.test(href)
+}
+
+const safeMarkdownUrl: UrlTransform = (url, key, node) => {
+  const transformed = defaultUrlTransform(url)
+  if (!transformed) return ''
+  if (key !== 'href' && key !== 'src') return transformed
+
+  try {
+    const parsed = new URL(transformed, 'https://promptmarket.local')
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return transformed
+    if (key === 'href' && (parsed.protocol === 'mailto:' || parsed.protocol === 'tel:')) {
+      return transformed
+    }
+  } catch {
+    if (SAFE_RELATIVE_PREFIXES.some((prefix) => transformed.startsWith(prefix))) {
+      return transformed
+    }
+  }
+
+  if (
+    node.tagName === 'a' &&
+    SAFE_RELATIVE_PREFIXES.some((prefix) => transformed.startsWith(prefix))
+  ) {
+    return transformed
+  }
+  return ''
+}
+
 export default function MarkdownView({ source, className }: MarkdownViewProps) {
   return (
     <div
@@ -94,9 +145,9 @@ export default function MarkdownView({ source, className }: MarkdownViewProps) {
     >
       <ReactMarkdown
         remarkPlugins={REMARK_PLUGINS}
-        components={{
-          pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
-        }}
+        skipHtml
+        urlTransform={safeMarkdownUrl}
+        components={MARKDOWN_COMPONENTS}
       >
         {source}
       </ReactMarkdown>

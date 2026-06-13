@@ -335,6 +335,7 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
   const { t } = useTranslation('home')
   const spotlightRef = useSpotlight<HTMLDivElement>()
   const { ref, revealed } = useReveal<HTMLDivElement>()
+  const [spotlightSlot] = useState(() => Math.floor(Date.now() / (3 * 60 * 60 * 1000)))
 
   // Rotate the featured maker across distinct authors in the featured pool,
   // pinned per ~3-hour window so the same visitor sees the same spotlight
@@ -352,15 +353,14 @@ function MakerSpotlight({ items }: { items: import('@/types').ListingCard[] }) {
     if (candidates.length === 0) {
       return { username: 'mira', avatar: 'M', listings: [] as typeof items }
     }
-    const slot = Math.floor(Date.now() / (3 * 60 * 60 * 1000))
-    const username = candidates[slot % candidates.length]
+    const username = candidates[spotlightSlot % candidates.length]
     const listings = items.filter((l) => l.author?.username === username).slice(0, 3)
     return {
       username,
       avatar: username[0]?.toUpperCase() ?? 'M',
       listings,
     }
-  }, [items])
+  }, [items, spotlightSlot])
   return (
     <section
       ref={ref}

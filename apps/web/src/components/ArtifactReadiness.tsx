@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Braces, Layers3, ListChecks, Terminal } from 'lucide-react'
 import type { ListingType } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
+import { extractTemplateVariables } from './artifactReadinessUtils'
 
 interface ArtifactReadinessProps {
   type: ListingType
@@ -14,24 +15,6 @@ interface ArtifactReadinessProps {
 }
 
 type SourceState = 'full' | 'preview' | 'locked'
-
-const VARIABLE_PATTERN = /\{\{\s*([A-Za-z][\w.-]{0,48})\s*\}\}/g
-
-export function extractTemplateVariables(source?: string | null): string[] {
-  if (!source) return []
-
-  const variables: string[] = []
-  const seen = new Set<string>()
-
-  for (const match of source.matchAll(VARIABLE_PATTERN)) {
-    const name = match[1]
-    if (!name || seen.has(name)) continue
-    seen.add(name)
-    variables.push(name)
-  }
-
-  return variables
-}
 
 export default function ArtifactReadiness({
   type,

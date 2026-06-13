@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import {
@@ -14,6 +13,7 @@ import { useCreateThread } from '@features/community'
 import { usePageMeta } from '@hooks/usePageMeta'
 import AttachmentInput from '@components/AttachmentInput'
 import { cn } from '@utils/cn'
+import { zodFormResolver } from '@utils/zodFormResolver'
 
 // Attachments are managed outside react-hook-form (the picker resizes files
 // asynchronously), so the form itself validates only the text fields.
@@ -44,7 +44,7 @@ export default function CommunityNewPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<ThreadFormValues>({
-    resolver: zodResolver(threadFormSchema as any),
+    resolver: zodFormResolver(threadFormSchema),
     defaultValues: {
       title: '',
       body: '',
