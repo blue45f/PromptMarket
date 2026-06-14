@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import i18n from '@/i18n'
 import type { MessageDto, MessageThreadSummaryDto } from '@promptmarket/shared'
 import { api, getErrorMessage } from '@services/api'

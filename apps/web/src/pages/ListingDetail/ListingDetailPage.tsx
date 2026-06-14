@@ -36,7 +36,7 @@ import {
 import { useStartMessageThread } from '@features/messages'
 import { getErrorMessage } from '@services/api'
 import { formatDate, formatPrice, formatRelative } from '@utils/format'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { Textarea } from '@components/ui'
 import TypeBadge from '@components/TypeBadge'
 import ModelBadge from '@components/ModelBadge'

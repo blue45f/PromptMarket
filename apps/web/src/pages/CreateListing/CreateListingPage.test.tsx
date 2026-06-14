@@ -15,8 +15,8 @@ vi.mock('@features/marketplace/queries', () => ({
   useCreateListing: vi.fn(() => ({ mutateAsync: createMutateAsync, isPending: false })),
   useListings: vi.fn(() => ({ data: { items: [] }, isPending: false })),
 }))
-vi.mock('react-hot-toast', () => ({
-  default: {
+vi.mock('sonner', () => ({
+  toast: {
     success: (...args: unknown[]) => toastSuccess(...args),
     error: (...args: unknown[]) => toastError(...args),
     custom: (...args: unknown[]) => toastCustom(...args),

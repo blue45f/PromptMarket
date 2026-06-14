@@ -17,7 +17,7 @@ import { SkeletonGrid } from '@components/SkeletonCard'
 import EmptyState from '@components/EmptyState'
 import { formatDollars } from '@utils/format'
 import { cn } from '@utils/cn'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 
 const TOPUP_AMOUNTS = [10, 50, 100]
 

@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useForm, useWatch } from 'react-hook-form'
 import * as Tabs from '@radix-ui/react-tabs'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import {
   CATEGORIES,
