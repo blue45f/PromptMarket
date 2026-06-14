@@ -2,6 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "module": "commonjs",
+    // NestJS DI relies on value imports of classes used purely as type
+    // annotations (constructor injection). verbatimModuleSyntax would force
+    // them to `import type` and erase the runtime import, breaking DI.
+    "verbatimModuleSyntax": false,
     "declaration": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
