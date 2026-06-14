@@ -55,6 +55,12 @@ importers:
 
   apps/api:
     dependencies:
+      '@heejun/auth':
+        specifier: ^0.3.0
+        version: 0.3.0
+      '@heejun/contracts':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@nestjs/common':
         specifier: ^11.1.24
         version: 11.1.24(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -91,9 +97,6 @@ importers:
       compression:
         specifier: ^1.8.1
         version: 1.8.1
-      google-auth-library:
-        specifier: ^10.7.0
-        version: 10.7.0
       helmet:
         specifier: ^8.2.0
         version: 8.2.0
@@ -1197,6 +1200,29 @@ packages:
     resolution:
       {
         integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==,
+      }
+
+  '@heejun/auth@0.3.0':
+    resolution:
+      {
+        integrity: sha512-2GhWkJloXXyykiyF1pW4hDryhde5j/uEPRx1otqa259IwyKtyGefsUc482Vy9iMXT9rjtHwuoGiQtW8m92rcXA==,
+      }
+    peerDependencies:
+      drizzle-orm: ^0.36.0
+    peerDependenciesMeta:
+      drizzle-orm:
+        optional: true
+
+  '@heejun/contracts@0.1.0':
+    resolution:
+      {
+        integrity: sha512-9QAmTagU3UQ6rPC6eqdp6KQsFL57VhlAvl0KfwC179JEooKF5bBQJbnyUsjy580vL3zzbUhd4aEAQ4UpXHku2Q==,
+      }
+
+  '@heejun/core-server@0.1.0':
+    resolution:
+      {
+        integrity: sha512-vGwJ6n5uFiLT2Zd/nmBwZpOStU/uylC2pY1EQEXZVcDRbu8n3uZoN77nnYkuYde9fC1FahCsCtwTvrJ+8KoRYg==,
       }
 
   '@heejun/eslint-config@4.0.0':
@@ -4376,13 +4402,6 @@ packages:
     engines: { node: '>=0.4.0' }
     hasBin: true
 
-  agent-base@7.1.4:
-    resolution:
-      {
-        integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==,
-      }
-    engines: { node: '>= 14' }
-
   ajv-formats@2.1.1:
     resolution:
       {
@@ -4704,12 +4723,6 @@ packages:
     resolution:
       {
         integrity: sha512-RKshQI1R3YQ+n9YJz2QQ147P66ELpa1FQEg20Dk8oW9t2KgLbpDLLp9aGZ7y8WHSshDknG0bknqGw5/tyCs5tw==,
-      }
-
-  bignumber.js@9.3.1:
-    resolution:
-      {
-        integrity: sha512-Ko0uX15oIUS7wJ3Rb30Fs6SkVbLmPBAKdlm7q9+ak9bbIeFf0MwuBsQV6z7+X768/cHsfg+WlysDWJcmthjsjQ==,
       }
 
   bl@4.1.0:
@@ -5277,13 +5290,6 @@ packages:
       {
         integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==,
       }
-
-  data-uri-to-buffer@4.0.1:
-    resolution:
-      {
-        integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==,
-      }
-    engines: { node: '>= 12' }
 
   data-urls@7.0.0:
     resolution:
@@ -6096,13 +6102,6 @@ packages:
       picomatch:
         optional: true
 
-  fetch-blob@3.2.0:
-    resolution:
-      {
-        integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==,
-      }
-    engines: { node: ^12.20 || >= 14.13 }
-
   file-entry-cache@8.0.0:
     resolution:
       {
@@ -6181,13 +6180,6 @@ packages:
       typescript: '>3.6.0'
       webpack: ^5.11.0
 
-  formdata-polyfill@4.0.10:
-    resolution:
-      {
-        integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==,
-      }
-    engines: { node: '>=12.20.0' }
-
   forwarded@0.2.0:
     resolution:
       {
@@ -6241,20 +6233,6 @@ packages:
       {
         integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==,
       }
-
-  gaxios@7.1.5:
-    resolution:
-      {
-        integrity: sha512-5FZy72Rh8LhtjmvDrKkI+lVhrsQrVKVsItxMoDm5mNQE+xR0WVIIs+jzPSJgBvKVsLi24fZhXJIsNI0bihDzFg==,
-      }
-    engines: { node: '>=18' }
-
-  gcp-metadata@8.1.2:
-    resolution:
-      {
-        integrity: sha512-zV/5HKTfCeKWnxG0Dmrw51hEWFGfcF2xiXqcA3+J90WDuP0SvoiSO5ORvcBsifmx/FoIjgQN3oNOGaQ5PhLFkg==,
-      }
-    engines: { node: '>=18' }
 
   generate-function@2.3.1:
     resolution:
@@ -6385,20 +6363,6 @@ packages:
         integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==,
       }
     engines: { node: '>= 0.4' }
-
-  google-auth-library@10.7.0:
-    resolution:
-      {
-        integrity: sha512-QpTAbNJ36TliZLx3TTtahR8HG0hN9RllL1e3FymOvQSIKK8JmgV58H924ub2wa2DsS3ANjjP1Aw1N+Ramc8hqQ==,
-      }
-    engines: { node: '>=18' }
-
-  google-logging-utils@1.1.3:
-    resolution:
-      {
-        integrity: sha512-eAmLkjDjAFCVXg7A1unxHsLf961m6y17QFqXqAXGj/gVkKFrEICfStRfwUlGNfeCEjNRa32JEWOUTlYXPyyKvA==,
-      }
-    engines: { node: '>=14' }
 
   gopd@1.2.0:
     resolution:
@@ -6556,13 +6520,6 @@ packages:
       {
         integrity: sha512-RJ8XvFvpPM/Dmc5SV+dC4y5PCeOhT3x1Hq0NU3rjGeg5a/CqlhZ7uudknPwZFz4aeAXDcbAyaeP7GAo9lvngtA==,
       }
-
-  https-proxy-agent@7.0.6:
-    resolution:
-      {
-        integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==,
-      }
-    engines: { node: '>= 14' }
 
   husky@9.1.7:
     resolution:
@@ -7018,6 +6975,12 @@ packages:
       }
     hasBin: true
 
+  jose@5.10.0:
+    resolution:
+      {
+        integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==,
+      }
+
   joycon@3.1.1:
     resolution:
       {
@@ -7057,12 +7020,6 @@ packages:
       }
     engines: { node: '>=6' }
     hasBin: true
-
-  json-bigint@1.0.0:
-    resolution:
-      {
-        integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==,
-      }
 
   json-buffer@3.0.1:
     resolution:
@@ -8005,26 +7962,11 @@ packages:
       }
     engines: { node: ^18 || ^20 || >= 21 }
 
-  node-domexception@1.0.0:
-    resolution:
-      {
-        integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==,
-      }
-    engines: { node: '>=10.5.0' }
-    deprecated: Use your platform's native DOMException instead
-
   node-emoji@1.11.0:
     resolution:
       {
         integrity: sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==,
       }
-
-  node-fetch@3.3.2:
-    resolution:
-      {
-        integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==,
-      }
-    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
 
   node-gyp-build@4.8.4:
     resolution:
@@ -10217,13 +10159,6 @@ packages:
         integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==,
       }
 
-  web-streams-polyfill@3.3.3:
-    resolution:
-      {
-        integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==,
-      }
-    engines: { node: '>= 8' }
-
   webidl-conversions@8.0.1:
     resolution:
       {
@@ -11078,6 +11013,21 @@ snapshots:
       react-dom: 19.2.7(react@19.2.7)
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@heejun/auth@0.3.0':
+    dependencies:
+      '@heejun/contracts': 0.1.0
+      '@heejun/core-server': 0.1.0
+      jose: 5.10.0
+      zod: 4.4.3
+
+  '@heejun/contracts@0.1.0':
+    dependencies:
+      zod: 4.4.3
+
+  '@heejun/core-server@0.1.0':
+    dependencies:
+      '@heejun/contracts': 0.1.0
 
   '@heejun/eslint-config@4.0.0(@typescript-eslint/parser@8.60.1(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@4.4.5(eslint-plugin-import-x@4.16.2(@typescript-eslint/utils@8.60.1(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint-import-resolver-node@0.3.9)(eslint@10.4.1(jiti@2.7.0)))(eslint@10.4.1(jiti@2.7.0)))(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3)':
     dependencies:
@@ -13016,8 +12966,6 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  agent-base@7.1.4: {}
-
   ajv-formats@2.1.1(ajv@8.20.0):
     optionalDependencies:
       ajv: 8.20.0
@@ -13186,8 +13134,6 @@ snapshots:
   bidi-js@1.0.3:
     dependencies:
       require-from-string: 2.0.2
-
-  bignumber.js@9.3.1: {}
 
   bl@4.1.0:
     dependencies:
@@ -13507,8 +13453,6 @@ snapshots:
   csstype@3.2.3: {}
 
   damerau-levenshtein@1.0.8: {}
-
-  data-uri-to-buffer@4.0.1: {}
 
   data-urls@7.0.0:
     dependencies:
@@ -14077,11 +14021,6 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.4
 
-  fetch-blob@3.2.0:
-    dependencies:
-      node-domexception: 1.0.0
-      web-streams-polyfill: 3.3.3
-
   file-entry-cache@8.0.0:
     dependencies:
       flat-cache: 4.0.1
@@ -14154,10 +14093,6 @@ snapshots:
       typescript: 5.9.3
       webpack: 5.106.0(esbuild@0.27.7)
 
-  formdata-polyfill@4.0.10:
-    dependencies:
-      fetch-blob: 3.2.0
-
   forwarded@0.2.0: {}
 
   fresh@2.0.0: {}
@@ -14188,22 +14123,6 @@ snapshots:
       is-document.all: 1.0.0
 
   functions-have-names@1.2.3: {}
-
-  gaxios@7.1.5:
-    dependencies:
-      extend: 3.0.2
-      https-proxy-agent: 7.0.6
-      node-fetch: 3.3.2
-    transitivePeerDependencies:
-      - supports-color
-
-  gcp-metadata@8.1.2:
-    dependencies:
-      gaxios: 7.1.5
-      google-logging-utils: 1.1.3
-      json-bigint: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
 
   generate-function@2.3.1:
     dependencies:
@@ -14281,19 +14200,6 @@ snapshots:
     dependencies:
       define-properties: 1.2.1
       gopd: 1.2.0
-
-  google-auth-library@10.7.0:
-    dependencies:
-      base64-js: 1.5.1
-      ecdsa-sig-formatter: 1.0.11
-      gaxios: 7.1.5
-      gcp-metadata: 8.1.2
-      google-logging-utils: 1.1.3
-      jws: 4.0.1
-    transitivePeerDependencies:
-      - supports-color
-
-  google-logging-utils@1.1.3: {}
 
   gopd@1.2.0: {}
 
@@ -14391,13 +14297,6 @@ snapshots:
       toidentifier: 1.0.1
 
   http-status-codes@2.3.0: {}
-
-  https-proxy-agent@7.0.6:
-    dependencies:
-      agent-base: 7.1.4
-      debug: 4.4.3
-    transitivePeerDependencies:
-      - supports-color
 
   husky@9.1.7: {}
 
@@ -14621,6 +14520,8 @@ snapshots:
 
   jiti@2.7.0: {}
 
+  jose@5.10.0: {}
+
   joycon@3.1.1: {}
 
   js-tokens@4.0.0: {}
@@ -14656,10 +14557,6 @@ snapshots:
       - '@noble/hashes'
 
   jsesc@3.1.0: {}
-
-  json-bigint@1.0.0:
-    dependencies:
-      bignumber.js: 9.3.1
 
   json-buffer@3.0.1: {}
 
@@ -15341,17 +15238,9 @@ snapshots:
 
   node-addon-api@8.8.0: {}
 
-  node-domexception@1.0.0: {}
-
   node-emoji@1.11.0:
     dependencies:
       lodash: 4.18.1
-
-  node-fetch@3.3.2:
-    dependencies:
-      data-uri-to-buffer: 4.0.1
-      fetch-blob: 3.2.0
-      formdata-polyfill: 4.0.10
 
   node-gyp-build@4.8.4: {}
 
@@ -16822,8 +16711,6 @@ snapshots:
   wcwidth@1.0.1:
     dependencies:
       defaults: 1.0.4
-
-  web-streams-polyfill@3.3.3: {}
 
   webidl-conversions@8.0.1: {}
 

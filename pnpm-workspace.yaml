@@ -20,3 +20,6 @@ minimumReleaseAgeExclude:
   - zustand
   - '@heejun/prettier-config@3.0.0'
   - '@heejun/eslint-config@4.0.0'
+  - '@heejun/auth@0.3.0'
+  - '@heejun/contracts@0.1.0'
+  - '@heejun/core-server@0.1.0'

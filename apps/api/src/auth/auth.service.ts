@@ -1,38 +1,37 @@
 import {
   ConflictException,
   ForbiddenException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { JwtService } from '@nestjs/jwt'
-import * as argon2 from 'argon2'
 
 import { isPrismaP2002 } from '../prisma/prisma-errors'
 import { PrismaService } from '../prisma/prisma.service'
 
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
+import { Argon2Hasher } from './heejun/argon2-hasher'
+import { OAUTH_VERIFIER } from './heejun/oauth.provider'
+import { TokenService } from './heejun/token.service'
 
+import type { OAuthProfile, OAuthVerifier } from '@heejun/auth'
+
+/**
+ * 인증 서비스. 암호 해싱·토큰 발급/검증·Google ID 토큰 검증은 모두 `@heejun/auth`
+ * 포트(Argon2Hasher / TokenService / OAuthVerifier)에 위임하고, 마켓플레이스 고유
+ * 규칙(회원명 유일성·정지 계정 차단·잔액 초기화·Google 계정 연결)은 여기서 소유한다.
+ */
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwt: JwtService,
-    private readonly config: ConfigService
+    private readonly tokens: TokenService,
+    private readonly hasher: Argon2Hasher,
+    private readonly config: ConfigService,
+    @Inject(OAUTH_VERIFIER) private readonly oauth: OAuthVerifier | null
   ) {}
-
-  private signToken(user: { id: string; email: string; username: string; isAdmin: boolean }) {
-    return this.jwt.sign(
-      {
-        sub: user.id,
-        email: user.email,
-        username: user.username,
-        isAdmin: user.isAdmin,
-      },
-      { expiresIn: '7d' }
-    )
-  }
 
   async register(dto: RegisterDto) {
     const existing = await this.prisma.user.findFirst({
@@ -43,7 +42,7 @@ export class AuthService {
     if (existing) {
       throw new ConflictException('Email or username already in use')
     }
-    const passwordHash = await argon2.hash(dto.password)
+    const passwordHash = await this.hasher.hash(dto.password)
     try {
       const user = await this.prisma.user.create({
         data: {
@@ -53,7 +52,7 @@ export class AuthService {
           balanceCents: 0,
         },
       })
-      const token = this.signToken(user)
+      const token = this.tokens.sign(user)
       return { token, user: this.publicUser(user) }
     } catch (err) {
       if (isPrismaP2002(err)) {
@@ -72,17 +71,13 @@ export class AuthService {
     if (!user || !user.passwordHash) {
       throw new UnauthorizedException('Invalid credentials')
     }
-    let ok: boolean
-    try {
-      ok = await argon2.verify(user.passwordHash, dto.password)
-    } catch {
-      ok = false
-    }
+    // Argon2Hasher 가 손상 해시의 throw 까지 흡수해 false 로 돌려준다.
+    const ok = await this.hasher.verify(dto.password, user.passwordHash)
     if (!ok) {
       throw new UnauthorizedException('Invalid credentials')
     }
     this.assertNotSuspended(user)
-    const token = this.signToken(user)
+    const token = this.tokens.sign(user)
     return {
       token,
       user: this.publicUser(user),
@@ -108,28 +103,25 @@ export class AuthService {
     return { googleClientId: googleClientId ? googleClientId : null }
   }
 
-  // Verify a Google ID token (GIS credential), then find-or-create the user by
-  // email and issue the same JWT as password login. The audience is always
-  // passed so the token must target our client, and email_verified is required.
+  // Verify a Google ID token (GIS credential) via @heejun/auth's OAuthVerifier,
+  // then find-or-create the user by email and issue the same JWT as password
+  // login. email_verified is required and the audience is enforced by the
+  // verifier, so the token must target our client.
   async googleAuth(credential: string) {
-    const clientId = this.config.get<string>('GOOGLE_CLIENT_ID')?.trim()
-    if (!clientId) throw new UnauthorizedException('Google sign-in is not configured')
+    if (!this.oauth) throw new UnauthorizedException('Google sign-in is not configured')
 
-    const { OAuth2Client } = await import('google-auth-library')
-    const client = new OAuth2Client(clientId)
-    let payload: import('google-auth-library').TokenPayload | undefined
+    let profile: OAuthProfile
     try {
-      const ticket = await client.verifyIdToken({ idToken: credential, audience: clientId })
-      payload = ticket.getPayload()
+      profile = await this.oauth.verify(credential)
     } catch {
       throw new UnauthorizedException('Google authentication failed')
     }
-    if (!payload?.sub || !payload.email || !payload.email_verified) {
+    if (!profile.sub || !profile.email || !profile.emailVerified) {
       throw new UnauthorizedException('Google authentication failed')
     }
 
-    const sub = payload.sub
-    const email = payload.email.toLowerCase()
+    const sub = profile.sub
+    const email = profile.email.toLowerCase()
 
     const existing = await this.prisma.user.findUnique({ where: { email } })
     if (existing) {
@@ -142,14 +134,15 @@ export class AuthService {
               where: { id: existing.id },
               data: { googleSub: sub },
             })
-      return { token: this.signToken(user), user: this.publicUser(user) }
+      return { token: this.tokens.sign(user), user: this.publicUser(user) }
     }
 
-    const username = await this.uniqueUsername(payload.name ?? email.split('@')[0] ?? 'user')
+    // 표준 OAuthProfile 은 표시 이름을 담지 않으므로(이메일 로컬파트로 시드) 자동 생성한다.
+    const username = await this.uniqueUsername(email.split('@')[0] ?? 'user')
     const user = await this.prisma.user.create({
       data: { email, username, provider: 'google', googleSub: sub, balanceCents: 0 },
     })
-    return { token: this.signToken(user), user: this.publicUser(user) }
+    return { token: this.tokens.sign(user), user: this.publicUser(user) }
   }
 
   // Derive a unique username from a display name/email, appending a numeric
