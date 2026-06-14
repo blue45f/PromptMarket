@@ -16,6 +16,9 @@ importers:
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.4.1(jiti@2.7.0))
+      '@heejun/prettier-config':
+        specifier: ^3.0.0
+        version: 3.0.0(prettier@3.8.3)
       eslint:
         specifier: ^10.4.0
         version: 10.4.1(jiti@2.7.0)
@@ -1182,6 +1185,19 @@ packages:
       {
         integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==,
       }
+
+  '@heejun/prettier-config@3.0.0':
+    resolution:
+      {
+        integrity: sha512-xY6EHDmFUgNuIMDlQp3LtVbtUgPeUEB5ml6spuX9+n41+J2IR5n3sZT5Dwq7omCyVbDzATa48a0Xu0VGUmvvVg==,
+      }
+    engines: { node: '>=22' }
+    peerDependencies:
+      prettier: '>=3.4'
+      prettier-plugin-tailwindcss: '>=0.6'
+    peerDependenciesMeta:
+      prettier-plugin-tailwindcss:
+        optional: true
 
   '@hono/node-server@1.19.11':
     resolution:
@@ -10051,6 +10067,10 @@ snapshots:
       react-dom: 19.2.7(react@19.2.7)
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@heejun/prettier-config@3.0.0(prettier@3.8.3)':
+    dependencies:
+      prettier: 3.8.3
 
   '@hono/node-server@1.19.11(hono@4.12.23)':
     dependencies:

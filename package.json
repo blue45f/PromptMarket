@@ -41,10 +41,12 @@
     "docker:down": "docker compose down",
     "validate:architecture": "node scripts/validate-architecture.mjs"
   },
+  "prettier": "@heejun/prettier-config",
   "devDependencies": {
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
     "@eslint/js": "^10.0.1",
+    "@heejun/prettier-config": "^3.0.0",
     "eslint": "^10.4.0",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "eslint-plugin-react-hooks": "^7.1.1",

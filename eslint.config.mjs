@@ -9,7 +9,8 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 // Flat config for the PromptMarket pnpm monorepo. Modeled on the sibling
 // resume repo (React 19 + Vite) for portfolio consistency, then widened to
 // also cover the NestJS api and the shared package. Prettier owns formatting
-// (see .prettierrc + the `format:check` step), so this config only enforces
+// (shared @heejun/prettier-config via the package.json "prettier" field + the
+// `format:check` step), so this config only enforces
 // correctness/quality rules, not stylistic ones.
 export default defineConfig([
   globalIgnores([
