@@ -6,10 +6,16 @@ import { Logger } from 'nestjs-pino'
 import { ZodValidationPipe, cleanupOpenApiDoc } from 'nestjs-zod'
 
 import { AppModule } from './app.module'
+import { validateEnv } from './config/env'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true })
-  app.useLogger(app.get(Logger))
+  const logger = app.get(Logger)
+  app.useLogger(logger)
+
+  // Non-fatal env validation: warns about misconfiguration / insecure defaults
+  // without ever throwing, so a live boot is never broken by stricter checks.
+  validateEnv(process.env, logger)
 
   app.use(compression())
   app.use(
