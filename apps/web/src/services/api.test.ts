@@ -1,94 +1,69 @@
-import { AxiosError } from 'axios';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { useAuthStore } from '@store/auth';
-import { api, getErrorMessage } from './api';
+import { beforeEach, describe, expect, it } from 'vitest'
+import { useAuthStore } from '@store/auth'
+import { api, applyAuth, getErrorMessage } from './api'
 
 beforeEach(() => {
-  useAuthStore.setState({ token: null, user: null });
-});
+  useAuthStore.setState({ token: null, user: null })
+})
 
-describe('api request interceptor', () => {
-  function reqHandler() {
-    const handlers = (
-      api.interceptors.request as unknown as {
-        handlers: { fulfilled: (config: unknown) => Promise<{ headers: Record<string, string> }> }[];
-      }
-    ).handlers;
-    return handlers[0].fulfilled;
-  }
+describe('applyAuth (ky beforeRequest)', () => {
+  it('does not attach Authorization when no token is set', () => {
+    const headers = new Headers()
+    applyAuth(headers)
+    expect(headers.get('Authorization')).toBeNull()
+  })
 
-  it('does not attach Authorization when no token is set', async () => {
-    const config = await reqHandler()({ headers: {} });
-    expect(config.headers.Authorization).toBeUndefined();
-  });
+  it('attaches Bearer token when the auth store has one', () => {
+    useAuthStore.setState({ token: 't-1', user: null })
+    const headers = new Headers()
+    applyAuth(headers)
+    expect(headers.get('Authorization')).toBe('Bearer t-1')
+  })
+})
 
-  it('attaches Bearer token when the auth store has one', async () => {
-    useAuthStore.setState({ token: 't-1', user: null });
-    const config = await reqHandler()({ headers: {} });
-    expect(config.headers.Authorization).toBe('Bearer t-1');
-  });
+describe('api surface', () => {
+  it('exposes the standard verbs', () => {
+    expect(typeof api.get).toBe('function')
+    expect(typeof api.post).toBe('function')
+    expect(typeof api.patch).toBe('function')
+    expect(typeof api.put).toBe('function')
+    expect(typeof api.delete).toBe('function')
+  })
+})
 
-  it('creates headers if config arrived without them', async () => {
-    useAuthStore.setState({ token: 't-2', user: null });
-    const config = await reqHandler()({});
-    expect(config.headers.Authorization).toBe('Bearer t-2');
-  });
-});
+/** ky HTTPError 는 파싱된 응답 본문을 `data` 에 보관한다. */
+function httpErrWith(message: string | string[]) {
+  const e = new Error('req fail') as Error & { data?: unknown }
+  e.data = { message }
+  return e
+}
 
 describe('getErrorMessage', () => {
-  it('returns the message field from an axios response when it is a string', () => {
-    const err = new AxiosError(
-      'req fail',
-      'ERR_BAD_REQUEST',
-      undefined,
-      undefined,
-      {
-        status: 400,
-        data: { message: 'Invalid credentials' },
-        statusText: 'Bad Request',
-        headers: {},
-        config: { headers: {} as never },
-      },
-    );
-    expect(getErrorMessage(err)).toBe('Invalid credentials');
-  });
+  it('returns the message field when it is a string', () => {
+    expect(getErrorMessage(httpErrWith('Invalid credentials'))).toBe('Invalid credentials')
+  })
 
   it('joins array-shaped validation messages', () => {
-    const err = new AxiosError(
-      'req fail',
-      'ERR_BAD_REQUEST',
-      undefined,
-      undefined,
-      {
-        status: 422,
-        data: { message: ['title is required', 'price must be >= 0'] },
-        statusText: 'Unprocessable',
-        headers: {},
-        config: { headers: {} as never },
-      },
-    );
-    expect(getErrorMessage(err)).toBe(
-      'title is required, price must be >= 0',
-    );
-  });
+    expect(getErrorMessage(httpErrWith(['title is required', 'price must be >= 0']))).toBe(
+      'title is required, price must be >= 0'
+    )
+  })
 
-  it('falls back to the axios error message when response has no body', () => {
-    const err = new AxiosError('Network Error');
-    expect(getErrorMessage(err)).toBe('Network Error');
-  });
+  it('falls back to the error message when the response has no body', () => {
+    expect(getErrorMessage(new Error('Network Error'))).toBe('Network Error')
+  })
 
-  it('uses the fallback string for an axios error with no message', () => {
-    const err = new AxiosError('');
-    expect(getErrorMessage(err, '문제가 발생했어요')).toBe('문제가 발생했어요');
-  });
+  it('uses the fallback string for an error with no message', () => {
+    expect(getErrorMessage(new Error(''), '문제가 발생했어요')).toBe('문제가 발생했어요')
+  })
 
   it('returns the message from a plain Error', () => {
-    expect(getErrorMessage(new Error('oops'))).toBe('oops');
-  });
+    expect(getErrorMessage(new Error('oops'))).toBe('oops')
+  })
 
   it('uses the fallback for unknown shapes', () => {
-    expect(getErrorMessage(null, 'fb')).toBe('fb');
-    expect(getErrorMessage(42, 'fb')).toBe('fb');
-    expect(getErrorMessage({ what: 'this' }, 'fb')).toBe('fb');
-  });
-});
+    expect(getErrorMessage(null, 'fb')).toBe('fb')
+    expect(getErrorMessage(42, 'fb')).toBe('fb')
+    expect(getErrorMessage({ what: 'this' }, 'fb')).toBe('fb')
+  })
+})
