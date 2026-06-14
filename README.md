@@ -44,19 +44,19 @@
 | 계층         | 기술                                                                                                                                                                                                                                                                                                                                                              |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Frontend** | Vite 8 · React **19**(React Compiler 활성화) · TypeScript · **Tailwind v4**(Oxide 엔진, CSS 전용 `@theme` 설정, 클래스 기반 다크 모드) · **TanStack Query v5** · **React Hook Form + Zod resolver** · Zustand 5 · React Router 7 · **lucide-react v1** · react-hot-toast · **Radix UI**(Dialog / Tabs / DropdownMenu) · clsx · **tailwind-merge v3** · Inter 폰트 |
-| **Backend**  | NestJS **11** · Prisma **7**(기본 SQLite, Docker에서는 Postgres) · **nestjs-zod** · **argon2id** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino**(pino-http 11 / pino-pretty 13)                                                                                                                                                |
+| **Backend**  | NestJS **11** · Prisma **7**(PostgreSQL · `@prisma/adapter-pg`, Neon) · **nestjs-zod** · **argon2id** · JWT · **@nestjs/swagger** · **@nestjs/throttler** · **helmet** · **nestjs-pino**(pino-http 11 / pino-pretty 13)                                                                                                                                                |
 | **Shared**   | `@promptmarket/shared` — **Zod** 스키마 + 21개 모델 레지스트리 + 기법 / 난이도 / 라이선스 enum + 뷰 헬퍼. api와 web에서 동일하게 사용하므로 DTO 불일치가 발생하지 않습니다.                                                                                                                                                                                       |
 | **Tooling**  | **pnpm workspaces** · Docker / docker-compose · 멀티 스테이지 Dockerfile · **ESLint 10**(flat config, typescript-eslint + react-hooks + react-refresh) · **Prettier**                                                                                                                                                                                             |
 
 ---
 
-## 빠른 시작하기(로컬, SQLite)
+## 빠른 시작하기(로컬, Postgres)
 
 ```bash
 # 1. 의존성 설치(postinstall에서 @promptmarket/shared 빌드)
 pnpm install
 
-# 2. SQLite DB 설정 및 샘플 데이터 시드
+# 2. Postgres DB 설정 및 샘플 데이터 시드 (DATABASE_URL 필요 — 로컬 PG 또는 Neon)
 pnpm db:push
 pnpm seed
 
