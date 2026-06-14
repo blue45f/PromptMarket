@@ -1,6 +1,6 @@
-import 'dotenv/config';
-import path from 'node:path';
-import { defineConfig } from 'prisma/config';
+import 'dotenv/config'
+import path from 'node:path'
+import { defineConfig } from 'prisma/config'
 
 /**
  * Prisma 7 config. The datasource URL no longer lives in schema.prisma, so we
@@ -15,6 +15,6 @@ export default defineConfig({
     seed: 'tsx prisma/seed.ts',
   },
   datasource: {
-    url: process.env.DATABASE_URL ?? 'file:./prisma/dev.db',
+    url: process.env.DATABASE_URL ?? 'postgresql://localhost:5432/promptmarket',
   },
-});
+})
