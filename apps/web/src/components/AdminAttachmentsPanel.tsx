@@ -1,12 +1,12 @@
-import { useTranslation } from 'react-i18next'
-import { Trash2 } from 'lucide-react'
+import ConfirmActionButton from '@components/ConfirmActionButton'
 import {
   useAdminAttachments,
   useAdminDeleteAttachment,
   type AttachmentTarget,
-} from '@features/admin'
-import ConfirmActionButton from '@components/ConfirmActionButton'
-import { getErrorMessage } from '@services/api'
+} from '@domains/admin'
+import { getErrorMessage } from '@infrastructure/api'
+import { Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 function formatKb(bytes: number): string {
   return `${Math.max(1, Math.round(bytes / 1024))}KB`

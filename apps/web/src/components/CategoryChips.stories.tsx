@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import CategoryChips from './CategoryChips'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 /**
  * Horizontal, scrollable navigation rail of catalog categories. Each chip is a

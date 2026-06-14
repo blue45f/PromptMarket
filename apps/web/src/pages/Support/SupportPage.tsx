@@ -1,8 +1,4 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Controller, useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { ArrowUpRight, CheckCircle2, Loader2, LifeBuoy } from 'lucide-react'
+import { Field, Input, Textarea } from '@components/ui'
 import {
   INQUIRY_BODY_MAX,
   INQUIRY_CATEGORIES,
@@ -11,13 +7,17 @@ import {
   useSubmitInquiry,
   type InquiryFormInput,
   type InquiryReceipt,
-} from '@features/inquiry'
-import { TERMSDESK_SUPPORT_URL } from '@features/policies'
+} from '@domains/inquiry'
+import { TERMSDESK_SUPPORT_URL } from '@domains/policies'
 import { usePageMeta } from '@hooks/usePageMeta'
-import { formatDate } from '@utils/format'
-import { Field, Input, Textarea } from '@components/ui'
 import { cn } from '@utils/cn'
+import { formatDate } from '@utils/format'
 import { zodFormResolver } from '@utils/zodFormResolver'
+import { ArrowUpRight, CheckCircle2, Loader2, LifeBuoy } from 'lucide-react'
+import { useState } from 'react'
+import { Controller, useForm, useWatch } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 export default function SupportPage() {
   const { t } = useTranslation('inquiry')

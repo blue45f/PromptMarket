@@ -1,6 +1,7 @@
-import { useTranslation } from 'react-i18next'
-import type { License } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
+import { useTranslation } from 'react-i18next'
+
+import type { License } from '@promptmarket/shared'
 
 interface LicenseBadgeProps {
   license: License

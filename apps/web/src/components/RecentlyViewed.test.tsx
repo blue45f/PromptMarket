@@ -1,9 +1,10 @@
-import { describe, it, expect, vi, type Mock } from 'vitest'
+import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { describe, it, expect, vi, type Mock } from 'vitest'
+
 import RecentlyViewed from './RecentlyViewed'
-import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
 
 vi.mock('@hooks/useRecentlyViewed', () => ({
   useRecentlyViewed: vi.fn(),

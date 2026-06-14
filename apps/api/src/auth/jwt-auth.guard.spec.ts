@@ -1,8 +1,10 @@
 import { UnauthorizedException } from '@nestjs/common'
+import { describe, expect, it, vi } from 'vitest'
+
+import { JwtAuthGuard } from './jwt-auth.guard'
+
 import type { ExecutionContext } from '@nestjs/common'
 import type { JwtService } from '@nestjs/jwt'
-import { describe, expect, it, vi } from 'vitest'
-import { JwtAuthGuard } from './jwt-auth.guard'
 
 function makeContext(headers: Record<string, string | undefined>): {
   context: ExecutionContext

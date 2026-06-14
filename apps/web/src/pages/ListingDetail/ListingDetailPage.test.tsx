@@ -1,12 +1,13 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
+import { useListing, useCreateReviewReply } from '@domains/marketplace/queries'
+import { useAuthStore } from '@store/auth'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import ListingDetailPage from './ListingDetailPage'
-import { useListing, useCreateReviewReply } from '@features/marketplace/queries'
-import { useAuthStore } from '@store/auth'
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
 
-vi.mock('@features/marketplace/queries', () => ({
+import ListingDetailPage from './ListingDetailPage'
+
+vi.mock('@domains/marketplace/queries', () => ({
   useListing: vi.fn(),
   usePurchase: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
   useCreateReview: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
@@ -14,7 +15,7 @@ vi.mock('@features/marketplace/queries', () => ({
   useDeleteReviewReply: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
 }))
 
-vi.mock('@features/messages', () => ({
+vi.mock('@domains/messages', () => ({
   useStartMessageThread: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
 }))
 

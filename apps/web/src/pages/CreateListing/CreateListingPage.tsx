@@ -1,19 +1,11 @@
-import React, {
-  cloneElement,
-  isValidElement,
-  memo,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useForm, useWatch } from 'react-hook-form'
-import * as Tabs from '@radix-ui/react-tabs'
-import { toast } from 'sonner'
-import { z } from 'zod'
+import ListingCard from '@components/ListingCard'
+import ListingQualityChecklist from '@components/ListingQualityChecklist'
+import { evaluateListingQuality } from '@components/listingQualityUtils'
+import MarkdownView from '@components/MarkdownView'
+import ModelPicker from '@components/ModelPicker'
+import { Field as UiField, Input, Textarea } from '@components/ui'
+import { useCreateListing, useListings } from '@domains/marketplace/queries'
+import { usePageMeta } from '@hooks/usePageMeta'
 import {
   CATEGORIES,
   CreateListingSchema,
@@ -29,18 +21,27 @@ import {
   type ListingType,
   type PromptTechnique,
 } from '@promptmarket/shared'
-import { Loader2 } from 'lucide-react'
-import { useCreateListing, useListings } from '@features/marketplace/queries'
-import { usePageMeta } from '@hooks/usePageMeta'
-import MarkdownView from '@components/MarkdownView'
-import ModelPicker from '@components/ModelPicker'
-import ListingCard from '@components/ListingCard'
-import ListingQualityChecklist from '@components/ListingQualityChecklist'
-import { evaluateListingQuality } from '@components/listingQualityUtils'
-import { Field as UiField, Input, Textarea } from '@components/ui'
+import * as Tabs from '@radix-ui/react-tabs'
 import { cn } from '@utils/cn'
 import { formatPrice, modelLabel } from '@utils/format'
 import { zodFormResolver } from '@utils/zodFormResolver'
+import { Loader2 } from 'lucide-react'
+import React, {
+  cloneElement,
+  isValidElement,
+  memo,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from 'react'
+import { useForm, useWatch } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
+import { z } from 'zod'
+
 import type { ListingCard as ListingCardType } from '@/types'
 
 const QUICK_EMOJIS = ['✨', '🤖', '🧠', '🎨', '📝', '🚀', '⚡', '🛠️', '🧩', '🔌']
@@ -655,6 +656,10 @@ export default function CreateListingPage() {
               )}
 
               <Field label={t('fields.difficulty')}>
+                {/* Roving-tabindex radiogroup: focus lives on the active
+                    role="radio" child (tabIndex 0/-1) and arrow keys move it via
+                    onKeyDown here, so the container is intentionally not tabbable. */}
+                {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus -- roving tabindex on radio children */}
                 <div
                   role="radiogroup"
                   className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-canvas-deep dark:bg-night-deep"

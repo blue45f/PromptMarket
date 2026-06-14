@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react'
 
 /**
  * Persist the last N filter URLs the visitor used on /browse so they can
@@ -9,72 +9,72 @@ import { useCallback, useEffect, useState } from 'react';
 
 export interface SavedFilter {
   /** Compact human label, e.g. "Coding · Claude · 무료". */
-  label: string;
+  label: string
   /** URL search string without the leading `?`. */
-  search: string;
+  search: string
   /** Last-used timestamp for ordering. */
-  at: number;
+  at: number
 }
 
-const KEY = 'pm.savedFilters';
-const MAX = 5;
+const KEY = 'pm.savedFilters'
+const MAX = 5
 
 function read(): SavedFilter[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === 'undefined') return []
   try {
-    const raw = window.localStorage.getItem(KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
+    const raw = window.localStorage.getItem(KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed)) return []
     return parsed.filter(
       (e): e is SavedFilter =>
         e != null &&
         typeof e === 'object' &&
         typeof e.label === 'string' &&
         typeof e.search === 'string' &&
-        typeof e.at === 'number',
-    );
+        typeof e.at === 'number'
+    )
   } catch {
-    return [];
+    return []
   }
 }
 
 function write(entries: SavedFilter[]) {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') return
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(entries));
-    window.dispatchEvent(new CustomEvent('pm:savedFilters'));
+    window.localStorage.setItem(KEY, JSON.stringify(entries))
+    window.dispatchEvent(new CustomEvent('pm:savedFilters'))
   } catch {
     /* storage full — silently drop */
   }
 }
 
 export function useSavedFilters() {
-  const [entries, setEntries] = useState<SavedFilter[]>(() => read());
+  const [entries, setEntries] = useState<SavedFilter[]>(() => read())
 
   useEffect(() => {
     function refresh() {
-      setEntries(read());
+      setEntries(read())
     }
-    window.addEventListener('storage', refresh);
-    window.addEventListener('pm:savedFilters', refresh);
+    window.addEventListener('storage', refresh)
+    window.addEventListener('pm:savedFilters', refresh)
     return () => {
-      window.removeEventListener('storage', refresh);
-      window.removeEventListener('pm:savedFilters', refresh);
-    };
-  }, []);
+      window.removeEventListener('storage', refresh)
+      window.removeEventListener('pm:savedFilters', refresh)
+    }
+  }, [])
 
   const save = useCallback((search: string, label: string) => {
-    if (!search || !label) return;
-    const now = Date.now();
-    const filtered = read().filter((e) => e.search !== search);
-    const next = [{ search, label, at: now }, ...filtered].slice(0, MAX);
-    write(next);
-  }, []);
+    if (!search || !label) return
+    const now = Date.now()
+    const filtered = read().filter((e) => e.search !== search)
+    const next = [{ search, label, at: now }, ...filtered].slice(0, MAX)
+    write(next)
+  }, [])
 
   const remove = useCallback((search: string) => {
-    write(read().filter((e) => e.search !== search));
-  }, []);
+    write(read().filter((e) => e.search !== search))
+  }, [])
 
-  return { entries, save, remove };
+  return { entries, save, remove }
 }

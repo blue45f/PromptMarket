@@ -24,5 +24,5 @@ export default function SkeletonDetail() {
         </div>
       </div>
     </div>
-  );
+  )
 }

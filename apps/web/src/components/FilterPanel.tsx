@@ -1,5 +1,3 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 import {
   CATEGORIES,
   LISTING_TYPE_META,
@@ -9,9 +7,12 @@ import {
   type Difficulty,
   type ListingType,
 } from '@promptmarket/shared'
-import ModelPicker from './ModelPicker'
 import { cn } from '@utils/cn'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { countActive, type FilterState } from './filterState'
+import ModelPicker from './ModelPicker'
 
 interface FilterPanelProps {
   value: FilterState
@@ -214,6 +215,10 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
         <SectionHeader id="filter-section-difficulty">
           {t('panel.sections.difficulty')}
         </SectionHeader>
+        {/* Roving-tabindex radiogroup: focus lives on the active role="radio"
+            child (tabIndex 0/-1) and arrow keys move it via onKeyDown here, so
+            the container itself is intentionally not in the tab order. */}
+        {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus -- roving tabindex on radio children */}
         <div
           role="radiogroup"
           aria-label={t('panel.difficultyGroup')}
@@ -250,6 +255,10 @@ function FilterPanel({ value, onChange, onReset }: FilterPanelProps) {
 
       <section aria-labelledby="filter-section-price">
         <SectionHeader id="filter-section-price">{t('panel.sections.price')}</SectionHeader>
+        {/* Roving-tabindex radiogroup: focus lives on the active role="radio"
+            child (tabIndex 0/-1) and arrow keys move it via onKeyDown here, so
+            the container itself is intentionally not in the tab order. */}
+        {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus -- roving tabindex on radio children */}
         <div
           role="radiogroup"
           aria-label={t('panel.priceGroup')}

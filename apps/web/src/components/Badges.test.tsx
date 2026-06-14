@@ -1,10 +1,11 @@
-import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import TypeBadge from './TypeBadge'
-import ModelBadge from './ModelBadge'
+import { describe, expect, it } from 'vitest'
+
 import DifficultyBadge from './DifficultyBadge'
 import LicenseBadge from './LicenseBadge'
+import ModelBadge from './ModelBadge'
 import TechniqueBadge from './TechniqueBadge'
+import TypeBadge from './TypeBadge'
 
 describe('<TypeBadge />', () => {
   it('renders the localized label for PROMPT', () => {

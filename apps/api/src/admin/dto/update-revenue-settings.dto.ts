@@ -1,5 +1,5 @@
-import { createZodDto } from 'nestjs-zod'
 import { RevenueSettingsSchema } from '@promptmarket/shared'
+import { createZodDto } from 'nestjs-zod'
 
 const UpdateRevenueSettingsSchema = RevenueSettingsSchema.pick({
   platformFeeBps: true,

@@ -3,7 +3,7 @@ import { policyDocumentSchema, type PolicyDocument, type PolicySlug } from './sc
 /**
  * Terms / privacy documents are published centrally on TermsDesk and served
  * through an unauthenticated public API. This is an external absolute URL, so
- * we use plain fetch instead of `@services/api` — the axios client is bound
+ * we use plain fetch instead of `@infrastructure/api` — the axios client is bound
  * to our own `/api` base and attaches the user's bearer token, which must
  * never be sent to a third-party host.
  */

@@ -1,5 +1,5 @@
-import { forwardRef, type InputHTMLAttributes } from 'react'
 import { cn } from '@utils/cn'
+import { forwardRef, type InputHTMLAttributes } from 'react'
 
 /**
  * Input — single-line text control on the brand surface. `invalid` paints the

@@ -1,7 +1,8 @@
-import type { PromptTechnique } from '@promptmarket/shared'
 import { TECHNIQUE_META } from '@promptmarket/shared'
-import { useTranslation } from 'react-i18next'
 import { cn } from '@utils/cn'
+import { useTranslation } from 'react-i18next'
+
+import type { PromptTechnique } from '@promptmarket/shared'
 
 interface TechniqueBadgeProps {
   technique: PromptTechnique

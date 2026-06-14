@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
 import { License } from '@promptmarket/shared'
+
 import LicenseBadge from './LicenseBadge'
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const meta = {
   title: 'Badges/LicenseBadge',

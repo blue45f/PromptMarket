@@ -5,12 +5,15 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { CATEGORIES } from '@promptmarket/shared'
-import { PrismaService } from '../prisma/prisma.service'
+
 import { buildAttachmentCreates, serializeAttachment } from '../attachments/attachment.util'
-import type { CreateThreadDto } from './dto/create-thread.dto'
-import type { CreateCommentDto } from './dto/create-comment.dto'
-import type { QueryThreadsDto } from './dto/query-threads.dto'
+import { PrismaService } from '../prisma/prisma.service'
+
 import { matchesForbiddenWord } from './forbidden-word.util'
+
+import type { CreateCommentDto } from './dto/create-comment.dto'
+import type { CreateThreadDto } from './dto/create-thread.dto'
+import type { QueryThreadsDto } from './dto/query-threads.dto'
 
 const EXCERPT_LENGTH = 180
 

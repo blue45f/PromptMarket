@@ -1,8 +1,9 @@
+import { useAuthStore } from '@store/auth'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+
 import { useNavShortcuts } from './useNavShortcuts'
-import { useAuthStore } from '@store/auth'
 
 // Report the current pathname through the DOM instead of mutating a prop —
 // writing to props during render is a react-compiler error.

@@ -1,10 +1,13 @@
-import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest'
+import { useAuthStore } from '@store/auth'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest'
+
+import DashboardPage from './DashboardPage'
 
 vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }))
-vi.mock('@features/marketplace/queries', () => ({
+vi.mock('@domains/marketplace/queries', () => ({
   useMyListings: vi.fn(() => ({ data: [], isPending: false, error: null })),
   useMyPurchases: vi.fn(() => ({ data: [], isPending: false, error: null })),
   useTopup: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
@@ -14,9 +17,6 @@ vi.mock('@hooks/useWishlist', () => ({
   useWishlist: vi.fn(() => ({ slugs: [], isWishlisted: () => false, toggle: vi.fn() })),
 }))
 vi.mock('@hooks/usePageMeta', () => ({ usePageMeta: vi.fn() }))
-
-import { useAuthStore } from '@store/auth'
-import DashboardPage from './DashboardPage'
 
 function withProviders(node: React.ReactNode, initialEntries = ['/dashboard']) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })

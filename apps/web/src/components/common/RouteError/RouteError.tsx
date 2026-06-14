@@ -1,5 +1,5 @@
-import { Link, isRouteErrorResponse, useRouteError } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Link, isRouteErrorResponse, useRouteError } from 'react-router-dom'
 
 export default function RouteError() {
   const { t } = useTranslation('errors')

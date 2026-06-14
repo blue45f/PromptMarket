@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { CATEGORIES } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 interface CategoryChipsProps {
   active?: string

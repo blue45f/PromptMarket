@@ -1,1 +1,1 @@
-export { default } from './BrowsePage';
+export { default } from './BrowsePage'

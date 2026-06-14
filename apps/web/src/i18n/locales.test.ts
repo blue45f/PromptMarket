@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+
 import i18n, { resources, NS } from './index'
 
 // i18next plural suffixes — Korean has no plural distinction, so a key may

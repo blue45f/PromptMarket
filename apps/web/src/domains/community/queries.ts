@@ -1,13 +1,15 @@
+import { api, getErrorMessage } from '@infrastructure/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import i18n from '@/i18n'
+
 import type {
   AttachmentDto,
   CreateDiscussionCommentInput,
   CreateDiscussionThreadInput,
   DiscussionThreadListResponse,
 } from '@promptmarket/shared'
-import { api, getErrorMessage } from '@services/api'
+
+import i18n from '@/i18n'
 
 // --- Query keys --------------------------------------------------------------
 

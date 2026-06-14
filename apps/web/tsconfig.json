@@ -17,11 +17,11 @@
       "@/*": ["./src/*"],
       "@app/*": ["./src/app/*"],
       "@components/*": ["./src/components/*"],
-      "@features/*": ["./src/features/*"],
+      "@domains/*": ["./src/domains/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@pages/*": ["./src/pages/*"],
       "@router/*": ["./src/router/*"],
-      "@services/*": ["./src/services/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
       "@store/*": ["./src/store/*"],
       "@types/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"]

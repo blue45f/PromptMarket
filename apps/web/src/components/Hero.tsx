@@ -1,17 +1,19 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import type { TFunction } from 'i18next'
-import { ArrowRight, Compass } from 'lucide-react'
-import { useQueryClient } from '@tanstack/react-query'
-import { listingKey } from '@features/marketplace/queryKeys'
-import { api } from '@services/api'
-import type { ListingDetailResponse } from '@/types'
-import { LISTING_TYPE_META, MODELS } from '@promptmarket/shared'
-import { formatPrice } from '@utils/format'
-import { cn } from '@utils/cn'
+import { listingKey } from '@domains/marketplace/queryKeys'
 import { useSpotlight } from '@hooks/useSpotlight'
+import { api } from '@infrastructure/api'
+import { LISTING_TYPE_META, MODELS } from '@promptmarket/shared'
+import { useQueryClient } from '@tanstack/react-query'
+import { cn } from '@utils/cn'
+import { formatPrice } from '@utils/format'
+import { ArrowRight, Compass } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
 import StatsStrip from './StatsStrip'
+
+import type { ListingDetailResponse } from '@/types'
+import type { TFunction } from 'i18next'
 
 /* ---------------------------------------------------------------------------
  * Hero — editorial asymmetric layout with kinetic typography, cursor-followed

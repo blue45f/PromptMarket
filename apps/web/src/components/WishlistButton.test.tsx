@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
-import WishlistButton from './WishlistButton'
 import { useWishlistStore } from '@store/wishlist'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import WishlistButton from './WishlistButton'
 
 beforeEach(() => {
   // Reset Zustand store state and clear localStorage between tests.

@@ -1,7 +1,8 @@
+import { cn } from '@utils/cn'
+import { BadgeCheck } from 'lucide-react'
 import { useId, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BadgeCheck } from 'lucide-react'
-import { cn } from '@utils/cn'
+
 import { getArtifactSignals, type ArtifactSignalListing } from './artifactSignalsUtils'
 
 interface ArtifactSignalsProps {

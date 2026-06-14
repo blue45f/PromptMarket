@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Search, X } from 'lucide-react'
 import { useSearchHistory } from '@hooks/useSearchHistory'
 import { cn } from '@utils/cn'
+import { Search, X } from 'lucide-react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface SearchBarProps {
   initialValue?: string
@@ -157,10 +157,16 @@ export default function SearchBar({
                       : 'text-ink-soft dark:text-bone-soft hover:bg-canvas-sub dark:hover:bg-night-sub'
                   )}
                 >
+                  {/* Keyboard nav is owned by the combobox input via
+                      aria-activedescendant (ArrowDown/Enter commit the active
+                      option), so per-option key listeners are intentionally
+                      absent; tabIndex=-1 keeps it programmatically focusable. */}
+                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events -- combobox input handles Enter via aria-activedescendant */}
                   <div
                     role="option"
                     id={`search-history-option-${i}`}
                     aria-selected={i === activeIdx}
+                    tabIndex={-1}
                     // mouseDown fires before blur so the option stays clickable.
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {

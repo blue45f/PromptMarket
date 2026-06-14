@@ -1,14 +1,16 @@
-import { useMemo, useState } from 'react'
-import { useQueries } from '@tanstack/react-query'
-import { useTranslation } from 'react-i18next'
-import { Eye, X } from 'lucide-react'
-import { api } from '@services/api'
-import { listingKey } from '@features/marketplace/queryKeys'
-import type { ListingDetailResponse } from '@/types'
+import { listingKey } from '@domains/marketplace/queryKeys'
 import { useRecentlyViewed } from '@hooks/useRecentlyViewed'
+import { api } from '@infrastructure/api'
+import { useQueries } from '@tanstack/react-query'
+import { cn } from '@utils/cn'
+import { Eye, X } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import ListingCard from './ListingCard'
 import SkeletonCard from './SkeletonCard'
-import { cn } from '@utils/cn'
+
+import type { ListingDetailResponse } from '@/types'
 
 interface RecentlyViewedProps {
   /** Slug to exclude from the rail (e.g. when shown on a detail page). */

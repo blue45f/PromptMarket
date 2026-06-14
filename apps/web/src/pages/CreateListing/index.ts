@@ -1,1 +1,1 @@
-export { default } from './CreateListingPage';
+export { default } from './CreateListingPage'

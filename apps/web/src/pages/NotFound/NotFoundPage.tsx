@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { ArrowUpRight, Compass, Search, Sparkles } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import RecentlyViewed from '@components/RecentlyViewed'
 import { usePageMeta } from '@hooks/usePageMeta'
 import { useSpotlight } from '@hooks/useSpotlight'
-import RecentlyViewed from '@components/RecentlyViewed'
+import { ArrowUpRight, Compass, Search, Sparkles } from 'lucide-react'
+import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useLocation } from 'react-router-dom'
 
 const SUGGESTIONS: Array<{
   to: string

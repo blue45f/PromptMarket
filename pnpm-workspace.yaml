@@ -8,6 +8,7 @@ allowBuilds:
   argon2: true
   esbuild: true
   prisma: true
+  unrs-resolver: true
 
 minimumReleaseAgeExclude:
   - enhanced-resolve
@@ -18,3 +19,4 @@ minimumReleaseAgeExclude:
   - tldts-core
   - zustand
   - '@heejun/prettier-config@3.0.0'
+  - '@heejun/eslint-config@4.0.0'

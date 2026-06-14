@@ -1,5 +1,5 @@
-import { useCallback } from 'react'
 import { useWishlistStore } from '@store/wishlist'
+import { useCallback } from 'react'
 
 /**
  * Wishlist state backed by the Zustand wishlist store (persisted to

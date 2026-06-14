@@ -1,18 +1,20 @@
-import { lazy, Suspense, useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { ArrowUpRight } from 'lucide-react'
-import Navbar from './Navbar'
-const CommandPalette = lazy(() => import('@components/CommandPalette'))
-import ShortcutsOverlay from '@components/ShortcutsOverlay'
-import ScrollToTop from '@components/ScrollToTop'
 import RouteAnnouncer from '@components/RouteAnnouncer'
-import { useMe, useStats } from '@features/marketplace/queries'
-import { useNavShortcuts } from '@hooks/useNavShortcuts'
-import { useSpotlight } from '@hooks/useSpotlight'
-import { useReveal } from '@hooks/useReveal'
+import ScrollToTop from '@components/ScrollToTop'
+import ShortcutsOverlay from '@components/ShortcutsOverlay'
+import { useMe, useStats } from '@domains/marketplace/queries'
 import { useCountUp } from '@hooks/useCountUp'
+import { useNavShortcuts } from '@hooks/useNavShortcuts'
+import { useReveal } from '@hooks/useReveal'
+import { useSpotlight } from '@hooks/useSpotlight'
 import { formatCompact } from '@utils/format'
+import { ArrowUpRight } from 'lucide-react'
+import { lazy, Suspense, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, Outlet } from 'react-router-dom'
+
+import Navbar from './Navbar'
+
+const CommandPalette = lazy(() => import('@components/CommandPalette'))
 
 export default function Layout() {
   // Triggers the /auth/me query when a token is present and syncs the user

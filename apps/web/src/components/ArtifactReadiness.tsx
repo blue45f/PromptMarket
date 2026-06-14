@@ -1,9 +1,11 @@
+import { cn } from '@utils/cn'
+import { Braces, Layers3, ListChecks, Terminal } from 'lucide-react'
 import { useId, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Braces, Layers3, ListChecks, Terminal } from 'lucide-react'
-import type { ListingType } from '@promptmarket/shared'
-import { cn } from '@utils/cn'
+
 import { extractTemplateVariables } from './artifactReadinessUtils'
+
+import type { ListingType } from '@promptmarket/shared'
 
 interface ArtifactReadinessProps {
   type: ListingType

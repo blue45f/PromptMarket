@@ -1,10 +1,11 @@
-import { describe, expect, it, vi, type Mock } from 'vitest'
+import { useAuthStore } from '@store/auth'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { describe, expect, it, vi, type Mock } from 'vitest'
+
 import RequireAuth from './RequireAuth'
 
 vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }))
-import { useAuthStore } from '@store/auth'
 
 // Mock setup stays outside any component body: referencing a hook as a plain
 // value during render is a react-compiler error (hooks may only be called).

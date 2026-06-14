@@ -1,10 +1,13 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
-import type { Prisma } from '@prisma/client'
 import { MODELS } from '@promptmarket/shared'
+
 import { PrismaService } from '../prisma/prisma.service'
+
 import { CreateListingDto } from './dto/create-listing.dto'
-import { UpdateListingDto } from './dto/update-listing.dto'
 import { QueryListingsDto } from './dto/query-listings.dto'
+import { UpdateListingDto } from './dto/update-listing.dto'
+
+import type { Prisma } from '@prisma/client'
 
 type ListingWhereInput = Prisma.ListingWhereInput
 type ListingOrderBy = Prisma.ListingOrderByWithRelationInput[]

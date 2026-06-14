@@ -1,9 +1,9 @@
+import { ATTACHMENTS_PER_POST, type AttachmentInput as AttachmentDraft } from '@promptmarket/shared'
+import { cn } from '@utils/cn'
+import { AttachmentError, prepareImageAttachment } from '@utils/image'
+import { ImagePlus, Loader2, X } from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ImagePlus, Loader2, X } from 'lucide-react'
-import { ATTACHMENTS_PER_POST, type AttachmentInput as AttachmentDraft } from '@promptmarket/shared'
-import { AttachmentError, prepareImageAttachment } from '@utils/image'
-import { cn } from '@utils/cn'
 
 interface AttachmentInputProps {
   value: AttachmentDraft[]

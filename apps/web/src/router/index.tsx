@@ -1,9 +1,11 @@
-import type { ComponentType } from 'react'
-import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom'
-import App from '@/App'
-import { RequireAdmin, RequireAuth } from '@components/route'
 import RouteError from '@components/common/RouteError/RouteError'
 import RouteFallback from '@components/common/RouteFallback/RouteFallback'
+import { RequireAdmin, RequireAuth } from '@components/route'
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom'
+
+import type { ComponentType } from 'react'
+
+import App from '@/App'
 
 type PageModule = {
   default: ComponentType

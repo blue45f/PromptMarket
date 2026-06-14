@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from 'react'
 
 /**
  * Inject a JSON-LD `<script>` into the document head while the component is
@@ -9,18 +9,18 @@ import { useEffect } from 'react';
  */
 export function useStructuredData(data: object | null) {
   useEffect(() => {
-    if (!data || typeof document === 'undefined') return;
-    const tag = document.createElement('script');
-    tag.type = 'application/ld+json';
-    tag.textContent = JSON.stringify(data);
-    tag.setAttribute('data-source', 'promptmarket-structured');
-    document.head.appendChild(tag);
+    if (!data || typeof document === 'undefined') return
+    const tag = document.createElement('script')
+    tag.type = 'application/ld+json'
+    tag.textContent = JSON.stringify(data)
+    tag.setAttribute('data-source', 'promptmarket-structured')
+    document.head.appendChild(tag)
     return () => {
       try {
-        tag.remove();
+        tag.remove()
       } catch {
         /* element already gone — silently ignore */
       }
-    };
-  }, [data]);
+    }
+  }, [data])
 }

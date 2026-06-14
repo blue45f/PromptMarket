@@ -1,13 +1,14 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { ArrowUpRight } from 'lucide-react'
+import { useListings } from '@domains/marketplace/queries'
 import { MODELS } from '@promptmarket/shared'
-import { useListings } from '@features/marketplace/queries'
+import { cn } from '@utils/cn'
+import { ArrowUpRight } from 'lucide-react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
+import EmptyState from './EmptyState'
 import ListingCard from './ListingCard'
 import SkeletonCard from './SkeletonCard'
-import EmptyState from './EmptyState'
-import { cn } from '@utils/cn'
 
 /** The handful of families surfaced on the home page. Order matters.
  *  `labelKey` (when set) is resolved through i18n; otherwise `label` is a
@@ -80,6 +81,10 @@ export default function ModelTabs() {
           />
         </Link>
       </div>
+      {/* Roving-tabindex tablist: focus lives on the active role="tab" child
+          (tabIndex 0/-1) and arrow keys move it via onKeyDown here, so the
+          container itself is intentionally not in the tab order. */}
+      {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus -- roving tabindex on tab children */}
       <div
         role="tablist"
         aria-label={t('models.tablistAria')}

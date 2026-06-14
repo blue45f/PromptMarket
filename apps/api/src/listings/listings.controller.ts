@@ -1,13 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import { ListingsService } from './listings.service'
-import { CreateListingDto } from './dto/create-listing.dto'
-import { UpdateListingDto } from './dto/update-listing.dto'
-import { QueryListingsDto } from './dto/query-listings.dto'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { SuspensionGuard } from '../auth/suspension.guard'
-import { OptionalAuthGuard } from '../auth/optional-auth.guard'
+
 import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { OptionalAuthGuard } from '../auth/optional-auth.guard'
+import { SuspensionGuard } from '../auth/suspension.guard'
+
+import { CreateListingDto } from './dto/create-listing.dto'
+import { QueryListingsDto } from './dto/query-listings.dto'
+import { UpdateListingDto } from './dto/update-listing.dto'
+import { ListingsService } from './listings.service'
 
 @ApiTags('listings')
 @Controller('listings')

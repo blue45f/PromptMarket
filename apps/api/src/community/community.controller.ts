@@ -1,13 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { CommunityService } from './community.service'
-import { CreateThreadDto } from './dto/create-thread.dto'
-import { CreateCommentDto } from './dto/create-comment.dto'
-import { QueryThreadsDto } from './dto/query-threads.dto'
+
+import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { OptionalAuthGuard } from '../auth/optional-auth.guard'
 import { SuspensionGuard } from '../auth/suspension.guard'
-import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
+
+import { CommunityService } from './community.service'
+import { CreateCommentDto } from './dto/create-comment.dto'
+import { CreateThreadDto } from './dto/create-thread.dto'
+import { QueryThreadsDto } from './dto/query-threads.dto'
 
 @ApiTags('community')
 @Controller('community')

@@ -1,20 +1,20 @@
-import { useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Loader2 } from 'lucide-react'
-import { z } from 'zod'
+import AttachmentInput from '@components/AttachmentInput'
+import { Field, Input, Textarea } from '@components/ui'
+import { useCreateThread } from '@domains/community'
+import { usePageMeta } from '@hooks/usePageMeta'
 import {
   CATEGORIES,
   CreateDiscussionThreadSchema,
   type AttachmentInput as AttachmentDraft,
 } from '@promptmarket/shared'
-import { useCreateThread } from '@features/community'
-import { usePageMeta } from '@hooks/usePageMeta'
-import AttachmentInput from '@components/AttachmentInput'
-import { Field, Input, Textarea } from '@components/ui'
 import { cn } from '@utils/cn'
 import { zodFormResolver } from '@utils/zodFormResolver'
+import { ArrowLeft, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { z } from 'zod'
 
 // Attachments are managed outside react-hook-form (the picker resizes files
 // asynchronously), so the form itself validates only the text fields.

@@ -1,7 +1,7 @@
+import { cn } from '@utils/cn'
+import { Loader2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Loader2 } from 'lucide-react'
-import { cn } from '@utils/cn'
 
 interface ConfirmActionButtonProps {
   label: string

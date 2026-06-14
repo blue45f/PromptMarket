@@ -1,5 +1,6 @@
-import i18n from '@/i18n'
 import { modelLabel } from '@utils/format'
+
+import i18n from '@/i18n'
 
 export interface ActiveFilter {
   key: string

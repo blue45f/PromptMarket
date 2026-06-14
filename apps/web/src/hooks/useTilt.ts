@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react'
 
 interface UseTiltOptions {
   /** Maximum tilt in degrees on each axis. */
-  max?: number;
+  max?: number
   /** Translation depth for inner layers (px). */
-  depth?: number;
+  depth?: number
 }
 
 /**
@@ -17,55 +17,55 @@ export function useTilt<T extends HTMLElement = HTMLDivElement>({
   max = 7,
   depth = 12,
 }: UseTiltOptions = {}) {
-  const ref = useRef<T | null>(null);
-  const rafRef = useRef<number | null>(null);
+  const ref = useRef<T | null>(null)
+  const rafRef = useRef<number | null>(null)
 
   const onMove = useCallback(
     (e: PointerEvent) => {
-      const node = ref.current;
-      if (!node) return;
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+      const node = ref.current
+      if (!node) return
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
       rafRef.current = requestAnimationFrame(() => {
-        const rect = node.getBoundingClientRect();
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-        const dx = (e.clientX - rect.left - cx) / cx;
-        const dy = (e.clientY - rect.top - cy) / cy;
-        node.style.setProperty('--rx', `${-dy * max}deg`);
-        node.style.setProperty('--ry', `${dx * max}deg`);
-        node.style.setProperty('--tx', `${dx * depth}px`);
-        node.style.setProperty('--ty', `${dy * depth}px`);
-        node.style.setProperty('--mxp', `${((e.clientX - rect.left) / rect.width) * 100}%`);
-        node.style.setProperty('--myp', `${((e.clientY - rect.top) / rect.height) * 100}%`);
-      });
+        const rect = node.getBoundingClientRect()
+        const cx = rect.width / 2
+        const cy = rect.height / 2
+        const dx = (e.clientX - rect.left - cx) / cx
+        const dy = (e.clientY - rect.top - cy) / cy
+        node.style.setProperty('--rx', `${-dy * max}deg`)
+        node.style.setProperty('--ry', `${dx * max}deg`)
+        node.style.setProperty('--tx', `${dx * depth}px`)
+        node.style.setProperty('--ty', `${dy * depth}px`)
+        node.style.setProperty('--mxp', `${((e.clientX - rect.left) / rect.width) * 100}%`)
+        node.style.setProperty('--myp', `${((e.clientY - rect.top) / rect.height) * 100}%`)
+      })
     },
-    [max, depth],
-  );
+    [max, depth]
+  )
 
   const onLeave = useCallback(() => {
-    const node = ref.current;
-    if (!node) return;
-    node.style.setProperty('--rx', '0deg');
-    node.style.setProperty('--ry', '0deg');
-    node.style.setProperty('--tx', '0px');
-    node.style.setProperty('--ty', '0px');
-  }, []);
+    const node = ref.current
+    if (!node) return
+    node.style.setProperty('--rx', '0deg')
+    node.style.setProperty('--ry', '0deg')
+    node.style.setProperty('--tx', '0px')
+    node.style.setProperty('--ty', '0px')
+  }, [])
 
   useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    if (typeof window === 'undefined') return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const coarse = window.matchMedia('(pointer: coarse)').matches;
-    if (reduced || coarse) return;
-    node.addEventListener('pointermove', onMove);
-    node.addEventListener('pointerleave', onLeave);
+    const node = ref.current
+    if (!node) return
+    if (typeof window === 'undefined') return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const coarse = window.matchMedia('(pointer: coarse)').matches
+    if (reduced || coarse) return
+    node.addEventListener('pointermove', onMove)
+    node.addEventListener('pointerleave', onLeave)
     return () => {
-      node.removeEventListener('pointermove', onMove);
-      node.removeEventListener('pointerleave', onLeave);
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-    };
-  }, [onMove, onLeave]);
+      node.removeEventListener('pointermove', onMove)
+      node.removeEventListener('pointerleave', onLeave)
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
+    }
+  }, [onMove, onLeave])
 
-  return ref;
+  return ref
 }

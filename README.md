@@ -118,8 +118,8 @@ apps/
     src/
       app/       # AppProviders, QueryClient factory
       router/    # React Router Data Router + lazy route modules
-      features/  # 도메인별 query/key 모듈
-      services/  # API 클라이언트
+      domains/   # 도메인별 query/key 모듈 (계층: domains)
+      infrastructure/ # API 클라이언트 (계층: infrastructure)
       utils/     # 포맷터, className 유틸리티
       types/     # 프론트엔드 공유 타입
   api/         # NestJS 11 백엔드
@@ -157,7 +157,7 @@ docker-compose.yml
 - **API 계약의 단일 진실 공급원.** 모든 Zod 스키마(예: `CreateListingSchema`, `ListingCard`)는 `packages/shared`에 한 번만 정의됩니다. 백엔드는 각 스키마를 `createZodDto(...)`로 감싸 NestJS 파이프 + Swagger에 사용하고, 프론트엔드는 RHF의 `zodResolver`에 전달합니다. 구조적으로 클라이언트와 서버 간 드리프트가 발생할 수 없습니다.
 - **react-scaffolding식 프론트엔드 조립.** `apps/web/src/main.tsx`는 DOM mount만 담당하고, `src/app/AppProviders.tsx`가 QueryClient, RouterProvider, Toaster, React Query Devtools를 조립합니다. 라우트 정의는 `src/router`에 모아 두고 페이지는 route-level lazy module로 로드합니다.
 - **React Compiler.** `apps/web`은 React 19 네이티브 React Compiler를 활성화합니다(`@vitejs/plugin-react`의 `reactCompilerPreset`을 `@rolldown/plugin-babel`로 적용). 컴포넌트 메모이제이션이 빌드 타임에 자동 삽입되어 수동 `useMemo` / `useCallback` 의존성이 줄어듭니다.
-- **도메인 모듈 분리.** API 클라이언트는 `src/services`, 리스팅/구매/프로필 query와 query key는 `src/features/marketplace`, 포맷터와 className 헬퍼는 `src/utils`, 화면 공유 타입은 `src/types`에 둡니다.
+- **계층형 도메인 아키텍처.** 웹 앱은 `app`/`domains`/`infrastructure`/`shared` 4계층으로 나뉘고 ESLint `boundaries`가 의존 방향을 강제합니다. API 클라이언트는 `src/infrastructure`, 리스팅/구매/프로필 query와 query key는 `src/domains/marketplace`, 포맷터와 className 헬퍼는 `src/utils`(shared), 화면 공유 타입은 `src/types`(shared)에 둡니다.
 - **라우트 단위 복구 UI.** Data Router의 `errorElement`가 `RouteError`를 렌더링해 lazy route 로딩이나 렌더링 오류를 페이지 단위로 처리합니다.
 - **pnpm 모노레포 운영.** 루트 `pnpm-workspace.yaml`이 `apps/*`, `packages/*`를 워크스페이스로 묶고, 내부 의존성은 `workspace:*`로 고정합니다. 모든 패키지는 루트 `tsconfig.base.json`을 확장해 공통 TypeScript 기준을 공유합니다.
 - **검증 파이프라인.** 요청은 `ZodValidationPipe`(`nestjs-zod`)를 통과합니다. 잘못된 페이로드는 필드 경로 목록이 포함된 구조화된 4xx 응답으로 반환되며, 수동 `class-validator` 데코레이터가 필요하지 않습니다.

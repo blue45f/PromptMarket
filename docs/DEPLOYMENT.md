@@ -68,7 +68,7 @@ vercel deploy --prod --confirm --token "$VERCEL_TOKEN"
 1. Vercel 프로젝트를 생성하고 이 저장소를 연결합니다.
 2. **Root Directory**: 모노레포이므로 빌드 컨텍스트를 `apps/web`로 잡거나, 워크플로처럼 `apps/web`에서 `vercel deploy`를 실행하도록 둡니다.
    - SPA 빌드는 `@promptmarket/shared`(workspace) 빌드에 의존하므로, Vercel이 루트에서 `pnpm install`을 수행하도록 설정하거나, 프로젝트의 Build Command를 `pnpm --filter @promptmarket/shared build && pnpm --filter @promptmarket/web build`로 지정하고 Output Directory를 `apps/web/dist`로 지정합니다.
-3. **환경 변수(웹)**: API와 통신할 베이스 경로. 현재 웹은 axios 인스턴스(`apps/web/src/services/api.ts`)로 `/api`를 호출합니다.
+3. **환경 변수(웹)**: API와 통신할 베이스 경로. 현재 웹은 axios 인스턴스(`apps/web/src/infrastructure/api.ts`)로 `/api`를 호출합니다.
    - 같은 도메인 뒤에서 서빙하지 않는 한, Vercel `rewrites` 또는 빌드 타임 API base URL로 Render API 도메인을 가리키도록 구성하세요(`/api/*` → `https://promptmarket-api.onrender.com/api/*`).
 4. `Settings → Git`에서 Production Branch를 `main`으로 둡니다.
 

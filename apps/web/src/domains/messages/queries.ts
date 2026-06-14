@@ -1,8 +1,10 @@
+import { api, getErrorMessage } from '@infrastructure/api'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import i18n from '@/i18n'
+
 import type { MessageDto, MessageThreadSummaryDto } from '@promptmarket/shared'
-import { api, getErrorMessage } from '@services/api'
+
+import i18n from '@/i18n'
 
 // Non-realtime by design: the inbox and the open thread poll on intervals
 // that match how often a buyer actually checks a storefront Q&A.

@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common'
 import { describe, expect, it } from 'vitest'
+
 import { buildAttachmentCreates, serializeAttachment } from './attachment.util'
 
 const PNG = `data:image/png;base64,${'QUJD'.repeat(16)}`

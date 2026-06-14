@@ -1,7 +1,8 @@
+import { useWishlistStore } from '@store/wishlist'
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+
 import { useWishlist } from './useWishlist'
-import { useWishlistStore } from '@store/wishlist'
 
 beforeEach(() => {
   useWishlistStore.setState({ slugs: [] })

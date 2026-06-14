@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { ArrowUp } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import { cn } from '@utils/cn'
+import { ArrowUp } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const THRESHOLD = 600
 

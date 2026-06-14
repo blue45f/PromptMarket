@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { MessagesService } from './messages.service'
-import { StartThreadDto } from './dto/start-thread.dto'
-import { SendMessageDto } from './dto/send-message.dto'
+
+import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { SuspensionGuard } from '../auth/suspension.guard'
-import { CurrentUser, AuthUser } from '../auth/current-user.decorator'
+
+import { SendMessageDto } from './dto/send-message.dto'
+import { StartThreadDto } from './dto/start-thread.dto'
+import { MessagesService } from './messages.service'
 
 @ApiTags('messages')
 @UseGuards(JwtAuthGuard)

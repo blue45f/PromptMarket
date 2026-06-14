@@ -1,5 +1,15 @@
-import { type FormEvent, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import AdminNav from '@components/AdminNav'
+import EmptyState from '@components/EmptyState'
+import {
+  useAdminRevenueSettings,
+  useAdminRevenueSettingsHistory,
+  useAdminRevenueSummary,
+  useUpdateRevenueSettings,
+} from '@domains/marketplace/queries'
+import { usePageMeta } from '@hooks/usePageMeta'
+import { getErrorMessage } from '@infrastructure/api'
+import { cn } from '@utils/cn'
+import { formatDollars } from '@utils/format'
 import {
   AlertTriangle,
   ArrowRight,
@@ -11,25 +21,16 @@ import {
   Sparkles,
   UserRoundCheck,
 } from 'lucide-react'
+import { type FormEvent, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  useAdminRevenueSettings,
-  useAdminRevenueSettingsHistory,
-  useAdminRevenueSummary,
-  useUpdateRevenueSettings,
-} from '@features/marketplace/queries'
-import { getErrorMessage } from '@services/api'
-import { usePageMeta } from '@hooks/usePageMeta'
-import AdminNav from '@components/AdminNav'
-import EmptyState from '@components/EmptyState'
-import { formatDollars } from '@utils/format'
+import { Link } from 'react-router-dom'
+
 import type {
   AdminRevenueSummary,
   RevenueSettings,
   RevenueSettingsHistory,
   TopCreatorRevenue,
 } from '@/types'
-import { cn } from '@utils/cn'
 
 interface FeePolicy {
   platformFeePercent: number

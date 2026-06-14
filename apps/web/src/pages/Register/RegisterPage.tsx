@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { Trans, useTranslation } from 'react-i18next'
-import { RegisterSchema, type RegisterInput } from '@promptmarket/shared'
-import { Loader2 } from 'lucide-react'
-import { useRegister } from '@features/marketplace/queries'
-import { usePageMeta } from '@hooks/usePageMeta'
 import AuthLayout from '@components/AuthLayout'
 import { Field, Input } from '@components/ui'
+import { useRegister } from '@domains/marketplace/queries'
+import { usePageMeta } from '@hooks/usePageMeta'
+import { RegisterSchema, type RegisterInput } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
 import { zodFormResolver } from '@utils/zodFormResolver'
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { Trans, useTranslation } from 'react-i18next'
+import { Link, useNavigate } from 'react-router-dom'
 
 /* Consent fine print links — legal pages are internal routes (/terms, /privacy). */
 const consentLinkClass = cn(

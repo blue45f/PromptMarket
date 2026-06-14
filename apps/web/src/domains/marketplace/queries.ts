@@ -1,18 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import i18n from '@/i18n'
+import { api, getErrorMessage } from '@infrastructure/api'
 import { UserDto } from '@promptmarket/shared'
-import type {
-  CreateListingInput,
-  CreateReviewInput,
-  CreateReviewReplyInput,
-  LoginInput,
-  RegisterInput,
-  RevenueSettings,
-  RevenueSettingsHistory,
-} from '@promptmarket/shared'
+import { useAuthStore } from '@store/auth'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { isHTTPError } from 'ky'
-import { api, getErrorMessage } from '@services/api'
+import { toast } from 'sonner'
+
 import {
   listingKey,
   listingsKey,
@@ -28,6 +20,7 @@ import {
   userKey,
   type ListingsParams,
 } from './queryKeys'
+
 import type {
   AuthResponse,
   AdminRevenueSummary,
@@ -40,7 +33,17 @@ import type {
   StatsResponse,
   User,
 } from '@/types'
-import { useAuthStore } from '@store/auth'
+import type {
+  CreateListingInput,
+  CreateReviewInput,
+  CreateReviewReplyInput,
+  LoginInput,
+  RegisterInput,
+  RevenueSettings,
+  RevenueSettingsHistory,
+} from '@promptmarket/shared'
+
+import i18n from '@/i18n'
 
 // --- Queries ---------------------------------------------------------------
 

@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+
 import { INQUIRY_ENDPOINT, submitInquiry } from './api'
 import { extractReferenceId, inquiryFormSchema } from './schema'
 

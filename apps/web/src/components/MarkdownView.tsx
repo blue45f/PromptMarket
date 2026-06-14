@@ -1,13 +1,13 @@
+import { cn } from '@utils/cn'
+import { Check, Copy } from 'lucide-react'
 import { useState, useRef, useEffect, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import ReactMarkdown, {
   defaultUrlTransform,
   type Components,
   type UrlTransform,
 } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { useTranslation } from 'react-i18next'
-import { Check, Copy } from 'lucide-react'
-import { cn } from '@utils/cn'
 
 const REMARK_PLUGINS = [remarkGfm]
 const MARKDOWN_COMPONENTS: Components = {

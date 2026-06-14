@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next'
-import { Heart } from 'lucide-react'
 import { useIsWishlisted, useWishlistStore } from '@store/wishlist'
 import { cn } from '@utils/cn'
+import { Heart } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface WishlistButtonProps {
   slug: string

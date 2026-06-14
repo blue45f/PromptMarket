@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 
 /**
  * Route-change announcer + focus manager for the SPA.

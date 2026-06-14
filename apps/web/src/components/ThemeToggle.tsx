@@ -1,8 +1,8 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import { Monitor, Moon, Sun } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
 import { useThemeStore, type ThemeMode } from '@store/theme'
 import { cn } from '@utils/cn'
+import { Monitor, Moon, Sun } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const items: Array<{ key: ThemeMode; Icon: typeof Sun }> = [
   { key: 'light', Icon: Sun },

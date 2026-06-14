@@ -30,28 +30,28 @@ reviews:
 
   # Path-specific overrides.
   path_filters:
-    - "!**/*.lock"
-    - "!pnpm-lock.yaml"
-    - "!**/dist/**"
-    - "!**/build/**"
-    - "!**/.turbo/**"
-    - "!apps/api/prisma/migrations/**"
+    - '!**/*.lock'
+    - '!pnpm-lock.yaml'
+    - '!**/dist/**'
+    - '!**/build/**'
+    - '!**/.turbo/**'
+    - '!apps/api/prisma/migrations/**'
 
   # Custom path-aware instructions.
   path_instructions:
-    - path: "apps/web/src/**/*.{ts,tsx}"
+    - path: 'apps/web/src/**/*.{ts,tsx}'
       instructions: |
         - Confirm the OKLCH design tokens are used (volt / ink / canvas / coral / violet).
           Flag any new bg-indigo-*, text-zinc-*, bg-gray-* etc.
         - Korean copy must keep `word-break: keep-all` semantics intact.
         - Hooks must respect prefers-reduced-motion where they animate.
-    - path: "apps/api/src/**/*.ts"
+    - path: 'apps/api/src/**/*.ts'
       instructions: |
         - Zod schemas in @promptmarket/shared are the single source of truth;
           don't introduce parallel DTO shapes.
         - PrismaClient should always go through PrismaService (the adapter is
           baked in there).
-    - path: "packages/shared/src/**/*.ts"
+    - path: 'packages/shared/src/**/*.ts'
       instructions: |
         - Breaking changes to enums or schemas must update both the api and
           web consumers in the same PR.

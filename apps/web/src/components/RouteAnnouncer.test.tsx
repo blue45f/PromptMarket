@@ -1,6 +1,7 @@
 import { render, screen, act } from '@testing-library/react'
 import { MemoryRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import RouteAnnouncer from './RouteAnnouncer'
 
 // Run requestAnimationFrame callbacks synchronously so the announcer's

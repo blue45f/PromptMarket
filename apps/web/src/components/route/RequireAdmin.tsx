@@ -1,7 +1,7 @@
-import { Navigate, useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useAuthStore } from '@store/auth'
 import Spinner from '@components/Spinner'
+import { useAuthStore } from '@store/auth'
+import { useTranslation } from 'react-i18next'
+import { Navigate, useLocation } from 'react-router-dom'
 
 interface RequireAdminProps {
   children: React.ReactNode

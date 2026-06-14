@@ -1,6 +1,6 @@
+import { cn } from '@utils/cn'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@utils/cn'
 
 interface TocEntry {
   id: string

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { parsePolicyBody } from './markdown'
 
 describe('parsePolicyBody', () => {
