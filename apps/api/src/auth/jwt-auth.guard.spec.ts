@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { JwtAuthGuard } from './jwt-auth.guard'
 
+import type { TokenClaims, TokenService } from './heejun/token.service'
 import type { ExecutionContext } from '@nestjs/common'
-import type { JwtService } from '@nestjs/jwt'
 
 function makeContext(headers: Record<string, string | undefined>): {
   context: ExecutionContext
@@ -17,20 +17,22 @@ function makeContext(headers: Record<string, string | undefined>): {
   return { context, req }
 }
 
-function makeGuard(verifyImpl: (token: string) => unknown) {
-  const jwt = { verify: vi.fn().mockImplementation(verifyImpl) } as unknown as JwtService
-  return { guard: new JwtAuthGuard(jwt), jwt }
+function makeGuard(verifyImpl: (token: string) => TokenClaims) {
+  const tokens = { verify: vi.fn().mockImplementation(verifyImpl) } as unknown as TokenService
+  return { guard: new JwtAuthGuard(tokens), tokens }
 }
+
+const claims: TokenClaims = { id: 'u1', email: 'a@b.com', username: 'alex', isAdmin: false }
 
 describe('JwtAuthGuard', () => {
   it('rejects requests with no Authorization header', () => {
-    const { guard } = makeGuard(() => ({}))
+    const { guard } = makeGuard(() => claims)
     const { context } = makeContext({ authorization: undefined })
     expect(() => guard.canActivate(context)).toThrow(UnauthorizedException)
   })
 
   it('rejects non-Bearer schemes', () => {
-    const { guard } = makeGuard(() => ({}))
+    const { guard } = makeGuard(() => claims)
     const { context } = makeContext({ authorization: 'Basic abc' })
     expect(() => guard.canActivate(context)).toThrow(UnauthorizedException)
   })
@@ -44,21 +46,17 @@ describe('JwtAuthGuard', () => {
   })
 
   it('extracts the bearer token, decodes it, and writes req.user', () => {
-    const { guard, jwt } = makeGuard(() => ({
-      sub: 'u1',
-      email: 'a@b.com',
-      username: 'alex',
-    }))
+    const { guard, tokens } = makeGuard(() => claims)
     const { context, req } = makeContext({ authorization: 'Bearer t-1' })
     expect(guard.canActivate(context)).toBe(true)
-    expect(jwt.verify).toHaveBeenCalledWith('t-1')
-    expect(req.user).toEqual({ id: 'u1', email: 'a@b.com', username: 'alex', isAdmin: false })
+    expect(tokens.verify).toHaveBeenCalledWith('t-1')
+    expect(req.user).toEqual(claims)
   })
 
   it('strips whitespace around the token', () => {
-    const { guard, jwt } = makeGuard(() => ({ sub: 'u1' }))
+    const { guard, tokens } = makeGuard(() => claims)
     const { context } = makeContext({ authorization: 'Bearer    t-1   ' })
     expect(guard.canActivate(context)).toBe(true)
-    expect(jwt.verify).toHaveBeenCalledWith('t-1')
+    expect(tokens.verify).toHaveBeenCalledWith('t-1')
   })
 })
