@@ -46,7 +46,7 @@
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
     "@eslint/js": "^10.0.1",
-    "@heejun/eslint-config": "^4.0.0",
+    "@heejun/eslint-config": "^5.0.0",
     "@heejun/prettier-config": "^3.0.0",
     "eslint": "^10.4.0",
     "eslint-import-resolver-typescript": "^4.4.4",
