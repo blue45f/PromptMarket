@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { useSearchHistory } from './useSearchHistory'
 
 afterEach(() => {
-  window.localStorage.clear()
+  globalThis.localStorage.clear()
 })
 
 describe('useSearchHistory', () => {

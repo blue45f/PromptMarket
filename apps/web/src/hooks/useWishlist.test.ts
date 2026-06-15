@@ -6,11 +6,11 @@ import { useWishlist } from './useWishlist'
 
 beforeEach(() => {
   useWishlistStore.setState({ slugs: [] })
-  window.localStorage.clear()
+  globalThis.localStorage.clear()
 })
 
 afterEach(() => {
-  window.localStorage.clear()
+  globalThis.localStorage.clear()
 })
 
 describe('useWishlist', () => {
@@ -43,7 +43,7 @@ describe('useWishlist', () => {
     act(() => result.current.clear())
     expect(result.current.slugs).toEqual([])
     // Zustand persist wraps state as { state: { slugs }, version }
-    const stored = JSON.parse(window.localStorage.getItem('pm.wishlist') ?? 'null')
+    const stored = JSON.parse(globalThis.localStorage.getItem('pm.wishlist') ?? 'null')
     expect(stored?.state?.slugs).toEqual([])
   })
 })

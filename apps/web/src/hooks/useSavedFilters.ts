@@ -22,7 +22,7 @@ const MAX = 5
 function read(): SavedFilter[] {
   if (typeof window === 'undefined') return []
   try {
-    const raw = window.localStorage.getItem(KEY)
+    const raw = globalThis.localStorage.getItem(KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
@@ -42,8 +42,8 @@ function read(): SavedFilter[] {
 function write(entries: SavedFilter[]) {
   if (typeof window === 'undefined') return
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(entries))
-    window.dispatchEvent(new CustomEvent('pm:savedFilters'))
+    globalThis.localStorage.setItem(KEY, JSON.stringify(entries))
+    globalThis.dispatchEvent(new CustomEvent('pm:savedFilters'))
   } catch {
     /* storage full — silently drop */
   }
@@ -56,11 +56,11 @@ export function useSavedFilters() {
     function refresh() {
       setEntries(read())
     }
-    window.addEventListener('storage', refresh)
-    window.addEventListener('pm:savedFilters', refresh)
+    globalThis.addEventListener('storage', refresh)
+    globalThis.addEventListener('pm:savedFilters', refresh)
     return () => {
-      window.removeEventListener('storage', refresh)
-      window.removeEventListener('pm:savedFilters', refresh)
+      globalThis.removeEventListener('storage', refresh)
+      globalThis.removeEventListener('pm:savedFilters', refresh)
     }
   }, [])
 

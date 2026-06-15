@@ -44,7 +44,7 @@ function ErrorBoundaryFallback({ onReset }: { onReset: () => void }) {
           <button
             type="button"
             onClick={() => {
-              window.location.href = '/'
+              globalThis.location.href = '/'
             }}
             className="inline-flex items-center gap-2 rounded-full border border-line dark:border-night-line px-5 py-2.5 text-sm font-semibold focus-volt lift-on-hover"
           >

@@ -10,7 +10,7 @@ function Harness() {
 }
 
 afterEach(() => {
-  window.sessionStorage.clear()
+  globalThis.sessionStorage.clear()
   vi.restoreAllMocks()
 })
 
@@ -31,17 +31,17 @@ describe('useScrollRestore', () => {
   })
 
   it('restores from sessionStorage when a value exists for the path+search', () => {
-    window.sessionStorage.setItem('pm.scroll:/browse?category=Coding', '742')
+    globalThis.sessionStorage.setItem('pm.scroll:/browse?category=Coding', '742')
     let restored: number | null = null
-    const origRAF = window.requestAnimationFrame
+    const origRAF = globalThis.requestAnimationFrame
     // Run the rAF callback synchronously so the test doesn't need to wait.
-    window.requestAnimationFrame = ((cb: FrameRequestCallback) => {
+    globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => {
       cb(0)
       return 0
-    }) as typeof window.requestAnimationFrame
+    }) as typeof globalThis.requestAnimationFrame
     vi.spyOn(window, 'scrollTo').mockImplementation(((opts: ScrollToOptions | number) => {
       if (typeof opts === 'object' && opts && 'top' in opts) restored = opts.top ?? null
-    }) as typeof window.scrollTo)
+    }) as typeof globalThis.scrollTo)
 
     render(
       <MemoryRouter initialEntries={['/browse?category=Coding']}>
@@ -49,24 +49,24 @@ describe('useScrollRestore', () => {
       </MemoryRouter>
     )
 
-    window.requestAnimationFrame = origRAF
+    globalThis.requestAnimationFrame = origRAF
     expect(restored).toBe(742)
   })
 
   it('keeps separate positions per pathname+search', () => {
-    window.sessionStorage.setItem('pm.scroll:/browse?q=a', '100')
-    window.sessionStorage.setItem('pm.scroll:/browse?q=b', '500')
+    globalThis.sessionStorage.setItem('pm.scroll:/browse?q=a', '100')
+    globalThis.sessionStorage.setItem('pm.scroll:/browse?q=b', '500')
     const calls: number[] = []
-    const origRAF = window.requestAnimationFrame
-    window.requestAnimationFrame = ((cb: FrameRequestCallback) => {
+    const origRAF = globalThis.requestAnimationFrame
+    globalThis.requestAnimationFrame = ((cb: FrameRequestCallback) => {
       cb(0)
       return 0
-    }) as typeof window.requestAnimationFrame
+    }) as typeof globalThis.requestAnimationFrame
     vi.spyOn(window, 'scrollTo').mockImplementation(((opts: ScrollToOptions | number) => {
       if (typeof opts === 'object' && opts && 'top' in opts && typeof opts.top === 'number') {
         calls.push(opts.top)
       }
-    }) as typeof window.scrollTo)
+    }) as typeof globalThis.scrollTo)
 
     render(
       <MemoryRouter initialEntries={['/browse?q=a']}>
@@ -79,7 +79,7 @@ describe('useScrollRestore', () => {
       </MemoryRouter>
     )
 
-    window.requestAnimationFrame = origRAF
+    globalThis.requestAnimationFrame = origRAF
     expect(calls).toContain(100)
     expect(calls).toContain(500)
   })

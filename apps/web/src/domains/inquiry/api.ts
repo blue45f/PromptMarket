@@ -17,7 +17,7 @@ export async function submitInquiry(
   values: InquiryFormValues,
   { signal }: SubmitInquiryOptions = {}
 ): Promise<InquiryReceipt> {
-  const originUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const originUrl = typeof window !== 'undefined' ? globalThis.location.href : ''
 
   const response = await fetch(INQUIRY_ENDPOINT, {
     method: 'POST',

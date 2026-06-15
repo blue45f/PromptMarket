@@ -220,7 +220,7 @@ export default function DashboardPage() {
                       aria-label={t('library.copyLinkFor', { title: l.title })}
                       onClick={() => {
                         navigator.clipboard
-                          .writeText(window.location.origin + `/listings/${l.slug}`)
+                          .writeText(globalThis.location.origin + `/listings/${l.slug}`)
                           .then(() => toast.success(t('library.copied')))
                           .catch(() => undefined)
                       }}

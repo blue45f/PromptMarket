@@ -73,7 +73,7 @@ export function usePageMeta(meta: PageMeta) {
     const ogUrl =
       meta.canonical ??
       (typeof window !== 'undefined'
-        ? `${window.location.origin}${window.location.pathname}`
+        ? `${globalThis.location.origin}${globalThis.location.pathname}`
         : undefined)
 
     // og:locale follows the active UI language (ko_KR / en_US) so social

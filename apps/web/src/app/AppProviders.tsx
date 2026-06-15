@@ -1,4 +1,5 @@
 import { ErrorBoundary } from '@components/common/ErrorBoundary/ErrorBoundary'
+import { FeedbackWidget } from '@components/feedback/FeedbackWidget'
 import { router } from '@router/index'
 import { initTheme } from '@store/theme'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -38,6 +39,13 @@ export default function AppProviders() {
       <ErrorBoundary>
         <RouterProvider router={router} />
       </ErrorBoundary>
+      {/* Shared SurveyDesk feedback widget — a fixed floating launcher rendered
+          app-wide, outside the routed content. Gated on VITE_SURVEYDESK_URL so
+          the app is completely unaffected while SurveyDesk is not yet deployed
+          (env unset by default today). */}
+      {import.meta.env.VITE_SURVEYDESK_URL && (
+        <FeedbackWidget appId="promptmarket" endpoint={import.meta.env.VITE_SURVEYDESK_URL} />
+      )}
       {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   )

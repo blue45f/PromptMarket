@@ -20,11 +20,11 @@ const PROMPTMARKET_DEMO_LOG_KEY = 'promptmarket-auth-demo-log-v1'
 const appendDemoLog = (label: string, detail?: string) => {
   if (typeof window === 'undefined') return
   try {
-    const raw = window.localStorage.getItem(PROMPTMARKET_DEMO_LOG_KEY)
+    const raw = globalThis.localStorage.getItem(PROMPTMARKET_DEMO_LOG_KEY)
     const current = raw
       ? (JSON.parse(raw) as Array<{ at: number; label: string; detail?: string }>)
       : []
-    window.localStorage.setItem(
+    globalThis.localStorage.setItem(
       PROMPTMARKET_DEMO_LOG_KEY,
       JSON.stringify([...current, { at: Date.now(), label, detail }].slice(-40))
     )

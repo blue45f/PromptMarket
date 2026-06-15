@@ -33,7 +33,7 @@ export default function NotFoundPage() {
   }, [])
 
   function openPalette() {
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }))
+    globalThis.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }))
   }
 
   return (

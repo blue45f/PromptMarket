@@ -46,7 +46,7 @@ export default function SupportPage() {
       const result = await submitMut.mutateAsync(parsed)
       setReceipt(result)
       reset()
-      window.scrollTo({ top: 0 })
+      globalThis.scrollTo({ top: 0 })
     } catch {
       /* error state rendered below */
     }

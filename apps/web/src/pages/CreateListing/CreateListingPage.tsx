@@ -132,7 +132,7 @@ export default function CreateListingPage() {
   const [initialDraft] = useState<FormShape>(() => {
     if (typeof window === 'undefined') return DEFAULTS
     try {
-      const raw = window.localStorage.getItem(DRAFT_KEY)
+      const raw = globalThis.localStorage.getItem(DRAFT_KEY)
       if (!raw) return DEFAULTS
       const parsed = buildFormSchema({ price: '', models: '' }).safeParse({
         ...DEFAULTS,
@@ -145,7 +145,7 @@ export default function CreateListingPage() {
   })
   const [draftHydrated] = useState(() => {
     if (typeof window === 'undefined') return false
-    return !!window.localStorage.getItem(DRAFT_KEY)
+    return !!globalThis.localStorage.getItem(DRAFT_KEY)
   })
   const [draftDismissed, setDraftDismissed] = useState(false)
   const [draftDiscardPending, setDraftDiscardPending] = useState(false)
@@ -169,21 +169,21 @@ export default function CreateListingPage() {
   // Debounced autosave — write the watched form snapshot after typing settles.
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const timerId = window.setTimeout(() => {
+    const timerId = globalThis.setTimeout(() => {
       try {
-        window.localStorage.setItem(DRAFT_KEY, draftJson)
+        globalThis.localStorage.setItem(DRAFT_KEY, draftJson)
       } catch {
         /* quota — silently drop */
       }
     }, 600)
     return () => {
-      window.clearTimeout(timerId)
+      globalThis.clearTimeout(timerId)
     }
   }, [draftJson])
 
   function discardDraft() {
     try {
-      window.localStorage.removeItem(DRAFT_KEY)
+      globalThis.localStorage.removeItem(DRAFT_KEY)
     } catch {
       /* ignore */
     }
@@ -249,7 +249,7 @@ export default function CreateListingPage() {
           />
         ))
         try {
-          window.localStorage.removeItem(DRAFT_KEY)
+          globalThis.localStorage.removeItem(DRAFT_KEY)
         } catch {
           /* ignore */
         }
@@ -293,7 +293,7 @@ export default function CreateListingPage() {
         content: '[name="body"]',
         metadata: '[name="tags"]',
       } satisfies Record<'basics' | 'content' | 'metadata', string>
-      window.requestAnimationFrame(() => {
+      globalThis.requestAnimationFrame(() => {
         const target = document.querySelector(selectorBySection[section]) as HTMLElement | null
         target?.focus()
       })

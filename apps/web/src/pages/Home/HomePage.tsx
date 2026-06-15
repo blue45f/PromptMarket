@@ -51,7 +51,7 @@ export default function HomePage() {
   // WebSite + SearchAction so Google can render a sitelinks search box.
   // Memoised on [origin] so the effect only re-injects the JSON-LD when the
   // origin changes (never in practice), not on every render.
-  const origin = useMemo(() => (typeof window !== 'undefined' ? window.location.origin : ''), [])
+  const origin = useMemo(() => (typeof window !== 'undefined' ? globalThis.location.origin : ''), [])
   const structuredData = useMemo(
     () =>
       origin
@@ -230,9 +230,9 @@ function ScrollProgress() {
     let raf = 0
     const tick = () => {
       const hero = document.querySelector<HTMLElement>('[data-home-hero]')
-      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
+      const scrollTop = globalThis.scrollY || document.documentElement.scrollTop || 0
       const top = hero?.offsetTop ?? 0
-      const height = Math.max(1, hero?.offsetHeight ?? window.innerHeight)
+      const height = Math.max(1, hero?.offsetHeight ?? globalThis.innerHeight)
       const raw = (scrollTop - top) / height
       const progress = Math.min(1, Math.max(0, raw))
       const complete = raw >= 1
@@ -244,10 +244,10 @@ function ScrollProgress() {
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(tick)
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
+    globalThis.addEventListener('scroll', onScroll, { passive: true })
     tick()
     return () => {
-      window.removeEventListener('scroll', onScroll)
+      globalThis.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(raf)
     }
   }, [])

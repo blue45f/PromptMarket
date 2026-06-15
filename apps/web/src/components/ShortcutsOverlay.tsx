@@ -13,13 +13,13 @@ import { useTranslation } from 'react-i18next'
 
 const GROUPS: Array<{ titleKey: string; rows: Array<{ keys: string[]; labelKey: string }> }> = [
   {
-    titleKey: 'shortcuts.groups.global.title',
+    titleKey: 'shortcuts.groups.globalThis.title',
     rows: [
-      { keys: ['⌘', 'K'], labelKey: 'shortcuts.groups.global.openPalette' },
-      { keys: ['Ctrl', 'K'], labelKey: 'shortcuts.groups.global.openPaletteWin' },
-      { keys: ['/'], labelKey: 'shortcuts.groups.global.palette' },
-      { keys: ['?'], labelKey: 'shortcuts.groups.global.help' },
-      { keys: ['Esc'], labelKey: 'shortcuts.groups.global.closeDialog' },
+      { keys: ['⌘', 'K'], labelKey: 'shortcuts.groups.globalThis.openPalette' },
+      { keys: ['Ctrl', 'K'], labelKey: 'shortcuts.groups.globalThis.openPaletteWin' },
+      { keys: ['/'], labelKey: 'shortcuts.groups.globalThis.palette' },
+      { keys: ['?'], labelKey: 'shortcuts.groups.globalThis.help' },
+      { keys: ['Esc'], labelKey: 'shortcuts.groups.globalThis.closeDialog' },
     ],
   },
   {
@@ -77,8 +77,8 @@ export default function ShortcutsOverlay() {
       e.preventDefault()
       setOpen((v) => !v)
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    globalThis.addEventListener('keydown', onKey)
+    return () => globalThis.removeEventListener('keydown', onKey)
   }, [])
 
   return (

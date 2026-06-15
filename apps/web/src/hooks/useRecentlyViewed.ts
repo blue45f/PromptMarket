@@ -16,7 +16,7 @@ type Entry = { slug: string; at: number }
 function read(): Entry[] {
   if (typeof window === 'undefined') return []
   try {
-    const raw = window.localStorage.getItem(KEY)
+    const raw = globalThis.localStorage.getItem(KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
@@ -32,8 +32,8 @@ function read(): Entry[] {
 function write(entries: Entry[]) {
   if (typeof window === 'undefined') return
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(entries))
-    window.dispatchEvent(new CustomEvent('pm:recentlyViewed'))
+    globalThis.localStorage.setItem(KEY, JSON.stringify(entries))
+    globalThis.dispatchEvent(new CustomEvent('pm:recentlyViewed'))
   } catch {
     /* storage full or denied — silently drop */
   }
@@ -46,11 +46,11 @@ export function useRecentlyViewed() {
     function refresh() {
       setEntries(read())
     }
-    window.addEventListener('storage', refresh)
-    window.addEventListener('pm:recentlyViewed', refresh)
+    globalThis.addEventListener('storage', refresh)
+    globalThis.addEventListener('pm:recentlyViewed', refresh)
     return () => {
-      window.removeEventListener('storage', refresh)
-      window.removeEventListener('pm:recentlyViewed', refresh)
+      globalThis.removeEventListener('storage', refresh)
+      globalThis.removeEventListener('pm:recentlyViewed', refresh)
     }
   }, [])
 

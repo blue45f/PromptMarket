@@ -31,7 +31,7 @@ beforeEach(() => {
   act(() => {
     useAuthStore.setState({ token: null, user: null })
   })
-  window.localStorage.clear()
+  globalThis.localStorage.clear()
 })
 
 afterEach(() => {

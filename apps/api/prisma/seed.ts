@@ -412,7 +412,7 @@ Show your reasoning under \`## Reasoning\`. Then \`## Rewrite\`, \`## Indexes\`,
 
   const longContextResearchBrief = `# Long-Context Research Brief (Gemini 2.5 Pro, plan-and-solve)
 
-You are a senior research analyst preparing an investment-grade brief from a large corpus (10-200 PDFs, transcripts, filings). Use Gemini 2.5 Pro's 1M-token window.
+You are a senior research analyst preparing an investment-grade brief from a large corpus (10-200 PDFs, transcripts, filings). Use Gemini 2.5 Pro's 1M-token globalThis.
 
 ## Plan first, then execute
 
@@ -1630,7 +1630,7 @@ You analyze a sprint retrospective and produce a next-sprint action set.
       title: 'Gemini 2.5 Pro Long-Context Research Brief',
       type: 'PROMPT',
       description:
-        "Plan-and-solve prompt that turns 50-200 PDFs into an investment-grade brief with page-cited claims. Built for Gemini 2.5 Pro's 1M-token window.",
+        "Plan-and-solve prompt that turns 50-200 PDFs into an investment-grade brief with page-cited claims. Built for Gemini 2.5 Pro's 1M-token globalThis.",
       body: longContextResearchBrief,
       category: 'Research',
       tags: 'gemini,long-context,research,plan-and-solve',

@@ -43,9 +43,9 @@ export default defineConfig(
     rules: {
       'no-restricted-globals': [
         'error',
-        { name: 'confirm', message: '브랜드 확인 다이얼로그를 사용하세요 (window.confirm 금지).' },
-        { name: 'alert', message: 'Toast/Dialog를 사용하세요 (window.alert 금지).' },
-        { name: 'prompt', message: '입력 다이얼로그/폼을 사용하세요 (window.prompt 금지).' },
+        { name: 'confirm', message: '브랜드 확인 다이얼로그를 사용하세요 (globalThis.confirm 금지).' },
+        { name: 'alert', message: 'Toast/Dialog를 사용하세요 (globalThis.alert 금지).' },
+        { name: 'prompt', message: '입력 다이얼로그/폼을 사용하세요 (globalThis.prompt 금지).' },
       ],
     },
   },

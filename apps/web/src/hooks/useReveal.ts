@@ -5,7 +5,7 @@ const DEFAULT_OPTIONS: IntersectionObserverInit = { threshold: 0.15, rootMargin:
 function prefersReducedMotion(): boolean {
   return (
     typeof window !== 'undefined' &&
-    !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    !!globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
   )
 }
 

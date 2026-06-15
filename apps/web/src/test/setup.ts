@@ -8,8 +8,8 @@ import '@/i18n'
 // hooks that probe prefers-reduced-motion / prefers-contrast etc. don't
 // throw on mount. Individual tests can monkey-patch this when they need
 // to assert against a specific media-query value.
-if (typeof window !== 'undefined' && typeof window.matchMedia === 'undefined') {
-  ;(window as unknown as { matchMedia: typeof window.matchMedia }).matchMedia = ((query: string) =>
+if (typeof window !== 'undefined' && typeof globalThis.matchMedia === 'undefined') {
+  ;(window as unknown as { matchMedia: typeof globalThis.matchMedia }).matchMedia = ((query: string) =>
     ({
       matches: false,
       media: query,
@@ -19,7 +19,7 @@ if (typeof window !== 'undefined' && typeof window.matchMedia === 'undefined') {
       addListener: () => undefined,
       removeListener: () => undefined,
       dispatchEvent: () => false,
-    }) as unknown as MediaQueryList) as typeof window.matchMedia
+    }) as unknown as MediaQueryList) as typeof globalThis.matchMedia
 }
 
 // jsdom defines scrollTo but reports it as "not implemented" when invoked.

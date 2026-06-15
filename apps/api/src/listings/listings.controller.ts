@@ -32,7 +32,7 @@ export class ListingsController {
 
   @Get('related/:id')
   @ApiOperation({
-    summary: 'Related listings sharing type or category, excluding self.',
+    summary: 'Related listings sharing type or category, excluding globalThis.',
   })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   related(@Param('id') id: string, @Query('limit') limit?: string) {

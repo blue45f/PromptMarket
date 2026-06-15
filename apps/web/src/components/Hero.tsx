@@ -268,7 +268,7 @@ function RotatingPhrase({ phrases }: { phrases: string[] }) {
   const [idx, setIdx] = useState(0)
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduced = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) return
     const id = setInterval(() => setIdx((i) => (i + 1) % phrases.length), 2600)
     return () => clearInterval(id)

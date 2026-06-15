@@ -114,12 +114,12 @@ describe('useCountUp', () => {
 
   it('replays from the current value instead of resetting to zero', () => {
     globalThis.IntersectionObserver = MockIntersectionObserver as never
-    const callbacks: Parameters<typeof window.requestAnimationFrame>[0][] = []
+    const callbacks: Parameters<typeof globalThis.requestAnimationFrame>[0][] = []
     const rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((tick) => {
       callbacks.push(tick)
       return callbacks.length
     })
-    vi.spyOn(window.performance, 'now').mockReturnValue(0)
+    vi.spyOn(globalThis.performance, 'now').mockReturnValue(0)
     vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => undefined)
 
     const { result, rerender } = renderHook(

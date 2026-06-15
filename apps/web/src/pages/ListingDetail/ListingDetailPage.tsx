@@ -147,19 +147,19 @@ export default function ListingDetailPage() {
   }, [activeReplyReviewId])
   const [readingMode, setReadingMode] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false
-    return window.localStorage.getItem('pm.readingMode') === '1'
+    return globalThis.localStorage.getItem('pm.readingMode') === '1'
   })
 
   // Persist + ESC exits.
   useEffect(() => {
     if (typeof window === 'undefined') return
-    window.localStorage.setItem('pm.readingMode', readingMode ? '1' : '0')
+    globalThis.localStorage.setItem('pm.readingMode', readingMode ? '1' : '0')
     if (!readingMode) return
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') setReadingMode(false)
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    globalThis.addEventListener('keydown', onKey)
+    return () => globalThis.removeEventListener('keydown', onKey)
   }, [readingMode])
 
   // Track this slug as recently viewed once the detail successfully loads.
@@ -176,7 +176,7 @@ export default function ListingDetailPage() {
     ogType: 'product',
     canonical:
       typeof window !== 'undefined' && listing?.slug
-        ? `${window.location.origin}/listings/${listing.slug}`
+        ? `${globalThis.location.origin}/listings/${listing.slug}`
         : undefined,
   })
 
@@ -190,7 +190,7 @@ export default function ListingDetailPage() {
   // surfaces as "Maximum update depth exceeded" once another subscriber
   // (recently-viewed / wishlist) re-renders the tree. Stabilising the value
   // collapses it back to one effect run per actual data change.
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const origin = typeof window !== 'undefined' ? globalThis.location.origin : ''
   const listingTitle = listing?.title
   const listingDescription = listing?.description
   const listingSlug = listing?.slug
@@ -276,8 +276,8 @@ export default function ListingDetailPage() {
       e.preventDefault()
       toggleWishlist(slug)
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    globalThis.addEventListener('keydown', onKey)
+    return () => globalThis.removeEventListener('keydown', onKey)
   }, [listing?.slug, toggleWishlist])
 
   const {
@@ -342,7 +342,7 @@ export default function ListingDetailPage() {
   async function handleShare() {
     if (!listing) return
     const url =
-      typeof window !== 'undefined' ? `${window.location.origin}/listings/${listing.slug}` : ''
+      typeof window !== 'undefined' ? `${globalThis.location.origin}/listings/${listing.slug}` : ''
     const payload = {
       title: listing.title,
       text: listing.description,

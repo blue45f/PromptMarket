@@ -91,8 +91,8 @@ export default function MarkdownToc({ source, className, scrollOffsetPx = 96 }: 
     const target = document.getElementById(id)
     if (!target) return
     e.preventDefault()
-    const y = target.getBoundingClientRect().top + window.scrollY - scrollOffsetPx
-    window.scrollTo({ top: y, behavior: 'smooth' })
+    const y = target.getBoundingClientRect().top + globalThis.scrollY - scrollOffsetPx
+    globalThis.scrollTo({ top: y, behavior: 'smooth' })
     setActive(id)
   }
 

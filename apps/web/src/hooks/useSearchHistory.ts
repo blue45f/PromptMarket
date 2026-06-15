@@ -12,7 +12,7 @@ const MAX = 8
 function read(): string[] {
   if (typeof window === 'undefined') return []
   try {
-    const raw = window.localStorage.getItem(KEY)
+    const raw = globalThis.localStorage.getItem(KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
@@ -25,8 +25,8 @@ function read(): string[] {
 function write(entries: string[]) {
   if (typeof window === 'undefined') return
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(entries))
-    window.dispatchEvent(new CustomEvent('pm:searchHistory'))
+    globalThis.localStorage.setItem(KEY, JSON.stringify(entries))
+    globalThis.dispatchEvent(new CustomEvent('pm:searchHistory'))
   } catch {
     /* quota full — silently drop */
   }
@@ -39,11 +39,11 @@ export function useSearchHistory() {
     function refresh() {
       setEntries(read())
     }
-    window.addEventListener('storage', refresh)
-    window.addEventListener('pm:searchHistory', refresh)
+    globalThis.addEventListener('storage', refresh)
+    globalThis.addEventListener('pm:searchHistory', refresh)
     return () => {
-      window.removeEventListener('storage', refresh)
-      window.removeEventListener('pm:searchHistory', refresh)
+      globalThis.removeEventListener('storage', refresh)
+      globalThis.removeEventListener('pm:searchHistory', refresh)
     }
   }, [])
 

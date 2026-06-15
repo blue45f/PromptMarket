@@ -43,14 +43,14 @@ export default function RouteAnnouncer() {
 
     // Wait one frame so the destination page's usePageMeta() effect has had
     // a chance to update document.title before we read it.
-    const rafId = window.requestAnimationFrame(() => {
+    const rafId = globalThis.requestAnimationFrame(() => {
       const title = document.title?.trim()
       setMessage(title ? t('routeChange.announce', { title }) : t('routeChange.announceGeneric'))
 
       // Skip focus management when the navigation targets an in-page anchor;
       // the browser/router will scroll there and the user expects to stay in
       // flow rather than be sent to the top of <main>.
-      if (window.location.hash) return
+      if (globalThis.location.hash) return
 
       const main = document.getElementById('main')
       if (main) {
@@ -60,7 +60,7 @@ export default function RouteAnnouncer() {
       }
     })
 
-    return () => window.cancelAnimationFrame(rafId)
+    return () => globalThis.cancelAnimationFrame(rafId)
     // Re-run only when the path changes; search/hash-only changes keep the
     // same page and shouldn't re-announce or refocus.
   }, [pathname, t])

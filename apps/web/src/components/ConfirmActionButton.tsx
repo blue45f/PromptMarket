@@ -16,7 +16,7 @@ interface ConfirmActionButtonProps {
 
 /**
  * Two-step destructive action: first click arms the button, second click
- * commits. Replaces window.confirm (banned by lint) without pulling a whole
+ * commits. Replaces globalThis.confirm (banned by lint) without pulling a whole
  * dialog into dense admin tables. Disarms itself after a few seconds so a
  * forgotten armed button cannot be triggered by a stray click.
  */

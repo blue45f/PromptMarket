@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import ScrollToTop from './ScrollToTop'
 
-const originalScrollTo = window.scrollTo
+const originalScrollTo = globalThis.scrollTo
 
 function findBtn(): HTMLButtonElement {
   // aria-hidden hides it from accessible-role queries, so reach for the
@@ -19,7 +19,7 @@ beforeEach(() => {
 
 afterEach(() => {
   Object.defineProperty(window, 'scrollY', { value: 0, configurable: true })
-  window.scrollTo = originalScrollTo
+  globalThis.scrollTo = originalScrollTo
   vi.restoreAllMocks()
 })
 
@@ -31,9 +31,9 @@ describe('<ScrollToTop />', () => {
     expect(btn.getAttribute('tabindex')).toBe('-1')
   })
 
-  it('calls window.scrollTo({top:0, behavior:smooth}) on click', () => {
+  it('calls globalThis.scrollTo({top:0, behavior:smooth}) on click', () => {
     const scrollTo = vi.fn()
-    window.scrollTo = scrollTo as never
+    globalThis.scrollTo = scrollTo as never
     render(<ScrollToTop />)
     fireEvent.click(findBtn())
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
@@ -41,7 +41,7 @@ describe('<ScrollToTop />', () => {
 
   it('uses behavior=auto when prefers-reduced-motion is set', () => {
     const scrollTo = vi.fn()
-    window.scrollTo = scrollTo as never
+    globalThis.scrollTo = scrollTo as never
     vi.spyOn(window, 'matchMedia').mockReturnValue({
       matches: true,
       media: '(prefers-reduced-motion: reduce)',

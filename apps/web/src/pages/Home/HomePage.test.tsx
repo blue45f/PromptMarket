@@ -99,12 +99,12 @@ describe('HomePage', () => {
     expect(progress.style.getPropertyValue('--progress')).toBe('0')
 
     scrollY = 400
-    window.dispatchEvent(new Event('scroll'))
+    globalThis.dispatchEvent(new Event('scroll'))
     await waitFor(() => expect(progress.style.getPropertyValue('--progress')).toBe('0.5'))
     expect(progress.className).not.toContain('is-complete')
 
     scrollY = 900
-    window.dispatchEvent(new Event('scroll'))
+    globalThis.dispatchEvent(new Event('scroll'))
     await waitFor(() => expect(progress.style.getPropertyValue('--progress')).toBe('1'))
     expect(progress.className).toContain('is-complete')
   })

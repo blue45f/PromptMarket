@@ -24,13 +24,13 @@ export function useScrollRestore() {
     const raw = sessionStorage.getItem(storageKey)
     if (!raw) {
       // Fresh navigation — scroll to top.
-      window.scrollTo({ top: 0 })
+      globalThis.scrollTo({ top: 0 })
       return
     }
     const y = parseInt(raw, 10)
     if (!Number.isFinite(y)) return
     // Wait one frame so the page has had a chance to layout its content.
-    const rafId = requestAnimationFrame(() => window.scrollTo({ top: y }))
+    const rafId = requestAnimationFrame(() => globalThis.scrollTo({ top: y }))
     return () => cancelAnimationFrame(rafId)
   }, [key, storageKey])
 
@@ -42,15 +42,15 @@ export function useScrollRestore() {
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(() => {
         try {
-          sessionStorage.setItem(storageKey, String(window.scrollY))
+          sessionStorage.setItem(storageKey, String(globalThis.scrollY))
         } catch {
           /* quota full — silently drop */
         }
       })
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
+    globalThis.addEventListener('scroll', onScroll, { passive: true })
     return () => {
-      window.removeEventListener('scroll', onScroll)
+      globalThis.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(raf)
     }
   }, [storageKey])

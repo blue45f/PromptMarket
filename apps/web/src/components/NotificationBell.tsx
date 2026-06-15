@@ -16,7 +16,7 @@ function readIdsFromStorage() {
   if (typeof window === 'undefined') return new Set<string>()
 
   try {
-    const parsed = JSON.parse(window.localStorage.getItem(READ_IDS_STORAGE_KEY) ?? '[]')
+    const parsed = JSON.parse(globalThis.localStorage.getItem(READ_IDS_STORAGE_KEY) ?? '[]')
     if (!Array.isArray(parsed)) return new Set<string>()
     return new Set(parsed.filter((id): id is string => unreadIds.has(id)))
   } catch {
@@ -28,7 +28,7 @@ function persistReadIds(readIds: Set<string>) {
   if (typeof window === 'undefined') return
 
   try {
-    window.localStorage.setItem(READ_IDS_STORAGE_KEY, JSON.stringify(Array.from(readIds)))
+    globalThis.localStorage.setItem(READ_IDS_STORAGE_KEY, JSON.stringify(Array.from(readIds)))
   } catch {
     // Local storage can be unavailable in private browsing or locked-down embeds.
   }

@@ -23,7 +23,7 @@ function readMode(): ThemeMode {
 
 function prefersDark(): boolean {
   try {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
+    return globalThis.matchMedia('(prefers-color-scheme: dark)').matches
   } catch {
     return false
   }
@@ -31,7 +31,7 @@ function prefersDark(): boolean {
 
 function prefersReducedMotion(): boolean {
   try {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    return globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
   } catch {
     return false
   }
@@ -71,7 +71,7 @@ function paintWithTransition(mode: ThemeMode) {
   const root = document.documentElement
   root.style.transition = 'background-color 280ms ease, color 280ms ease'
   paint(mode)
-  window.setTimeout(() => {
+  globalThis.setTimeout(() => {
     root.style.transition = ''
   }, 320)
 }
@@ -96,7 +96,7 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
 export function initTheme() {
   paint(readMode())
   try {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const mq = globalThis.matchMedia('(prefers-color-scheme: dark)')
     const cb = () => {
       if (useThemeStore.getState().mode === 'system') paintWithTransition('system')
     }

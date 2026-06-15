@@ -19,7 +19,7 @@ export function useCountUp(
     const node = ref.current
     if (!node || typeof window === 'undefined') return
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduced = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) {
       valueRef.current = target
       const frame = requestAnimationFrame(() => setValue(target))

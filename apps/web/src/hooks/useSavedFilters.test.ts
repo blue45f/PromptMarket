@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { useSavedFilters } from './useSavedFilters'
 
 afterEach(() => {
-  window.localStorage.clear()
+  globalThis.localStorage.clear()
 })
 
 describe('useSavedFilters', () => {

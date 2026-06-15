@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { useRecentlyViewed } from './useRecentlyViewed'
 
 afterEach(() => {
-  window.localStorage.clear()
+  globalThis.localStorage.clear()
 })
 
 describe('useRecentlyViewed', () => {

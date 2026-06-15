@@ -18,23 +18,23 @@ export default function ScrollToTop() {
   useEffect(() => {
     if (typeof window === 'undefined') return
     let raf = 0
-    const tick = () => setVisible(window.scrollY > THRESHOLD)
+    const tick = () => setVisible(globalThis.scrollY > THRESHOLD)
     const onScroll = () => {
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(tick)
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
+    globalThis.addEventListener('scroll', onScroll, { passive: true })
     tick()
     return () => {
-      window.removeEventListener('scroll', onScroll)
+      globalThis.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(raf)
     }
   }, [])
 
   function jump() {
     if (typeof window === 'undefined') return
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
+    const reduced = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
+    globalThis.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
   }
 
   return (

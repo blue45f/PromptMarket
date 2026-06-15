@@ -29,8 +29,8 @@ export function useSpotlight<T extends HTMLElement = HTMLDivElement>() {
     const node = ref.current
     if (!node) return
     if (typeof window === 'undefined') return
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const coarse = window.matchMedia('(pointer: coarse)').matches
+    const reduced = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const coarse = globalThis.matchMedia('(pointer: coarse)').matches
     if (reduced || coarse) return
     node.addEventListener('pointermove', onMove)
     return () => {

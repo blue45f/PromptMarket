@@ -41,7 +41,7 @@ export function useNavShortcuts() {
     function disarm() {
       armed = false
       if (timer != null) {
-        window.clearTimeout(timer)
+        globalThis.clearTimeout(timer)
         timer = null
       }
     }
@@ -54,7 +54,7 @@ export function useNavShortcuts() {
         const lower = e.key.toLowerCase()
         if (lower === 'g') {
           armed = true
-          timer = window.setTimeout(disarm, SEQUENCE_TIMEOUT_MS)
+          timer = globalThis.setTimeout(disarm, SEQUENCE_TIMEOUT_MS)
           return
         }
         if (lower === 'c' && token) {
@@ -73,10 +73,10 @@ export function useNavShortcuts() {
       }
     }
 
-    window.addEventListener('keydown', onKey)
+    globalThis.addEventListener('keydown', onKey)
     return () => {
-      window.removeEventListener('keydown', onKey)
-      if (timer != null) window.clearTimeout(timer)
+      globalThis.removeEventListener('keydown', onKey)
+      if (timer != null) globalThis.clearTimeout(timer)
     }
   }, [navigate, token, isAdmin])
 }

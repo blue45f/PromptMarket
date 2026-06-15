@@ -15,8 +15,8 @@ describe('useReveal', () => {
   })
 
   it('short-circuits to revealed=true under prefers-reduced-motion', () => {
-    const original = (window as unknown as { matchMedia?: typeof window.matchMedia }).matchMedia
-    ;(window as unknown as { matchMedia: typeof window.matchMedia }).matchMedia = ((q: string) =>
+    const original = (window as unknown as { matchMedia?: typeof globalThis.matchMedia }).matchMedia
+    ;(window as unknown as { matchMedia: typeof globalThis.matchMedia }).matchMedia = ((q: string) =>
       ({
         matches: q.includes('reduce'),
         media: q,
@@ -26,16 +26,16 @@ describe('useReveal', () => {
         addListener: vi.fn(),
         removeListener: vi.fn(),
         dispatchEvent: vi.fn(),
-      }) as unknown as MediaQueryList) as typeof window.matchMedia
+      }) as unknown as MediaQueryList) as typeof globalThis.matchMedia
 
     try {
       const { result } = renderHook(() => useReveal())
       expect(result.current.revealed).toBe(true)
     } finally {
       if (original) {
-        ;(window as unknown as { matchMedia: typeof window.matchMedia }).matchMedia = original
+        ;(window as unknown as { matchMedia: typeof globalThis.matchMedia }).matchMedia = original
       } else {
-        delete (window as unknown as { matchMedia?: typeof window.matchMedia }).matchMedia
+        delete (window as unknown as { matchMedia?: typeof globalThis.matchMedia }).matchMedia
       }
     }
   })

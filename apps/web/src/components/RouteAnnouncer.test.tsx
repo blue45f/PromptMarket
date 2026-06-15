@@ -10,7 +10,7 @@ function runRafSync() {
   vi.spyOn(window, 'requestAnimationFrame').mockImplementation(((cb: FrameRequestCallback) => {
     cb(0)
     return 0
-  }) as typeof window.requestAnimationFrame)
+  }) as typeof globalThis.requestAnimationFrame)
   vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => undefined)
 }
 
@@ -43,7 +43,7 @@ function Harness() {
 beforeEach(() => {
   runRafSync()
   document.title = 'Home — PromptMarket'
-  window.location.hash = ''
+  globalThis.location.hash = ''
 })
 
 afterEach(() => {

@@ -55,7 +55,7 @@ export async function importWithRetry<T>(factory: () => Promise<T>): Promise<T> 
     return mod
   } catch (err) {
     if (!hasRetryGuard() && armRetryGuard()) {
-      window.location.reload()
+      globalThis.location.reload()
       // Never settle: keep the current fallback on screen while the browser
       // tears the document down for the reload.
       return new Promise<never>(() => {})
