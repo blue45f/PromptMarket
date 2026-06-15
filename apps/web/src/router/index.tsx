@@ -113,6 +113,9 @@ export const routes = [
     HydrateFallback: RouteFallback,
     children: [
       { index: true, lazy: lazyPage(() => import('@pages/Home')) },
+      // Living in-app design-system style guide. Not in primary nav; reachable
+      // via a subtle footer link and direct URL.
+      { path: 'design', lazy: lazyPage(() => import('@pages/Design')) },
       { path: 'browse', lazy: lazyPage(() => import('@pages/Browse')) },
       // The catalog index lives at /browse; /listings has no own page, so
       // treat the bare path as a common typo and redirect instead of 404ing.
