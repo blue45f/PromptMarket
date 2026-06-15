@@ -75,6 +75,9 @@ function SiteFooter() {
     { to: '/terms', label: t('footer.sitemap.terms') },
     { to: '/privacy', label: t('footer.sitemap.privacy') },
     { to: '/support', label: t('footer.sitemap.support') },
+    // Subtle entry to the living design-system style guide (kept out of the
+    // primary nav — it's a maker/dev reference, not a shopper destination).
+    { to: '/design', label: t('footer.sitemap.design') },
   ]
 
   return (

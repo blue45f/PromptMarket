@@ -64,9 +64,15 @@ export default function SkeletonCard({ className, seed = 0 }: SkeletonCardProps)
   )
 }
 
-export function SkeletonGrid({ count = 8 }: { count?: number }) {
+export function SkeletonGrid({ count = 8, label }: { count?: number; label?: string }) {
   return (
     <div className="cards-fluid">
+      {/* The skeleton cards are decorative (aria-hidden); this visually-hidden
+          live region gives keyboard / screen-reader users the "loading" cue the
+          shimmer conveys visually. */}
+      <span role="status" aria-live="polite" className="sr-only">
+        {label ?? 'Loading…'}
+      </span>
       {Array.from({ length: count }).map((_, i) => (
         <SkeletonCard key={i} seed={i} />
       ))}

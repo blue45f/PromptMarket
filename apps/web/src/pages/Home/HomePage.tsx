@@ -15,7 +15,16 @@ import { getErrorMessage } from '@infrastructure/api'
 import { LISTING_TYPE_META, MODELS } from '@promptmarket/shared'
 import { cn } from '@utils/cn'
 import { typeGradient, formatCompact } from '@utils/format'
-import { ArrowUpRight, Download, Sparkles, Star, Tag, Layers } from 'lucide-react'
+import {
+  AlertCircle,
+  ArrowUpRight,
+  Download,
+  Layers,
+  RefreshCw,
+  Sparkles,
+  Star,
+  Tag,
+} from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -80,9 +89,13 @@ export default function HomePage() {
 
       <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,4vw,3rem)] py-[clamp(3rem,6vw,5rem)] space-y-[clamp(3.5rem,7vw,7rem)]">
         {error && (
-          <p className="text-coral-deep dark:text-coral text-sm font-mono">
-            {getErrorMessage(error)}
-          </p>
+          <div
+            role="alert"
+            className="flex items-start gap-2.5 rounded-2xl border border-coral/40 bg-coral/10 px-4 py-3 text-sm text-coral-deep dark:border-coral/45 dark:bg-coral/15 dark:text-coral"
+          >
+            <AlertCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
+            <span className="font-mono">{getErrorMessage(error)}</span>
+          </div>
         )}
 
         {/* FEATURED — bento grid */}
@@ -141,7 +154,7 @@ export default function HomePage() {
             href="/browse?sort=trending"
           />
           {trendingQ.isPending ? (
-            <SkeletonGrid count={8} />
+            <SkeletonGrid count={8} label={t('common:actions.loading')} />
           ) : trendingQ.isError ? (
             <SectionError
               message={getErrorMessage(trendingQ.error)}
@@ -259,13 +272,20 @@ function SectionError({
   retryLabel: string
 }) {
   return (
-    <div className="flex items-center gap-3 py-4 text-sm font-mono text-ink-mute dark:text-bone-mute">
-      <span className="truncate">{message}</span>
+    <div
+      role="alert"
+      className="flex flex-wrap items-center gap-3 rounded-2xl border border-coral/40 bg-coral/10 px-4 py-3 text-sm dark:border-coral/45 dark:bg-coral/15"
+    >
+      <span className="flex min-w-0 flex-1 items-center gap-2 font-mono text-coral-deep dark:text-coral">
+        <AlertCircle aria-hidden className="h-4 w-4 shrink-0" />
+        <span className="truncate">{message}</span>
+      </span>
       <button
         type="button"
         onClick={onRetry}
-        className="shrink-0 px-3 py-1 rounded-full border border-line dark:border-night-line hover:border-ink dark:hover:border-bone text-ink dark:text-bone focus-volt motion-safe:transition ease-expo"
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line bg-canvas px-3 py-1 text-ink hover:border-ink focus-volt motion-safe:transition ease-expo dark:border-night-line dark:bg-night-sub dark:text-bone dark:hover:border-bone"
       >
+        <RefreshCw aria-hidden className="h-3.5 w-3.5" />
         {retryLabel}
       </button>
     </div>

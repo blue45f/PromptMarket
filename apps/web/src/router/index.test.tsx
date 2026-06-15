@@ -7,6 +7,7 @@ describe('router routes', () => {
     expect(root.path).toBe('/')
     expect(root.children?.map((route) => route.path ?? 'index')).toEqual([
       'index',
+      'design',
       'browse',
       'listings',
       'listings/:slug',

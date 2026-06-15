@@ -621,7 +621,7 @@ export default function BrowsePage() {
           )}
 
           {isPending ? (
-            <SkeletonGrid count={8} />
+            <SkeletonGrid count={8} label={t('common:actions.loading')} />
           ) : items.length ? (
             <>
               {leadItem ? (

@@ -101,7 +101,7 @@ describe('Layout', () => {
     })
     const links = within(miniSitemap).getAllByRole('link')
 
-    expect(links).toHaveLength(11)
+    expect(links).toHaveLength(12)
     expect(links.map((link) => link.getAttribute('href'))).toEqual(
       expect.arrayContaining([
         '/browse',
@@ -110,6 +110,7 @@ describe('Layout', () => {
         '/dashboard',
         '/login',
         '/',
+        '/design',
         '/robots.txt',
         '/sitemap.xml',
         '/terms',
