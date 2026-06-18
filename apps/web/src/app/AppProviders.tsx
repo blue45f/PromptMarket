@@ -43,9 +43,15 @@ export default function AppProviders() {
       {/* Shared SurveyDesk feedback widget — a fixed floating launcher rendered
           app-wide, outside the routed content. Gated on VITE_SURVEYDESK_URL so
           the app is completely unaffected while SurveyDesk is not yet deployed
-          (env unset by default today). */}
+          (env unset by default today). Pinned bottom-LEFT so it never overlaps
+          the app's own bottom-right ScrollToTop pill; it shares the left edge
+          with the DeskCloud launchers, which stack above it. */}
       {import.meta.env.VITE_SURVEYDESK_URL && (
-        <FeedbackWidget appId="promptmarket" endpoint={import.meta.env.VITE_SURVEYDESK_URL} />
+        <FeedbackWidget
+          appId="promptmarket"
+          endpoint={import.meta.env.VITE_SURVEYDESK_URL}
+          position="bottom-left"
+        />
       )}
       {/* Shared DeskCloud widgets (changelog / notify / search / review / community /
           media / moderation). Each is self-contained, react-only, and gated on its

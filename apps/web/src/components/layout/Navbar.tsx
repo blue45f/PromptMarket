@@ -1,5 +1,5 @@
+import { NavbarNotificationBell } from '@components/deskcloud'
 import LanguageToggle from '@components/LanguageToggle'
-import NotificationBell from '@components/NotificationBell'
 import SearchBar from '@components/SearchBar'
 import ThemeToggle from '@components/ThemeToggle'
 import { useUnreadMessages } from '@domains/messages'
@@ -216,7 +216,7 @@ export default function Navbar() {
             aria-hidden
           />
 
-          {token && <NotificationBell />}
+          {token && <NavbarNotificationBell />}
           <LanguageToggle />
           <ThemeToggle />
 
@@ -272,7 +272,7 @@ export default function Navbar() {
         {/* Mobile — gap-2 keeps the 44px coarse-pointer hit areas of adjacent
             icon buttons from overlapping (36px button + 4px slop each side) */}
         <div className="ml-auto md:hidden flex items-center gap-2">
-          {token && <NotificationBell />}
+          {token && <NavbarNotificationBell />}
           <LanguageToggle />
           <ThemeToggle />
           <button

@@ -59,7 +59,10 @@ const CSS = `
   --dc-ease:cubic-bezier(.22,1,.36,1);
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--dc-ink); line-height:1.5;
 }
-.dc-launcher{position:fixed;left:20px;bottom:20px;z-index:var(--dc-z-launcher);display:inline-flex;
+/* 좌하단 스택: SurveyDesk 피드백 런처(bottom:20) → ChangelogDesk(bottom:84) →
+   Dock(bottom:148) 순으로 위로 쌓아 어떤 조합에서도 겹치지 않게 합니다. 우하단은
+   앱 자체 ScrollToTop 필이 차지하므로 DeskCloud 런처는 전부 좌측 레인에 둡니다. */
+.dc-launcher{position:fixed;left:20px;bottom:148px;z-index:var(--dc-z-launcher);display:inline-flex;
   align-items:center;gap:8px;padding:11px 16px;border:0;border-radius:999px;background:var(--dc-accent);
   color:var(--dc-accent-ink);font:inherit;font-weight:600;font-size:14px;cursor:pointer;box-shadow:var(--dc-shadow);
   transition:transform .18s var(--dc-ease),filter .18s var(--dc-ease);}
