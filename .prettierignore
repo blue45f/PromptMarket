@@ -1,0 +1,7 @@
+# Generated lockfile — never reformat (pnpm owns its format).
+pnpm-lock.yaml
+
+# Build output & deps
+dist
+coverage
+node_modules
