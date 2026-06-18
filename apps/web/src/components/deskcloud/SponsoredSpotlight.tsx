@@ -17,8 +17,9 @@
  * ──────────────────────────────────────────────────────────────────────────
  */
 import { type ServeResult } from '@heejun/deskcloud'
+import * as Tooltip from '@radix-ui/react-tooltip'
 import useEmblaCarousel from 'embla-carousel-react'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Info } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -37,6 +38,8 @@ export default function SponsoredSpotlight() {
         ad: 'AD',
         cta: '보러가기',
         region: '스폰서 추천',
+        info: '이 영역은 스폰서가 후원한 추천입니다. 노출·클릭은 광고 성과 측정에만 쓰입니다.',
+        infoLabel: '스폰서 안내',
       }
     : {
         chapter: 'Sponsored',
@@ -44,6 +47,8 @@ export default function SponsoredSpotlight() {
         ad: 'AD',
         cta: 'Learn more',
         region: 'Sponsored spotlight',
+        info: 'This area is sponsor-funded. Views and clicks are used only for ad measurement.',
+        infoLabel: 'About sponsored content',
       }
 
   const [creatives, setCreatives] = useState<Creative[]>([])
@@ -108,6 +113,7 @@ export default function SponsoredSpotlight() {
             {copy.title}
           </h2>
         </div>
+        <SponsorDisclosure label={copy.infoLabel} text={copy.info} />
       </div>
 
       <SpotlightCarousel
@@ -117,6 +123,36 @@ export default function SponsoredSpotlight() {
         onClick={onClick}
       />
     </section>
+  )
+}
+
+/** Radix Tooltip 기반 스폰서 디스클로저 — 카드 링크 바깥의 포커스 가능한 버튼(a11y 안전). */
+function SponsorDisclosure({ label, text }: { label: string; text: string }) {
+  return (
+    <Tooltip.Provider delayDuration={150}>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <button
+            type="button"
+            aria-label={label}
+            className="mb-1 inline-flex size-6 shrink-0 items-center justify-center rounded-full text-ink-mute outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-accent-strong dark:text-bone-mute dark:hover:text-bone"
+          >
+            <Info aria-hidden className="size-4" />
+          </button>
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Content
+            side="top"
+            align="end"
+            sideOffset={6}
+            className="z-50 max-w-[16rem] rounded-xl border border-line bg-canvas px-3 py-2 text-[0.78rem] leading-relaxed text-ink-soft shadow-lg dark:border-night-line dark:bg-night-sub dark:text-bone-soft"
+          >
+            {text}
+            <Tooltip.Arrow className="fill-canvas dark:fill-night-sub" />
+          </Tooltip.Content>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </Tooltip.Provider>
   )
 }
 
