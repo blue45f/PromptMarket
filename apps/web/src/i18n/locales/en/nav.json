@@ -25,6 +25,10 @@
     "markAllRead": "Mark all as read",
     "read": "Read",
     "unread": "New",
+    "loading": "Loading notifications…",
+    "errorTitle": "Couldn't load notifications",
+    "retry": "Try again",
+    "liveFooter": "Live from your account inbox.",
     "items": {
       "wishlist": {
         "title": "Wishlist watch is active",
@@ -36,6 +40,23 @@
         "body": "A new marketplace polish cycle is now active.",
         "action": "See what's changed"
       }
+    }
+  },
+  "changelog": {
+    "label": "What's new",
+    "labelWithCount_one": "What's new, {{count}} unread",
+    "labelWithCount_other": "What's new, {{count}} unread",
+    "title": "What's new",
+    "subtitle": "Latest product updates",
+    "loading": "Loading updates…",
+    "errorTitle": "Couldn't load updates",
+    "retry": "Try again",
+    "empty": "Nothing new just yet.",
+    "tags": {
+      "new": "New",
+      "improved": "Improved",
+      "fixed": "Fixed",
+      "announcement": "News"
     }
   },
   "mainLabel": "Main navigation",

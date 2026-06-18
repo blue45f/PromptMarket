@@ -5,10 +5,23 @@ allowBuilds:
   '@nestjs/core': true
   '@prisma/engines': true
   '@scarf/scarf': true
+  '@sentry/cli': true
+  '@swc/core': true
   argon2: true
   esbuild: true
   prisma: true
+  protobufjs: true
   unrs-resolver: true
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@prisma/engines'
+  - '@sentry/cli'
+  - '@swc/core'
+  - argon2
+  - esbuild
+  - prisma
+  - protobufjs
+  - unrs-resolver
 
 minimumReleaseAgeExclude:
   - enhanced-resolve
@@ -23,3 +36,4 @@ minimumReleaseAgeExclude:
   - '@heejun/auth@0.3.0'
   - '@heejun/contracts@0.1.0'
   - '@heejun/core-server@0.1.0'
+  - '@heejun/deskcloud@0.1.0'

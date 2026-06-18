@@ -24,6 +24,14 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, './src/utils'),
     },
   },
+  optimizeDeps: {
+    // The @heejun/deskcloud SDK declares socket.io-client as an OPTIONAL peer
+    // dep (only the Realtime/Chat clients need it — we never import those). Vite's
+    // dep pre-bundler would otherwise try to resolve that optional import from the
+    // SDK barrel and fail. Excluding it from optimization lets Vite process the SDK
+    // on demand and tree-shake the unused socket path (the prod build already does).
+    exclude: ['@heejun/deskcloud'],
+  },
   server: {
     port: 5173,
     proxy: {

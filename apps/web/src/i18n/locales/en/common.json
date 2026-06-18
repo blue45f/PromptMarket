@@ -263,5 +263,60 @@
   },
   "keyboard": {
     "esc": "Esc"
+  },
+  "deskPanel": {
+    "launcher": "Feedback & reviews",
+    "launcherShort": "Feedback",
+    "title": "Help us improve",
+    "close": "Close",
+    "tabsLabel": "Feedback sections",
+    "feedback": "Feedback",
+    "reviews": "Reviews",
+    "report": "Report"
+  },
+  "feedback": {
+    "loading": "Loading…",
+    "errorTitle": "Couldn't load feedback form",
+    "empty": "No survey is active right now.",
+    "submit": "Send feedback",
+    "submitting": "Sending…",
+    "submitError": "Couldn't send feedback.",
+    "thanksTitle": "Thanks for the feedback!",
+    "thanksBody": "Your response helps shape the marketplace.",
+    "textPlaceholder": "Type your answer…"
+  },
+  "reviews": {
+    "loading": "Loading reviews…",
+    "errorTitle": "Couldn't load reviews",
+    "empty": "No reviews yet.",
+    "aggregate_one": "{{count}} review",
+    "aggregate_other": "{{count}} reviews",
+    "reply": "Reply"
+  },
+  "report": {
+    "intro": "Spotted something that breaks the rules? Let us know.",
+    "reasonLabel": "Reason",
+    "reasons": {
+      "spam": "Spam",
+      "abuse": "Abuse / harassment",
+      "illegal": "Illegal content",
+      "other": "Other"
+    },
+    "detailsLabel": "Details",
+    "optional": "(optional)",
+    "detailsPlaceholder": "Add any context…",
+    "submit": "Submit report",
+    "submitting": "Sending…",
+    "submitError": "Couldn't send the report.",
+    "thanksTitle": "Report received",
+    "thanksBody": "Thanks — our team will take a look."
+  },
+  "searchDesk": {
+    "title": "Search everything",
+    "description": "Search across the site. Use arrow keys to navigate results.",
+    "placeholder": "Search everything…",
+    "inputLabel": "Search query",
+    "loading": "Searching…",
+    "empty": "No matches found."
   }
 }

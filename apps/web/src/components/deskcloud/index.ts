@@ -1,7 +1,14 @@
 /**
- * DeskCloud 위젯 공개 엔트리.
- * 앱-셸에서 한 번 마운트하는 위젯 묶음(DeskCloudWidgets)과, 내비바 알림 벨
- * 자리에서 NotifyDesk(라이브) ↔ 자체 벨(폴백)을 고르는 래퍼를 노출합니다.
+ * DeskCloud — NATIVE integration public entry (PromptMarket / apps/web).
+ *
+ * Native, env-gated integrations with the live DeskCloud Desks via the published
+ * `@heejun/deskcloud` SDK (`pk_` browser clients). All UI is rendered with the
+ * app's own components + OKLCH tokens — no widget bundles, no foreign CSS.
+ *
+ *   • DeskCloudWidgets       — app-shell mount: content-Desk drawer + search palette.
+ *   • NavbarNotificationBell — navbar bell: live NotifyDesk inbox ↔ first-party fallback.
+ *   • NavbarChangelog        — navbar "What's new": ChangelogDesk (renders only when set).
  */
 export { DeskCloudWidgets, default as DeskCloudWidgetsDefault } from './DeskCloudWidgets'
-export { default as NavbarNotificationBell } from './notifydesk/NavbarNotificationBell'
+export { default as NavbarNotificationBell } from './NavbarNotificationBell'
+export { default as NavbarChangelog } from './NavbarChangelog'

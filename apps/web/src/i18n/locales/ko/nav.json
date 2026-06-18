@@ -22,6 +22,10 @@
     "markAllRead": "모두 읽음 처리",
     "read": "읽음",
     "unread": "새 알림",
+    "loading": "알림을 불러오는 중…",
+    "errorTitle": "알림을 불러오지 못했어요",
+    "retry": "다시 시도",
+    "liveFooter": "내 계정 인박스에서 실시간으로 받아옵니다.",
     "items": {
       "wishlist": {
         "title": "위시리스트 감시 활성화",
@@ -33,6 +37,22 @@
         "body": "마켓플레이스 새 개선 기능이 적용되었습니다.",
         "action": "변경 내용 보기"
       }
+    }
+  },
+  "changelog": {
+    "label": "새 소식",
+    "labelWithCount_other": "새 소식, {{count}}건 안 읽음",
+    "title": "새 소식",
+    "subtitle": "최신 제품 업데이트",
+    "loading": "업데이트를 불러오는 중…",
+    "errorTitle": "업데이트를 불러오지 못했어요",
+    "retry": "다시 시도",
+    "empty": "아직 새 소식이 없어요.",
+    "tags": {
+      "new": "신규",
+      "improved": "개선",
+      "fixed": "수정",
+      "announcement": "공지"
     }
   },
   "mainLabel": "주 내비게이션",
