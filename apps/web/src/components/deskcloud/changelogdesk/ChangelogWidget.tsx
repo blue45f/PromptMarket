@@ -361,7 +361,10 @@ const WIDGET_CSS = `
   background: var(--cd-danger); color: #fff; font-size: 11px; font-weight: 700; line-height: 1;
   border: 2px solid var(--cd-surface);
 }
-.cd-pos-br { right: 20px; bottom: 20px; } .cd-pos-bl { left: 20px; bottom: 20px; }
+.cd-pos-br { right: 20px; bottom: 20px; }
+/* bottom-left stacks above the SurveyDesk feedback launcher (also bottom-left,
+   bottom:20) so the two floating pills never overlap in this app's shell. */
+.cd-pos-bl { left: 20px; bottom: 84px; }
 .cd-pos-tr { right: 20px; top: 20px; } .cd-pos-tl { left: 20px; top: 20px; }
 .cd-backdrop { position: fixed; inset: 0; z-index: var(--cd-z-backdrop); background: transparent; }
 .cd-panel {
@@ -371,7 +374,7 @@ const WIDGET_CSS = `
   border: 1px solid var(--cd-border); border-radius: var(--cd-radius); box-shadow: var(--cd-shadow);
   overflow: hidden; animation: cd-pop .18s var(--cd-ease);
 }
-.cd-panel.cd-pos-br { right: 20px; bottom: 84px; } .cd-panel.cd-pos-bl { left: 20px; bottom: 84px; }
+.cd-panel.cd-pos-br { right: 20px; bottom: 84px; } .cd-panel.cd-pos-bl { left: 20px; bottom: 148px; }
 .cd-panel.cd-pos-tr { right: 20px; top: 84px; } .cd-panel.cd-pos-tl { left: 20px; top: 84px; }
 @media (max-width: 480px) {
   .cd-panel, .cd-panel.cd-pos-br, .cd-panel.cd-pos-bl, .cd-panel.cd-pos-tr, .cd-panel.cd-pos-tl {

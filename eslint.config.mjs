@@ -17,6 +17,7 @@ export default defineConfig(
     '**/*.d.ts',
     '**/.turbo',
     'apps/api/prisma/migrations/**',
+    'apps/toss/**',
   ]),
 
   // 공유 베이스(TS + import 위생 + 커스텀 규칙 + prettier 충돌 비활성).

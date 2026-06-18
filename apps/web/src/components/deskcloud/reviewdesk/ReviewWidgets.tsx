@@ -246,7 +246,7 @@ const WIDGET_CSS = `
 .rd-featured-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--rd-star) 18%, var(--rd-surface)); color: #7a5a12; }
 .rd-item-title { margin: 0 0 4px; font-size: 15px; font-weight: 700; }
 .rd-item-body { margin: 0; font-size: 14px; color: var(--rd-ink-soft); white-space: pre-wrap; word-break: break-word; }
-.rd-reply { margin: 12px 0 0; padding: 10px 12px; border-left: 3px solid var(--rd-border-strong); background: var(--rd-surface-2); border-radius: 0 var(--rd-radius-sm) var(--rd-radius-sm) 0; }
+.rd-reply { margin: 12px 0 0; padding: 10px 12px; border: 1px solid var(--rd-border); background: var(--rd-surface-2); border-radius: var(--rd-radius-sm); }
 .rd-reply-label { font-size: 11px; font-weight: 700; color: var(--rd-muted); text-transform: uppercase; letter-spacing: .04em; }
 .rd-reply-body { margin: 3px 0 0; font-size: 13px; color: var(--rd-ink-soft); white-space: pre-wrap; }
 .rd-form-card { padding: 20px; }
