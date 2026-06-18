@@ -17,12 +17,14 @@
  * ──────────────────────────────────────────────────────────────────────────
  */
 import {
+  createAdClient,
   createChangelogClient,
   createModerationClient,
   createNotifyClient,
   createReviewClient,
   createSearchClient,
   createSurveyClient,
+  type AdClient,
   type ChangelogClient,
   type ModerationClient,
   type NotifyClient,
@@ -91,6 +93,26 @@ export function getModerationClient(): ModerationClient | null {
     publishableKey: pk(env.VITE_MODERATIONDESK_PK),
   })
 }
+
+/* ── AdDesk — sponsored spotlight rail ────────────────────────────────────── */
+export const adDeskUrl = env.VITE_ADDESK_URL
+export function getAdClient(): AdClient | null {
+  if (!adDeskUrl) return null
+  return createAdClient({ endpoint: adDeskUrl, publishableKey: pk(env.VITE_ADDESK_PK) })
+}
+
+/**
+ * Slot keys the home "Sponsored Spotlight" rail serves (one creative each).
+ * Override per-deployment with a comma-separated `VITE_ADDESK_SLOTS`; the rail
+ * renders only the slots that return an active creative, so unconfigured slots
+ * (and the whole rail, when AdDesk is off) simply stay invisible.
+ */
+export const adHomeSlots: string[] = (
+  env.VITE_ADDESK_SLOTS ?? 'home-spotlight-1,home-spotlight-2,home-spotlight-3'
+)
+  .split(',')
+  .map((s: string) => s.trim())
+  .filter(Boolean)
 
 /**
  * A stable, anonymous per-browser id for changelog read tracking. Persisted in
