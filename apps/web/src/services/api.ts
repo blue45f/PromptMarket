@@ -1,5 +1,6 @@
-import ky, { type Options } from 'ky'
 import { useAuthStore } from '@store/auth'
+import ky, { type Options } from 'ky'
+
 import i18n from '@/i18n'
 
 /** ky beforeRequest 에서 호출 — 토큰이 있으면 Authorization 헤더를 단다. (테스트용 export) */

@@ -13,13 +13,13 @@ import { useTranslation } from 'react-i18next'
 
 const GROUPS: Array<{ titleKey: string; rows: Array<{ keys: string[]; labelKey: string }> }> = [
   {
-    titleKey: 'shortcuts.groups.globalThis.title',
+    titleKey: 'shortcuts.groups.global.title',
     rows: [
-      { keys: ['⌘', 'K'], labelKey: 'shortcuts.groups.globalThis.openPalette' },
-      { keys: ['Ctrl', 'K'], labelKey: 'shortcuts.groups.globalThis.openPaletteWin' },
-      { keys: ['/'], labelKey: 'shortcuts.groups.globalThis.palette' },
-      { keys: ['?'], labelKey: 'shortcuts.groups.globalThis.help' },
-      { keys: ['Esc'], labelKey: 'shortcuts.groups.globalThis.closeDialog' },
+      { keys: ['⌘', 'K'], labelKey: 'shortcuts.groups.global.openPalette' },
+      { keys: ['Ctrl', 'K'], labelKey: 'shortcuts.groups.global.openPaletteWin' },
+      { keys: ['/'], labelKey: 'shortcuts.groups.global.palette' },
+      { keys: ['?'], labelKey: 'shortcuts.groups.global.help' },
+      { keys: ['Esc'], labelKey: 'shortcuts.groups.global.closeDialog' },
     ],
   },
   {

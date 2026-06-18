@@ -1,4 +1,5 @@
 import { ErrorBoundary } from '@components/common/ErrorBoundary/ErrorBoundary'
+import { DeskCloudWidgets } from '@components/deskcloud/DeskCloudWidgets'
 import { FeedbackWidget } from '@components/feedback/FeedbackWidget'
 import { router } from '@router/index'
 import { initTheme } from '@store/theme'
@@ -46,6 +47,12 @@ export default function AppProviders() {
       {import.meta.env.VITE_SURVEYDESK_URL && (
         <FeedbackWidget appId="promptmarket" endpoint={import.meta.env.VITE_SURVEYDESK_URL} />
       )}
+      {/* Shared DeskCloud widgets (changelog / notify / search / review / community /
+          media / moderation). Each is self-contained, react-only, and gated on its
+          own VITE_<DESK>_URL — nothing renders until that env URL is set, so the app
+          is unaffected by default. Mounted once here, outside the routed content,
+          alongside the existing SurveyDesk widget. */}
+      <DeskCloudWidgets />
       {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   )

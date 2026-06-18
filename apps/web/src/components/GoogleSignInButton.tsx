@@ -18,6 +18,10 @@ declare global {
   interface Window {
     google?: GoogleIdentityServices
   }
+  // Additive global so `globalThis.google` type-checks (the GIS script attaches
+  // to the global scope). Survives a window→globalThis codemod either way.
+
+  var google: GoogleIdentityServices | undefined
 }
 
 const GIS_SRC = 'https://accounts.google.com/gsi/client'

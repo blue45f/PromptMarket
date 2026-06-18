@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { useAuthStore } from '@store/auth'
+import { beforeEach, describe, expect, it } from 'vitest'
+
 import { api, applyAuth, getErrorMessage } from './api'
 
 beforeEach(() => {
