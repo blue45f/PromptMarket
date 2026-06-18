@@ -36,3 +36,4 @@ minimumReleaseAgeExclude:
   - '@heejun/auth@0.3.0'
   - '@heejun/contracts@0.1.0'
   - '@heejun/core-server@0.1.0'
+  - '@heejun/deskcloud@0.1.0'

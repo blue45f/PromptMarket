@@ -257,5 +257,59 @@
   },
   "keyboard": {
     "esc": "Esc"
+  },
+  "deskPanel": {
+    "launcher": "피드백 및 리뷰",
+    "launcherShort": "피드백",
+    "title": "더 나은 마켓을 위해",
+    "close": "닫기",
+    "tabsLabel": "피드백 섹션",
+    "feedback": "피드백",
+    "reviews": "리뷰",
+    "report": "신고"
+  },
+  "feedback": {
+    "loading": "불러오는 중…",
+    "errorTitle": "피드백 폼을 불러오지 못했어요",
+    "empty": "지금 진행 중인 설문이 없어요.",
+    "submit": "피드백 보내기",
+    "submitting": "보내는 중…",
+    "submitError": "피드백을 보내지 못했어요.",
+    "thanksTitle": "피드백 감사합니다!",
+    "thanksBody": "남겨 주신 의견이 마켓플레이스를 더 좋게 만듭니다.",
+    "textPlaceholder": "답변을 입력하세요…"
+  },
+  "reviews": {
+    "loading": "리뷰를 불러오는 중…",
+    "errorTitle": "리뷰를 불러오지 못했어요",
+    "empty": "아직 리뷰가 없어요.",
+    "aggregate_other": "리뷰 {{count}}개",
+    "reply": "답변"
+  },
+  "report": {
+    "intro": "규칙에 어긋나는 콘텐츠를 발견하셨나요? 알려 주세요.",
+    "reasonLabel": "사유",
+    "reasons": {
+      "spam": "스팸",
+      "abuse": "악용·괴롭힘",
+      "illegal": "불법 콘텐츠",
+      "other": "기타"
+    },
+    "detailsLabel": "상세 내용",
+    "optional": "(선택)",
+    "detailsPlaceholder": "추가 설명을 입력하세요…",
+    "submit": "신고하기",
+    "submitting": "보내는 중…",
+    "submitError": "신고를 보내지 못했어요.",
+    "thanksTitle": "신고가 접수되었어요",
+    "thanksBody": "감사합니다 — 담당 팀이 확인하겠습니다."
+  },
+  "searchDesk": {
+    "title": "전체 검색",
+    "description": "사이트 전체를 검색합니다. 방향키로 결과를 탐색하세요.",
+    "placeholder": "전체 검색…",
+    "inputLabel": "검색어",
+    "loading": "검색 중…",
+    "empty": "일치하는 결과가 없어요."
   }
 }

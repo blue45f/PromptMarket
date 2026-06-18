@@ -1,6 +1,5 @@
 import { ErrorBoundary } from '@components/common/ErrorBoundary/ErrorBoundary'
 import { DeskCloudWidgets } from '@components/deskcloud/DeskCloudWidgets'
-import { FeedbackWidget } from '@components/feedback/FeedbackWidget'
 import { router } from '@router/index'
 import { initTheme } from '@store/theme'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -40,24 +39,13 @@ export default function AppProviders() {
       <ErrorBoundary>
         <RouterProvider router={router} />
       </ErrorBoundary>
-      {/* Shared SurveyDesk feedback widget — a fixed floating launcher rendered
-          app-wide, outside the routed content. Gated on VITE_SURVEYDESK_URL so
-          the app is completely unaffected while SurveyDesk is not yet deployed
-          (env unset by default today). Pinned bottom-LEFT so it never overlaps
-          the app's own bottom-right ScrollToTop pill; it shares the left edge
-          with the DeskCloud launchers, which stack above it. */}
-      {import.meta.env.VITE_SURVEYDESK_URL && (
-        <FeedbackWidget
-          appId="promptmarket"
-          endpoint={import.meta.env.VITE_SURVEYDESK_URL}
-          position="bottom-left"
-        />
-      )}
-      {/* Shared DeskCloud widgets (changelog / notify / search / review / community /
-          media / moderation). Each is self-contained, react-only, and gated on its
-          own VITE_<DESK>_URL — nothing renders until that env URL is set, so the app
-          is unaffected by default. Mounted once here, outside the routed content,
-          alongside the existing SurveyDesk widget. */}
+      {/* NATIVE DeskCloud integration shell. Mounts the content-Desk drawer
+          (SurveyDesk feedback / ReviewDesk reviews / ModerationDesk report) and
+          the native SearchDesk palette (mod+/). Each Desk is gated on its own
+          VITE_<DESK>DESK_URL via the published @heejun/deskcloud SDK (pk_), and
+          rendered with the app's own components + OKLCH tokens — no widget
+          bundles. Unset env → nothing renders / first-party fallback (reversible).
+          NotifyDesk + ChangelogDesk mount in the Navbar. */}
       <DeskCloudWidgets />
       {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
