@@ -1,4 +1,5 @@
 import CategoryChips from '@components/CategoryChips'
+import SponsoredSpotlight from '@components/deskcloud/SponsoredSpotlight'
 import EmptyState from '@components/EmptyState'
 import FeaturedCarousel from '@components/FeaturedCarousel'
 import Hero from '@components/Hero'
@@ -51,7 +52,10 @@ export default function HomePage() {
   // WebSite + SearchAction so Google can render a sitelinks search box.
   // Memoised on [origin] so the effect only re-injects the JSON-LD when the
   // origin changes (never in practice), not on every render.
-  const origin = useMemo(() => (typeof window !== 'undefined' ? globalThis.location.origin : ''), [])
+  const origin = useMemo(
+    () => (typeof window !== 'undefined' ? globalThis.location.origin : ''),
+    []
+  )
   const structuredData = useMemo(
     () =>
       origin
@@ -132,6 +136,9 @@ export default function HomePage() {
             />
           )}
         </section>
+
+        {/* SPONSORED SPOTLIGHT — native AdDesk rail; renders only when served */}
+        <SponsoredSpotlight />
 
         {/* CATEGORIES */}
         <section aria-labelledby="home-categories-heading">
