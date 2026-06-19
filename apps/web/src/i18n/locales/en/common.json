@@ -85,7 +85,12 @@
     "threadDeleted": "Thread deleted",
     "commentPosted": "Comment posted",
     "commentDeleted": "Comment deleted",
-    "messageSent": "Message sent"
+    "messageSent": "Message sent",
+    "linkCopied": "Link copied to clipboard",
+    "promptCopied": "Prompt copied to clipboard",
+    "copyFailed": "Could not copy — please copy the link manually",
+    "shareFailed": "Could not share — please copy the link manually",
+    "downloadStarted": "Download started"
   },
   "confirm": {
     "cancel": "Cancel"

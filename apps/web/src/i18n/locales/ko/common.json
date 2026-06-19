@@ -81,7 +81,12 @@
     "threadDeleted": "토론이 삭제됐어요",
     "commentPosted": "댓글이 등록됐어요",
     "commentDeleted": "댓글이 삭제됐어요",
-    "messageSent": "쪽지를 보냈어요"
+    "messageSent": "쪽지를 보냈어요",
+    "linkCopied": "링크를 클립보드에 복사했어요",
+    "promptCopied": "프롬프트를 클립보드에 복사했어요",
+    "copyFailed": "복사하지 못했어요 — 링크를 직접 복사해 주세요",
+    "shareFailed": "공유하지 못했어요 — 링크를 직접 복사해 주세요",
+    "downloadStarted": "다운로드를 시작했어요"
   },
   "confirm": {
     "cancel": "취소"

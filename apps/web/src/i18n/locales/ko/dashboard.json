@@ -52,6 +52,8 @@
     },
     "count_other": "담은 항목 {{count}}건",
     "confirmPrompt": "정말 삭제할까요?",
+    "copyAllLinks": "링크 전체 복사",
+    "copyAllLinksSuccess_other": "링크 {{count}}개를 복사했어요",
     "clear": "전부 지우기",
     "clearConfirm": {
       "title": "위시리스트를 비울까요?",

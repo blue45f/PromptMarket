@@ -54,6 +54,9 @@
     "count_one": "{{count}} saved",
     "count_other": "{{count}} saved",
     "confirmPrompt": "Are you sure you want to delete?",
+    "copyAllLinks": "Copy all links",
+    "copyAllLinksSuccess_one": "Copied {{count}} link",
+    "copyAllLinksSuccess_other": "Copied {{count}} links",
     "clear": "Clear all",
     "clearConfirm": {
       "title": "Clear your wishlist?",

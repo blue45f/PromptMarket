@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next'
 import type { ListingType } from '@promptmarket/shared'
 import type { TFunction } from 'i18next'
 
+import { copyToClipboard } from '@/lib/share'
+
 /* ---------------------------------------------------------------------------
  * InstallPanel — Smithery-style "drop this into your editor" panel. The
  * snippets are intentionally short and copy-pasteable: a CLI command when one
@@ -99,13 +101,12 @@ export default function InstallPanel({ slug, type, className }: InstallPanelProp
 
   async function copy() {
     if (!active) return
-    try {
-      await navigator.clipboard.writeText(active.command)
+    // copyToClipboard adds a legacy execCommand fallback so the install command
+    // still copies in insecure/preview contexts without navigator.clipboard.
+    if (await copyToClipboard(active.command)) {
       setCopied(true)
       if (timerRef.current) clearTimeout(timerRef.current)
       timerRef.current = setTimeout(() => setCopied(false), 1500)
-    } catch {
-      /* clipboard denied — keep silent */
     }
   }
 

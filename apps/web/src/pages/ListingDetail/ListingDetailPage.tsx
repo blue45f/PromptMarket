@@ -66,6 +66,8 @@ import { z } from 'zod'
 
 import type { ListingDetailResponse } from '@/types'
 
+import { copyToClipboard, shareWithToast } from '@/lib/share'
+
 // Screenshot attachments live outside react-hook-form (the picker resizes
 // files asynchronously), so the form schema covers only rating + comment.
 const reviewFormSchema = CreateReviewSchema.omit({ attachments: true })
@@ -329,12 +331,13 @@ export default function ListingDetailPage() {
 
   async function handleCopy() {
     if (!listing?.body) return
-    try {
-      await navigator.clipboard.writeText(listing.body)
+    // copyToClipboard adds a legacy execCommand fallback for insecure/preview
+    // contexts where navigator.clipboard is unavailable.
+    if (await copyToClipboard(listing.body)) {
       setCopied(true)
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
       copiedTimerRef.current = setTimeout(() => setCopied(false), 1500)
-    } catch {
+    } else {
       toast.error(t('body.copyFailed'))
     }
   }
@@ -343,30 +346,17 @@ export default function ListingDetailPage() {
     if (!listing) return
     const url =
       typeof window !== 'undefined' ? `${globalThis.location.origin}/listings/${listing.slug}` : ''
-    const payload = {
-      title: listing.title,
-      text: listing.description,
-      url,
-    }
-    // Web Share API on mobile and macOS Safari.
-    if (typeof navigator !== 'undefined' && 'share' in navigator) {
-      try {
-        await navigator.share(payload)
-        setShareState('shared')
-        if (shareTimerRef.current) clearTimeout(shareTimerRef.current)
-        shareTimerRef.current = setTimeout(() => setShareState('idle'), 1500)
-        return
-      } catch {
-        /* user cancelled or browser refused — fall through to clipboard */
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(url)
-      setShareState('copied')
+    // shareWithToast prefers the native share sheet, falls back to a clipboard
+    // copy (with an informational toast), and surfaces an error toast on total
+    // failure instead of silently swallowing it. A dismissed sheet stays silent.
+    const result = await shareWithToast(
+      { title: listing.title, text: listing.description, url },
+      { copiedMessage: t('sidebar.linkCopied') }
+    )
+    if (result === 'shared' || result === 'copied') {
+      setShareState(result)
       if (shareTimerRef.current) clearTimeout(shareTimerRef.current)
       shareTimerRef.current = setTimeout(() => setShareState('idle'), 1500)
-    } catch {
-      /* clipboard denied — silently ignore */
     }
   }
 
@@ -381,6 +371,7 @@ export default function ListingDetailPage() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
+    toast.success(t('common:toasts.downloadStarted'))
   }
 
   const onSubmitReview = handleSubmit(async (values) => {

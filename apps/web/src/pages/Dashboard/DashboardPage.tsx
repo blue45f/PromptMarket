@@ -16,9 +16,10 @@ import { ArrowUpRight, Copy, Heart, Loader2, PlusCircle, Wallet } from 'lucide-r
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
-import { toast } from 'sonner'
 
 import type { ListingDetailResponse } from '@/types'
+
+import { copyWithToast } from '@/lib/share'
 
 const TOPUP_AMOUNTS = [10, 50, 100]
 
@@ -219,10 +220,9 @@ export default function DashboardPage() {
                       type="button"
                       aria-label={t('library.copyLinkFor', { title: l.title })}
                       onClick={() => {
-                        navigator.clipboard
-                          .writeText(globalThis.location.origin + `/listings/${l.slug}`)
-                          .then(() => toast.success(t('library.copied')))
-                          .catch(() => undefined)
+                        void copyWithToast(globalThis.location.origin + `/listings/${l.slug}`, {
+                          successMessage: t('library.copied'),
+                        })
                       }}
                       className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-line dark:border-night-line bg-canvas-sub/60 dark:bg-night-sub/60 text-[0.78rem] hover:border-volt-400 dark:hover:border-volt-500/60 hover:bg-canvas-deep dark:hover:bg-night-deep motion-safe:transition ease-expo focus-volt"
                     >
@@ -448,6 +448,15 @@ function WishlistTab() {
     setClearPending(false)
   }
 
+  function handleCopyAllLinks() {
+    if (items.length === 0) return
+    const origin = globalThis.location.origin
+    const links = items.map((l) => `${origin}/listings/${l.slug}`).join('\n')
+    void copyWithToast(links, {
+      successMessage: t('wishlist.copyAllLinksSuccess', { count: items.length }),
+    })
+  }
+
   if (slugs.length === 0) {
     return (
       <EmptyState
@@ -479,6 +488,16 @@ function WishlistTab() {
           <span className="sr-only" role="status" aria-live="polite">
             {clearPending ? t('wishlist.confirmPrompt') : ''}
           </span>
+          {items.length > 0 && (
+            <button
+              type="button"
+              onClick={handleCopyAllLinks}
+              className="inline-flex items-center gap-1.5 text-[0.78rem] font-medium text-ink-mute dark:text-bone-mute hover:text-ink dark:hover:text-bone motion-safe:transition ease-expo focus-volt rounded"
+            >
+              <Copy aria-hidden className="w-3 h-3" />
+              {t('wishlist.copyAllLinks')}
+            </button>
+          )}
           {clearPending && (
             <button
               type="button"

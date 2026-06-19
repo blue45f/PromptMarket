@@ -9,6 +9,8 @@ import ReactMarkdown, {
 } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
+import { copyToClipboard } from '@/lib/share'
+
 const REMARK_PLUGINS = [remarkGfm]
 const MARKDOWN_COMPONENTS: Components = {
   pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
@@ -63,13 +65,12 @@ function CodeBlock({ children }: { children: ReactNode }) {
   async function copy() {
     const text = extractText(children).replace(/\n$/, '')
     if (!text) return
-    try {
-      await navigator.clipboard.writeText(text)
+    // copyToClipboard adds a legacy execCommand fallback so copying a code block
+    // still works in insecure/preview contexts without navigator.clipboard.
+    if (await copyToClipboard(text)) {
       setCopied(true)
       if (timerRef.current) clearTimeout(timerRef.current)
       timerRef.current = setTimeout(() => setCopied(false), 1500)
-    } catch {
-      /* clipboard denied — silently ignore */
     }
   }
   return (
