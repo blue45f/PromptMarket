@@ -10,6 +10,12 @@ import Navbar from './Navbar'
 vi.mock('@store/auth', () => ({ useAuthStore: vi.fn() }))
 vi.mock('@components/SearchBar', () => ({ default: () => <div data-testid="search-bar" /> }))
 vi.mock('@components/ThemeToggle', () => ({ default: () => <div data-testid="theme-toggle" /> }))
+// MemberAuthControl is the additive Firebase member-login entry point; it needs
+// its own <AuthProvider>. Mock it here to keep this suite focused on the Navbar's
+// token-based nav (mirrors the SearchBar/ThemeToggle stubs above).
+vi.mock('@components/layout/MemberAuthControl', () => ({
+  default: () => <div data-testid="member-auth-control" />,
+}))
 
 function withProviders(node: React.ReactNode) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })

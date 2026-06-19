@@ -42,6 +42,9 @@ vi.mock('@components/ShortcutsOverlay', () => ({ default: () => null }))
 vi.mock('@components/ScrollToTop', () => ({ default: () => null }))
 vi.mock('@components/SearchBar', () => ({ default: () => <input placeholder="검색" /> }))
 vi.mock('@components/ThemeToggle', () => ({ default: () => null }))
+// Firebase member-login entry point — needs its own <AuthProvider>; stub it so
+// the Layout suite stays focused on shell/footer (mirrors the stubs above).
+vi.mock('@components/layout/MemberAuthControl', () => ({ default: () => null }))
 vi.mock('@hooks/useNavShortcuts', () => ({ useNavShortcuts: vi.fn() }))
 vi.mock('@hooks/useSpotlight', () => ({
   useSpotlight: vi.fn(() => ({ current: null })),

@@ -2,6 +2,7 @@ packages:
   - 'apps/*'
   - 'packages/*'
 allowBuilds:
+  '@firebase/util': false
   '@nestjs/core': true
   '@prisma/engines': true
   '@scarf/scarf': true

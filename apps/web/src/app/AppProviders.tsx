@@ -9,6 +9,8 @@ import { Toaster } from 'sonner'
 
 import { appQueryClient } from './queryClient'
 
+import { AuthProvider } from '@/lib/firebaseAuth'
+
 initTheme()
 
 export default function AppProviders() {
@@ -36,9 +38,16 @@ export default function AppProviders() {
           },
         }}
       />
-      <ErrorBoundary>
-        <RouterProvider router={router} />
-      </ErrorBoundary>
+      {/* Unified Firebase member login (email/password + 게스트/anonymous). Vendored
+          @ src/lib/firebaseAuth (deskcloud-fleet-auth). Additive to the existing
+          token-based console login (Google GIS + email) — surfaced via the header
+          MemberAuthControl. Builds with undefined apiKey; runtime gates on
+          isFirebaseAuthConfigured, so an unset env degrades gracefully. */}
+      <AuthProvider>
+        <ErrorBoundary>
+          <RouterProvider router={router} />
+        </ErrorBoundary>
+      </AuthProvider>
       {/* NATIVE DeskCloud integration shell. Mounts the content-Desk drawer
           (SurveyDesk feedback / ReviewDesk reviews / ModerationDesk report) and
           the native SearchDesk palette (mod+/). Each Desk is gated on its own

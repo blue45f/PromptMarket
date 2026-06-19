@@ -1,5 +1,6 @@
 import { NavbarChangelog, NavbarNotificationBell } from '@components/deskcloud'
 import LanguageToggle from '@components/LanguageToggle'
+import MemberAuthControl from '@components/layout/MemberAuthControl'
 import SearchBar from '@components/SearchBar'
 import ThemeToggle from '@components/ThemeToggle'
 import { useUnreadMessages } from '@domains/messages'
@@ -223,6 +224,9 @@ export default function Navbar() {
           {token && <NavbarNotificationBell />}
           <LanguageToggle />
           <ThemeToggle />
+          {/* Unified Firebase member login (email/password + 게스트). Additive to
+              the token-based console auth below — its own header entry point. */}
+          <MemberAuthControl className="ml-1" />
 
           {token ? (
             <div className="flex items-center gap-2 ml-1">
@@ -280,6 +284,7 @@ export default function Navbar() {
           {token && <NavbarNotificationBell />}
           <LanguageToggle />
           <ThemeToggle />
+          <MemberAuthControl />
           <button
             ref={mobileToggleRef}
             type="button"
