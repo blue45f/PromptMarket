@@ -1,4 +1,5 @@
 import CategoryChips from '@components/CategoryChips'
+import SponsoredSpotlight from '@components/deskcloud/SponsoredSpotlight'
 import EmptyState from '@components/EmptyState'
 import FeaturedCarousel from '@components/FeaturedCarousel'
 import Hero from '@components/Hero'
@@ -135,6 +136,9 @@ export default function HomePage() {
             />
           )}
         </section>
+
+        {/* SPONSORED SPOTLIGHT — native AdDesk rail; renders only when served */}
+        <SponsoredSpotlight />
 
         {/* CATEGORIES */}
         <section aria-labelledby="home-categories-heading">
