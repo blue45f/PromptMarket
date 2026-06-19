@@ -27,8 +27,8 @@ describe('i18n locale parity', () => {
   it.each(NS)('ko and en expose the same keys for "%s"', (ns) => {
     const ko = baseKeys(resources.ko[ns])
     const en = baseKeys(resources.en[ns])
-    const missingInEn = [...ko].filter((k) => !en.has(k)).sort()
-    const missingInKo = [...en].filter((k) => !ko.has(k)).sort()
+    const missingInEn = [...ko].filter((k) => !en.has(k)).sort((a, b) => a.localeCompare(b))
+    const missingInKo = [...en].filter((k) => !ko.has(k)).sort((a, b) => a.localeCompare(b))
     expect({ missingInEn, missingInKo }).toEqual({ missingInEn: [], missingInKo: [] })
   })
 })

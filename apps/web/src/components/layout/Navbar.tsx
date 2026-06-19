@@ -263,7 +263,7 @@ export default function Navbar() {
               </Link>
               <Link
                 to="/register"
-                className="group relative overflow-hidden text-[0.83rem] font-semibold px-4 py-1.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink lift-on-hover focus-volt"
+                className="group relative overflow-hidden text-[0.83rem] font-semibold px-4 py-1.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink lift-on-hover glow-volt focus-volt"
               >
                 <span
                   aria-hidden

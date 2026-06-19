@@ -10,7 +10,9 @@ const { mockUseCountUp } = vi.hoisted(() => ({
 }))
 
 vi.mock('react-i18next', () => ({
-  ...vi.importActual('react-i18next'),
+  // No spread of vi.importActual here: it returns a Promise (un-spreadable), and
+  // this suite stubs the only i18n surface Layout touches — useTranslation —
+  // so a full passthrough isn't needed.
   useTranslation: () => ({
     t: (key: string, options?: { year?: number }) => {
       if (key === 'footer.copyright' && options?.year) {

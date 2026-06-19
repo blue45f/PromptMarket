@@ -106,7 +106,7 @@ export default function Hero({ recentItems, recentPending }: HeroProps) {
             <div className="mt-9 flex flex-wrap items-center gap-3 animate-fade-up stagger-4">
               <Link
                 to="/browse"
-                className="group relative inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight lift-on-hover focus-volt overflow-hidden"
+                className="group relative inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-ink dark:bg-bone text-bone dark:text-ink font-medium tracking-tight lift-on-hover glow-volt focus-volt overflow-hidden"
               >
                 <span
                   aria-hidden
@@ -370,7 +370,10 @@ function DropsMarquee({ items, loading, t }: DropsMarqueeProps) {
       {/* Header label */}
       <div className="absolute top-3.5 inset-x-3.5 z-20 flex items-center justify-between text-[0.66rem] font-mono uppercase tracking-[0.18em] text-ink-mute dark:text-bone-mute">
         <span className="inline-flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-volt-500 volt-pulse" />
+          <span className="relative inline-flex w-2 h-2 items-center justify-center">
+            <span aria-hidden className="live-ring" />
+            <span className="relative z-10 w-1.5 h-1.5 rounded-full bg-volt-500 volt-pulse" />
+          </span>
           {t('hero.drops.title')}
         </span>
         <span>{loading ? t('hero.drops.syncing') : t('hero.drops.live')}</span>

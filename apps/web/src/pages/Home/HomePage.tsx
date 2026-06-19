@@ -51,7 +51,10 @@ export default function HomePage() {
   // WebSite + SearchAction so Google can render a sitelinks search box.
   // Memoised on [origin] so the effect only re-injects the JSON-LD when the
   // origin changes (never in practice), not on every render.
-  const origin = useMemo(() => (typeof window !== 'undefined' ? globalThis.location.origin : ''), [])
+  const origin = useMemo(
+    () => (typeof window !== 'undefined' ? globalThis.location.origin : ''),
+    []
+  )
   const structuredData = useMemo(
     () =>
       origin
@@ -745,7 +748,7 @@ function SellerCallToAction() {
           <div className="flex flex-wrap items-center gap-2.5 pt-3">
             <Link
               to="/sell"
-              className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-ink text-bone font-medium tracking-tight focus-volt lift-on-hover"
+              className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-ink text-bone font-medium tracking-tight focus-volt lift-on-hover glow-volt"
             >
               {t('cta.startListing')}
               <ArrowUpRight
