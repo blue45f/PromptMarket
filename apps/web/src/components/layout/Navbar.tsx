@@ -126,6 +126,9 @@ export default function Navbar() {
           <NavLink to="/community" className={navLinkClass}>
             {({ isActive }) => <NavLinkInner isActive={isActive}>{t('community')}</NavLinkInner>}
           </NavLink>
+          <NavLink to="/support" className={navLinkClass}>
+            {({ isActive }) => <NavLinkInner isActive={isActive}>{t('support')}</NavLinkInner>}
+          </NavLink>
           {token && (
             <NavLink
               to="/messages"
@@ -320,6 +323,13 @@ export default function Navbar() {
               className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
             >
               {t('community')} <span aria-hidden>→</span>
+            </Link>
+            <Link
+              onClick={() => setMobileOpen(false)}
+              to="/support"
+              className="py-3 inline-flex items-center justify-between text-ink dark:text-bone"
+            >
+              {t('support')} <span aria-hidden>→</span>
             </Link>
             {token && (
               <Link

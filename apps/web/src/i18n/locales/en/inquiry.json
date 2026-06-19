@@ -1,18 +1,23 @@
 {
   "meta": {
-    "title": "Contact support",
-    "description": "Reach the PromptMarket team — bug reports, partnerships, and general questions welcome."
+    "title": "Inquiry board",
+    "description": "Reach the PromptMarket team — partnerships, bug reports, feedback, and usage questions. Submitted inquiries appear on the public board."
   },
   "header": {
-    "title": "Contact support",
-    "subtitle": "Send an inquiry without leaving the site. Leave an email if you want a reply."
+    "title": "How can we help?",
+    "subtitle": "Send an inquiry without leaving the site. Submissions appear on the board below, and the team updates their status once reviewed."
   },
   "categories": {
-    "contact": "General contact",
     "partnership": "Partnership",
     "bug": "Bug report",
-    "qa": "Quality / QA",
-    "question": "Question"
+    "feedback": "Feedback",
+    "usage": "Usage"
+  },
+  "categoryHints": {
+    "partnership": "Collaboration / partnership",
+    "bug": "Report a site error",
+    "feedback": "Ideas and suggestions",
+    "usage": "How-to / general questions"
   },
   "form": {
     "categoryLabel": "Inquiry type",
@@ -22,25 +27,27 @@
     "bodyLabel": "Details",
     "bodyPlaceholder": "What's on your mind? For bugs, reproduction steps plus expected vs. actual behavior help a lot.",
     "bodyHint": "{{count}} / {{max}} characters",
+    "nameLabel": "Name",
+    "nameOptional": "(optional)",
+    "namePlaceholder": "Name shown on the board",
     "emailLabel": "Reply-to email",
     "emailOptional": "(optional)",
     "emailPlaceholder": "you@example.com",
-    "emailHint": "Leave it and we'll follow up by email.",
+    "emailHint": "Leave it and we'll follow up by email. Your email stays private to the team.",
     "validation": {
-      "title": "Titles need 2–140 characters.",
-      "body": "Details need 10–4,000 characters.",
+      "title": "Titles need 1–120 characters.",
+      "body": "Details need 1–4,000 characters.",
+      "name": "Names need 80 characters or fewer.",
       "email": "Enter a valid email address."
     },
     "submit": "Send inquiry",
     "submitting": "Sending…",
-    "submitError": "Sending failed. Try again in a moment or use the external support board.",
-    "fallbackLink": "Open the external support board",
-    "externalFallback": "External support board"
+    "submitError": "Sending failed. Please try again in a moment."
   },
   "receipt": {
     "title": "Inquiry received",
-    "subtitle": "The team reviews submissions in order.",
-    "subtitleWithEmail": "We'll follow up at {{email}}.",
+    "subtitle": "The team reviews submissions in order. You can find your inquiry on the board below.",
+    "subtitleWithEmail": "We'll follow up at {{email}}. You can find your inquiry on the board below.",
     "fields": {
       "category": "Type",
       "title": "Title",
@@ -49,5 +56,22 @@
     },
     "again": "Send another inquiry",
     "home": "Back home"
+  },
+  "board": {
+    "title": "Recent inquiries",
+    "subtitle": "Submitted inquiries appear publicly here.",
+    "refresh": "Refresh",
+    "anonymous": "Anonymous",
+    "loading": "Loading inquiries…",
+    "empty": "No inquiries yet",
+    "emptyDescription": "Be the first to leave one. Submitted inquiries appear publicly on this board.",
+    "error": "Couldn't load the inquiry board.",
+    "retry": "Try again",
+    "status": {
+      "new": "New",
+      "in_progress": "In progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    }
   }
 }

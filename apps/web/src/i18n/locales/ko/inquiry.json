@@ -1,18 +1,23 @@
 {
   "meta": {
-    "title": "문의하기",
-    "description": "PromptMarket 팀에 문의를 남겨 주세요. 버그 신고, 제휴, 일반 질문 모두 환영합니다."
+    "title": "문의 게시판",
+    "description": "PromptMarket 팀에 문의를 남겨 주세요. 제휴·버그·의견·이용 문의를 받고, 접수된 문의는 공개 게시판에 표시됩니다."
   },
   "header": {
-    "title": "문의하기",
-    "subtitle": "사이트를 떠나지 않고 바로 문의를 남길 수 있어요. 답변이 필요하면 이메일을 함께 남겨 주세요."
+    "title": "무엇을 도와드릴까요?",
+    "subtitle": "사이트를 떠나지 않고 바로 문의를 남길 수 있어요. 접수된 문의는 아래 게시판에 공개로 표시되며, 운영자가 확인 후 상태를 업데이트합니다."
   },
   "categories": {
-    "contact": "일반 문의",
-    "partnership": "제휴 제안",
+    "partnership": "제휴 문의",
     "bug": "버그 신고",
-    "qa": "품질/QA",
-    "question": "질문"
+    "feedback": "사이트 의견",
+    "usage": "이용 문의"
+  },
+  "categoryHints": {
+    "partnership": "협업·제휴 제안",
+    "bug": "사이트 오류 신고",
+    "feedback": "개선 의견·제안",
+    "usage": "사용법·일반 문의"
   },
   "form": {
     "categoryLabel": "문의 유형",
@@ -22,25 +27,27 @@
     "bodyLabel": "내용",
     "bodyPlaceholder": "무엇이 궁금한가요? 버그라면 재현 절차와 기대/실제 동작을 적어 주시면 큰 도움이 돼요.",
     "bodyHint": "{{count}} / {{max}}자",
+    "nameLabel": "이름",
+    "nameOptional": "(선택)",
+    "namePlaceholder": "게시판에 표시될 이름",
     "emailLabel": "회신 받을 이메일",
     "emailOptional": "(선택)",
     "emailPlaceholder": "you@example.com",
-    "emailHint": "남기시면 처리 결과를 이메일로 알려드려요.",
+    "emailHint": "남기시면 처리 결과를 이메일로 알려드려요. 이메일은 비공개로 운영자만 확인합니다.",
     "validation": {
-      "title": "제목은 2자 이상 140자 이하로 적어 주세요.",
-      "body": "내용은 10자 이상 4,000자 이하로 적어 주세요.",
+      "title": "제목은 1자 이상 120자 이하로 적어 주세요.",
+      "body": "내용은 1자 이상 4,000자 이하로 적어 주세요.",
+      "name": "이름은 80자 이하로 적어 주세요.",
       "email": "올바른 이메일 주소를 입력해 주세요."
     },
-    "submit": "문의 보내기",
-    "submitting": "보내는 중…",
-    "submitError": "전송에 실패했어요. 잠시 후 다시 시도하거나 외부 지원 보드를 이용해 주세요.",
-    "fallbackLink": "외부 지원 보드에서 문의하기",
-    "externalFallback": "외부 지원 보드 열기"
+    "submit": "문의 접수",
+    "submitting": "접수 중…",
+    "submitError": "전송에 실패했어요. 잠시 후 다시 시도해 주세요."
   },
   "receipt": {
     "title": "문의가 접수됐어요",
-    "subtitle": "남겨주신 내용은 운영팀이 순서대로 확인합니다.",
-    "subtitleWithEmail": "처리 결과를 {{email}} 주소로 알려드릴게요.",
+    "subtitle": "남겨주신 내용은 운영팀이 순서대로 확인합니다. 아래 게시판에서 등록된 문의를 확인할 수 있어요.",
+    "subtitleWithEmail": "처리 결과를 {{email}} 주소로 알려드릴게요. 아래 게시판에서 등록된 문의를 확인할 수 있어요.",
     "fields": {
       "category": "유형",
       "title": "제목",
@@ -49,5 +56,22 @@
     },
     "again": "다른 문의 남기기",
     "home": "홈으로"
+  },
+  "board": {
+    "title": "최근 문의",
+    "subtitle": "접수된 문의가 공개로 표시됩니다.",
+    "refresh": "새로고침",
+    "anonymous": "익명",
+    "loading": "문의를 불러오는 중…",
+    "empty": "아직 등록된 문의가 없습니다",
+    "emptyDescription": "첫 문의를 남겨 주세요. 등록된 문의는 이 게시판에 공개로 표시됩니다.",
+    "error": "문의 목록을 불러오지 못했습니다.",
+    "retry": "다시 시도",
+    "status": {
+      "new": "접수",
+      "in_progress": "처리 중",
+      "resolved": "해결됨",
+      "closed": "종료"
+    }
   }
 }

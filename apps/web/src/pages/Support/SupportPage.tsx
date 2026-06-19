@@ -1,30 +1,42 @@
-import { Field, Input, Textarea } from '@components/ui'
+import { Badge, EmptyState, Field, Input, Skeleton, Textarea } from '@components/ui'
 import {
+  inquiryKeys,
   INQUIRY_BODY_MAX,
   INQUIRY_CATEGORIES,
+  INQUIRY_NAME_MAX,
   INQUIRY_TITLE_MAX,
   inquiryFormSchema,
+  useInquiries,
   useSubmitInquiry,
+  type Inquiry,
   type InquiryFormInput,
   type InquiryReceipt,
+  type InquiryStatus,
 } from '@domains/inquiry'
-import { TERMSDESK_SUPPORT_URL } from '@domains/policies'
 import { usePageMeta } from '@hooks/usePageMeta'
+import { useQueryClient } from '@tanstack/react-query'
 import { cn } from '@utils/cn'
-import { formatDate } from '@utils/format'
+import { formatDate, formatRelative } from '@utils/format'
 import { zodFormResolver } from '@utils/zodFormResolver'
-import { ArrowUpRight, CheckCircle2, Loader2, LifeBuoy } from 'lucide-react'
-import { useState } from 'react'
+import { CheckCircle2, Inbox, Loader2, MessageSquarePlus, RotateCcw } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 export default function SupportPage() {
   const { t } = useTranslation('inquiry')
+  const queryClient = useQueryClient()
   const submitMut = useSubmitInquiry()
   const [receipt, setReceipt] = useState<InquiryReceipt | null>(null)
+  // Route-enter focus target: screen-reader context + a keyboard starting point.
+  const headingRef = useRef<HTMLHeadingElement>(null)
 
   usePageMeta({ title: t('meta.title'), description: t('meta.description') })
+
+  useEffect(() => {
+    headingRef.current?.focus()
+  }, [])
 
   const {
     register,
@@ -34,7 +46,14 @@ export default function SupportPage() {
     formState: { errors, isSubmitting },
   } = useForm<InquiryFormInput>({
     resolver: zodFormResolver(inquiryFormSchema),
-    defaultValues: { category: 'question', title: '', body: '', contactEmail: '', website: '' },
+    defaultValues: {
+      category: 'usage',
+      title: '',
+      body: '',
+      authorName: '',
+      contactEmail: '',
+      website: '',
+    },
   })
 
   const busy = isSubmitting || submitMut.isPending
@@ -46,6 +65,8 @@ export default function SupportPage() {
       const result = await submitMut.mutateAsync(parsed)
       setReceipt(result)
       reset()
+      // Pull the freshly-created inquiry into the public board.
+      await queryClient.invalidateQueries({ queryKey: inquiryKeys.all })
       globalThis.scrollTo({ top: 0 })
     } catch {
       /* error state rendered below */
@@ -59,8 +80,13 @@ export default function SupportPage() {
   return (
     <div className="mx-auto max-w-2xl px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
       <header className="mb-7">
+        <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-volt-700 dark:text-volt-300">
+          {t('meta.title')} · /support
+        </p>
         <h1
-          className="font-display font-bold text-ink dark:text-bone leading-[0.98] tracking-[-0.035em] display-tight"
+          ref={headingRef}
+          tabIndex={-1}
+          className="mt-1.5 font-display font-bold text-ink dark:text-bone leading-[0.98] tracking-[-0.035em] display-tight outline-none"
           style={{ fontSize: 'var(--text-display-md)' }}
         >
           {t('header.title')}
@@ -96,6 +122,7 @@ export default function SupportPage() {
                       type="button"
                       role="radio"
                       aria-checked={active}
+                      title={t(`categoryHints.${value}`)}
                       onClick={() => field.onChange(value)}
                       className={cn(
                         'inline-flex min-h-9 items-center rounded-full px-3.5 py-1.5 text-[0.82rem] font-medium tracking-tight motion-safe:transition ease-expo focus-volt',
@@ -151,30 +178,59 @@ export default function SupportPage() {
           )}
         </Field>
 
-        <Field
-          id="inquiry-email"
-          label={
-            <>
-              {t('form.emailLabel')}
-              <span className="ml-1.5 font-normal text-ink-mute dark:text-bone-mute">
-                {t('form.emailOptional')}
-              </span>
-            </>
-          }
-          description={t('form.emailHint')}
-          error={errors.contactEmail ? t('form.validation.email') : undefined}
-        >
-          {(control) => (
-            <Input
-              {...control}
-              {...register('contactEmail')}
-              type="email"
-              autoComplete="email"
-              placeholder={t('form.emailPlaceholder')}
-              invalid={Boolean(errors.contactEmail)}
-            />
-          )}
-        </Field>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field
+            id="inquiry-name"
+            label={
+              <>
+                {t('form.nameLabel')}
+                <span className="ml-1.5 font-normal text-ink-mute dark:text-bone-mute">
+                  {t('form.nameOptional')}
+                </span>
+              </>
+            }
+            error={errors.authorName ? t('form.validation.name') : undefined}
+          >
+            {(control) => (
+              <Input
+                {...control}
+                {...register('authorName')}
+                type="text"
+                autoComplete="name"
+                maxLength={INQUIRY_NAME_MAX}
+                placeholder={t('form.namePlaceholder')}
+                invalid={Boolean(errors.authorName)}
+              />
+            )}
+          </Field>
+
+          <Field
+            id="inquiry-email"
+            label={
+              <>
+                {t('form.emailLabel')}
+                <span className="ml-1.5 font-normal text-ink-mute dark:text-bone-mute">
+                  {t('form.emailOptional')}
+                </span>
+              </>
+            }
+            error={errors.contactEmail ? t('form.validation.email') : undefined}
+          >
+            {(control) => (
+              <Input
+                {...control}
+                {...register('contactEmail')}
+                type="email"
+                autoComplete="email"
+                placeholder={t('form.emailPlaceholder')}
+                invalid={Boolean(errors.contactEmail)}
+              />
+            )}
+          </Field>
+        </div>
+        <p className="-mt-2 text-[0.72rem] text-ink-mute dark:text-bone-mute">
+          {t('form.emailHint')}
+        </p>
 
         {/* Honeypot — invisible to humans, irresistible to naive bots. */}
         <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -188,35 +244,19 @@ export default function SupportPage() {
           />
         </div>
 
+        {/* Submit error — announced assertively for assistive tech. */}
         {submitMut.isError && (
           <div
             role="alert"
             className="rounded-2xl border border-coral/40 bg-coral/10 px-4 py-3 text-sm text-coral-deep dark:border-coral/45 dark:bg-coral/15 dark:text-coral"
           >
-            <p>{t('form.submitError')}</p>
-            <a
-              href={TERMSDESK_SUPPORT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1 font-medium underline focus-volt"
-            >
-              {t('form.fallbackLink')}
-              <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
-            </a>
+            <p>
+              {submitMut.error instanceof Error ? submitMut.error.message : t('form.submitError')}
+            </p>
           </div>
         )}
 
-        <div className="flex flex-col gap-3 border-t border-line/70 pt-5 dark:border-night-line/70 sm:flex-row sm:items-center sm:justify-between">
-          <a
-            href={TERMSDESK_SUPPORT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[0.78rem] text-ink-mute hover:text-ink dark:text-bone-mute dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
-          >
-            <LifeBuoy aria-hidden="true" className="h-3.5 w-3.5" />
-            {t('form.externalFallback')}
-            <ArrowUpRight aria-hidden="true" className="h-3 w-3" />
-          </a>
+        <div className="flex items-center justify-end border-t border-line/70 pt-5 dark:border-night-line/70">
           <button
             type="submit"
             disabled={busy}
@@ -227,12 +267,141 @@ export default function SupportPage() {
           </button>
         </div>
       </form>
+
+      <InquiryBoard />
     </div>
+  )
+}
+
+const STATUS_TONE: Record<InquiryStatus, 'neutral' | 'volt' | 'violet' | 'iris'> = {
+  new: 'volt',
+  in_progress: 'iris',
+  resolved: 'violet',
+  closed: 'neutral',
+}
+
+function StatusBadge({ status }: { status: InquiryStatus }) {
+  const { t } = useTranslation('inquiry')
+  return <Badge tone={STATUS_TONE[status] ?? 'neutral'}>{t(`board.status.${status}`)}</Badge>
+}
+
+function InquiryCard({ inquiry }: { inquiry: Inquiry }) {
+  const { t } = useTranslation('inquiry')
+  return (
+    <article className="rounded-2xl border border-line bg-canvas-sub p-4 dark:border-night-line dark:bg-night-sub">
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge tone="neutral">{t(`categories.${inquiry.category}`)}</Badge>
+        <StatusBadge status={inquiry.status} />
+        <time
+          dateTime={inquiry.createdAt}
+          className="ml-auto text-[0.72rem] text-ink-mute dark:text-bone-mute"
+        >
+          {formatRelative(inquiry.createdAt)}
+        </time>
+      </div>
+      <h3 className="mt-2.5 font-display text-[0.95rem] font-semibold tracking-tight text-ink dark:text-bone">
+        {inquiry.title}
+      </h3>
+      <p className="mt-1 line-clamp-3 text-sm leading-relaxed text-ink-soft dark:text-bone-soft">
+        {inquiry.body}
+      </p>
+      <p className="mt-2.5 text-[0.72rem] text-ink-mute dark:text-bone-mute">
+        {inquiry.authorName?.trim() || t('board.anonymous')}
+      </p>
+    </article>
+  )
+}
+
+function InquiryBoard() {
+  const { t } = useTranslation('inquiry')
+  const { data, isPending, isError, error, refetch, isFetching } = useInquiries(20, 0)
+  const items = data?.items ?? []
+
+  return (
+    <section className="mt-10" aria-labelledby="inquiry-board-heading">
+      <div className="mb-4 flex items-end justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Inbox aria-hidden className="h-4 w-4 text-ink-soft dark:text-bone-soft" />
+          <div>
+            <h2
+              id="inquiry-board-heading"
+              className="font-display text-lg font-bold tracking-tight text-ink dark:text-bone"
+            >
+              {t('board.title')}
+            </h2>
+            <p className="text-[0.72rem] text-ink-mute dark:text-bone-mute">
+              {t('board.subtitle')}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => void refetch()}
+          disabled={isFetching}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-[0.78rem] font-medium text-ink-soft hover:border-volt-400 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60 dark:border-night-line dark:text-bone-soft dark:hover:border-volt-500/60 dark:hover:text-bone motion-safe:transition ease-expo focus-volt"
+        >
+          <RotateCcw
+            aria-hidden
+            className={cn('h-3.5 w-3.5', isFetching && 'motion-safe:animate-spin')}
+          />
+          {t('board.refresh')}
+        </button>
+      </div>
+
+      <div aria-live="polite" aria-busy={isFetching}>
+        {isPending ? (
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {[0, 1, 2, 3].map((key) => (
+              <li key={key}>
+                <Skeleton className="h-36 rounded-2xl" />
+              </li>
+            ))}
+          </ul>
+        ) : isError ? (
+          <div
+            role="alert"
+            className="rounded-2xl border border-coral/40 bg-coral/10 px-4 py-4 text-sm text-coral-deep dark:border-coral/45 dark:bg-coral/15 dark:text-coral"
+          >
+            <p className="font-medium">
+              {error instanceof Error ? error.message : t('board.error')}
+            </p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-coral/40 px-3 py-1.5 text-[0.78rem] font-medium motion-safe:transition ease-expo focus-volt"
+            >
+              <RotateCcw aria-hidden className="h-3.5 w-3.5" />
+              {t('board.retry')}
+            </button>
+          </div>
+        ) : items.length === 0 ? (
+          <EmptyState
+            icon={MessageSquarePlus}
+            title={t('board.empty')}
+            description={t('board.emptyDescription')}
+            headingLevel={3}
+          />
+        ) : (
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {items.map((inquiry) => (
+              <li key={inquiry.id}>
+                <InquiryCard inquiry={inquiry} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
   )
 }
 
 function SupportReceipt({ receipt, onReset }: { receipt: InquiryReceipt; onReset: () => void }) {
   const { t } = useTranslation('inquiry')
+  const headingRef = useRef<HTMLHeadingElement>(null)
+
+  useEffect(() => {
+    headingRef.current?.focus()
+  }, [])
 
   return (
     <div className="mx-auto max-w-2xl px-[clamp(1.25rem,4vw,3rem)] py-[clamp(2rem,4vw,3.5rem)] animate-fade-in">
@@ -243,7 +412,11 @@ function SupportReceipt({ receipt, onReset }: { receipt: InquiryReceipt; onReset
         >
           <CheckCircle2 className="h-7 w-7" />
         </span>
-        <h1 className="mt-5 font-display text-[1.6rem] font-bold tracking-tight text-ink dark:text-bone">
+        <h1
+          ref={headingRef}
+          tabIndex={-1}
+          className="mt-5 font-display text-[1.6rem] font-bold tracking-tight text-ink dark:text-bone outline-none"
+        >
           {t('receipt.title')}
         </h1>
         <p className="mx-auto mt-2 max-w-[44ch] text-sm leading-relaxed text-ink-soft dark:text-bone-soft">

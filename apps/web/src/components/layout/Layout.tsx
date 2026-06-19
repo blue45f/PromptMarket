@@ -70,8 +70,9 @@ function SiteFooter() {
     { to: '/login', label: t('footer.sitemap.login') },
     { to: '/robots.txt', label: t('footer.sitemap.robots'), external: true },
     { to: '/sitemap.xml', label: t('footer.sitemap.sitemap'), external: true },
-    // Legal pages and support are first-party routes; the in-app support
-    // form still links out to the TermsDesk board as a fallback.
+    // Legal pages and the in-app inquiry board are first-party routes. All
+    // contact runs through /support (the desk-platform inquiry board) — no
+    // mailto/tel or external support-board CTAs.
     { to: '/terms', label: t('footer.sitemap.terms') },
     { to: '/privacy', label: t('footer.sitemap.privacy') },
     { to: '/support', label: t('footer.sitemap.support') },

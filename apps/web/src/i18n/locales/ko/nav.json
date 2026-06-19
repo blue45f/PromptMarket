@@ -1,6 +1,7 @@
 {
   "browse": "둘러보기",
   "community": "커뮤니티",
+  "support": "문의",
   "messages": "쪽지",
   "messagesUnread": "쪽지, 새 메시지 {{count}}건",
   "sell": "판매",
@@ -103,7 +104,7 @@
       "sitemap": "사이트맵",
       "terms": "이용약관",
       "privacy": "개인정보처리방침",
-      "support": "지원",
+      "support": "문의",
       "design": "디자인 시스템"
     }
   },

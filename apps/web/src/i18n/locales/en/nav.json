@@ -1,6 +1,7 @@
 {
   "browse": "Browse",
   "community": "Community",
+  "support": "Inquiry",
   "messages": "Messages",
   "messagesUnread_one": "Messages, {{count}} unread",
   "messagesUnread_other": "Messages, {{count}} unread",
@@ -107,7 +108,7 @@
       "sitemap": "Sitemap",
       "terms": "Terms",
       "privacy": "Privacy",
-      "support": "Support",
+      "support": "Inquiry",
       "design": "Design system"
     }
   },
