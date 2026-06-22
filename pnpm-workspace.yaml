@@ -63,3 +63,5 @@ overrides:
 auditConfig:
   ignoreGhsas:
     - GHSA-2p57-rm9w-gvfp
+
+minimumReleaseAge: 0
