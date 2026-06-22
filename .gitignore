@@ -24,3 +24,7 @@ packages/shared/dist
 .playwright-mcp/
 apps/api/dev.db
 .vercel
+
+# Apps in Toss build artifacts
+*.ait
+apps/*/.granite/
