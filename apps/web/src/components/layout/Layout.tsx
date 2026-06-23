@@ -12,6 +12,8 @@ import { lazy, Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Outlet } from 'react-router-dom'
 
+import IntroSplashScreen from '../IntroSplashScreen'
+
 import Navbar from './Navbar'
 
 const CommandPalette = lazy(() => import('@components/CommandPalette'))
@@ -26,6 +28,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <IntroSplashScreen />
       {/* Skip link — first focusable element; lets keyboard users jump past
           the nav straight to the page content. Hidden until focused. */}
       <a
@@ -220,7 +223,12 @@ function SiteFooter() {
               >
                 P
               </span>
-              <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
+              <span>
+                {t('footer.copyright', { year: new Date().getFullYear() })}{' '}
+                <span className="text-volt-300 ml-1.5 text-[10px] tracking-widest font-mono border border-volt-300/30 px-1.5 py-0.5 rounded-full uppercase">
+                  Beta
+                </span>
+              </span>
             </div>
             <p className="text-bone-mute">{t('footer.tagline')}</p>
           </div>
