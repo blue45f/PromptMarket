@@ -1,15 +1,30 @@
 import { Button } from '@toss/tds-mobile'
 import { useEffect, useState } from 'react'
 
-import { getListing, TYPE_LABEL, DIFFICULTY_LABEL, price } from '../lib/api'
+import { getListing, TYPE_LABEL, DIFFICULTY_LABEL, price, type Listing } from '../lib/api'
 import { shareMessage } from '../lib/toss'
 import { navigate } from '../router'
 import { theme } from '../theme'
 import { Badge, StatStrip } from '../ui'
 
 export function ListingDetailPage({ id = '' }: { id?: string }) {
-  const l = getListing(id)
+  const [l, setL] = useState<Listing | undefined>(undefined)
+  const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState<string | null>(null)
+
+  useEffect(() => {
+    setLoading(true)
+    getListing(id)
+      .then((data) => {
+        setL(data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error('Failed to load listing detail:', err)
+        setLoading(false)
+      })
+  }, [id])
+
   useEffect(() => {
     if (!toast) return
     const x = window.setTimeout(() => setToast(null), 2000)
@@ -50,6 +65,17 @@ export function ListingDetailPage({ id = '' }: { id?: string }) {
       </button>
     </header>
   )
+
+  if (loading)
+    return (
+      <div style={{ background: theme.bg, minHeight: '100dvh' }}>
+        {Header}
+        <p style={{ textAlign: 'center', color: theme.textMuted, paddingTop: 40 }}>
+          불러오는 중...
+        </p>
+      </div>
+    )
+
   if (!l)
     return (
       <div style={{ background: theme.bg, minHeight: '100dvh' }}>

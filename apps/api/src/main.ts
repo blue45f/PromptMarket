@@ -41,7 +41,7 @@ async function bootstrap() {
     ? process.env.ALLOWED_ORIGINS.split(',')
         .map((s) => s.trim())
         .filter(Boolean)
-    : ['http://localhost:5173', 'http://localhost:3000']
+    : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5185']
   app.enableCors({ origin: allowedOrigins, credentials: true })
   app.useGlobalPipes(new ZodValidationPipe())
 

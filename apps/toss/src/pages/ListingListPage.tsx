@@ -1,5 +1,5 @@
 import { Top } from '@toss/tds-mobile'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { getListings, TYPE_LABEL, price, type Listing } from '../lib/api'
 import { navigate } from '../router'
@@ -29,9 +29,22 @@ function EmojiTile({ emoji, seed, size = 56 }: { emoji: string; seed: string; si
 }
 
 export function ListingListPage() {
-  const items = getListings()
+  const [items, setItems] = useState<Listing[]>([])
+  const [loading, setLoading] = useState(true)
   const [q, setQ] = useState('')
   const [cat, setCat] = useState(ALL)
+
+  useEffect(() => {
+    getListings()
+      .then((data) => {
+        setItems(data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error('Failed to load listings:', err)
+        setLoading(false)
+      })
+  }, [])
 
   const cats = useMemo(() => {
     const c = new Map<string, number>()
@@ -80,74 +93,80 @@ export function ListingListPage() {
           <Chips items={cats} active={cat} onPick={setCat} />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {filtered.map((l, i) => (
-            <button
-              key={l.id}
-              type="button"
-              onClick={() => open(l)}
-              className="pressable rise"
-              style={{
-                animationDelay: `${90 + i * 22}ms`,
-                display: 'flex',
-                gap: 14,
-                alignItems: 'center',
-                width: '100%',
-                textAlign: 'left',
-                background: theme.surface,
-                border: `1px solid ${theme.border}`,
-                borderRadius: theme.radius,
-                padding: 12,
-                color: theme.text,
-                cursor: 'pointer',
-              }}
-            >
-              <EmojiTile emoji={l.coverEmoji} seed={l.title} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    fontSize: 15.5,
-                    fontWeight: 700,
-                    lineHeight: 1.35,
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                  }}
-                >
-                  {l.title}
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: 6,
-                    marginTop: 7,
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Badge accent>{TYPE_LABEL[l.type] || l.type}</Badge>
-                  {l.avgRating ? <Badge>★ {l.avgRating.toFixed(1)}</Badge> : null}
-                  <span
+        {loading ? (
+          <p style={{ textAlign: 'center', color: theme.textMuted, padding: '40px 0' }}>
+            불러오는 중...
+          </p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {filtered.map((l, i) => (
+              <button
+                key={l.id}
+                type="button"
+                onClick={() => open(l)}
+                className="pressable rise"
+                style={{
+                  animationDelay: `${90 + i * 22}ms`,
+                  display: 'flex',
+                  gap: 14,
+                  alignItems: 'center',
+                  width: '100%',
+                  textAlign: 'left',
+                  background: theme.surface,
+                  border: `1px solid ${theme.border}`,
+                  borderRadius: theme.radius,
+                  padding: 12,
+                  color: theme.text,
+                  cursor: 'pointer',
+                }}
+              >
+                <EmojiTile emoji={l.coverEmoji} seed={l.title} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
                     style={{
-                      fontSize: 14,
+                      fontSize: 15.5,
                       fontWeight: 700,
-                      color: theme.accent,
-                      marginLeft: 'auto',
+                      lineHeight: 1.35,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
                     }}
                   >
-                    {price(l.priceCents)}
-                  </span>
+                    {l.title}
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: 6,
+                      marginTop: 7,
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Badge accent>{TYPE_LABEL[l.type] || l.type}</Badge>
+                    {l.avgRating ? <Badge>★ {l.avgRating.toFixed(1)}</Badge> : null}
+                    <span
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 700,
+                        color: theme.accent,
+                        marginLeft: 'auto',
+                      }}
+                    >
+                      {price(l.priceCents)}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
-          {filtered.length === 0 && (
-            <p style={{ textAlign: 'center', color: theme.textMuted, padding: '40px 0' }}>
-              ‘{q || cat}’ 결과가 없어요.
-            </p>
-          )}
-        </div>
+              </button>
+            ))}
+            {filtered.length === 0 && (
+              <p style={{ textAlign: 'center', color: theme.textMuted, padding: '40px 0' }}>
+                ‘{q || cat}’ 결과가 없어요.
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

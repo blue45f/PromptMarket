@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Listing, PrismaClient, Review } from '@prisma/client'
 import * as argon2 from 'argon2'

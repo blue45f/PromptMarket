@@ -4,12 +4,32 @@ import data from '../sample-data.json'
 import type { ListingFull } from '@shared/index'
 
 export type Listing = ListingFull
-const items: Listing[] = (data as { items?: Listing[] }).items || []
-export function getListings(): Listing[] {
-  return items
+const fallbackItems: Listing[] = (data as { items?: Listing[] }).items || []
+
+export async function getListings(): Promise<Listing[]> {
+  try {
+    const res = await fetch('/api/listings?pageSize=48')
+    if (!res.ok) throw new Error('Failed to fetch listings')
+    const json = await res.json()
+    return json.items || fallbackItems
+  } catch (error) {
+    console.error('Failed to fetch listings from API, falling back to local JSON:', error)
+    return fallbackItems
+  }
 }
-export function getListing(id: string): Listing | undefined {
-  return items.find((l) => String(l.id) === id || l.slug === id)
+
+export async function getListing(id: string): Promise<Listing | undefined> {
+  try {
+    const res = await fetch(`/api/listings/${id}`)
+    if (!res.ok) {
+      if (res.status === 404) return undefined
+      throw new Error('Failed to fetch listing')
+    }
+    return await res.json()
+  } catch (error) {
+    console.error(`Failed to fetch listing ${id} from API, falling back to local JSON:`, error)
+    return fallbackItems.find((l) => String(l.id) === id || l.slug === id)
+  }
 }
 
 export const TYPE_LABEL: Record<string, string> = {
