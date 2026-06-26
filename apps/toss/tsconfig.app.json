@@ -20,5 +20,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "granite.config.ts"]
+  "include": ["src", "apps-in-toss.config.ts"]
 }
