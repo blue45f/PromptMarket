@@ -65,7 +65,15 @@ export const api = {
 // 이런 원문은 사용자에게 노출하면 안 되므로(가독성·정보노출) fallback 으로 가린다.
 // 서버가 내려준 `data.message`(검증 메시지 등)와 앱 코드가 던진 일반 Error 메시지는
 // 그대로 통과시킨다.
-const KY_TRANSPORT_ERROR_NAMES = new Set(['HTTPError', 'NetworkError', 'TimeoutError', 'KyError'])
+// 이름은 ky 2.0.2 가 실제로 던지는 하위 클래스명이다 — 기반 `KyError` 는 인스턴스 name 에
+// 잡히지 않아(실제 name 은 하위 클래스명) 무의미하므로 제외하고, 재시도 강제 오류
+// `ForceRetryError` 를 포함한다.
+const KY_TRANSPORT_ERROR_NAMES = new Set([
+  'HTTPError',
+  'NetworkError',
+  'TimeoutError',
+  'ForceRetryError',
+])
 
 // Helper to extract a human-readable error message from a ky error.
 // The fallback follows the active UI language; server messages pass through.

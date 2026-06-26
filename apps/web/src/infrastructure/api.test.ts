@@ -69,6 +69,8 @@ describe('getErrorMessage', () => {
       '잠시 후 다시 시도해 주세요'
     )
 
+    // ky 2.0.2 는 네트워크 실패(DNS/오프라인/연결거부)를 NetworkError(name='NetworkError')로
+    // 래핑한다(TypeError 가 아니라) — 실제 런타임 형태를 반영한다.
     const netErr = new Error('Request failed due to a network error: GET http://localhost/api/x')
     netErr.name = 'NetworkError'
     expect(getErrorMessage(netErr, 'fb')).toBe('fb')
