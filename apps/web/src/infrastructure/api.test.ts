@@ -62,6 +62,29 @@ describe('getErrorMessage', () => {
     expect(getErrorMessage(new Error('oops'))).toBe('oops')
   })
 
+  it('hides raw ky transport error messages (internal URL leak) behind the fallback', () => {
+    const httpErr = new Error('Request failed with status code 502: GET http://localhost/api/x')
+    httpErr.name = 'HTTPError'
+    expect(getErrorMessage(httpErr, '잠시 후 다시 시도해 주세요')).toBe(
+      '잠시 후 다시 시도해 주세요'
+    )
+
+    const netErr = new Error('Request failed due to a network error: GET http://localhost/api/x')
+    netErr.name = 'NetworkError'
+    expect(getErrorMessage(netErr, 'fb')).toBe('fb')
+  })
+
+  it('still surfaces server-provided messages even on a transport error shape', () => {
+    const e = new Error(
+      'Request failed with status code 400: POST http://localhost/api/x'
+    ) as Error & {
+      data?: unknown
+    }
+    e.name = 'HTTPError'
+    e.data = { message: 'Invalid credentials' }
+    expect(getErrorMessage(e)).toBe('Invalid credentials')
+  })
+
   it('uses the fallback for unknown shapes', () => {
     expect(getErrorMessage(null, 'fb')).toBe('fb')
     expect(getErrorMessage(42, 'fb')).toBe('fb')
