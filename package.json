@@ -46,7 +46,7 @@
   "prettier": "@heejun/prettier-config",
   "devDependencies": {
     "@commitlint/cli": "^21.0.2",
-    "@commitlint/config-conventional": "^21.0.2",
+    "@commitlint/config-conventional": "^21.1.0",
     "@eslint/js": "^10.0.1",
     "@heejun/eslint-config": "^5.0.0",
     "@heejun/prettier-config": "^3.0.0",
