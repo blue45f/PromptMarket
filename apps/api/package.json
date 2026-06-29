@@ -17,7 +17,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@heejun/auth": "^0.3.0",
+    "@heejun/auth": "^0.3.1",
     "@heejun/contracts": "^0.1.0",
     "@nestjs/common": "^11.1.27",
     "@nestjs/config": "^4.0.4",

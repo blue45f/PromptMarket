@@ -81,8 +81,8 @@ importers:
   apps/api:
     dependencies:
       '@heejun/auth':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@heejun/contracts':
         specifier: ^0.1.0
         version: 0.1.0
@@ -1545,8 +1545,8 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  '@heejun/auth@0.3.0':
-    resolution: {integrity: sha512-2GhWkJloXXyykiyF1pW4hDryhde5j/uEPRx1otqa259IwyKtyGefsUc482Vy9iMXT9rjtHwuoGiQtW8m92rcXA==}
+  '@heejun/auth@0.3.1':
+    resolution: {integrity: sha512-SX0zHpB8B9LkFQK73ERKcrbAgSMlZMPZ1zohgjN3/HpQfZ9XxgEHe80Zpvu5pODFdLCHFhNwfZrpUoMSG7v7yA==}
     peerDependencies:
       drizzle-orm: '>=0.45.2'
     peerDependenciesMeta:
@@ -8935,7 +8935,7 @@ snapshots:
       protobufjs: 7.6.4
       yargs: 17.7.2
 
-  '@heejun/auth@0.3.0':
+  '@heejun/auth@0.3.1':
     dependencies:
       '@heejun/contracts': 0.1.0
       '@heejun/core-server': 0.1.0
