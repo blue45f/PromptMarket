@@ -23,7 +23,7 @@
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.26",
     "@nestjs/jwt": "^11.0.2",
-    "@nestjs/platform-express": "^11.1.24",
+    "@nestjs/platform-express": "^11.1.27",
     "@nestjs/swagger": "^11.4.4",
     "@nestjs/throttler": "^6.5.0",
     "@prisma/adapter-pg": "^7.8.0",
