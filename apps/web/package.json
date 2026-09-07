@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@heejun/deskcloud": "^0.1.0",
-    "@hookform/resolvers": "^5.4.0",
+    "@hookform/resolvers": "^5.9.1",
     "@promptmarket/shared": "workspace:*",
     "@radix-ui/react-dialog": "^1.1.17",
     "@radix-ui/react-dropdown-menu": "^2.1.18",
