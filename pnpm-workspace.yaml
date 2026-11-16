@@ -50,7 +50,9 @@ overrides:
   '@fastify/middie': '>=9.3.2'
   fastify: '>=5.7.2'
   fast-uri: '>=3.1.2'
-  path-to-regexp: '>=6.3.0'
+  'path-to-regexp@>=0.1.0 <0.1.13': 0.1.13
+  'path-to-regexp@>=6.0.0 <6.3.0': 6.3.0
+  'path-to-regexp@>=8.0.0 <8.4.2': 8.4.2
   serialize-javascript: '>=7.0.3'
   piscina: '>=4.9.3'
   drizzle-orm: '>=0.45.2'

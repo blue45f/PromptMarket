@@ -10,7 +10,7 @@ import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <TDSMobileAITProvider brandPrimaryColor={config.brand.primaryColor}>
+    <TDSMobileAITProvider brandPrimaryColor={config.brand?.primaryColor ?? '#A78BFA'}>
       <ErrorBoundary>
         <App />
       </ErrorBoundary>
