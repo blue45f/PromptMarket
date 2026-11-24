@@ -8,7 +8,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/src/main.js",
-    "typecheck": "pnpm run db:generate && tsc --noEmit",
+    "typecheck": "pnpm run db:generate && node node_modules/@typescript/native/bin/tsc --noEmit",
     "test": "pnpm run db:generate && vitest",
     "test:run": "pnpm run db:generate && vitest run",
     "db:push": "prisma db push",
@@ -49,12 +49,13 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.9.1",
     "@types/pg": "^8.20.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "dotenv": "^17.4.2",
     "prisma": "^7.8.0",
     "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.7"
   }
 }
