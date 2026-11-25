@@ -6,8 +6,9 @@
     "lib": ["ES2022"],
     "declaration": true,
     "strict": true,
+    "rootDir": "./src",
     "outDir": "./dist",
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src"]
+  "include": ["src/index.ts"]
 }
