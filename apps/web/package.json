@@ -61,7 +61,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "babel-plugin-react-compiler": "^1.0.0",
-    "jsdom": "^29.1.1",
+    "jsdom": "^31.0.1",
     "storybook": "^10.4.6",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
