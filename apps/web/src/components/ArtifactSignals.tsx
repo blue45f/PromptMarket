@@ -50,7 +50,7 @@ export default function ArtifactSignals({
             )}
           >
             <Icon className="h-3 w-3" aria-hidden />
-            {t(`signals.${key}.title`, params)}
+            {t(`signals.${key}.title`, params ?? {})}
           </span>
         ))}
       </div>
@@ -99,10 +99,10 @@ export default function ArtifactSignals({
             </span>
             <div className="min-w-0">
               <p className="text-[0.86rem] font-semibold leading-snug text-ink dark:text-bone">
-                {t(`signals.${key}.title`, params)}
+                {t(`signals.${key}.title`, params ?? {})}
               </p>
               <p className="text-[0.74rem] leading-snug text-ink-mute dark:text-bone-mute">
-                {t(`signals.${key}.description`, params)}
+                {t(`signals.${key}.description`, params ?? {})}
               </p>
             </div>
           </li>

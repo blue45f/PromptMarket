@@ -215,10 +215,7 @@ function buildScenarioOrderCounts(totalOrders: number, weights: number[]): numbe
   return floor
 }
 
-function historyLabelFromKey(
-  key: string,
-  t: (key: string, opts?: Record<string, unknown>) => string
-): string {
+function historyLabelFromKey(key: string, t: (key: string) => string): string {
   if (key === 'platform_fee_bps') return t('settings.history.labels.platformFee')
   if (key === 'platform_fee_premium_bps') return t('settings.history.labels.premiumFee')
   if (key === 'platform_fee_ultra_premium_bps') return t('settings.history.labels.ultraPremiumFee')

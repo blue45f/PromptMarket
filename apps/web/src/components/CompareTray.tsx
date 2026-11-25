@@ -141,7 +141,7 @@ export default function CompareTray({
                       .map((signal) =>
                         signal.key === 'models'
                           ? t('signals.options.multi-model')
-                          : tc(`signals.${signal.key}.title`, signal.params)
+                          : tc(`signals.${signal.key}.title`, signal.params ?? {})
                       )
                       .join(' · ') || t('compare.none')
                 )}

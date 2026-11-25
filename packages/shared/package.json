@@ -19,8 +19,9 @@
     "src"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "build": "tsup src/index.ts --format esm,cjs --clean && pnpm run build:types",
+    "build:types": "tsc --emitDeclarationOnly && node -e \"require('node:fs').copyFileSync('dist/index.d.ts', 'dist/index.d.cts')\"",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --onSuccess \"pnpm run build:types\"",
     "test": "vitest",
     "test:run": "vitest run"
   },
@@ -29,7 +30,7 @@
   },
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.7"
   }
 }

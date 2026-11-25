@@ -593,7 +593,9 @@ function RuleTextInput({
   )
 }
 
-function RuleSelect<TValue extends string>({
+type RuleOption = ForbiddenWordAction | ForbiddenWordMatchType
+
+function RuleSelect<TValue extends RuleOption>({
   label,
   value,
   values,
@@ -615,7 +617,7 @@ function RuleSelect<TValue extends string>({
         onChange={(event) => onChange(event.currentTarget.value as TValue)}
         className="h-10 w-full rounded-xl border border-line bg-white px-3 text-sm text-ink outline-none focus:border-volt-500 dark:border-night-line dark:bg-night dark:text-bone"
       >
-        {values.map((item) => (
+        {values.map((item: RuleOption) => (
           <option key={item} value={item}>
             {t(`moderation.forbiddenWords.options.${item}`)}
           </option>
